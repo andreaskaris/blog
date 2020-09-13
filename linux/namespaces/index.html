@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>namespaces - Andreas Karis Blog</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+
+        <script src="../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Andreas Karis Blog</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ceph <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../ceph/ceph-manual-test/" class="dropdown-item">Ceph manual test with qemu</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Linux <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../cgroups/" class="dropdown-item">cgroups</a>
+</li>
+                                    
+<li>
+    <a href="../containers/" class="dropdown-item">Containers in Linux</a>
+</li>
+                                    
+<li>
+    <a href="../hugepages/" class="dropdown-item">Hugepages</a>
+</li>
+                                    
+<li>
+    <a href="../meson/" class="dropdown-item">meson</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active">namespaces</a>
+</li>
+                                    
+<li>
+    <a href="../old_java_version_with_xorgs_in_container/" class="dropdown-item">Old Java inside a container with xorgs</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Networking <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../networking/arp_and_the_neighbor_table/" class="dropdown-item">ARP and the Neighbor table</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/bonding_in_linux/" class="dropdown-item">Bonding in Linux</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/geneve_tunneling/" class="dropdown-item">Geneve tunneling</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/netlink/" class="dropdown-item">Netlink</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovn-kind/" class="dropdown-item">OVN kind</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovn_standalone_on_fedora31/" class="dropdown-item">OVN standalone on Fedora 31</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovs_recirculation/" class="dropdown-item">OVS packet recirculation</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovs-vxlan-tunnels-and-dscp/" class="dropdown-item">OVS VXLAN tunnels and DSCP</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovs_with_gdb/" class="dropdown-item">OVS with GDB</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/sctp/" class="dropdown-item">SCTP</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/wireguard/" class="dropdown-item">Wireguard</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">OpenShift <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../openshift/alertmanager/" class="dropdown-item">AlertManager</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/cpu-manager-with-custom-machine-config-pool/" class="dropdown-item">CPU manager with custom MachineConfigPool</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/crio-conmon-runc/" class="dropdown-item">Crio vs conmon vs runc</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/openshift_httpbin_tshark_sidecar/" class="dropdown-item">Httpbin tshark sidecar container</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/ocp4-infra-nodes-with-machineset-without-worker-label/" class="dropdown-item">Infra nodes with MachineSets without worker label</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/ingresscontroller_router_sharding_ocp_on_osp/" class="dropdown-item">Ingress Controller Sharding OCP on OSP</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/kata/" class="dropdown-item">kata containers and the kata operatora</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/proxy-ocp-4.5/" class="dropdown-item">Proxy OCP 4.5</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/scc/" class="dropdown-item">Security Context Constraints (SCC)</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/sctp/" class="dropdown-item">SCTP</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/openshift_troubleshooting_etcd_state/" class="dropdown-item">Troubleshooting etcd state</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/useful-ocp-curl/" class="dropdown-item">Querying the OCP 4.x upgrades info API</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/troubleshooting_openshift_on_openstack_worker_creation/" class="dropdown-item">Troubleshooting OpenShift on OpenStack worker creation</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">OpenStack <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../openstack/reattach_to_running_deployment/" class="dropdown-item">Reattach to running deployment</a>
+</li>
+                                    
+<li>
+    <a href="../../openstack/using_clouds_yaml/" class="dropdown-item">Using clouds.yaml</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../meson/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../old_java_version_with_xorgs_in_container/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#linux-namespaces" class="nav-link">Linux namespaces</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#what-is-a-namespace" class="nav-link">What is a namespace?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#unshare-the-tool-to-create-new-namespaces" class="nav-link">unshare - the tool to create new namespaces</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#how-to-list-namespaces" class="nav-link">How to list namespaces</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#namespace-types" class="nav-link">namespace types</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#building-containers-the-namespace-part-of-it" class="nav-link">Building containers - the namespace part of it</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#resources" class="nav-link">Resources</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="linux-namespaces">Linux namespaces</h1>
+<h2 id="what-is-a-namespace">What is a namespace?</h2>
+<ul>
+<li>
+<p>one important component of containers</p>
+</li>
+<li>
+<p>process within the namespace sees its own isolated instance of a resource</p>
+</li>
+<li>
+<p>the resources are visible only to other processes that are members of the namespace </p>
+</li>
+<li>
+<p>limit what you can view on a system</p>
+</li>
+<li>
+<p>each process is a member of one namespace of each resource</p>
+</li>
+<li>
+<p>namespace resources are: Cgroup, IPC, Network, Mount, PID, User, UTS</p>
+</li>
+</ul>
+<p><code>man 7 namespaces</code>:</p>
+<pre><code>(...)
+A  namespace  wraps a global system resource in an abstraction that makes it appear to the processes within the namespace that they have their own isolated instance of the global resource.  Changes to the global resource are visible to other processes that are members of the namespace, but are invisible to other processes.  One use  of namespaces  is  to implement containers.
+(...)
+</code></pre>
+
+<h2 id="unshare-the-tool-to-create-new-namespaces">unshare - the tool to create new namespaces</h2>
+<p>A child process starts within the same namespaces as its parent. In order to move a process to a new namespace, it needs to be spawned with <code>unshare</code>:</p>
+<pre><code>man unshare
+
+NAME
+       unshare - run program with some namespaces unshared from parent
+
+SYNOPSIS
+       unshare [options] [program [arguments]]
+
+DESCRIPTION
+       Unshares the indicated namespaces from the parent process and then executes the specified program. If program is not given, then ``${SHELL}'' is run (default: /bin/sh).
+
+       The  namespaces can optionally be made persistent by bind mounting /proc/pid/ns/type files to a filesystem path and entered with nsenter(1) even after the program terminates (except PID namespaces
+       where permanently running init process is required).  Once a persistent namespace is no longer needed, it can be unpersisted with umount(8).  See the EXAMPLES section for more details.
+
+       The namespaces to be unshared are indicated via options.  Unshareable namespaces are:
+
+       mount namespace
+              Mounting and unmounting filesystems will not affect the rest of the system, except for filesystems which are explicitly marked as shared (with mount --make-shared; see  /proc/self/mountinfo
+              or findmnt -o+PROPAGATION for the shared flags).  For further details, see mount_namespaces(7) and the discussion of the CLONE_NEWNS flag in clone(2).
+
+              unshare  since  util-linux  version 2.27 automatically sets propagation to private in a new mount namespace to make sure that the new namespace is really unshared.  It's possible to disable
+              this feature with option --propagation unchanged.  Note that private is the kernel default.
+
+       UTS namespace
+              Setting hostname or domainname will not affect the rest of the system.  For further details, see namespaces(7) and the discussion of the CLONE_NEWUTS flag in clone(2).
+
+       IPC namespace
+              The process will have an independent namespace for POSIX message queues as well as System V message queues, semaphore sets and shared memory  segments.   For  further  details,  see  names‐
+              paces(7) and the discussion of the CLONE_NEWIPC flag in clone(2).
+
+       network namespace
+              The  process  will have independent IPv4 and IPv6 stacks, IP routing tables, firewall rules, the /proc/net and /sys/class/net directory trees, sockets, etc.  For further details, see names‐
+              paces(7) and the discussion of the CLONE_NEWNET flag in clone(2).
+
+       PID namespace
+              Children will have a distinct set of PID-to-process mappings from their parent.  For further details, see pid_namespaces(7) and the discussion of the CLONE_NEWPID flag in clone(2).
+
+       cgroup namespace
+              The process will have a virtualized view of /proc/self/cgroup, and new cgroup mounts will be rooted at the namespace cgroup root.  For further details, see cgroup_namespaces(7) and the dis‐
+              cussion of the CLONE_NEWCGROUP flag in clone(2).
+
+       user namespace
+              The process will have a distinct set of UIDs, GIDs and capabilities.  For further details, see user_namespaces(7) and the discussion of the CLONE_NEWUSER flag in clone(2).
+
+OPTIONS
+       -i, --ipc[=file]
+              Unshare the IPC namespace.  If file is specified, then a persistent namespace is created by a bind mount.
+
+       -m, --mount[=file]
+              Unshare  the  mount namespace.  If file is specified, then a persistent namespace is created by a bind mount.  Note that file has to be located on a filesystem with the propagation flag set
+              to private.  Use the command findmnt -o+PROPAGATION when not sure about the current setting.  See also the examples below.
+
+       -n, --net[=file]
+              Unshare the network namespace.  If file is specified, then a persistent namespace is created by a bind mount.
+
+       -p, --pid[=file]
+              Unshare the PID namespace.  If file is specified then persistent namespace is created by a bind mount.  See also the --fork and --mount-proc options.
+
+       -u, --uts[=file]
+              Unshare the UTS namespace.  If file is specified, then a persistent namespace is created by a bind mount.
+
+       -U, --user[=file]
+              Unshare the user namespace.  If file is specified, then a persistent namespace is created by a bind mount.
+
+       -C, --cgroup[=file]
+              Unshare the cgroup namespace. If file is specified then persistent namespace is created by bind mount.
+
+       -f, --fork
+              Fork the specified program as a child process of unshare rather than running it directly.  This is useful when creating a new PID namespace.
+
+(...)
+</code></pre>
+
+<p><code>unshare</code> uses the <code>unshare</code> system call:</p>
+<pre><code>[akaris@wks-akaris ~]$ sudo strace -tt -f -s1024 unshare -u /bin/bash 2&gt;&amp;1 | grep -i uts
+15:54:50.016682 unshare(CLONE_NEWUTS)   = 0
+</code></pre>
+
+<pre><code>man unshare
+UNSHARE(2)                         Linux Programmer's Manual                         UNSHARE(2)
+
+NAME
+       unshare - disassociate parts of the process execution context
+
+SYNOPSIS
+       #define _GNU_SOURCE
+       #include &lt;sched.h&gt;
+
+       int unshare(int flags);
+
+DESCRIPTION
+       unshare()  allows  a  process (or thread) to disassociate parts of its execution context
+       that are currently being shared with other processes (or threads).  Part of  the  execu‐
+       tion  context,  such  as the mount namespace, is shared implicitly when a new process is
+       created using fork(2) or vfork(2), while other parts, such as  virtual  memory,  may  be
+       shared by explicit request when creating a process or thread using clone(2).
+
+       The  main use of unshare() is to allow a process to control its shared execution context
+       without creating a new process.
+
+(...)
+</code></pre>
+
+<p>However, namespaces can also be created by feeding flags to the clone system call:</p>
+<pre><code>[akaris@wks-akaris ~]$ man clone | egrep '^[ ]+CLONE_NEW'
+       CLONE_NEWCGROUP (since Linux 4.6)
+       CLONE_NEWIPC (since Linux 2.6.19)
+       CLONE_NEWNET (since Linux 2.6.24)
+       CLONE_NEWNS (since Linux 2.4.19)
+       CLONE_NEWPID (since Linux 2.6.24)
+       CLONE_NEWUSER
+       CLONE_NEWUTS (since Linux 2.6.19)
+              CLONE_NEWPID  was  specified  in flags, but the limit on the nesting depth of PID
+              CLONE_NEWUSER was specified in flags, and the call would cause the limit  on  the
+              CLONE_NEWUTS  was  specified  by  an  unprivileged   process   (process   without
+              CLONE_NEWUSER was specified in flags and the caller is in  a  chroot  environment
+              CLONE_NEWUSER  was specified in flags, and the limit on the number of nested user
+</code></pre>
+
+<h2 id="how-to-list-namespaces">How to list namespaces</h2>
+<p>Note that when a namespace is unshared, it will show up with a different namespace ID in <code>/proc/$PID/ns/</code>:</p>
+<pre><code>[root@wks-akaris akaris]# sudo ls /proc/1/ns/ -al
+total 0
+dr-x--x--x. 2 root root 0 Dec 20 15:47 .
+dr-xr-xr-x. 9 root root 0 Dec 20 09:59 ..
+lrwxrwxrwx. 1 root root 0 Dec 20 15:47 cgroup -&gt; 'cgroup:[4026531835]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:47 ipc -&gt; 'ipc:[4026531839]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:47 mnt -&gt; 'mnt:[4026531840]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:47 net -&gt; 'net:[4026532008]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:47 pid -&gt; 'pid:[4026531836]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:47 pid_for_children -&gt; 'pid:[4026531836]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:47 user -&gt; 'user:[4026531837]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:47 uts -&gt; 'uts:[4026531838]'
+[root@wks-akaris akaris]# sudo ls /proc/$$/ns/ -al
+total 0
+dr-x--x--x. 2 root root 0 Dec 20 15:45 .
+dr-xr-xr-x. 9 root root 0 Dec 20 15:43 ..
+lrwxrwxrwx. 1 root root 0 Dec 20 15:45 cgroup -&gt; 'cgroup:[4026531835]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:45 ipc -&gt; 'ipc:[4026531839]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:45 mnt -&gt; 'mnt:[4026531840]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:45 net -&gt; 'net:[4026532008]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:45 pid -&gt; 'pid:[4026531836]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:45 pid_for_children -&gt; 'pid:[4026531836]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:45 user -&gt; 'user:[4026531837]'
+lrwxrwxrwx. 1 root root 0 Dec 20 15:45 uts -&gt; 'uts:[4026532828]'
+</code></pre>
+
+<p>Or, a more compact example of the above:</p>
+<pre><code>[akaris@wks-akaris ~]$ sudo unshare -m uts /bin/bash
+[sudo] password for akaris: 
+unshare: failed to execute uts: No such file or directory
+[akaris@wks-akaris ~]$ sudo unshare -u /bin/bash
+[root@wks-akaris akaris]# readlink /proc/1/ns/uts
+uts:[4026531838]
+[root@wks-akaris akaris]# readlink /proc/$$/ns/uts
+uts:[4026532828]
+</code></pre>
+
+<p>The easiest and most detailed way to show the namespace hierarchy, though, is <code>lsns</code>:</p>
+<pre><code>man lsns
+LSNS(8)                                                                                 System Administration                                                                                 LSNS(8)
+
+NAME
+       lsns - list namespaces
+
+SYNOPSIS
+       lsns [options] [namespace]
+
+DESCRIPTION
+       lsns lists information about all the currently accessible namespaces or about the given namespace.  The namespace identifier is an inode number.
+
+       The  default  output  is  subject  to  change.  So whenever possible, you should avoid using default outputs in your scripts.  Always explicitly define expected columns by using the --output
+       option together with a columns list in environments where a stable output is required.
+
+       NSFS column, printed when net is specified for --type option, is special; it uses multi-line cells.  Use the option --nowrap is for switching to &quot;,&quot; separated single-line representation.
+
+       Note that lsns reads information directly from the /proc filesystem and for non-root users it may return incomplete information.  The current /proc filesystem may be unshared and affected by
+       a  PID  namespace  (see  unshare  --mount-proc  for  more  details).   lsns is not able to see persistent namespaces without processes where the namespace instance is held by a bind mount to
+       /proc/pid/ns/type.
+(...)
+</code></pre>
+
+<p>Example:</p>
+<pre><code>[akaris@wks-akaris ~]$ sudo lsns -t uts
+        NS TYPE NPROCS PID USER COMMAND
+4026531838 uts     288   1 root /usr/lib/systemd/systemd --switched-root --system --deserialize 32
+[akaris@wks-akaris ~]$ sudo unshare -u /bin/bash
+[root@wks-akaris akaris]# lsns -t uts
+        NS TYPE NPROCS   PID USER COMMAND
+4026531838 uts     289     1 root /usr/lib/systemd/systemd --switched-root --system --deserialize 32
+4026532849 uts       2 13226 root /bin/bash
+[root@wks-akaris akaris]# unshare -u /bin/bash
+[root@wks-akaris akaris]# lsns -t uts
+        NS TYPE NPROCS   PID USER COMMAND
+4026531838 uts     289     1 root /usr/lib/systemd/systemd --switched-root --system --deserialize 32
+4026532849 uts       1 13226 root /bin/bash
+4026532850 uts       2 13257 root /bin/bash
+[root@wks-akaris akaris]# readlink /proc/$$/ns/uts
+uts:[4026532850]
+[root@wks-akaris akaris]# exit
+exit
+[root@wks-akaris akaris]# readlink /proc/$$/ns/uts
+uts:[4026532849]
+[root@wks-akaris akaris]# exit
+exit
+[akaris@wks-akaris ~]$ readlink /proc/$$/ns/uts
+uts:[4026531838]
+</code></pre>
+
+<h2 id="namespace-types">namespace types</h2>
+<h3 id="uts-namespace">UTS namespace</h3>
+<ul>
+<li>
+<p>UTS stands for the datastructure that stores the identifiers returned by uname. </p>
+</li>
+<li>
+<p>UTS namespaces allow every process to have its own hostname and domain name.</p>
+</li>
+</ul>
+<h4 id="example">Example</h4>
+<p>Create an instance of <code>/bin/bash</code> in its own UTS namespace and assign it its own hostname:</p>
+<pre><code>[akaris@wks-akaris ~]$ sudo unshare -u /bin/bash
+[root@wks-akaris akaris]# hostname utsnamespace
+[root@wks-akaris akaris]# bash
+[root@utsnamespace akaris]#
+[root@wks-akaris akaris]# hostname
+utsnamespace
+[root@wks-akaris akaris]# uname -a
+Linux utsnamespace 4.18.12-200.fc28.x86_64 #1 SMP Thu Oct 4 15:46:35 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
+</code></pre>
+
+<p>Open another CLI on the same system and verify the hostname:</p>
+<pre><code>[akaris@wks-akaris ~]$ hostname
+wks-akaris
+[akaris@wks-akaris ~]$ uname -a
+Linux wks-akaris 4.18.12-200.fc28.x86_64 #1 SMP Thu Oct 4 15:46:35 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
+</code></pre>
+
+<h3 id="network-namespaces">network namespaces</h3>
+<ul>
+<li>
+<p>Allow to add a private network stack to processes within a network namespace.</p>
+</li>
+<li>
+<p>Let you move interfaces from one network namespace to another.</p>
+</li>
+<li>
+<p>veth interfaces can connect namespaces together.</p>
+</li>
+</ul>
+<pre><code>man ip-netns
+(...)
+       A network namespace is logically another copy of the network stack, with its own routes, firewall rules, and network devices.
+
+       By default a process inherits its network namespace from its parent. Initially all the processes share the same default network namespace from the init process.
+
+       By convention a named network namespace is an object at /var/run/netns/NAME that can be opened. The file descriptor resulting from opening /var/run/netns/NAME refers to the spec‐
+       ified network namespace. Holding that file descriptor open keeps the network namespace alive. The file descriptor can be used with the setns(2) system call to change the network
+       namespace associated with a task.
+(...)
+</code></pre>
+
+<p>Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems:</p>
+<pre><code>Network namespaces provide isolation of network controllers, system resources associated
+with networking, firewall and routing tables. This allows container to use separate virtual
+network stack, loopback device and process space. You can add virtual or real devices to the
+container, assign them their own IP Addresses and even full iptables rules. You can view the
+different network settings by executing the ip addr command on the host and inside the
+container.
+</code></pre>
+
+<h4 id="example_1">Example</h4>
+<p>There are 2 ways to generate persistent network namespaces. Either use <code>ip netns add</code>, or use the more inconvenient <code>unshare</code> command:</p>
+<pre><code>[akaris@wks-akaris ~]$ sudo ip netns add netns1
+[akaris@wks-akaris ~]$ sudo ip netns 
+netns1
+[akaris@wks-akaris ~]$ sudo mount | grep netns
+tmpfs on /run/netns type tmpfs (rw,nosuid,nodev,seclabel,mode=755)
+nsfs on /run/netns/netns1 type nsfs (rw,seclabel)
+nsfs on /run/netns/netns1 type nsfs (rw,seclabel)
+[akaris@wks-akaris ~]$ sudo touch /run/netns/netns2
+[akaris@wks-akaris ~]$ sudo unshare --net=!$ /bin/bash
+sudo unshare --net=/run/netns/netns2 /bin/bash
+[root@wks-akaris akaris]# exit
+exit
+[akaris@wks-akaris ~]$ sudo ip netns
+netns2
+netns1
+[akaris@wks-akaris ~]$ sudo mount | grep netns
+tmpfs on /run/netns type tmpfs (rw,nosuid,nodev,seclabel,mode=755)
+nsfs on /run/netns/netns1 type nsfs (rw,seclabel)
+nsfs on /run/netns/netns1 type nsfs (rw,seclabel)
+nsfs on /run/netns/netns2 type nsfs (rw,seclabel)
+nsfs on /run/netns/netns2 type nsfs (rw,seclabel)
+</code></pre>
+
+<p>In both cases, you will be able to enter the namespace and create interfaces therein:</p>
+<pre><code>[akaris@wks-akaris ~]$ sudo ip netns exec netns2 /bin/bash
+[root@wks-akaris akaris]# ip link ls
+1: lo: &lt;LOOPBACK&gt; mtu 65536 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+[root@wks-akaris akaris]# sudo ip link add veth0 type veth  peer name veth1
+[root@wks-akaris akaris]# ip link ls
+1: lo: &lt;LOOPBACK&gt; mtu 65536 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+2: veth1@veth0: &lt;BROADCAST,MULTICAST,M-DOWN&gt; mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether 1e:a0:b3:b7:e6:db brd ff:ff:ff:ff:ff:ff
+3: veth0@veth1: &lt;BROADCAST,MULTICAST,M-DOWN&gt; mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether ee:1a:b2:f0:07:87 brd ff:ff:ff:ff:ff:ff
+[root@wks-akaris akaris]# exit
+exit
+[akaris@wks-akaris ~]$ sudo ip netns exec netns1 /bin/bash
+[root@wks-akaris akaris]# ip link ls
+1: lo: &lt;LOOPBACK&gt; mtu 65536 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+[root@wks-akaris akaris]# exit
+exit
+</code></pre>
+
+<h3 id="mount-namespaces">mount namespaces</h3>
+<ul>
+<li>
+<p>mount namespaces allow processes to have their own mount points, such as :root fs, /tmp, /proc/, etc.</p>
+</li>
+<li>
+<p>within a mount namespace, it's possible to mount and unmount mount points without affecting any other namespace</p>
+</li>
+</ul>
+<pre><code>man unshare
+(...)
+       mount namespace
+              Mounting and unmounting filesystems will not affect the rest of the system, except for filesystems which are explicitly  marked
+              as  shared  (with  mount  --make-shared; see /proc/self/mountinfo or findmnt -o+PROPAGATION for the shared flags).  For further
+              details, see mount_namespaces(7) and the discussion of the CLONE_NEWNS flag in clone(2).
+
+              unshare since util-linux version 2.27 automatically sets propagation to private in a new mount namespace to make sure that  the
+              new  namespace  is really unshared.  It's possible to disable this feature with option --propagation unchanged.  Note that pri‐
+              vate is the kernel default.
+(...)
+</code></pre>
+
+<pre><code>man mount_namespaces
+(...)
+       Mount  namespaces  provide  isolation  of the list of mount points seen by the processes in each namespace instance.  Thus, the processes in each of the mount namespace instances
+       will see distinct single-directory hierarchies.
+
+       The views provided by the /proc/[pid]/mounts, /proc/[pid]/mountinfo, and /proc/[pid]/mountstats files (all described in proc(5)) correspond to the mount namespace  in  which  the
+       process with the PID [pid] resides.  (All of the processes that reside in the same mount namespace will see the same view in these files.)
+
+       When  a  process  creates a new mount namespace using clone(2) or unshare(2) with the CLONE_NEWNS flag, the mount point list for the new namespace is a copy of the caller's mount
+       point list.  Subsequent modifications to the mount point list (mount(2) and umount(2)) in either mount namespace will not (by default) affect the mount point  list  seen  in  the
+       other namespace (but see the following discussion of shared subtrees).
+(...)
+</code></pre>
+
+<p>Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems:</p>
+<pre><code>Mount namespaces isolate the set of file system mount points seen by a group of processes so
+that processes in different mount namespaces can have different views of the file system
+hierarchy. With mount namespaces, the mount() and umount() system calls cease to operate
+on a global set of mount points (visible to all processes) and instead perform operations that
+affect just the mount namespace associated with the container process. For example, each
+container can have its own /tmp or /var directory or even have an entirely different
+userspace.
+</code></pre>
+
+<h4 id="example_2">Example</h4>
+<pre><code>[akaris@wks-akaris ~]$ sudo unshare -m /bin/bash
+[root@wks-akaris akaris]# lsns -t mnt
+        NS TYPE NPROCS   PID USER   COMMAND
+4026531840 mnt     297     1 root   /usr/lib/systemd/systemd --switched-root --system --deserialize 32
+4026531860 mnt       1    33 root   kdevtmpfs
+4026532186 mnt       1   983 root   /usr/lib/systemd/systemd-udevd
+4026532508 mnt       1  1261 rtkit  /usr/libexec/rtkit-daemon
+4026532509 mnt       1  1276 chrony /usr/sbin/chronyd
+4026532510 mnt       4  1460 root   /usr/sbin/NetworkManager --no-daemon
+4026532511 mnt       1  2481 root   /usr/libexec/bluetooth/bluetoothd
+4026532514 mnt       1  3045 root   /usr/libexec/fwupd/fwupd
+4026532665 mnt       1  1541 colord /usr/libexec/colord
+4026532749 mnt       1  2030 root   /usr/libexec/boltd
+4026532828 mnt       2 17149 root   /bin/bash
+[root@wks-akaris akaris]# umount -a -l
+[root@wks-akaris akaris]# ls /dev/
+[root@wks-akaris akaris]# ls /proc
+[root@wks-akaris akaris]# exit
+exit
+[akaris@wks-akaris ~]$ ls /dev | head -2
+autofs
+block
+</code></pre>
+
+<h3 id="pid-namespaces">PID namespaces</h3>
+<ul>
+<li>
+<p>isolate the process ID number space</p>
+</li>
+<li>
+<p>different processes in different PID namespaces can have the same PID</p>
+</li>
+<li>
+<p>a process can only see processes in its own PID namespace. </p>
+</li>
+<li>
+<p>a process has a PID per namespace</p>
+</li>
+<li>
+<p>The global namespace has a different PID for the same process than the 'custom' namespace</p>
+</li>
+</ul>
+<pre><code>man pid_namespaces
+(...)
+       PID  namespaces  isolate  the process ID number space, meaning that processes in different PID namespaces can have the same PID.  PID namespaces allow containers to provide func‐
+       tionality such as suspending/resuming the set of processes in the container and migrating the container to a new host while the processes inside the container maintain  the  same
+       PIDs.
+
+       PIDs in a new PID namespace start at 1, somewhat like a standalone system, and calls to fork(2), vfork(2), or clone(2) will produce processes with PIDs that are unique within the
+       namespace.
+(...)
+       The first process created in a new namespace (i.e., the process created using clone(2) with the CLONE_NEWPID flag, or the first child  created  by  a  process  after  a  call  to
+       unshare(2)  using  the CLONE_NEWPID flag) has the PID 1, and is the &quot;init&quot; process for the namespace (see init(1)).  A child process that is orphaned within the namespace will be
+       reparented to this process rather than init(1) (unless one of the ancestors of the child in the same PID namespace employed the prctl(2) PR_SET_CHILD_SUBREAPER  command  to  mark
+       itself as the reaper of orphaned descendant processes).
+
+       If  the  &quot;init&quot; process of a PID namespace terminates, the kernel terminates all of the processes in the namespace via a SIGKILL signal.  This behavior reflects the fact that the
+       &quot;init&quot; process is essential for the correct operation of a PID namespace.  In this case, a subsequent fork(2) into this PID namespace fail with the error ENOMEM; it is not possi‐
+       ble  to  create  a new processes in a PID namespace whose &quot;init&quot; process has terminated. 
+(...)
+</code></pre>
+
+<p>Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems:</p>
+<pre><code>PID namespaces allow processes in different containers to have the same PID, so each
+container can have its own init (PID1) process that manages various system initialization tasks
+as well as containers life cycle. Also, each container has its unique /proc directory. Note that
+from within the container you can monitor only processes running inside this container. In
+other words, the container is only aware of its native processes and can not &quot;see&quot; the
+processes running in different parts of the system. On the other hand, the host operating
+system is aware of processes running inside of the container, but assigns them different PID
+numbers. For example, run the ps -eZ | grep systemd$ command on host to see all
+instances of systemd including those running inside of containers.
+</code></pre>
+
+<h4 id="example_3">Example</h4>
+<p>Note that PID namespaces need to be unshared with <code>--fork</code>. Also note that this will reset the PID space, however this will not show in <code>ps</code> as the information comes from the /proc file system:</p>
+<pre><code>[akaris@wks-akaris ~]$ sudo unshare -p --fork /bin/bash
+[root@wks-akaris akaris]# echo $$
+1
+[root@wks-akaris akaris]# ps
+  PID TTY          TIME CMD
+17365 pts/5    00:00:00 sudo
+17367 pts/5    00:00:00 unshare
+17368 pts/5    00:00:00 bash
+17399 pts/5    00:00:00 ps
+</code></pre>
+
+<p>We need a more complex series of commands to display the actual process IDs in <code>ps</code> - we need to create both a new PID and a new mount namespace and then unmount and remount proc:</p>
+<pre><code>[akaris@wks-akaris ~]$ sudo unshare -p --fork -m /bin/bash
+[root@wks-akaris akaris]# umount -l /proc
+[root@wks-akaris akaris]# mount proc /proc -t proc
+[root@wks-akaris akaris]# ps aux
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  0.1  0.0 123344  5916 pts/5    S    19:01   0:00 /bin/bash
+root        31  0.0  0.0 153224  3700 pts/5    R+   19:01   0:00 ps aux
+[root@wks-akaris akaris]# 
+</code></pre>
+
+<h3 id="user-namespaces">user namespaces</h3>
+<ul>
+<li>
+<p>Allows UID/GID mapping. </p>
+</li>
+<li>
+<p>Within the namespace, a user can have UID 0 (root) but this will be squashed to root outside of the container.</p>
+</li>
+</ul>
+<pre><code>man user_namespaces
+(...)
+       User  namespaces  isolate security-related identifiers and attributes, in particular, user IDs and group IDs (see credentials(7)), the root directory, keys (see keyrings(7)), and
+       capabilities (see capabilities(7)).  A process's user and group IDs can be different inside and outside a user namespace.  In particular, a process can have a normal unprivileged
+       user ID outside a user namespace while at the same time having a user ID of 0 inside the namespace; in other words, the process has full privileges for operations inside the user
+       namespace, but is unprivileged for operations outside the namespace.
+(...)
+</code></pre>
+
+<p>Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems:</p>
+<pre><code>User namespaces are similar to PID
+namespaces, they allow you to specify a range of host UIDs dedicated to the container. Consequently, a
+process can have full root privileges for operations inside the container, and at the same time be
+unprivileged for operations outside the container. For compatibility reasons, user namespaces are
+turned off in the current version of Red Hat Enterprise Linux 7, but will be enabled in the near future.
+</code></pre>
+
+<h4 id="example_4">Example</h4>
+<pre><code>[akaris@wks-akaris ~]$ sudo unshare -U /bin/bash
+[nfsnobody@wks-akaris akaris]$ id
+uid=65534(nfsnobody) gid=65534(nfsnobody) groups=65534(nfsnobody) context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+[nfsnobody@wks-akaris akaris]$ echo $$
+10086
+</code></pre>
+
+<p>Open another CLI and run:</p>
+<pre><code>[akaris@wks-akaris ~]$ sudo newuidmap 10086 0 0 1
+[akaris@wks-akaris ~]$ 
+</code></pre>
+
+<p>Now, within the namespace, verify what happened:</p>
+<pre><code>[nfsnobody@wks-akaris akaris]$ id
+uid=0(root) gid=65534(nfsnobody) groups=65534(nfsnobody) context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+[nfsnobody@wks-akaris akaris]$ 
+</code></pre>
+
+<h3 id="ipc-namespaces">IPC namespaces</h3>
+<ul>
+<li>
+<p>Isolates interprocess communication</p>
+</li>
+<li>
+<p>A process / container can have its own semaphores, message queues, shared memory, etc</p>
+</li>
+</ul>
+<p>Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems:</p>
+<pre><code>IPC namespaces isolate certain interprocess communication (IPC) resources, such as System
+V IPC objects and POSIX message queues. This means that two containers can create shared
+memory segments and semaphores with the same name, but are not able to interact with other
+containers memory segments or shared memory.
+</code></pre>
+
+<h3 id="cgroup-namespaces-and-their-purpose">cgroup namespaces and their purpose</h3>
+<pre><code>man cgroup_namespaces
+(...)
+       Among the purposes served by the virtualization provided by cgroup namespaces are the following:
+
+       * It prevents information leaks whereby cgroup directory paths outside of a container would otherwise be visible to processes in the container.  Such leakages could, for example,
+         reveal information about the container framework to containerized applications.
+
+       * It eases tasks such as container migration.  The virtualization provided by cgroup namespaces allows containers to be isolated from  knowledge  of  the  pathnames  of  ancestor
+         cgroups.  Without such isolation, the full cgroup pathnames (displayed in /proc/self/cgroups) would need to be replicated on the target system when migrating a container; those
+         pathnames would also need to be unique, so that they don't conflict with other pathnames on the target system.
+
+       * It allows better confinement of containerized processes, because it is possible to mount the container's cgroup filesystems such that the container processes can't gain  access
+         to ancestor cgroup directories.  Consider, for example, the following scenario:
+
+           · We have a cgroup directory, /cg/1, that is owned by user ID 9000.
+
+           · We  have a process, X, also owned by user ID 9000, that is namespaced under the cgroup /cg/1/2 (i.e., X was placed in a new cgroup namespace via clone(2) or unshare(2) with
+             the CLONE_NEWCGROUP flag).
+
+         In the absence of cgroup namespacing, because the cgroup directory /cg/1 is owned (and writable) by UID 9000 and process X is also owned by user ID 9000, then process  X  would
+         be able to modify the contents of cgroups files (i.e., change cgroup settings) not only in /cg/1/2 but also in the ancestor cgroup directory /cg/1.  Namespacing process X under
+         the cgroup directory /cg/1/2, in combination with suitable mount operations for the cgroup filesystem (as shown above), prevents it modifying files in /cg/1,  since  it  cannot
+         even  see the contents of that directory (or of further removed cgroup ancestor directories).  Combined with correct enforcement of hierarchical limits, this prevents process X
+         from escaping the limits imposed by ancestor cgroups.
+(...)
+</code></pre>
+
+<h2 id="building-containers-the-namespace-part-of-it">Building containers - the namespace part of it</h2>
+<p>A nice walkthrough can be found in this youtube video:
+<a href="https://youtu.be/sK5i-N34im8?t=2476">https://youtu.be/sK5i-N34im8?t=2476</a></p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li>manpages:</li>
+</ul>
+<pre><code>[akaris@wks-akaris blog]$ apropos namespace | grep _namespaces
+cgroup_namespaces (7) - overview of Linux cgroup namespaces
+mount_namespaces (7) - overview of Linux mount namespaces
+network_namespaces (7) - overview of Linux network namespaces
+pid_namespaces (7)   - overview of Linux PID namespaces
+user_namespaces (7)  - overview of Linux user namespaces
+[akaris@wks-akaris blog]$ man 7 namespaces
+</code></pre>
+
+<ul>
+<li><a href="https://www.youtube.com/watch?v=sK5i-N34im8">https://www.youtube.com/watch?v=sK5i-N34im8</a></li>
+</ul></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js" defer></script>
+        <script src="../../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

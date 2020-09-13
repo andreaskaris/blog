@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Wireguard - Andreas Karis Blog</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+
+        <script src="../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Andreas Karis Blog</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ceph <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../ceph/ceph-manual-test/" class="dropdown-item">Ceph manual test with qemu</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Linux <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../linux/cgroups/" class="dropdown-item">cgroups</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/containers/" class="dropdown-item">Containers in Linux</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/hugepages/" class="dropdown-item">Hugepages</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/meson/" class="dropdown-item">meson</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/namespaces/" class="dropdown-item">namespaces</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/old_java_version_with_xorgs_in_container/" class="dropdown-item">Old Java inside a container with xorgs</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Networking <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../arp_and_the_neighbor_table/" class="dropdown-item">ARP and the Neighbor table</a>
+</li>
+                                    
+<li>
+    <a href="../bonding_in_linux/" class="dropdown-item">Bonding in Linux</a>
+</li>
+                                    
+<li>
+    <a href="../geneve_tunneling/" class="dropdown-item">Geneve tunneling</a>
+</li>
+                                    
+<li>
+    <a href="../netlink/" class="dropdown-item">Netlink</a>
+</li>
+                                    
+<li>
+    <a href="../ovn-kind/" class="dropdown-item">OVN kind</a>
+</li>
+                                    
+<li>
+    <a href="../ovn_standalone_on_fedora31/" class="dropdown-item">OVN standalone on Fedora 31</a>
+</li>
+                                    
+<li>
+    <a href="../ovs_recirculation/" class="dropdown-item">OVS packet recirculation</a>
+</li>
+                                    
+<li>
+    <a href="../ovs-vxlan-tunnels-and-dscp/" class="dropdown-item">OVS VXLAN tunnels and DSCP</a>
+</li>
+                                    
+<li>
+    <a href="../ovs_with_gdb/" class="dropdown-item">OVS with GDB</a>
+</li>
+                                    
+<li>
+    <a href="../sctp/" class="dropdown-item">SCTP</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active">Wireguard</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">OpenShift <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../openshift/alertmanager/" class="dropdown-item">AlertManager</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/cpu-manager-with-custom-machine-config-pool/" class="dropdown-item">CPU manager with custom MachineConfigPool</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/crio-conmon-runc/" class="dropdown-item">Crio vs conmon vs runc</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/openshift_httpbin_tshark_sidecar/" class="dropdown-item">Httpbin tshark sidecar container</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/ocp4-infra-nodes-with-machineset-without-worker-label/" class="dropdown-item">Infra nodes with MachineSets without worker label</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/ingresscontroller_router_sharding_ocp_on_osp/" class="dropdown-item">Ingress Controller Sharding OCP on OSP</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/kata/" class="dropdown-item">kata containers and the kata operatora</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/proxy-ocp-4.5/" class="dropdown-item">Proxy OCP 4.5</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/scc/" class="dropdown-item">Security Context Constraints (SCC)</a>
+</li>
+                                    
+<li>
+    <a href="../sctp/" class="dropdown-item">SCTP</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/openshift_troubleshooting_etcd_state/" class="dropdown-item">Troubleshooting etcd state</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/useful-ocp-curl/" class="dropdown-item">Querying the OCP 4.x upgrades info API</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/troubleshooting_openshift_on_openstack_worker_creation/" class="dropdown-item">Troubleshooting OpenShift on OpenStack worker creation</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">OpenStack <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../openstack/reattach_to_running_deployment/" class="dropdown-item">Reattach to running deployment</a>
+</li>
+                                    
+<li>
+    <a href="../../openstack/using_clouds_yaml/" class="dropdown-item">Using clouds.yaml</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../sctp/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../../openshift/alertmanager/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#wireguard-demo-on-fedora-32" class="nav-link">Wireguard demo on Fedora 32</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#prerequisites" class="nav-link">Prerequisites</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#create-keys" class="nav-link">Create keys</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#write-down-ip-addresses-and-keys-for-later" class="nav-link">Write down IP addresses and keys for later</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#manual-tunnel-setup" class="nav-link">Manual tunnel setup</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#tunnel-setup-with-config-files" class="nav-link">Tunnel setup with config files</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#resources" class="nav-link">Resources</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="wireguard-demo-on-fedora-32">Wireguard demo on Fedora 32</h1>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>2 Fedora 32 nodes with kernel:</p>
+<pre><code>[root@wireguard01 ~]# uname -a
+Linux wireguard01 5.6.6-300.fc32.x86_64 #1 SMP Tue Apr 21 13:44:19 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+[root@wireguard01 ~]# ip a | grep 192.168.122
+    inet 192.168.122.250/24 brd 192.168.122.255 scope global dynamic noprefixroute eth0
+</code></pre>
+
+<pre><code>[root@wireguard02 wireguard]# uname -a
+Linux wireguard02 5.6.6-300.fc32.x86_64 #1 SMP Tue Apr 21 13:44:19 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+[root@wireguard02 wireguard]# ip a | grep 192.168.122
+    inet 192.168.122.81/24 brd 192.168.122.255 scope global dynamic noprefixroute eth0
+</code></pre>
+
+<p>Install wireguard-tools, wireshark and tcpdump (the latter tools for monitoring):</p>
+<pre><code>yum install -y wireguard-tools wireshark tcpdump
+</code></pre>
+
+<h2 id="create-keys">Create keys</h2>
+<p>wireguard01:</p>
+<pre><code>wg genkey &gt; /etc/wireguard/private
+chmod 600 /etc/wireguard/private
+wg pubkey &lt; /etc/wireguard/private &gt; /etc/wireguard/publickey
+</code></pre>
+
+<pre><code>[root@wireguard01 ~]# cat /etc/wireguard/private
+0JYD7daZL+Bh7u77vFnwXHs5Rdi7iFfpk8NC1pg542Q=
+[root@wireguard01 ~]# cat /etc/wireguard/publickey 
+pkyJK9ePlOTW9+GK73UnCZ4/b7/3xOthdfdbF7OQUzw=
+</code></pre>
+
+<p>wireguard02:</p>
+<pre><code>wg genkey &gt; /etc/wireguard/private
+chmod 600 /etc/wireguard/private
+wg pubkey &lt; /etc/wireguard/private &gt; /etc/wireguard/publickey
+</code></pre>
+
+<pre><code>[root@wireguard02 wireguard]# cat /etc/wireguard/private
+wHpqAYwqSp6F4lO09uFj8BQGVJ6OjZIkvVWUQdy+GGk=
+[root@wireguard02 wireguard]# cat /etc/wireguard/publickey 
+uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc=
+</code></pre>
+
+<h2 id="write-down-ip-addresses-and-keys-for-later">Write down IP addresses and keys for later</h2>
+<p>wireguard01:</p>
+<pre><code>/etc/wireguard/private: 0JYD7daZL+Bh7u77vFnwXHs5Rdi7iFfpk8NC1pg542Q=
+/etc/wireguard/publickey: pkyJK9ePlOTW9+GK73UnCZ4/b7/3xOthdfdbF7OQUzw=
+Outer IP: 192.168.122.250/24
+Inner IP: 192.168.123.1/24
+</code></pre>
+
+<p>wireguard02:</p>
+<pre><code>/etc/wireguard/private: wHpqAYwqSp6F4lO09uFj8BQGVJ6OjZIkvVWUQdy+GGk=
+/etc/wireguard/publickey: uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc=
+Outer IP: 192.168.122.81/24
+Inner IP: 192.168.123.2/32
+</code></pre>
+
+<h2 id="manual-tunnel-setup">Manual tunnel setup</h2>
+<p>Follow these steps to create tunnels manually.</p>
+<p>wireguard01:</p>
+<pre><code>ip link add wg0 type wireguard
+ip a a 192.168.123.1/24 dev wg0
+wg set wg0 private-key /etc/wireguard/private
+wg set wg0 listen-port 51820
+wg set wg0 peer uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc= allowed-ips 192.168.123.2/32 endpoint 192.168.122.81:51820 persistent-keepalive 30
+ip link set dev wg0 up
+</code></pre>
+
+<p>wireguard02:</p>
+<pre><code>ip link add wg0 type wireguard
+ip a a 192.168.123.2/24 dev wg0
+wg set wg0 private-key /etc/wireguard/private
+wg set wg0 listen-port 51820
+wg set wg0 peer pkyJK9ePlOTW9+GK73UnCZ4/b7/3xOthdfdbF7OQUzw= allowed-ips 192.168.123.1/32 endpoint 192.168.122.250:51820 persistent-keepalive 30
+ip link set dev wg0 up
+</code></pre>
+
+<p>Verify wireguard:</p>
+<pre><code>[root@wireguard01 ~]# wg
+interface: wg0
+  public key: pkyJK9ePlOTW9+GK73UnCZ4/b7/3xOthdfdbF7OQUzw=
+  private key: (hidden)
+  listening port: 51820
+
+peer: uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc=
+  endpoint: 192.168.122.81:51820
+  allowed ips: 192.168.123.2/32
+  latest handshake: 20 seconds ago
+  transfer: 180 B received, 568 B sent
+  persistent keepalive: every 30 seconds
+</code></pre>
+
+<pre><code>[root@wireguard02 wireguard]# wg
+interface: wg0
+  public key: uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc=
+  private key: (hidden)
+  listening port: 51820
+
+peer: pkyJK9ePlOTW9+GK73UnCZ4/b7/3xOthdfdbF7OQUzw=
+  endpoint: 192.168.122.250:51820
+  allowed ips: 192.168.123.1/32
+  latest handshake: 34 seconds ago
+  transfer: 156 B received, 180 B sent
+  persistent keepalive: every 30 seconds
+</code></pre>
+
+<pre><code>[root@wireguard01 ~]# ping -c1 -W1 192.168.123.2
+PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
+64 bytes from 192.168.123.2: icmp_seq=1 ttl=64 time=0.383 ms
+
+--- 192.168.123.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 0.383/0.383/0.383/0.000 ms
+</code></pre>
+
+<p>Delete interfaces again, run on both hosts:</p>
+<pre><code>ip link del dev wg0
+</code></pre>
+
+<h2 id="tunnel-setup-with-config-files">Tunnel setup with config files</h2>
+<p>Follow these steps to set up tunnels with systemd:</p>
+<pre><code>[root@wireguard01 ~]# cat &lt;&lt;'EOF' &gt; /etc/wireguard/wg0.conf
+[Interface]
+Address    = 192.168.123.1/24
+PrivateKey = 0JYD7daZL+Bh7u77vFnwXHs5Rdi7iFfpk8NC1pg542Q=
+ListenPort = 51820
+
+[Peer]
+PublicKey    = uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc=
+AllowedIPs   = 192.168.123.2/32
+Endpoint     = 192.168.122.81:51820
+PersistentKeepalive = 30
+EOF
+</code></pre>
+
+<pre><code>[root@wireguard02 wireguard]# cat &lt;&lt;'EOF' &gt; /etc/wireguard/wg0.conf
+[Interface]
+Address    = 192.168.123.2/32
+PrivateKey = wHpqAYwqSp6F4lO09uFj8BQGVJ6OjZIkvVWUQdy+GGk=
+
+[Peer]
+PublicKey    = pkyJK9ePlOTW9+GK73UnCZ4/b7/3xOthdfdbF7OQUzw=
+AllowedIPs   = 192.168.123.1/32
+Endpoint     = 192.168.122.250:51820
+PersistentKeepalive = 30
+EOF
+</code></pre>
+
+<pre><code>[root@wireguard01 ~]# journalctl -u wg-quick@wg0 -f -n0 &amp;
+[1] 11296
+[root@wireguard01 ~]# -- Logs begin at Wed 2020-08-05 15:44:13 UTC. --
+
+[root@wireguard01 ~]# systemctl start wg-quick@wg0
+[root@wireguard01 ~]# Aug 05 20:06:57 wireguard01 systemd[1]: Starting WireGuard via wg-quick(8) for wg0...
+Aug 05 20:06:57 wireguard01 wg-quick[11299]: [#] ip link add wg0 type wireguard
+Aug 05 20:06:57 wireguard01 wg-quick[11299]: [#] wg setconf wg0 /dev/fd/63
+Aug 05 20:06:57 wireguard01 wg-quick[11299]: [#] ip -4 address add 192.168.123.1/24 dev wg0
+Aug 05 20:06:57 wireguard01 wg-quick[11299]: [#] ip link set mtu 1420 up dev wg0
+Aug 05 20:06:57 wireguard01 systemd[1]: Finished WireGuard via wg-quick(8) for wg0.
+
+[root@wireguard01 ~]# fg
+journalctl -u wg-quick@wg0 -f -n0
+^C
+[root@wireguard01 ~]# wg
+interface: wg0
+  public key: pkyJK9ePlOTW9+GK73UnCZ4/b7/3xOthdfdbF7OQUzw=
+  private key: (hidden)
+  listening port: 51820
+
+peer: uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc=
+  endpoint: 192.168.122.81:34730
+  allowed ips: 192.168.123.2/32
+  latest handshake: 1 minute, 7 seconds ago
+  transfer: 180 B received, 484 B sent
+  persistent keepalive: every 30 seconds
+</code></pre>
+
+<pre><code>[root@wireguard02 wireguard]# -- Logs begin at Wed 2020-08-05 15:44:47 UTC. --
+
+[root@wireguard02 wireguard]# systemctl start wg-quick@wg0
+[root@wireguard02 wireguard]# Aug 05 20:07:04 wireguard02 systemd[1]: Starting WireGuard via wg-quick(8) for wg0...
+Aug 05 20:07:04 wireguard02 wg-quick[10492]: [#] ip link add wg0 type wireguard
+Aug 05 20:07:04 wireguard02 wg-quick[10492]: [#] wg setconf wg0 /dev/fd/63
+Aug 05 20:07:04 wireguard02 wg-quick[10492]: [#] ip -4 address add 192.168.123.2/32 dev wg0
+Aug 05 20:07:04 wireguard02 wg-quick[10492]: [#] ip link set mtu 1420 up dev wg0
+Aug 05 20:07:04 wireguard02 wg-quick[10492]: [#] ip -4 route add 192.168.123.1/32 dev wg0
+Aug 05 20:07:04 wireguard02 systemd[1]: Finished WireGuard via wg-quick(8) for wg0.
+^C
+[root@wireguard02 wireguard]# fg
+journalctl -u wg-quick@wg0 -f -n0
+^C
+[root@wireguard02 wireguard]# wg
+interface: wg0
+  public key: uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc=
+  private key: (hidden)
+  listening port: 34730
+
+peer: pkyJK9ePlOTW9+GK73UnCZ4/b7/3xOthdfdbF7OQUzw=
+  endpoint: 192.168.122.250:51820
+  allowed ips: 192.168.123.1/32
+  latest handshake: 1 minute, 8 seconds ago
+  transfer: 188 B received, 180 B sent
+  persistent keepalive: every 30 seconds
+</code></pre>
+
+<p>And test ping:</p>
+<pre><code>[root@wireguard01 ~]# ping -c1 -W1 192.168.123.2
+PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
+64 bytes from 192.168.123.2: icmp_seq=1 ttl=64 time=0.356 ms
+
+--- 192.168.123.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 0.356/0.356/0.356/0.000 ms
+[root@wireguard01 ~]# 
+</code></pre>
+
+<h3 id="starting-tunnels-on-system-boot">Starting tunnels on system boot</h3>
+<p>Simply run:</p>
+<pre><code>systemctl enable wg-quick@wg0
+</code></pre>
+
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://www.wireguard.com/quickstart/">https://www.wireguard.com/quickstart/</a></li>
+<li><a href="https://fedoramagazine.org/build-a-virtual-private-network-with-wireguard/">https://fedoramagazine.org/build-a-virtual-private-network-with-wireguard/</a></li>
+<li><a href="https://lore.kernel.org/lkml/CAHk-=wi9ZT7Stg-uSpX0UWQzam6OP9Jzz6Xu1CkYu1cicpD5OA@mail.gmail.com/">https://lore.kernel.org/lkml/CAHk-=wi9ZT7Stg-uSpX0UWQzam6OP9Jzz6Xu1CkYu1cicpD5OA@mail.gmail.com/</a></li>
+<li><a href="https://arstechnica.com/gadgets/2020/03/wireguard-vpn-makes-it-to-1-0-0-and-into-the-next-linux-kernel/">https://arstechnica.com/gadgets/2020/03/wireguard-vpn-makes-it-to-1-0-0-and-into-the-next-linux-kernel/</a></li>
+<li><a href="https://www.wireguard.com/papers/wireguard.pdf">https://arstechnica.com/gadgets/2020/03/wireguard-vpn-makes-it-to-1-0-0-and-into-the-next-linux-kernel/</a></li>
+</ul></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js" defer></script>
+        <script src="../../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -1,3 +1,5 @@
+# Using OpenShift buildconfig to create custom images #
+
 ### Building custom images with OpenShift ###
 
 Note that with the below Dockerfile, we run into the caveat that the image requires to be run as user apache. So, if we are in the default project and are executing all of this as the admin user, we need to execute this as a prerequisite:

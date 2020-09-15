@@ -757,7 +757,7 @@ Lessons learned: we can apply multiple SCCs to a ServiceAccount. The default SCC
 
 ## Resources ##
 
-* [https://www.openshift.com/blog/managing-sccs-in-openshift]([https://www.openshift.com/blog/managing-sccs-in-openshift)
-* [https://docs.openshift.com/container-platform/3.11/admin_guide/manage_scc.html]([https://docs.openshift.com/container-platform/3.11/admin_guide/manage_scc.html)
-* [https://docs.openshift.com/container-platform/3.11/install_config/persistent_storage/pod_security_context.html]([https://docs.openshift.com/container-platform/3.11/install_config/persistent_storage/pod_security_context.html)
+* [https://www.openshift.com/blog/managing-sccs-in-openshift](https://www.openshift.com/blog/managing-sccs-in-openshift)
+* [https://docs.openshift.com/container-platform/3.11/admin_guide/manage_scc.html](https://docs.openshift.com/container-platform/3.11/admin_guide/manage_scc.html)
+* [https://docs.openshift.com/container-platform/3.11/install_config/persistent_storage/pod_security_context.html](https://docs.openshift.com/container-platform/3.11/install_config/persistent_storage/pod_security_context.html)
 

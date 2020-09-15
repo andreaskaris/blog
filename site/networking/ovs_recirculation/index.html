@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>OVS packet recirculation - Andreas Karis Blog</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+
+        <script src="../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Andreas Karis Blog</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ceph <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../ceph/ceph-manual-test/" class="dropdown-item">Ceph manual test with qemu</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Containers <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../linux/cgroups/" class="dropdown-item">cgroups</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/containers/" class="dropdown-item">Containers in Linux</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/namespaces/" class="dropdown-item">namespaces</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Linux <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../linux/cgroups/" class="dropdown-item">cgroups</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/containers/" class="dropdown-item">Containers in Linux</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/hugepages/" class="dropdown-item">Hugepages</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/meson/" class="dropdown-item">meson</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/namespaces/" class="dropdown-item">namespaces</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/old_java_version_with_xorgs_in_container/" class="dropdown-item">Old Java inside a container with xorgs</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Networking <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../arp_and_the_neighbor_table/" class="dropdown-item">ARP and the Neighbor table</a>
+</li>
+                                    
+<li>
+    <a href="../bonding_in_linux/" class="dropdown-item">Bonding in Linux</a>
+</li>
+                                    
+<li>
+    <a href="../geneve_tunneling/" class="dropdown-item">Geneve tunneling</a>
+</li>
+                                    
+<li>
+    <a href="../netlink/" class="dropdown-item">Netlink</a>
+</li>
+                                    
+<li>
+    <a href="../ovn-kind/" class="dropdown-item">OVN kind</a>
+</li>
+                                    
+<li>
+    <a href="../ovn_standalone_on_fedora31/" class="dropdown-item">OVN standalone on Fedora 31</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active">OVS packet recirculation</a>
+</li>
+                                    
+<li>
+    <a href="../ovs-vxlan-tunnels-and-dscp/" class="dropdown-item">OVS VXLAN tunnels and DSCP</a>
+</li>
+                                    
+<li>
+    <a href="../ovs_with_gdb/" class="dropdown-item">OVS with GDB</a>
+</li>
+                                    
+<li>
+    <a href="../sctp/" class="dropdown-item">SCTP</a>
+</li>
+                                    
+<li>
+    <a href="../wireguard/" class="dropdown-item">Wireguard</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">OpenShift <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../openshift/alertmanager/" class="dropdown-item">AlertManager</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/cpu-manager-with-custom-machine-config-pool/" class="dropdown-item">CPU manager with custom MachineConfigPool</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/crio-conmon-runc/" class="dropdown-item">Crio vs conmon vs runc</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/openshift_httpbin_tshark_sidecar/" class="dropdown-item">Httpbin tshark sidecar container</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/ocp4-infra-nodes-with-machineset-without-worker-label/" class="dropdown-item">Infra nodes with MachineSets without worker label</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/ingresscontroller_router_sharding_ocp_on_osp/" class="dropdown-item">Ingress Controller Sharding OCP on OSP</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/ingress-controller-sharding-on-separate-vip/" class="dropdown-item">Ingress Controller Sharding on separate VIP</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/istio-1.6-on-ocp.4.x/" class="dropdown-item">Istio 1.6 on OpenShift 4.x</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/kata/" class="dropdown-item">kata containers and the kata operatora</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/proxy-ocp-4.5/" class="dropdown-item">Proxy OCP 4.5</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/scc/" class="dropdown-item">Security Context Constraints (SCC)</a>
+</li>
+                                    
+<li>
+    <a href="../sctp/" class="dropdown-item">SCTP</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/openshift_troubleshooting_etcd_state/" class="dropdown-item">Troubleshooting etcd state</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/useful-ocp-curl/" class="dropdown-item">Querying the OCP 4.x upgrades info API</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/troubleshooting_openshift_on_openstack_worker_creation/" class="dropdown-item">Troubleshooting OpenShift on OpenStack worker creation</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">OpenStack <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../openstack/reattach_to_running_deployment/" class="dropdown-item">Reattach to running deployment</a>
+</li>
+                                    
+<li>
+    <a href="../../openstack/using_clouds_yaml/" class="dropdown-item">Using clouds.yaml</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../ovn_standalone_on_fedora31/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../ovs-vxlan-tunnels-and-dscp/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#ovs-packet-recirculation" class="nav-link">OVS packet recirculation</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="ovs-packet-recirculation">OVS packet recirculation</h1>
+<p>Packet recirculation means that a packet is sent back to the processing engine for another evaluation after it has already been processed. This can for example happen when an outer header is stripped off the packet such as VXLAN tunneling or MPLS. It is also important for connection tracking in OVS and is also used in OVS bonds when hashing packets to different ports.</p>
+<p><a href="https://lwn.net/Articles/546476/">https://lwn.net/Articles/546476/</a></p>
+<pre><code>(...)
+Recirculation is a technique to allow a frame to re-enter
+frame processing. This is intended to be used after actions
+have been applied to the frame with modify the frame in
+some way that makes it possible for richer processing to occur.
+
+An example is and indeed targeted use case is MPLS. If an MPLS frame has an
+mpls_pop action applied with the IPv4 ethernet type then it becomes
+possible to decode the IPv4 portion of the frame. This may be used to
+construct a facet that modifies the IPv4 portion of the frame. This is not
+possible prior to the mpls_pop action as the contents of the frame after
+the MPLS stack is not known to be IPv4.
+(...)
+</code></pre>
+
+<p>Also: <a href="https://lists.openwall.net/netdev/2013/04/16/16">https://lists.openwall.net/netdev/2013/04/16/16</a></p>
+<p><a href="http://www.openvswitch.org/support/dist-docs/ovs-vswitchd.8.txt">http://www.openvswitch.org/support/dist-docs/ovs-vswitchd.8.txt</a></p>
+<pre><code>(...)
+The sum of &quot;emc hits&quot;, &quot;smc hits&quot;, &quot;megaflow hits&quot; and &quot;miss&quot; is
+              the  number  of packet lookups performed by the datapath. Beware
+              that a recirculated packet experiences one additional lookup per
+              recirculation, so there may be more lookups than forwarded pack‐
+              ets in the datapath.
+(...)
+</code></pre>
+
+<p><a href="https://mail.openvswitch.org/pipermail/ovs-dev/2017-March/330278.html">https://mail.openvswitch.org/pipermail/ovs-dev/2017-March/330278.html</a>
+<a href="https://patchwork.ozlabs.org/patch/709823/">https://patchwork.ozlabs.org/patch/709823/</a></p>
+<p><a href="https://lwn.net/Articles/679808/">https://lwn.net/Articles/679808/</a></p>
+<pre><code>(...)
+The IPv4 traffic coming from port 2 is first matched for the
+non-tracked state (-trk), which means that the packet has not been
+through a CT action yet.  Such traffic is run trough the conntrack in
+zone 1 and all packets associated with a NATted connection are NATted
+also in the return direction.  After the packet has been through
+conntrack it is recirculated back to OpenFlow table 0 (which is the
+default table, so all the rules above are in table 0).  The CT action
+changes the 'trk' flag to being set, so the packets after
+recirculation no longer match the second rule.  The third rule then
+matches the recirculated packets that were marked as established by
+conntrack (+est), and the packet is output on port 1.  Matching on
+ct_zone is not strictly needed, but in this test case it verifies that
+the ct_zone key attribute is properly set by the conntrack action.
+(...)
+</code></pre>
+
+<p>From <code>openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h</code>:</p>
+<pre><code>openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * Freezing and recirculation
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * ==========================
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Freezing is a technique for halting and checkpointing packet translation in
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * a way that it can be restarted again later.  This file has a couple of data
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * structures related to freezing in general; their names begin with &quot;frozen&quot;.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Recirculation is the use of freezing to allow a frame to re-enter the
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * datapath packet processing path to achieve more flexible packet processing,
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * such as modifying header fields after MPLS POP action and selecting a slave
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * port for bond ports.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Data path and user space interface
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * -----------------------------------
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Recirculation uses two uint32_t fields, recirc_id and dp_hash, and a RECIRC
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * action.  recirc_id is used to select the next packet processing steps among
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * multiple instances of recirculation.  When a packet initially enters the
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * datapath it is assigned with recirc_id 0, which indicates no recirculation.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Recirc_ids are managed by the user space, opaque to the datapath.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * On the other hand, dp_hash can only be computed by the datapath, opaque to
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * the user space, as the datapath is free to choose the hashing algorithm
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * without informing user space about it.  The dp_hash value should be
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * wildcarded for newly received packets.  HASH action specifies whether the
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * hash is computed, and if computed, how many fields are to be included in the
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * hash computation.  The computed hash value is stored into the dp_hash field
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * prior to recirculation.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * The RECIRC action sets the recirc_id field and then reprocesses the packet
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * as if it was received again on the same input port.  RECIRC action works
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * like a function call; actions listed after the RECIRC action will be
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * executed after recirculation.  RECIRC action can be nested, but datapath
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * implementation limits the number of nested recirculations to prevent
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * unreasonable nesting depth or infinite loop.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * User space recirculation context
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * ---------------------------------
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Recirculation is usually hidden from the OpenFlow controllers.  Action
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * translation code deduces when recirculation is necessary and issues a
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * datapath recirculation action.  All OpenFlow actions to be performed after
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * recirculation are derived from the OpenFlow pipeline and are stored with the
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * recirculation ID.  When the OpenFlow tables are changed in a way affecting
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * the recirculation flows, new recirculation ID with new metadata and actions
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * is allocated and the old one is timed out.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Recirculation ID pool
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * ----------------------
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Recirculation ID needs to be unique for all datapaths.  Recirculation ID
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * pool keeps track of recirculation ids and stores OpenFlow pipeline
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * translation context so that flow processing may continue after
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * recirculation.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * A Recirculation ID can be any uint32_t value, except for that the value 0 is
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * reserved for 'no recirculation' case.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-#include &quot;ofproto-dpif-mirror.h&quot;
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-#include &quot;openvswitch/list.h&quot;
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-#include &quot;openvswitch/ofp-actions.h&quot;
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-#include &quot;ovs-thread.h&quot;
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-#include &quot;uuid.h&quot;
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-struct ofproto_dpif;
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-struct rule;
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-/*
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * Freezing and recirculation
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * ==========================
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Freezing is a technique for halting and checkpointing packet translation in
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * a way that it can be restarted again later.  This file has a couple of data
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * structures related to freezing in general; their names begin with &quot;frozen&quot;.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Recirculation is the use of freezing to allow a frame to re-enter the
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * datapath packet processing path to achieve more flexible packet processing,
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * such as modifying header fields after MPLS POP action and selecting a slave
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * port for bond ports.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Data path and user space interface
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * -----------------------------------
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Recirculation uses two uint32_t fields, recirc_id and dp_hash, and a RECIRC
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * action.  recirc_id is used to select the next packet processing steps among
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * multiple instances of recirculation.  When a packet initially enters the
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * datapath it is assigned with recirc_id 0, which indicates no recirculation.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Recirc_ids are managed by the user space, opaque to the datapath.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * On the other hand, dp_hash can only be computed by the datapath, opaque to
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * the user space, as the datapath is free to choose the hashing algorithm
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * without informing user space about it.  The dp_hash value should be
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * wildcarded for newly received packets.  HASH action specifies whether the
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * hash is computed, and if computed, how many fields are to be included in the
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * hash computation.  The computed hash value is stored into the dp_hash field
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * prior to recirculation.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * The RECIRC action sets the recirc_id field and then reprocesses the packet
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * as if it was received again on the same input port.  RECIRC action works
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * like a function call; actions listed after the RECIRC action will be
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * executed after recirculation.  RECIRC action can be nested, but datapath
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * implementation limits the number of nested recirculations to prevent
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * unreasonable nesting depth or infinite loop.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * User space recirculation context
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * ---------------------------------
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Recirculation is usually hidden from the OpenFlow controllers.  Action
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * translation code deduces when recirculation is necessary and issues a
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * datapath recirculation action.  All OpenFlow actions to be performed after
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * recirculation are derived from the OpenFlow pipeline and are stored with the
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * recirculation ID.  When the OpenFlow tables are changed in a way affecting
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * the recirculation flows, new recirculation ID with new metadata and actions
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * is allocated and the old one is timed out.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Recirculation ID pool
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * ----------------------
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Recirculation ID needs to be unique for all datapaths.  Recirculation ID
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * pool keeps track of recirculation ids and stores OpenFlow pipeline
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * translation context so that flow processing may continue after
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * recirculation.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * A Recirculation ID can be any uint32_t value, except for that the value 0 is
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * reserved for 'no recirculation' case.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Thread-safety
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * --------------
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * All APIs are thread safe.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- */
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h:/* Metadata for restoring pipeline context after recirculation.  Helpers
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * are inlined below to keep them together with the definition for easier
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * updates. */
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-BUILD_ASSERT_DECL(FLOW_WC_SEQ == 40);
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-struct frozen_metadata {
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-    /* Metadata in struct flow. */
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-    struct flow_tnl tunnel;       /* Encapsulating tunnel parameters. */
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-    ovs_be64 metadata;            /* OpenFlow Metadata. */
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-    uint64_t regs[FLOW_N_XREGS];  /* Registers. */
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-    ofp_port_t in_port;           /* Incoming port. */
+--
+openvswitch-2.9.0/tests/ofproto-dpif.at:# This test verifies that the table ID is preserved across recirculation
+openvswitch-2.9.0/tests/ofproto-dpif.at-# when a resubmit action requires it (because the action is relative to
+openvswitch-2.9.0/tests/ofproto-dpif.at-# the current table rather than specifying a table).
+openvswitch-2.9.0/tests/ofproto-dpif.at:AT_SETUP([ofproto-dpif - resubmit with recirculation])
+--
+openvswitch-2.9.0/tests/ofproto-dpif.at-# This test verifies that tunnel metadata is preserved across
+openvswitch-2.9.0/tests/ofproto-dpif.at:# recirculation.  At the time of recirculation, fields such as &quot;tun_id&quot;
+openvswitch-2.9.0/tests/ofproto-dpif.at-# may be set before the tunnel is &quot;valid&quot; (ie, has a destination
+openvswitch-2.9.0/tests/ofproto-dpif.at:# address), but the field should still be available after recirculation.
+openvswitch-2.9.0/tests/ofproto-dpif.at-AT_SETUP([ofproto-dpif - resubmit with tun_id])
+--
+openvswitch-2.9.0/tests/ofproto-dpif.at:# This test verifies that &quot;resubmit&quot;, when it triggers recirculation
+openvswitch-2.9.0/tests/ofproto-dpif.at-# indirectly through the flow that it recursively invokes, is not
+openvswitch-2.9.0/tests/ofproto-dpif.at:# re-executed when execution continues later post-recirculation.
+openvswitch-2.9.0/tests/ofproto-dpif.at:AT_SETUP([ofproto-dpif - recirculation after resubmit])
+--
+openvswitch-2.9.0/tests/system-traffic.at-dnl Checks the implementation of conntrack with FTP ALGs in combination with
+openvswitch-2.9.0/tests/system-traffic.at-dnl NAT, with flow tables that implement the NATing after the first round
+openvswitch-2.9.0/tests/system-traffic.at:dnl of recirculation - that is, the first flow ct(table=foo) then a subsequent
+openvswitch-2.9.0/tests/system-traffic.at-dnl flow will implement the NATing with ct(nat..),output:foo.
+--
+openvswitch-2.9.0/tests/system-traffic.at-dnl Checks the implementation of conntrack original direction tuple matching
+openvswitch-2.9.0/tests/system-traffic.at-dnl with FTP ALGs in combination with NAT, with flow tables that implement
+openvswitch-2.9.0/tests/system-traffic.at:dnl the NATing before the first round of recirculation - that is, the first
+openvswitch-2.9.0/tests/system-traffic.at-dnl flow ct(nat, table=foo) then a subsequent flow will implement the
+openvswitch-2.9.0/tests/system-traffic.at-dnl commiting of NATed and other connections with ct(nat..),output:foo.
+--
+openvswitch-2.9.0/tests/packet-type-aware.at:# Goto_table after pop_mpls triggers recirculation.
+openvswitch-2.9.0/tests/packet-type-aware.at-AT_CHECK([
+openvswitch-2.9.0/tests/packet-type-aware.at-    ovs-ofctl del-flows br0 &amp;&amp;
+openvswitch-2.9.0/tests/packet-type-aware.at-    ovs-ofctl del-flows int-br &amp;&amp;
+openvswitch-2.9.0/tests/packet-type-aware.at-    ovs-ofctl add-flow br0 &quot;actions=normal&quot;
+openvswitch-2.9.0/tests/packet-type-aware.at-    ovs-ofctl add-flow int-br &quot;table=0,in_port=tunnel,actions=pop_mpls:0x800,goto_table:20&quot; &amp;&amp;
+openvswitch-2.9.0/tests/packet-type-aware.at-    ovs-ofctl add-flow int-br &quot;table=20,actions=dec_ttl,output:LOCAL&quot;
+openvswitch-2.9.0/tests/packet-type-aware.at-], [0], [ignore])
+openvswitch-2.9.0/tests/packet-type-aware.at-
+--
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-#include &quot;ofproto-dpif-mirror.h&quot;
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-#include &quot;openvswitch/list.h&quot;
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-#include &quot;openvswitch/ofp-actions.h&quot;
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-#include &quot;ovs-thread.h&quot;
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-#include &quot;uuid.h&quot;
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-struct ofproto_dpif;
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-struct rule;
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-/*
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * Freezing and recirculation
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * ==========================
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Freezing is a technique for halting and checkpointing packet translation in
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * a way that it can be restarted again later.  This file has a couple of data
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * structures related to freezing in general; their names begin with &quot;frozen&quot;.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Recirculation is the use of freezing to allow a frame to re-enter the
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * datapath packet processing path to achieve more flexible packet processing,
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * such as modifying header fields after MPLS POP action and selecting a slave
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * port for bond ports.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Data path and user space interface
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * -----------------------------------
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Recirculation uses two uint32_t fields, recirc_id and dp_hash, and a RECIRC
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * action.  recirc_id is used to select the next packet processing steps among
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * multiple instances of recirculation.  When a packet initially enters the
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * datapath it is assigned with recirc_id 0, which indicates no recirculation.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Recirc_ids are managed by the user space, opaque to the datapath.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * On the other hand, dp_hash can only be computed by the datapath, opaque to
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * the user space, as the datapath is free to choose the hashing algorithm
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * without informing user space about it.  The dp_hash value should be
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * wildcarded for newly received packets.  HASH action specifies whether the
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * hash is computed, and if computed, how many fields are to be included in the
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * hash computation.  The computed hash value is stored into the dp_hash field
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * prior to recirculation.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * The RECIRC action sets the recirc_id field and then reprocesses the packet
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * as if it was received again on the same input port.  RECIRC action works
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * like a function call; actions listed after the RECIRC action will be
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * executed after recirculation.  RECIRC action can be nested, but datapath
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * implementation limits the number of nested recirculations to prevent
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * unreasonable nesting depth or infinite loop.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * User space recirculation context
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * ---------------------------------
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Recirculation is usually hidden from the OpenFlow controllers.  Action
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * translation code deduces when recirculation is necessary and issues a
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * datapath recirculation action.  All OpenFlow actions to be performed after
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * recirculation are derived from the OpenFlow pipeline and are stored with the
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * recirculation ID.  When the OpenFlow tables are changed in a way affecting
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * the recirculation flows, new recirculation ID with new metadata and actions
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * is allocated and the old one is timed out.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Recirculation ID pool
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * ----------------------
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Recirculation ID needs to be unique for all datapaths.  Recirculation ID
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * pool keeps track of recirculation ids and stores OpenFlow pipeline
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * translation context so that flow processing may continue after
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * recirculation.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * A Recirculation ID can be any uint32_t value, except for that the value 0 is
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h: * reserved for 'no recirculation' case.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * Thread-safety
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * --------------
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- *
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * All APIs are thread safe.
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- */
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h:/* Metadata for restoring pipeline context after recirculation.  Helpers
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * are inlined below to keep them together with the definition for easier
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h- * updates. */
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-BUILD_ASSERT_DECL(FLOW_WC_SEQ == 40);
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-struct frozen_metadata {
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-    /* Metadata in struct flow. */
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-    struct flow_tnl tunnel;       /* Encapsulating tunnel parameters. */
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-    ovs_be64 metadata;            /* OpenFlow Metadata. */
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-    uint64_t regs[FLOW_N_XREGS];  /* Registers. */
+openvswitch-2.9.0/ofproto/ofproto-dpif-rid.h-    ofp_port_t in_port;           /* Incoming port. */
+--
+openvswitch-2.9.0/tests/ofproto-dpif.at:# This test verifies that the table ID is preserved across recirculation
+openvswitch-2.9.0/tests/ofproto-dpif.at-# when a resubmit action requires it (because the action is relative to
+openvswitch-2.9.0/tests/ofproto-dpif.at-# the current table rather than specifying a table).
+openvswitch-2.9.0/tests/ofproto-dpif.at:AT_SETUP([ofproto-dpif - resubmit with recirculation])
+--
+openvswitch-2.9.0/tests/ofproto-dpif.at-# This test verifies that tunnel metadata is preserved across
+openvswitch-2.9.0/tests/ofproto-dpif.at:# recirculation.  At the time of recirculation, fields such as &quot;tun_id&quot;
+openvswitch-2.9.0/tests/ofproto-dpif.at-# may be set before the tunnel is &quot;valid&quot; (ie, has a destination
+openvswitch-2.9.0/tests/ofproto-dpif.at:# address), but the field should still be available after recirculation.
+openvswitch-2.9.0/tests/ofproto-dpif.at-AT_SETUP([ofproto-dpif - resubmit with tun_id])
+--
+openvswitch-2.9.0/tests/ofproto-dpif.at:# This test verifies that &quot;resubmit&quot;, when it triggers recirculation
+openvswitch-2.9.0/tests/ofproto-dpif.at-# indirectly through the flow that it recursively invokes, is not
+openvswitch-2.9.0/tests/ofproto-dpif.at:# re-executed when execution continues later post-recirculation.
+openvswitch-2.9.0/tests/ofproto-dpif.at:AT_SETUP([ofproto-dpif - recirculation after resubmit])
+--
+openvswitch-2.9.0/tests/system-traffic.at-dnl Checks the implementation of conntrack with FTP ALGs in combination with
+openvswitch-2.9.0/tests/system-traffic.at-dnl NAT, with flow tables that implement the NATing after the first round
+openvswitch-2.9.0/tests/system-traffic.at:dnl of recirculation - that is, the first flow ct(table=foo) then a subsequent
+openvswitch-2.9.0/tests/system-traffic.at-dnl flow will implement the NATing with ct(nat..),output:foo.
+--
+openvswitch-2.9.0/tests/system-traffic.at-dnl Checks the implementation of conntrack original direction tuple matching
+openvswitch-2.9.0/tests/system-traffic.at-dnl with FTP ALGs in combination with NAT, with flow tables that implement
+openvswitch-2.9.0/tests/system-traffic.at:dnl the NATing before the first round of recirculation - that is, the first
+openvswitch-2.9.0/tests/system-traffic.at-dnl flow ct(nat, table=foo) then a subsequent flow will implement the
+openvswitch-2.9.0/tests/system-traffic.at-dnl commiting of NATed and other connections with ct(nat..),output:foo.
+--
+openvswitch-2.9.0/tests/packet-type-aware.at:# Goto_table after pop_mpls triggers recirculation.
+openvswitch-2.9.0/tests/packet-type-aware.at-AT_CHECK([
+openvswitch-2.9.0/tests/packet-type-aware.at-    ovs-ofctl del-flows br0 &amp;&amp;
+openvswitch-2.9.0/tests/packet-type-aware.at-    ovs-ofctl del-flows int-br &amp;&amp;
+openvswitch-2.9.0/tests/packet-type-aware.at-    ovs-ofctl add-flow br0 &quot;actions=normal&quot;
+openvswitch-2.9.0/tests/packet-type-aware.at-    ovs-ofctl add-flow int-br &quot;table=0,in_port=tunnel,actions=pop_mpls:0x800,goto_table:20&quot; &amp;&amp;
+openvswitch-2.9.0/tests/packet-type-aware.at-    ovs-ofctl add-flow int-br &quot;table=20,actions=dec_ttl,output:LOCAL&quot;
+openvswitch-2.9.0/tests/packet-type-aware.at-], [0], [ignore])
+openvswitch-2.9.0/tests/packet-type-aware.at-
+--
+openvswitch-2.9.0/include/openvswitch/meta-flow.h-    /* &quot;recirc_id&quot;.
+openvswitch-2.9.0/include/openvswitch/meta-flow.h-     *
+openvswitch-2.9.0/include/openvswitch/meta-flow.h:     * ID for recirculation.  The value 0 is reserved for initially received
+openvswitch-2.9.0/include/openvswitch/meta-flow.h-     * packets.  Internal use only, not programmable from controller.
+openvswitch-2.9.0/include/openvswitch/meta-flow.h-     *
+openvswitch-2.9.0/include/openvswitch/meta-flow.h-     * Type: be32.
+openvswitch-2.9.0/include/openvswitch/meta-flow.h-     * Maskable: no.
+openvswitch-2.9.0/include/openvswitch/meta-flow.h-     * Formatting: decimal.
+openvswitch-2.9.0/include/openvswitch/meta-flow.h-     * Prerequisites: none.
+openvswitch-2.9.0/include/openvswitch/meta-flow.h-     * Access: read-only.
+openvswitch-2.9.0/include/openvswitch/meta-flow.h-     * NXM: NXM_NX_RECIRC_ID(36) since v2.2.
+openvswitch-2.9.0/include/openvswitch/meta-flow.h-     * OXM: none.
+openvswitch-2.9.0/include/openvswitch/meta-flow.h-     */
+--
+openvswitch-2.9.0/lib/dpif-netdev.c-    pmd_perf_update_counter(&amp;pmd-&gt;perf_stats, PMD_STAT_MASKED_HIT,
+openvswitch-2.9.0/lib/dpif-netdev.c-                            cnt - upcall_ok_cnt - upcall_fail_cnt);
+openvswitch-2.9.0/lib/dpif-netdev.c-    pmd_perf_update_counter(&amp;pmd-&gt;perf_stats, PMD_STAT_MASKED_LOOKUP,
+openvswitch-2.9.0/lib/dpif-netdev.c-                            lookup_cnt);
+openvswitch-2.9.0/lib/dpif-netdev.c-    pmd_perf_update_counter(&amp;pmd-&gt;perf_stats, PMD_STAT_MISS,
+openvswitch-2.9.0/lib/dpif-netdev.c-                            upcall_ok_cnt);
+openvswitch-2.9.0/lib/dpif-netdev.c-    pmd_perf_update_counter(&amp;pmd-&gt;perf_stats, PMD_STAT_LOST,
+openvswitch-2.9.0/lib/dpif-netdev.c-                            upcall_fail_cnt);
+openvswitch-2.9.0/lib/dpif-netdev.c-}
+openvswitch-2.9.0/lib/dpif-netdev.c-
+openvswitch-2.9.0/lib/dpif-netdev.c:/* Packets enter the datapath from a port (or from recirculation) here.
+openvswitch-2.9.0/lib/dpif-netdev.c- *
+openvswitch-2.9.0/lib/dpif-netdev.c- * When 'md_is_valid' is true the metadata in 'packets' are already valid.
+openvswitch-2.9.0/lib/dpif-netdev.c- * When false the metadata in 'packets' need to be initialized. */
+openvswitch-2.9.0/lib/dpif-netdev.c-static void
+openvswitch-2.9.0/lib/dpif-netdev.c-dp_netdev_input__(struct dp_netdev_pmd_thread *pmd,
+openvswitch-2.9.0/lib/dpif-netdev.c-                  struct dp_packet_batch *packets,
+openvswitch-2.9.0/lib/dpif-netdev.c-                  bool md_is_valid, odp_port_t port_no)
+openvswitch-2.9.0/lib/dpif-netdev.c-{
+openvswitch-2.9.0/lib/dpif-netdev.c-#if !defined(__CHECKER__) &amp;&amp; !defined(_WIN32)
+openvswitch-2.9.0/lib/dpif-netdev.c-    const size_t PKT_ARRAY_SIZE = dp_packet_batch_size(packets);
+--
+openvswitch-2.9.0/lib/dpif-netdev.c-                            md_is_valid, port_no);
+openvswitch-2.9.0/lib/dpif-netdev.c-    if (!dp_packet_batch_is_empty(packets)) {
+openvswitch-2.9.0/lib/dpif-netdev.c-        /* Get ingress port from first packet's metadata. */
+openvswitch-2.9.0/lib/dpif-netdev.c-        in_port = packets-&gt;packets[0]-&gt;md.in_port.odp_port;
+openvswitch-2.9.0/lib/dpif-netdev.c-        fast_path_processing(pmd, packets, keys,
+openvswitch-2.9.0/lib/dpif-netdev.c-                             batches, &amp;n_batches, in_port);
+openvswitch-2.9.0/lib/dpif-netdev.c-    }
+openvswitch-2.9.0/lib/dpif-netdev.c-
+openvswitch-2.9.0/lib/dpif-netdev.c-    /* All the flow batches need to be reset before any call to
+openvswitch-2.9.0/lib/dpif-netdev.c-     * packet_batch_per_flow_execute() as it could potentially trigger
+openvswitch-2.9.0/lib/dpif-netdev.c:     * recirculation. When a packet matching flow ‘j’ happens to be
+openvswitch-2.9.0/lib/dpif-netdev.c-     * recirculated, the nested call to dp_netdev_input__() could potentially
+openvswitch-2.9.0/lib/dpif-netdev.c-     * classify the packet as matching another flow - say 'k'. It could happen
+openvswitch-2.9.0/lib/dpif-netdev.c-     * that in the previous call to dp_netdev_input__() that same flow 'k' had
+openvswitch-2.9.0/lib/dpif-netdev.c-     * already its own batches[k] still waiting to be served.  So if its
+openvswitch-2.9.0/lib/dpif-netdev.c-     * ‘batch’ member is not reset, the recirculated packet would be wrongly
+openvswitch-2.9.0/lib/dpif-netdev.c-     * appended to batches[k] of the 1st call to dp_netdev_input__(). */
+openvswitch-2.9.0/lib/dpif-netdev.c-    size_t i;
+openvswitch-2.9.0/lib/dpif-netdev.c-    for (i = 0; i &lt; n_batches; i++) {
+openvswitch-2.9.0/lib/dpif-netdev.c-        batches[i].flow-&gt;batch = NULL;
+openvswitch-2.9.0/lib/dpif-netdev.c-    }
+--
+openvswitch-2.9.0/lib/dpif-netdev.c-                packet-&gt;md.recirc_id = nl_attr_get_u32(a);
+openvswitch-2.9.0/lib/dpif-netdev.c-            }
+openvswitch-2.9.0/lib/dpif-netdev.c-
+openvswitch-2.9.0/lib/dpif-netdev.c-            (*depth)++;
+openvswitch-2.9.0/lib/dpif-netdev.c-            dp_netdev_recirculate(pmd, packets_);
+openvswitch-2.9.0/lib/dpif-netdev.c-            (*depth)--;
+openvswitch-2.9.0/lib/dpif-netdev.c-
+openvswitch-2.9.0/lib/dpif-netdev.c-            return;
+openvswitch-2.9.0/lib/dpif-netdev.c-        }
+openvswitch-2.9.0/lib/dpif-netdev.c-
+openvswitch-2.9.0/lib/dpif-netdev.c:        VLOG_WARN(&quot;Packet dropped. Max recirculation depth exceeded.&quot;);
+openvswitch-2.9.0/lib/dpif-netdev.c-        break;
+openvswitch-2.9.0/lib/dpif-netdev.c-
+openvswitch-2.9.0/lib/dpif-netdev.c-    case OVS_ACTION_ATTR_CT: {
+openvswitch-2.9.0/lib/dpif-netdev.c-        const struct nlattr *b;
+openvswitch-2.9.0/lib/dpif-netdev.c-        bool force = false;
+openvswitch-2.9.0/lib/dpif-netdev.c-        bool commit = false;
+openvswitch-2.9.0/lib/dpif-netdev.c-        unsigned int left;
+openvswitch-2.9.0/lib/dpif-netdev.c-        uint16_t zone = 0;
+openvswitch-2.9.0/lib/dpif-netdev.c-        const char *helper = NULL;
+openvswitch-2.9.0/lib/dpif-netdev.c-        const uint32_t *setmark = NULL;
+--
+openvswitch-2.9.0/lib/odp-util.c-            break;
+openvswitch-2.9.0/lib/odp-util.c-        default:
+openvswitch-2.9.0/lib/odp-util.c-            /* Only the above protocols are supported for encap.
+openvswitch-2.9.0/lib/odp-util.c-             * The check is done at action translation. */
+openvswitch-2.9.0/lib/odp-util.c-            OVS_NOT_REACHED();
+openvswitch-2.9.0/lib/odp-util.c-        }
+openvswitch-2.9.0/lib/odp-util.c-    } else {
+openvswitch-2.9.0/lib/odp-util.c-        /* This is an explicit or implicit decap case. */
+openvswitch-2.9.0/lib/odp-util.c-        if (pt_ns(flow-&gt;packet_type) == OFPHTN_ETHERTYPE &amp;&amp;
+openvswitch-2.9.0/lib/odp-util.c-            base_flow-&gt;packet_type == htonl(PT_ETH)) {
+openvswitch-2.9.0/lib/odp-util.c:            /* Generate pop_eth and continue without recirculation. */
+openvswitch-2.9.0/lib/odp-util.c-            odp_put_pop_eth_action(odp_actions);
+openvswitch-2.9.0/lib/odp-util.c-            base_flow-&gt;packet_type = flow-&gt;packet_type;
+openvswitch-2.9.0/lib/odp-util.c-            base_flow-&gt;dl_src = eth_addr_zero;
+openvswitch-2.9.0/lib/odp-util.c-            base_flow-&gt;dl_dst = eth_addr_zero;
+openvswitch-2.9.0/lib/odp-util.c-        } else {
+openvswitch-2.9.0/lib/odp-util.c:            /* All other decap cases require recirculation.
+openvswitch-2.9.0/lib/odp-util.c-             * No need to update the base flow here. */
+openvswitch-2.9.0/lib/odp-util.c-            switch (ntohl(base_flow-&gt;packet_type)) {
+openvswitch-2.9.0/lib/odp-util.c-            case PT_NSH:
+openvswitch-2.9.0/lib/odp-util.c-                /* pop_nsh. */
+openvswitch-2.9.0/lib/odp-util.c-                odp_put_pop_nsh_action(odp_actions);
+openvswitch-2.9.0/lib/odp-util.c-                break;
+openvswitch-2.9.0/lib/odp-util.c-            default:
+openvswitch-2.9.0/lib/odp-util.c-                /* Checks are done during translation. */
+openvswitch-2.9.0/lib/odp-util.c-                OVS_NOT_REACHED();
+openvswitch-2.9.0/lib/odp-util.c-            }
+--
+openvswitch-2.9.0/ovn/lib/actions.c-            nat-&gt;flags |= NX_NAT_F_DST;
+openvswitch-2.9.0/ovn/lib/actions.c-        }
+openvswitch-2.9.0/ovn/lib/actions.c-    }
+openvswitch-2.9.0/ovn/lib/actions.c-
+openvswitch-2.9.0/ovn/lib/actions.c-    ofpacts-&gt;header = ofpbuf_push_uninit(ofpacts, nat_offset);
+openvswitch-2.9.0/ovn/lib/actions.c-    ct = ofpacts-&gt;header;
+openvswitch-2.9.0/ovn/lib/actions.c-    if (cn-&gt;ip) {
+openvswitch-2.9.0/ovn/lib/actions.c-        ct-&gt;flags |= NX_CT_F_COMMIT;
+openvswitch-2.9.0/ovn/lib/actions.c-    } else if (snat &amp;&amp; ep-&gt;is_gateway_router) {
+openvswitch-2.9.0/ovn/lib/actions.c-        /* For performance reasons, we try to prevent additional
+openvswitch-2.9.0/ovn/lib/actions.c:         * recirculations.  ct_snat which is used in a gateway router
+openvswitch-2.9.0/ovn/lib/actions.c:         * does not need a recirculation.  ct_snat(IP) does need a
+openvswitch-2.9.0/ovn/lib/actions.c:         * recirculation.  ct_snat in a distributed router needs
+openvswitch-2.9.0/ovn/lib/actions.c:         * recirculation regardless of whether an IP address is
+openvswitch-2.9.0/ovn/lib/actions.c-         * specified.
+openvswitch-2.9.0/ovn/lib/actions.c-         * XXX Should we consider a method to let the actions specify
+openvswitch-2.9.0/ovn/lib/actions.c:         * whether an action needs recirculation if there are more use
+openvswitch-2.9.0/ovn/lib/actions.c-         * cases?. */
+openvswitch-2.9.0/ovn/lib/actions.c-        ct-&gt;recirc_table = NX_CT_RECIRC_NONE;
+openvswitch-2.9.0/ovn/lib/actions.c-    }
+openvswitch-2.9.0/ovn/lib/actions.c-    ofpact_finish(ofpacts, &amp;ct-&gt;ofpact);
+openvswitch-2.9.0/ovn/lib/actions.c-    ofpbuf_push_uninit(ofpacts, ct_offset);
+openvswitch-2.9.0/ovn/lib/actions.c-}
+openvswitch-2.9.0/ovn/lib/actions.c-
+openvswitch-2.9.0/ovn/lib/actions.c-static void
+openvswitch-2.9.0/ovn/lib/actions.c-encode_CT_DNAT(const struct ovnact_ct_nat *cn,
+openvswitch-2.9.0/ovn/lib/actions.c-               const struct ovnact_encode_params *ep,
+--
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    * later.  We call the checkpointing process &quot;freezing&quot; and the restarting
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    * process &quot;thawing&quot;.
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    * The use cases for freezing are:
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *     - &quot;Recirculation&quot;, where the translation process discovers that it
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *       doesn't have enough information to complete translation without
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *       actually executing the actions that have already been translated,
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *       which provides the additionally needed information.  In these
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *       situations, translation freezes translation and assigns the frozen
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c:    *       data a unique &quot;recirculation ID&quot;, which it associates with the data
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *       in a table in userspace (see ofproto-dpif-rid.h).  It also adds a
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *       OVS_ACTION_ATTR_RECIRC action specifying that ID to the datapath
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *       actions.  When a packet hits that action, the datapath looks its
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *       flow up again using the ID.  If there's a miss, it comes back to
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c:    *       userspace, which find the recirculation table entry for the ID,
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *       thaws the associated frozen data, and continues translation from
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *       that point given the additional information that is now known.
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *       The archetypal example is MPLS.  As MPLS is implemented in
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *       OpenFlow, the protocol that follows the last MPLS label becomes
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *       known only when that label is popped by an OpenFlow action.  That
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *       means that Open vSwitch can't extract the headers beyond the MPLS
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *       labels until the pop action is executed.  Thus, at that point
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c:    *       translation uses the recirculation process to extract the headers
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *       beyond the MPLS labels.
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *       (OVS also uses OVS_ACTION_ATTR_RECIRC to implement hashing for
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *       output to bonds.  OVS pre-populates all the datapath flows for bond
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *       output in the datapath, though, which means that the elaborate
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *       process of coming back to userspace for a second round of
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *       translation isn't needed, and so bonds don't follow the above
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *       process.)
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *     - &quot;Continuation&quot;.  A continuation is a way for an OpenFlow controller
+--
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    * translation process:
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    * 1. Sets 'freezing' to true.
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    * 2. Sets 'exit' to true to tell later steps that we're exiting from the
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *    translation process.
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    * 3. Adds an OFPACT_UNROLL_XLATE action to 'frozen_actions', and points
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *    frozen_actions.header to the action to make it easy to find it later.
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *    This action holds the current table ID and cookie so that they can be
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c:    *    restored during a post-recirculation upcall translation.
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c:    * 4. Adds the action that prompted recirculation and any actions following
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *    it within the same flow to 'frozen_actions', so that they can be
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c:    *    executed during a post-recirculation upcall translation.
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    * 5. Returns.
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c:    * 6. The action that prompted recirculation might be nested in a stack of
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *    nested &quot;resubmit&quot;s that have actions remaining.  Each of these notices
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *    that we're exiting and freezing and responds by adding more
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *    OFPACT_UNROLL_XLATE actions to 'frozen_actions', as necessary,
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *    followed by any actions that were yet unprocessed.
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    *
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c:    * If we're freezing because of recirculation, the caller generates a
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c:    * recirculation ID and associates all the state produced by this process
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c:    * with it.  For post-recirculation upcall translation, the caller passes it
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    * back in for the new translation to execute.  The process yielded a set of
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    * ofpacts that can be translated directly, so it is not much of a special
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    * case at that point.
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    */
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    bool freezing;
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c:    bool recirc_update_dp_hash;    /* Generated recirculation will be preceded
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-                                    * by datapath HASH action to get an updated
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c:                                    * dp_hash after recirculation. */
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    uint32_t dp_hash_alg;
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    uint32_t dp_hash_basis;
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    struct ofpbuf frozen_actions;
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    const struct ofpact_controller *pause;
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    /* True if a packet was but is no longer MPLS (due to an MPLS pop action).
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c:     * This is a trigger for recirculation in cases where translating an action
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-     * or looking up a flow requires access to the fields of the packet after
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-     * the MPLS label stack that was originally present. */
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    bool was_mpls;
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    /* True if conntrack has been performed on this packet during processing
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-     * on the current bridge. This is used to determine whether conntrack
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-     * state from the datapath should be honored after thawing. */
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    bool conntracked;
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    /* Pointer to an embedded NAT action in a conntrack action, or NULL. */
+--
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-static void xvlan_put(struct flow *, const struct xvlan *);
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-static void xvlan_input_translate(const struct xbundle *,
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-                                  const struct xvlan *in,
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-                                  struct xvlan *xvlan);
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-static void xvlan_output_translate(const struct xbundle *,
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-                                   const struct xvlan *xvlan,
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-                                   struct xvlan *out);
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-static void output_normal(struct xlate_ctx *, const struct xbundle *,
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-                          const struct xvlan *);
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c:/* Optional bond recirculation parameter to compose_output_action(). */
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-struct xlate_bond_recirc {
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c:    uint32_t recirc_id;  /* !0 Use recirculation instead of output. */
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    uint8_t  hash_alg;   /* !0 Compute hash for recirc before. */
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    uint32_t hash_basis;  /* Compute hash for recirc before. */
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-};
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-static void compose_output_action(struct xlate_ctx *, ofp_port_t ofp_port,
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-                                  const struct xlate_bond_recirc *xr,
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-                                  bool is_last_action, bool truncate);
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-static struct xbridge *xbridge_lookup(struct xlate_cfg *,
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-                                      const struct ofproto_dpif *);
+--
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    /* If packet is recirculated, xport can be retrieved from frozen state. */
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    if (flow-&gt;recirc_id) {
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-        const struct recirc_id_node *recirc_id_node;
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-        recirc_id_node = recirc_id_node_find(flow-&gt;recirc_id);
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-        if (OVS_UNLIKELY(!recirc_id_node)) {
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-            return NULL;
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-        }
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c:        /* If recirculation was initiated due to bond (in_port = OFPP_NONE)
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-         * then frozen state is static and xport_uuid is not defined, so xport
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-         * cannot be restored from frozen state. */
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-        if (recirc_id_node-&gt;state.metadata.in_port != OFPP_NONE) {
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-            struct uuid xport_uuid = recirc_id_node-&gt;state.xport_uuid;
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-            xport = xport_lookup_by_uuid(xcfg, &amp;xport_uuid);
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-            if (xport &amp;&amp; xport-&gt;xbridge &amp;&amp; xport-&gt;xbridge-&gt;ofproto) {
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-                goto out;
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-            }
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-        }
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    }
+--
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    netdev_init_tnl_build_header_params(&amp;tnl_params, flow, &amp;s_ip6, dmac, smac);
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    err = tnl_port_build_header(xport-&gt;ofport, &amp;tnl_push_data, &amp;tnl_params);
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    if (err) {
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-        return err;
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    }
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    tnl_push_data.tnl_port = tunnel_odp_port;
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    tnl_push_data.out_port = out_dev-&gt;odp_port;
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    /* After tunnel header has been added, MAC and IP data of flow and
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c:     * base_flow need to be set properly, since there is not recirculation
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-     * any more when sending packet to tunnel. */
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    propagate_tunnel_data_to_flow(ctx, dmac, smac, s_ip6,
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-                                  s_ip, tnl_params.is_ipv6,
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-                                  tnl_push_data.tnl_type);
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    size_t clone_ofs = 0;
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    size_t push_action_size;
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-
+openvswitch-2.9.0/ofproto/ofproto-dpif-xlate.c-    clone_ofs = nl_msg_start_nested(ctx-&gt;odp_actions, OVS_ACTION_ATTR_CLONE);
+--
+penvswitch-2.9.0/ofproto/bond.h-void *bond_choose_output_slave(struct bond *, const struct flow *,
+openvswitch-2.9.0/ofproto/bond.h-                               struct flow_wildcards *, uint16_t vlan);
+openvswitch-2.9.0/ofproto/bond.h-
+openvswitch-2.9.0/ofproto/bond.h-/* Rebalancing. */
+openvswitch-2.9.0/ofproto/bond.h-void bond_account(struct bond *, const struct flow *, uint16_t vlan,
+openvswitch-2.9.0/ofproto/bond.h-                  uint64_t n_bytes);
+openvswitch-2.9.0/ofproto/bond.h-void bond_rebalance(struct bond *);
+openvswitch-2.9.0/ofproto/bond.h-
+openvswitch-2.9.0/ofproto/bond.h-/* Recirculation
+openvswitch-2.9.0/ofproto/bond.h- *
+openvswitch-2.9.0/ofproto/bond.h: * Only balance_tcp mode uses recirculation.
+openvswitch-2.9.0/ofproto/bond.h- *
+openvswitch-2.9.0/ofproto/bond.h: * When recirculation is used, each bond port is assigned with a unique
+openvswitch-2.9.0/ofproto/bond.h- * recirc_id. The output action to the bond port will be replaced by
+openvswitch-2.9.0/ofproto/bond.h- * a Hash action, followed by a RECIRC action.
+openvswitch-2.9.0/ofproto/bond.h- *
+openvswitch-2.9.0/ofproto/bond.h- *   ... actions= ... HASH(hash(L4)), RECIRC(recirc_id) ....
+openvswitch-2.9.0/ofproto/bond.h- *
+openvswitch-2.9.0/ofproto/bond.h: * On handling first output packet, 256 post recirculation flows are installed:
+openvswitch-2.9.0/ofproto/bond.h- *
+openvswitch-2.9.0/ofproto/bond.h- *  recirc_id=&lt;bond_recirc_id&gt;, dp_hash=&lt;[0..255]&gt;/0xff, actions: output&lt;slave&gt;
+openvswitch-2.9.0/ofproto/bond.h- *
+openvswitch-2.9.0/ofproto/bond.h: * Bond module pulls stats from those post recirculation rules. If rebalancing
+openvswitch-2.9.0/ofproto/bond.h- * is needed, those rules are updated with new output actions.
+openvswitch-2.9.0/ofproto/bond.h-*/
+openvswitch-2.9.0/ofproto/bond.h-void bond_update_post_recirc_rules(struct bond *, uint32_t *recirc_id,
+openvswitch-2.9.0/ofproto/bond.h-                                   uint32_t *hash_basis);
+openvswitch-2.9.0/ofproto/bond.h-#endif /* bond.h */
+</code></pre></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js" defer></script>
+        <script src="../../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

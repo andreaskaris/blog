@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>OVS VXLAN tunnels and DSCP - Andreas Karis Blog</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+
+        <script src="../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Andreas Karis Blog</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ceph <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../ceph/ceph-manual-test/" class="dropdown-item">Ceph manual test with qemu</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Containers <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../linux/cgroups/" class="dropdown-item">cgroups</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/containers/" class="dropdown-item">Containers in Linux</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/namespaces/" class="dropdown-item">namespaces</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Linux <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../linux/cgroups/" class="dropdown-item">cgroups</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/containers/" class="dropdown-item">Containers in Linux</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/hugepages/" class="dropdown-item">Hugepages</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/meson/" class="dropdown-item">meson</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/namespaces/" class="dropdown-item">namespaces</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/old_java_version_with_xorgs_in_container/" class="dropdown-item">Old Java inside a container with xorgs</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Networking <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../arp_and_the_neighbor_table/" class="dropdown-item">ARP and the Neighbor table</a>
+</li>
+                                    
+<li>
+    <a href="../bonding_in_linux/" class="dropdown-item">Bonding in Linux</a>
+</li>
+                                    
+<li>
+    <a href="../geneve_tunneling/" class="dropdown-item">Geneve tunneling</a>
+</li>
+                                    
+<li>
+    <a href="../netlink/" class="dropdown-item">Netlink</a>
+</li>
+                                    
+<li>
+    <a href="../ovn-kind/" class="dropdown-item">OVN kind</a>
+</li>
+                                    
+<li>
+    <a href="../ovn_standalone_on_fedora31/" class="dropdown-item">OVN standalone on Fedora 31</a>
+</li>
+                                    
+<li>
+    <a href="../ovs_recirculation/" class="dropdown-item">OVS packet recirculation</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active">OVS VXLAN tunnels and DSCP</a>
+</li>
+                                    
+<li>
+    <a href="../ovs_with_gdb/" class="dropdown-item">OVS with GDB</a>
+</li>
+                                    
+<li>
+    <a href="../sctp/" class="dropdown-item">SCTP</a>
+</li>
+                                    
+<li>
+    <a href="../wireguard/" class="dropdown-item">Wireguard</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">OpenShift <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../openshift/alertmanager/" class="dropdown-item">AlertManager</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/cpu-manager-with-custom-machine-config-pool/" class="dropdown-item">CPU manager with custom MachineConfigPool</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/crio-conmon-runc/" class="dropdown-item">Crio vs conmon vs runc</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/openshift_httpbin_tshark_sidecar/" class="dropdown-item">Httpbin tshark sidecar container</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/ocp4-infra-nodes-with-machineset-without-worker-label/" class="dropdown-item">Infra nodes with MachineSets without worker label</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/ingresscontroller_router_sharding_ocp_on_osp/" class="dropdown-item">Ingress Controller Sharding OCP on OSP</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/ingress-controller-sharding-on-separate-vip/" class="dropdown-item">Ingress Controller Sharding on separate VIP</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/istio-1.6-on-ocp.4.x/" class="dropdown-item">Istio 1.6 on OpenShift 4.x</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/kata/" class="dropdown-item">kata containers and the kata operatora</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/proxy-ocp-4.5/" class="dropdown-item">Proxy OCP 4.5</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/scc/" class="dropdown-item">Security Context Constraints (SCC)</a>
+</li>
+                                    
+<li>
+    <a href="../sctp/" class="dropdown-item">SCTP</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/openshift_troubleshooting_etcd_state/" class="dropdown-item">Troubleshooting etcd state</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/useful-ocp-curl/" class="dropdown-item">Querying the OCP 4.x upgrades info API</a>
+</li>
+                                    
+<li>
+    <a href="../../openshift/troubleshooting_openshift_on_openstack_worker_creation/" class="dropdown-item">Troubleshooting OpenShift on OpenStack worker creation</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">OpenStack <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../openstack/reattach_to_running_deployment/" class="dropdown-item">Reattach to running deployment</a>
+</li>
+                                    
+<li>
+    <a href="../../openstack/using_clouds_yaml/" class="dropdown-item">Using clouds.yaml</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../ovs_recirculation/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../ovs_with_gdb/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#ovs-vxlan-tunnels-and-dscp" class="nav-link">OVS VXLAN tunnels and DSCP</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#lab" class="nav-link">Lab</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#setup" class="nav-link">Setup</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#only-setting-the-ecn-bits-to-ect0-tos-0x2" class="nav-link">Only setting the ECN bits to ECT(0) - ToS 0x2</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#expedited-forwarding-and-ect0-tos-0xba" class="nav-link">Expedited forwarding and ECT(0) - ToS 0xba</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#tos-0xba-with-tos-inherit" class="nav-link">ToS 0xba with tos = inherit</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#force-a-specific-tos-value-to-the-outer-header" class="nav-link">Force a specific ToS value to the outer header</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#bug" class="nav-link">BUG</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#ecn-field" class="nav-link">ECN field</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#resources" class="nav-link">Resources</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="ovs-vxlan-tunnels-and-dscp">OVS VXLAN tunnels and DSCP</h1>
+<h2 id="lab">Lab</h2>
+<p>Fedora 32</p>
+<pre><code>yum install openvswitch -y
+systemctl enable --now openvswitch
+</code></pre>
+
+<pre><code>[root@ovs-tunnel-test-1 ~]# ovs-vsctl show | grep version
+    ovs_version: &quot;2.13.0&quot;
+</code></pre>
+
+<h2 id="setup">Setup</h2>
+<ul>
+<li>node A</li>
+</ul>
+<pre><code>ovs-vsctl --may-exist add-br br-int -- set Bridge br-int datapath_type=system -- br-set-external-id br-int bridge-id br-int
+ovs-vsctl add-port br-int vxlan0 -- set interface vxlan0 type=vxlan options:remote_ip=192.168.122.174
+ip netns add private
+ip link add name veth-host type veth peer name veth-guest
+ovs-vsctl add-port br-int veth-host
+ip link set dev veth-guest netns private
+ip link set dev veth-host up
+ip -n private set dev veth-guest up
+ip -n private link set dev veth-guest up
+ip -n private link set dev lo up
+ip -n private a a dev veth-guest 192.168.123.1/24
+</code></pre>
+
+<ul>
+<li>node B</li>
+</ul>
+<pre><code>ovs-vsctl --may-exist add-br br-int -- set Bridge br-int datapath_type=system -- br-set-external-id br-int bridge-id br-int
+ovs-vsctl add-port br-int vxlan0 -- set interface vxlan0 type=vxlan options:remote_ip=192.168.122.41
+ip netns add private
+ip link add name veth-host type veth peer name veth-guest
+ovs-vsctl add-port br-int veth-host
+ip link set dev veth-guest netns private
+ip link set dev veth-host up
+ip -n private set dev veth-guest up
+ip -n private link set dev veth-guest up
+ip -n private link set dev lo up
+ip -n private a a dev veth-guest 192.168.123.2/24
+</code></pre>
+
+<h2 id="only-setting-the-ecn-bits-to-ect0-tos-0x2">Only setting the ECN bits to ECT(0) - ToS 0x2</h2>
+<pre><code>[root@ovs-tunnel-test-1 ~]# ip netns exec private ping 192.168.123.2 -c1 -W1 -Q 0x2
+PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
+64 bytes from 192.168.123.2: icmp_seq=1 ttl=64 time=2.51 ms
+
+--- 192.168.123.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 2.513/2.513/2.513/0.000 ms
+[root@ovs-tunnel-test-1 ~]# 
+</code></pre>
+
+<pre><code>[root@ovs-tunnel-test-2 ~]# tshark -nn -i eth0 -O ip port vxlan
+Running as user &quot;root&quot; and group &quot;root&quot;. This could be dangerous.
+Capturing on 'eth0'
+Frame 1: 148 bytes on wire (1184 bits), 148 bytes captured (1184 bits) on interface eth0, id 0
+Ethernet II, Src: 52:54:00:e3:af:ab, Dst: 52:54:00:9e:bc:3a
+Internet Protocol Version 4, Src: 192.168.122.41, Dst: 192.168.122.174
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0x02 (DSCP: CS0, ECN: ECT(0))
+        0000 00.. = Differentiated Services Codepoint: Default (0)
+        .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+    Total Length: 134
+    Identification: 0x8486 (33926)
+    Flags: 0x4000, Don't fragment
+        0... .... .... .... = Reserved bit: Not set
+        .1.. .... .... .... = Don't fragment: Set
+        ..0. .... .... .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: UDP (17)
+    Header checksum: 0x3fb6 [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.122.41
+    Destination: 192.168.122.174
+User Datagram Protocol, Src Port: 34788, Dst Port: 4789
+Virtual eXtensible Local Area Network
+Ethernet II, Src: 16:28:3c:ba:5b:13, Dst: 56:13:a0:be:1f:f4
+Internet Protocol Version 4, Src: 192.168.123.1, Dst: 192.168.123.2
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0x02 (DSCP: CS0, ECN: ECT(0))
+        0000 00.. = Differentiated Services Codepoint: Default (0)
+        .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+    Total Length: 84
+    Identification: 0xc12e (49454)
+    Flags: 0x4000, Don't fragment
+        0... .... .... .... = Reserved bit: Not set
+        .1.. .... .... .... = Don't fragment: Set
+        ..0. .... .... .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: ICMP (1)
+    Header checksum: 0x0224 [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.123.1
+    Destination: 192.168.123.2
+Internet Control Message Protocol
+
+Frame 2: 148 bytes on wire (1184 bits), 148 bytes captured (1184 bits) on interface eth0, id 0
+Ethernet II, Src: 52:54:00:9e:bc:3a, Dst: 52:54:00:e3:af:ab
+Internet Protocol Version 4, Src: 192.168.122.174, Dst: 192.168.122.41
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0x02 (DSCP: CS0, ECN: ECT(0))
+        0000 00.. = Differentiated Services Codepoint: Default (0)
+        .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+    Total Length: 134
+    Identification: 0x717a (29050)
+    Flags: 0x4000, Don't fragment
+        0... .... .... .... = Reserved bit: Not set
+        .1.. .... .... .... = Don't fragment: Set
+        ..0. .... .... .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: UDP (17)
+    Header checksum: 0x52c2 [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.122.174
+    Destination: 192.168.122.41
+User Datagram Protocol, Src Port: 45375, Dst Port: 4789
+Virtual eXtensible Local Area Network
+Ethernet II, Src: 56:13:a0:be:1f:f4, Dst: 16:28:3c:ba:5b:13
+Internet Protocol Version 4, Src: 192.168.123.2, Dst: 192.168.123.1
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0x02 (DSCP: CS0, ECN: ECT(0))
+        0000 00.. = Differentiated Services Codepoint: Default (0)
+        .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+    Total Length: 84
+    Identification: 0x1916 (6422)
+    Flags: 0x0000
+        0... .... .... .... = Reserved bit: Not set
+        .0.. .... .... .... = Don't fragment: Not set
+        ..0. .... .... .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: ICMP (1)
+    Header checksum: 0xea3c [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.123.2
+    Destination: 192.168.123.1
+Internet Control Message Protocol
+</code></pre>
+
+<h2 id="expedited-forwarding-and-ect0-tos-0xba">Expedited forwarding and ECT(0) - ToS 0xba</h2>
+<pre><code>[root@ovs-tunnel-test-1 ~]# ip netns exec private ping 192.168.123.2 -c1 -W1 -Q 0xba
+PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
+64 bytes from 192.168.123.2: icmp_seq=1 ttl=64 time=1.47 ms
+
+--- 192.168.123.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 1.471/1.471/1.471/0.000 ms
+[root@ovs-tunnel-test-1 ~]# ^C
+[root@ovs-tunnel-test-1 ~]# 
+</code></pre>
+
+<pre><code>[root@ovs-tunnel-test-2 ~]# tshark -nn -i eth0 -O ip port vxlan
+Running as user &quot;root&quot; and group &quot;root&quot;. This could be dangerous.
+Capturing on 'eth0'
+Frame 1: 148 bytes on wire (1184 bits), 148 bytes captured (1184 bits) on interface eth0, id 0
+Ethernet II, Src: 52:54:00:e3:af:ab, Dst: 52:54:00:9e:bc:3a
+Internet Protocol Version 4, Src: 192.168.122.41, Dst: 192.168.122.174
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0x02 (DSCP: CS0, ECN: ECT(0))
+        0000 00.. = Differentiated Services Codepoint: Default (0)
+        .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+    Total Length: 134
+    Identification: 0xf90e (63758)
+    Flags: 0x4000, Don't fragment
+        0... .... .... .... = Reserved bit: Not set
+        .1.. .... .... .... = Don't fragment: Set
+        ..0. .... .... .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: UDP (17)
+    Header checksum: 0xcb2d [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.122.41
+    Destination: 192.168.122.174
+User Datagram Protocol, Src Port: 34788, Dst Port: 4789
+Virtual eXtensible Local Area Network
+Ethernet II, Src: 16:28:3c:ba:5b:13, Dst: 56:13:a0:be:1f:f4
+Internet Protocol Version 4, Src: 192.168.123.1, Dst: 192.168.123.2
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0xba (DSCP: EF PHB, ECN: ECT(0))
+        1011 10.. = Differentiated Services Codepoint: Expedited Forwarding (46)
+        .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+    Total Length: 84
+    Identification: 0xf88b (63627)
+    Flags: 0x4000, Don't fragment
+        0... .... .... .... = Reserved bit: Not set
+        .1.. .... .... .... = Don't fragment: Set
+        ..0. .... .... .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: ICMP (1)
+    Header checksum: 0xca0e [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.123.1
+    Destination: 192.168.123.2
+Internet Control Message Protocol
+
+Frame 2: 148 bytes on wire (1184 bits), 148 bytes captured (1184 bits) on interface eth0, id 0
+Ethernet II, Src: 52:54:00:9e:bc:3a, Dst: 52:54:00:e3:af:ab
+Internet Protocol Version 4, Src: 192.168.122.174, Dst: 192.168.122.41
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0x02 (DSCP: CS0, ECN: ECT(0))
+        0000 00.. = Differentiated Services Codepoint: Default (0)
+        .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+    Total Length: 134
+    Identification: 0xf7ee (63470)
+    Flags: 0x4000, Don't fragment
+        0... .... .... .... = Reserved bit: Not set
+        .1.. .... .... .... = Don't fragment: Set
+        ..0. .... .... .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: UDP (17)
+    Header checksum: 0xcc4d [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.122.174
+    Destination: 192.168.122.41
+User Datagram Protocol, Src Port: 45375, Dst Port: 4789
+Virtual eXtensible Local Area Network
+Ethernet II, Src: 56:13:a0:be:1f:f4, Dst: 16:28:3c:ba:5b:13
+Internet Protocol Version 4, Src: 192.168.123.2, Dst: 192.168.123.1
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0xba (DSCP: EF PHB, ECN: ECT(0))
+        1011 10.. = Differentiated Services Codepoint: Expedited Forwarding (46)
+        .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+    Total Length: 84
+    Identification: 0x67e2 (26594)
+    Flags: 0x0000
+        0... .... .... .... = Reserved bit: Not set
+        .0.. .... .... .... = Don't fragment: Not set
+        ..0. .... .... .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: ICMP (1)
+    Header checksum: 0x9ab8 [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.123.2
+    Destination: 192.168.123.1
+Internet Control Message Protocol
+
+^C2 packets captured
+</code></pre>
+
+<h2 id="tos-0xba-with-tos-inherit">ToS 0xba with tos = inherit</h2>
+<ul>
+<li><code>0xba</code> = <code>EF</code> with ECN bits set to <code>10</code></li>
+</ul>
+<p><code>tos=inherit</code> will literally only inherit the ToS bits 4,3,2. 
+See: <a href="https://en.wikipedia.org/wiki/Type_of_service">https://en.wikipedia.org/wiki/Type_of_service</a></p>
+<pre><code>Precedence and ToS
+
+Prior to its deprecation, the Type of Service field was defined as follows from RFC 791:
+7   6   5   4   3   2   1   0
+Precedence  Type of Service     Unused (0)
+</code></pre>
+
+<ul>
+<li><a href="http://www.openvswitch.org/support/dist-docs/ovs-vswitchd.conf.db.5.txt">http://www.openvswitch.org/support/dist-docs/ovs-vswitchd.conf.db.5.txt</a></li>
+</ul>
+<pre><code>       options : tos: optional string
+              Optional. The value of the ToS bits to be set on the encapsulat‐
+              ing packet. ToS is interpreted as DSCP and ECN  bits,  ECN  part
+              must be zero. It may also be the word inherit, in which case the
+              ToS will be copied from the inner packet if it is IPv4  or  IPv6
+              (otherwise  it  will be 0). The ECN fields are always inherited.
+              Default is 0.
+</code></pre>
+
+<p>Run this on both hosts:</p>
+<pre><code>ovs-vsctl set interface vxlan0 options:tos=inherit
+</code></pre>
+
+<pre><code>[root@ovs-tunnel-test-1 ~]# ip netns exec private ping 192.168.123.2 -c1 -W1 -Q 0xba
+PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
+64 bytes from 192.168.123.2: icmp_seq=1 ttl=64 time=2.49 ms
+
+--- 192.168.123.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 2.486/2.486/2.486/0.000 ms
+[root@ovs-tunnel-test-1 ~]# 
+</code></pre>
+
+<pre><code>[root@ovs-tunnel-test-2 ~]# tshark -nn -i eth0 -O ip port vxlan
+Running as user &quot;root&quot; and group &quot;root&quot;. This could be dangerous.
+Capturing on 'eth0'
+Frame 1: 148 bytes on wire (1184 bits), 148 bytes captured (1184 bits) on interface eth0, id 0
+Ethernet II, Src: 52:54:00:e3:af:ab, Dst: 52:54:00:9e:bc:3a
+Internet Protocol Version 4, Src: 192.168.122.41, Dst: 192.168.122.174
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0x1a (DSCP: Unknown, ECN: ECT(0))
+        0001 10.. = Differentiated Services Codepoint: Unknown (6)
+        .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+    Total Length: 134
+    Identification: 0xd0c2 (53442)
+    Flags: 0x4000, Don't fragment
+        0... .... .... .... = Reserved bit: Not set
+        .1.. .... .... .... = Don't fragment: Set
+        ..0. .... .... .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: UDP (17)
+    Header checksum: 0xf361 [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.122.41
+    Destination: 192.168.122.174
+User Datagram Protocol, Src Port: 34788, Dst Port: 4789
+Virtual eXtensible Local Area Network
+Ethernet II, Src: 16:28:3c:ba:5b:13, Dst: 56:13:a0:be:1f:f4
+Internet Protocol Version 4, Src: 192.168.123.1, Dst: 192.168.123.2
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0xba (DSCP: EF PHB, ECN: ECT(0))
+        1011 10.. = Differentiated Services Codepoint: Expedited Forwarding (46)
+        .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+    Total Length: 84
+    Identification: 0xcf83 (53123)
+    Flags: 0x4000, Don't fragment
+        0... .... .... .... = Reserved bit: Not set
+        .1.. .... .... .... = Don't fragment: Set
+        ..0. .... .... .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: ICMP (1)
+    Header checksum: 0xf316 [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.123.1
+    Destination: 192.168.123.2
+Internet Control Message Protocol
+
+Frame 2: 148 bytes on wire (1184 bits), 148 bytes captured (1184 bits) on interface eth0, id 0
+Ethernet II, Src: 52:54:00:9e:bc:3a, Dst: 52:54:00:e3:af:ab
+Internet Protocol Version 4, Src: 192.168.122.174, Dst: 192.168.122.41
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0x1a (DSCP: Unknown, ECN: ECT(0))
+        0001 10.. = Differentiated Services Codepoint: Unknown (6)
+        .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+    Total Length: 134
+    Identification: 0x3a20 (14880)
+    Flags: 0x4000, Don't fragment
+        0... .... .... .... = Reserved bit: Not set
+        .1.. .... .... .... = Don't fragment: Set
+        ..0. .... .... .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: UDP (17)
+    Header checksum: 0x8a04 [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.122.174
+    Destination: 192.168.122.41
+User Datagram Protocol, Src Port: 45375, Dst Port: 4789
+Virtual eXtensible Local Area Network
+Ethernet II, Src: 56:13:a0:be:1f:f4, Dst: 16:28:3c:ba:5b:13
+Internet Protocol Version 4, Src: 192.168.123.2, Dst: 192.168.123.1
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0xba (DSCP: EF PHB, ECN: ECT(0))
+        1011 10.. = Differentiated Services Codepoint: Expedited Forwarding (46)
+        .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+    Total Length: 84
+    Identification: 0x4704 (18180)
+    Flags: 0x0000
+        0... .... .... .... = Reserved bit: Not set
+        .0.. .... .... .... = Don't fragment: Not set
+        ..0. .... .... .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: ICMP (1)
+    Header checksum: 0xbb96 [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.123.2
+    Destination: 192.168.123.1
+Internet Control Message Protocol
+</code></pre>
+
+<h2 id="force-a-specific-tos-value-to-the-outer-header">Force a specific ToS value to the outer header</h2>
+<p>Valid values for the ToS only manipulate the legacy type of service field and leave the legacy IP precedence and ECN fields at 0:</p>
+<pre><code>000 111 00 - 0x1c
+000 110 00 - 0x18
+000 101 00 - 0x14
+000 100 00 - 0x10
+000 011 00 - 0xc
+000 010 00 - 0x8
+000 001 00 - 0x4
+000 000 00 - 0x0
+</code></pre>
+
+<p><code>AF41</code> is ToS <code>0x22</code> - this is not in the aforementioned list and hence all bits will be set to 0.</p>
+<p>Run on both hosts:</p>
+<pre><code>ovs-vsctl set interface vxlan0 options:tos=0x22
+</code></pre>
+
+<p>Verify - note that this marks down the class to 000000. 0x22 is an invalid value??? Perhaps???</p>
+<pre><code>[root@ovs-tunnel-test-1 ~]# ip netns exec private ping 192.168.123.2 -c1 -W1 -Q 0xba
+PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
+64 bytes from 192.168.123.2: icmp_seq=1 ttl=64 time=1.10 ms
+
+--- 192.168.123.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 1.103/1.103/1.103/0.000 ms
+[root@ovs-tunnel-test-1 ~]# 
+</code></pre>
+
+<pre><code>[root@ovs-tunnel-test-2 ~]# tshark -nn -i eth0 -O ip port vxlan
+Running as user &quot;root&quot; and group &quot;root&quot;. This could be dangerous.
+Capturing on 'eth0'
+Frame 1: 148 bytes on wire (1184 bits), 148 bytes captured (1184 bits) on interface eth0, id 0
+Ethernet II, Src: 52:54:00:e3:af:ab, Dst: 52:54:00:9e:bc:3a
+Internet Protocol Version 4, Src: 192.168.122.41, Dst: 192.168.122.174
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0x02 (DSCP: CS0, ECN: ECT(0))
+        0000 00.. = Differentiated Services Codepoint: Default (0)
+        .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+    Total Length: 134
+    Identification: 0xa5b1 (42417)
+    Flags: 0x4000, Don't fragment
+        0... .... .... .... = Reserved bit: Not set
+        .1.. .... .... .... = Don't fragment: Set
+        ..0. .... .... .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: UDP (17)
+    Header checksum: 0x1e8b [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.122.41
+    Destination: 192.168.122.174
+User Datagram Protocol, Src Port: 34788, Dst Port: 4789
+Virtual eXtensible Local Area Network
+Ethernet II, Src: 16:28:3c:ba:5b:13, Dst: 56:13:a0:be:1f:f4
+Internet Protocol Version 4, Src: 192.168.123.1, Dst: 192.168.123.2
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0xba (DSCP: EF PHB, ECN: ECT(0))
+        1011 10.. = Differentiated Services Codepoint: Expedited Forwarding (46)
+        .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+    Total Length: 84
+    Identification: 0xe36a (58218)
+    Flags: 0x4000, Don't fragment
+        0... .... .... .... = Reserved bit: Not set
+        .1.. .... .... .... = Don't fragment: Set
+        ..0. .... .... .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: ICMP (1)
+    Header checksum: 0xdf2f [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.123.1
+    Destination: 192.168.123.2
+Internet Control Message Protocol
+
+Frame 2: 148 bytes on wire (1184 bits), 148 bytes captured (1184 bits) on interface eth0, id 0
+Ethernet II, Src: 52:54:00:9e:bc:3a, Dst: 52:54:00:e3:af:ab
+Internet Protocol Version 4, Src: 192.168.122.174, Dst: 192.168.122.41
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0x02 (DSCP: CS0, ECN: ECT(0))
+        0000 00.. = Differentiated Services Codepoint: Default (0)
+        .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+    Total Length: 134
+    Identification: 0xb041 (45121)
+    Flags: 0x4000, Don't fragment
+        0... .... .... .... = Reserved bit: Not set
+        .1.. .... .... .... = Don't fragment: Set
+        ..0. .... .... .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: UDP (17)
+    Header checksum: 0x13fb [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.122.174
+    Destination: 192.168.122.41
+User Datagram Protocol, Src Port: 45375, Dst Port: 4789
+Virtual eXtensible Local Area Network
+Ethernet II, Src: 56:13:a0:be:1f:f4, Dst: 16:28:3c:ba:5b:13
+Internet Protocol Version 4, Src: 192.168.123.2, Dst: 192.168.123.1
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0xba (DSCP: EF PHB, ECN: ECT(0))
+        1011 10.. = Differentiated Services Codepoint: Expedited Forwarding (46)
+        .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+    Total Length: 84
+    Identification: 0x75ca (30154)
+    Flags: 0x0000
+        0... .... .... .... = Reserved bit: Not set
+        .0.. .... .... .... = Don't fragment: Not set
+        ..0. .... .... .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: ICMP (1)
+    Header checksum: 0x8cd0 [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.123.2
+    Destination: 192.168.123.1
+Internet Control Message Protocol
+</code></pre>
+
+<p>Here is a valid test - on both nodes, set:</p>
+<pre><code>ovs-vsctl set interface vxlan0 options:tos=0xc
+</code></pre>
+
+<pre><code>[root@ovs-tunnel-test-1 ~]# ip netns exec private ping 192.168.123.2 -c1 -W1 -Q 0xba
+PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
+64 bytes from 192.168.123.2: icmp_seq=1 ttl=64 time=2.77 ms
+
+--- 192.168.123.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 2.774/2.774/2.774/0.000 ms
+</code></pre>
+
+<pre><code>[root@ovs-tunnel-test-2 ~]# tshark -nn -i eth0 -O ip port vxlan
+Running as user &quot;root&quot; and group &quot;root&quot;. This could be dangerous.
+Capturing on 'eth0'
+Frame 1: 148 bytes on wire (1184 bits), 148 bytes captured (1184 bits) on interface eth0, id 0
+Ethernet II, Src: 52:54:00:e3:af:ab, Dst: 52:54:00:9e:bc:3a
+Internet Protocol Version 4, Src: 192.168.122.41, Dst: 192.168.122.174
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0x0e (DSCP: Unknown, ECN: ECT(0))
+        0000 11.. = Differentiated Services Codepoint: Unknown (3)
+        .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+    Total Length: 134
+    Identification: 0xd7c2 (55234)
+    Flags: 0x4000, Don't fragment
+        0... .... .... .... = Reserved bit: Not set
+        .1.. .... .... .... = Don't fragment: Set
+        ..0. .... .... .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: UDP (17)
+    Header checksum: 0xec6d [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.122.41
+    Destination: 192.168.122.174
+User Datagram Protocol, Src Port: 34788, Dst Port: 4789
+Virtual eXtensible Local Area Network
+Ethernet II, Src: 16:28:3c:ba:5b:13, Dst: 56:13:a0:be:1f:f4
+Internet Protocol Version 4, Src: 192.168.123.1, Dst: 192.168.123.2
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0xba (DSCP: EF PHB, ECN: ECT(0))
+        1011 10.. = Differentiated Services Codepoint: Expedited Forwarding (46)
+        .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+    Total Length: 84
+    Identification: 0xdce0 (56544)
+    Flags: 0x4000, Don't fragment
+        0... .... .... .... = Reserved bit: Not set
+        .1.. .... .... .... = Don't fragment: Set
+        ..0. .... .... .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: ICMP (1)
+    Header checksum: 0xe5b9 [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.123.1
+    Destination: 192.168.123.2
+Internet Control Message Protocol
+
+Frame 2: 148 bytes on wire (1184 bits), 148 bytes captured (1184 bits) on interface eth0, id 0
+Ethernet II, Src: 52:54:00:9e:bc:3a, Dst: 52:54:00:e3:af:ab
+Internet Protocol Version 4, Src: 192.168.122.174, Dst: 192.168.122.41
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0x0e (DSCP: Unknown, ECN: ECT(0))
+        0000 11.. = Differentiated Services Codepoint: Unknown (3)
+        .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+    Total Length: 134
+    Identification: 0xdd9c (56732)
+    Flags: 0x4000, Don't fragment
+        0... .... .... .... = Reserved bit: Not set
+        .1.. .... .... .... = Don't fragment: Set
+        ..0. .... .... .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: UDP (17)
+    Header checksum: 0xe693 [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.122.174
+    Destination: 192.168.122.41
+User Datagram Protocol, Src Port: 45375, Dst Port: 4789
+Virtual eXtensible Local Area Network
+Ethernet II, Src: 56:13:a0:be:1f:f4, Dst: 16:28:3c:ba:5b:13
+Internet Protocol Version 4, Src: 192.168.123.2, Dst: 192.168.123.1
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0xba (DSCP: EF PHB, ECN: ECT(0))
+        1011 10.. = Differentiated Services Codepoint: Expedited Forwarding (46)
+        .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+    Total Length: 84
+    Identification: 0xfab2 (64178)
+    Flags: 0x0000
+        0... .... .... .... = Reserved bit: Not set
+        .0.. .... .... .... = Don't fragment: Not set
+        ..0. .... .... .... = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: ICMP (1)
+    Header checksum: 0x07e8 [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.123.2
+    Destination: 192.168.123.1
+Internet Control Message Protocol
+
+2 packets captured
+</code></pre>
+
+<h3 id="further-troubleshooting">Further troubleshooting</h3>
+<pre><code>    [root@ovs-tunnel-test-1 ~]# ovs-vsctl set interface vxlan0 options:tos=0xb8
+    [root@ovs-tunnel-test-1 ~]# systemctl restart openvswitch
+    [root@ovs-tunnel-test-1 ~]# ip netns exec private ping 192.168.123.2 -c1 -W1 -Q 0xba
+    PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
+    64 bytes from 192.168.123.2: icmp_seq=1 ttl=64 time=3.27 ms
+
+    --- 192.168.123.2 ping statistics ---
+    1 packets transmitted, 1 received, 0% packet loss, time 0ms
+    rtt min/avg/max/mdev = 3.272/3.272/3.272/0.000 ms
+    (failed reverse-i-search)`dcp': ovs-dpctl ^Cmp-flows
+    [root@ovs-tunnel-test-1 ~]# ovs-dpctl dump-flows
+    recirc_id(0),tunnel(tun_id=0x0,src=192.168.122.174,dst=192.168.122.41,tos=0x18,flags(-df-csum+key)),in_port(2),eth(src=56:13:a0:be:1f:f4,dst=16:28:3c:ba:5b:13),eth_type(0x0806), packets:1, bytes:42, used:5.009s, actions:3
+    recirc_id(0),in_port(3),eth(src=16:28:3c:ba:5b:13,dst=56:13:a0:be:1f:f4),eth_type(0x0806), packets:1, bytes:42, used:5.009s, actions:set(tunnel(dst=192.168.122.174,tos=0xb8,ttl=64,tp_dst=4789,flags(df))),2
+    [root@ovs-tunnel-test-1 ~]#
+ ~~~    
+
+ ~~~
+    [root@ovs-tunnel-test-2 ~]# tshark -nn -i eth0 -O ip port vxlan | egrep 'Frame|Differentiated Services|Explicit Congestion Notification'
+    Running as user &quot;root&quot; and group &quot;root&quot;. This could be dangerous.
+    Capturing on 'eth0'
+    2 Frame 1: 148 bytes on wire (1184 bits), 148 bytes captured (1184 bits) on interface eth0, id 0
+    6     Differentiated Services Field: 0x1a (DSCP: Unknown, ECN: ECT(0))
+            0001 10.. = Differentiated Services Codepoint: Unknown (6)
+            .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+        Differentiated Services Field: 0xba (DSCP: EF PHB, ECN: ECT(0))
+            1011 10.. = Differentiated Services Codepoint: Expedited Forwarding (46)
+            .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+    Frame 2: 148 bytes on wire (1184 bits), 148 bytes captured (1184 bits) on interface eth0, id 0
+        Differentiated Services Field: 0x1a (DSCP: Unknown, ECN: ECT(0))
+            0001 10.. = Differentiated Services Codepoint: Unknown (6)
+            .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+        Differentiated Services Field: 0xba (DSCP: EF PHB, ECN: ECT(0))
+            1011 10.. = Differentiated Services Codepoint: Expedited Forwarding (46)
+            .... ..10 = Explicit Congestion Notification: ECN-Capable Transport codepoint '10' (2)
+    Frame 3: 92 bytes on wire (736 bits), 92 bytes captured (736 bits) on interface eth0, id 0
+        Differentiated Services Field: 0x18 (DSCP: Unknown, ECN: Not-ECT)
+            0001 10.. = Differentiated Services Codepoint: Unknown (6)
+            .... ..00 = Explicit Congestion Notification: Not ECN-Capable Transport (0)
+    Frame 4: 92 bytes on wire (736 bits), 92 bytes captured (736 bits) on interface eth0, id 0
+        Differentiated Services Field: 0x18 (DSCP: Unknown, ECN: Not-ECT)
+            0001 10.. = Differentiated Services Codepoint: Unknown (6)
+            .... ..00 = Explicit Congestion Notification: Not ECN-Capable Transport (0)
+    Frame 5: 92 bytes on wire (736 bits), 92 bytes captured (736 bits) on interface eth0, id 0
+        Differentiated Services Field: 0x18 (DSCP: Unknown, ECN: Not-ECT)
+            0001 10.. = Differentiated Services Codepoint: Unknown (6)
+            .... ..00 = Explicit Congestion Notification: Not ECN-Capable Transport (0)
+    Frame 6: 92 bytes on wire (736 bits), 92 bytes captured (736 bits) on interface eth0, id 0
+        Differentiated Services Field: 0x18 (DSCP: Unknown, ECN: Not-ECT)
+            0001 10.. = Differentiated Services Codepoint: Unknown (6)
+            .... ..00 = Explicit Congestion Notification: Not ECN-Capable Transport (0)
+    ^C^R
+    ^C^C
+
+    [root@ovs-tunnel-test-2 ~]# ovs-dpctl dump-flows
+    recirc_id(0),tunnel(tun_id=0x0,src=192.168.122.41,dst=192.168.122.174,tos=0x18,flags(-df-csum+key)),in_port(2),eth(src=16:28:3c:ba:5b:13,dst=56:13:a0:be:1f:f4),eth_type(0x0806), packets:1, bytes:42, used:8.951s, actions:3
+    recirc_id(0),in_port(3),eth(src=56:13:a0:be:1f:f4,dst=16:28:3c:ba:5b:13),eth_type(0x0806), packets:1, bytes:42, used:8.951s, actions:set(tunnel(dst=192.168.122.41,tos=0xb8,ttl=64,tp_dst=4789,flags(df))),2
+    [root@ovs-tunnel-test-2 ~]#
+</code></pre>
+
+<h3 id="test-with-rhel-77">Test with RHEL 7.7</h3>
+<p>The restart is only to reset the dpctl flows. Not necessary to apply the change. In RHEL 7.7, the first 3 bits are set correctly.</p>
+<pre><code>[root@ovs-tunnel-test-1 ~]# ovs-vsctl set interface vxlan0 options:tos=inherit
+[root@ovs-tunnel-test-1 ~]# systemctl restart openvswitch
+[root@ovs-tunnel-test-1 ~]# ip netns exec private ping 192.168.123.2 -c1 -W1 -Q 0xba
+PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
+64 bytes from 192.168.123.2: icmp_seq=1 ttl=64 time=0.971 ms
+
+--- 192.168.123.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 0.971/0.971/0.971/0.000 ms
+[root@ovs-tunnel-test-1 ~]# ovs-dpctl dump-flows
+2020-07-30T13:49:12Z|00001|dpif_netlink|INFO|The kernel module does not support meters.
+recirc_id(0),in_port(3),eth(src=fe:61:62:0e:3b:65,dst=56:73:90:10:20:5f),eth_type(0x0800),ipv4(tos=0xba,frag=no), packets:0, bytes:0, used:never, actions:set(tunnel(dst=192.168.122.175,tos=0xba,ttl=64,tp_dst=4789,flags(df))),2
+recirc_id(0),tunnel(tun_id=0x0,src=192.168.122.175,dst=192.168.122.42,flags(-df-csum+key)),in_port(2),eth(src=56:73:90:10:20:5f,dst=fe:61:62:0e:3b:65),eth_type(0x0806), packets:0, bytes:0, used:never, actions:3
+recirc_id(0),tunnel(tun_id=0x0,src=192.168.122.175,dst=192.168.122.42,tos=0xba,flags(-df-csum+key)),in_port(2),eth(src=56:73:90:10:20:5f,dst=fe:61:62:0e:3b:65),eth_type(0x0800),ipv4(frag=no), packets:0, bytes:0, used:never, actions:3
+recirc_id(0),in_port(3),eth(src=fe:61:62:0e:3b:65,dst=56:73:90:10:20:5f),eth_type(0x0806), packets:0, bytes:0, used:never, actions:set(tunnel(dst=192.168.122.175,ttl=64,tp_dst=4789,flags(df))),2
+[root@ovs-tunnel-test-1 ~]# 
+</code></pre>
+
+<pre><code>[root@ovs-tunnel-test-2 ~]# ovs-vsctl set interface vxlan0 options:tos=inherit
+[root@ovs-tunnel-test-2 ~]# systemctl restart openvswitch
+(reverse-i-search)`t': systemctl restart openvswi^Ch
+[root@ovs-tunnel-test-2 ~]# tshark -nn -i eth0 -O ip port 4789 | egrep 'Frame|Differentiated Services|Explicit Congestion Notification'
+Running as user &quot;root&quot; and group &quot;root&quot;. This could be dangerous.
+Capturing on 'eth0'
+4 Frame 1: 148 bytes on wire (1184 bits), 148 bytes captured (1184 bits) on interface 0
+    Differentiated Services Field: 0xba (DSCP 0x2e: Expedited Forwarding; ECN: 0x02: ECT(0) (ECN-Capable Transport))
+        1011 10.. = Differentiated Services Codepoint: Expedited Forwarding (0x2e)
+        .... ..10 = Explicit Congestion Notification: ECT(0) (ECN-Capable Transport) (0x02)
+Frame 2: 148 bytes on wire (1184 bits), 148 bytes captured (1184 bits) on interface 0
+    Differentiated Services Field: 0xba (DSCP 0x2e: Expedited Forwarding; ECN: 0x02: ECT(0) (ECN-Capable Transport))
+        1011 10.. = Differentiated Services Codepoint: Expedited Forwarding (0x2e)
+        .... ..10 = Explicit Congestion Notification: ECT(0) (ECN-Capable Transport) (0x02)
+Frame 3: 92 bytes on wire (736 bits), 92 bytes captured (736 bits) on interface 0
+    Differentiated Services Field: 0x00 (DSCP 0x00: Default; ECN: 0x00: Not-ECT (Not ECN-Capable Transport))
+        0000 00.. = Differentiated Services Codepoint: Default (0x00)
+        .... ..00 = Explicit Congestion Notification: Not-ECT (Not ECN-Capable Transport) (0x00)
+Frame 4: 92 bytes on wire (736 bits), 92 bytes captured (736 bits) on interface 0
+    Differentiated Services Field: 0x00 (DSCP 0x00: Default; ECN: 0x00: Not-ECT (Not ECN-Capable Transport))
+        0000 00.. = Differentiated Services Codepoint: Default (0x00)
+^C
+[root@ovs-tunnel-test-2 ~]# ovs-dpctl dump-flows
+2020-07-30T13:49:15Z|00001|dpif_netlink|INFO|The kernel module does not support meters.
+recirc_id(0),in_port(3),eth(src=56:73:90:10:20:5f,dst=fe:61:62:0e:3b:65),eth_type(0x0806), packets:0, bytes:0, used:never, actions:set(tunnel(dst=192.168.122.42,ttl=64,tp_dst=4789,flags(df))),2
+recirc_id(0),tunnel(tun_id=0x0,src=192.168.122.42,dst=192.168.122.175,tos=0xba,flags(-df-csum+key)),in_port(2),eth(src=fe:61:62:0e:3b:65,dst=56:73:90:10:20:5f),eth_type(0x0800),ipv4(frag=no), packets:0, bytes:0, used:never, actions:3
+recirc_id(0),tunnel(tun_id=0x0,src=192.168.122.42,dst=192.168.122.175,flags(-df-csum+key)),in_port(2),eth(src=fe:61:62:0e:3b:65,dst=56:73:90:10:20:5f),eth_type(0x0806), packets:0, bytes:0, used:never, actions:3
+recirc_id(0),in_port(3),eth(src=56:73:90:10:20:5f,dst=fe:61:62:0e:3b:65),eth_type(0x0800),ipv4(tos=0xba,frag=no), packets:0, bytes:0, used:never, actions:set(tunnel(dst=192.168.122.42,tos=0xba,ttl=64,tp_dst=4789,flags(df))),2
+[root@ovs-tunnel-test-2 ~]# 
+</code></pre>
+
+<p>And explicitly setting this, e.g. to 1111 1100:</p>
+<pre><code>[root@ovs-tunnel-test-1 ~]# systemctl restart openvswitch
+[root@ovs-tunnel-test-1 ~]# ovs-vsctl set interface vxlan0 options:tos=0xfc
+[root@ovs-tunnel-test-1 ~]# ip netns exec private ping 192.168.123.2 -c1 -W1 -Q 0xba
+PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
+64 bytes from 192.168.123.2: icmp_seq=1 ttl=64 time=2.33 ms
+
+--- 192.168.123.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 2.339/2.339/2.339/0.000 ms
+[root@ovs-tunnel-test-1 ~]# ovs-dpctl dump-flows
+2020-07-30T13:55:10Z|00001|dpif_netlink|INFO|The kernel module does not support meters.
+recirc_id(0),in_port(3),eth(src=fe:61:62:0e:3b:65,dst=56:73:90:10:20:5f),eth_type(0x0800),ipv4(tos=0x2/0x3,frag=no), packets:0, bytes:0, used:never, actions:set(tunnel(dst=192.168.122.175,tos=0xfe,ttl=64,tp_dst=4789,flags(df))),2
+recirc_id(0),tunnel(tun_id=0x0,src=192.168.122.175,dst=192.168.122.42,tos=0xfe,flags(-df-csum+key)),in_port(2),eth(src=56:73:90:10:20:5f,dst=fe:61:62:0e:3b:65),eth_type(0x0800),ipv4(frag=no), packets:0, bytes:0, used:never, actions:3
+[root@ovs-tunnel-test-1 ~]# 
+</code></pre>
+
+<pre><code>[root@ovs-tunnel-test-2 ~]# systemctl restart openvswitch
+[root@ovs-tunnel-test-2 ~]# ovs-vsctl set interface vxlan0 options:tos=0xfc
+[root@ovs-tunnel-test-2 ~]# tshark -nn -i eth0 -O ip port 4789 | egrep 'Frame|Differentiated Services|Explicit Congestion Notification'
+Running as user &quot;root&quot; and group &quot;root&quot;. This could be dangerous.
+Capturing on 'eth0'
+4 Frame 1: 148 bytes on wire (1184 bits), 148 bytes captured (1184 bits) on interface 0
+    Differentiated Services Field: 0xfe (DSCP 0x3f: Unknown DSCP; ECN: 0x02: ECT(0) (ECN-Capable Transport))
+        1111 11.. = Differentiated Services Codepoint: Unknown (0x3f)
+        .... ..10 = Explicit Congestion Notification: ECT(0) (ECN-Capable Transport) (0x02)
+Frame 2: 148 bytes on wire (1184 bits), 148 bytes captured (1184 bits) on interface 0
+    Differentiated Services Field: 0xfe (DSCP 0x3f: Unknown DSCP; ECN: 0x02: ECT(0) (ECN-Capable Transport))
+        1111 11.. = Differentiated Services Codepoint: Unknown (0x3f)
+        .... ..10 = Explicit Congestion Notification: ECT(0) (ECN-Capable Transport) (0x02)
+Frame 3: 92 bytes on wire (736 bits), 92 bytes captured (736 bits) on interface 0
+    Differentiated Services Field: 0xfc (DSCP 0x3f: Unknown DSCP; ECN: 0x00: Not-ECT (Not ECN-Capable Transport))
+        1111 11.. = Differentiated Services Codepoint: Unknown (0x3f)
+        .... ..00 = Explicit Congestion Notification: Not-ECT (Not ECN-Capable Transport) (0x00)
+Frame 4: 92 bytes on wire (736 bits), 92 bytes captured (736 bits) on interface 0
+    Differentiated Services Field: 0xfc (DSCP 0x3f: Unknown DSCP; ECN: 0x00: Not-ECT (Not ECN-Capable Transport))
+        1111 11.. = Differentiated Services Codepoint: Unknown (0x3f)
+^C
+[root@ovs-tunnel-test-2 ~]# ovs-dpctl dump-flows
+2020-07-30T13:55:18Z|00001|dpif_netlink|INFO|The kernel module does not support meters.
+recirc_id(0),in_port(3),eth(src=56:73:90:10:20:5f,dst=fe:61:62:0e:3b:65),eth_type(0x0806), packets:0, bytes:0, used:never, actions:set(tunnel(dst=192.168.122.42,tos=0xfc,ttl=64,tp_dst=4789,flags(df))),2
+recirc_id(0),tunnel(tun_id=0x0,src=192.168.122.42,dst=192.168.122.175,tos=0xfc,flags(-df-csum+key)),in_port(2),eth(src=fe:61:62:0e:3b:65,dst=56:73:90:10:20:5f),eth_type(0x0806), packets:0, bytes:0, used:never, actions:3
+[root@ovs-tunnel-test-2 ~]# 
+</code></pre>
+
+<p>The outer header is correctly set to 1111 1110.</p>
+<h2 id="bug">BUG</h2>
+<p>My tests were affected by: <a href="https://bugzilla.redhat.com/show_bug.cgi?id=1862166">https://bugzilla.redhat.com/show_bug.cgi?id=1862166</a></p>
+<h2 id="ecn-field">ECN field</h2>
+<p>Is always inherited:</p>
+<ul>
+<li><a href="https://github.com/openvswitch/ovs/blob/252c24a61774cac1f593569dcce31e524725676c/ofproto/tunnel.c#L454">https://github.com/openvswitch/ovs/blob/252c24a61774cac1f593569dcce31e524725676c/ofproto/tunnel.c#L454</a></li>
+</ul>
+<pre><code>    /* ECN fields are always inherited. */
+    if (is_ip_any(flow)) {
+        wc-&gt;masks.nw_tos |= IP_ECN_MASK;
+
+        if (IP_ECN_is_ce(flow-&gt;nw_tos)) {
+            flow-&gt;tunnel.ip_tos |= IP_ECN_ECT_0;
+        } else {
+            flow-&gt;tunnel.ip_tos |= flow-&gt;nw_tos &amp; IP_ECN_MASK;
+        }
+    }
+</code></pre>
+
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://www.tucny.com/Home/dscp-tos">https://www.tucny.com/Home/dscp-tos</a></li>
+<li><a href="http://docs.openvswitch.org/en/latest/howto/userspace-tunneling/">http://docs.openvswitch.org/en/latest/howto/userspace-tunneling/</a></li>
+</ul></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js" defer></script>
+        <script src="../../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Infra nodes with MachineSets without worker label - Andreas Karis Blog</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+
+        <script src="../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Andreas Karis Blog</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ceph <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../ceph/ceph-manual-test/" class="dropdown-item">Ceph manual test with qemu</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Containers <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../linux/cgroups/" class="dropdown-item">cgroups</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/containers/" class="dropdown-item">Containers in Linux</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/namespaces/" class="dropdown-item">namespaces</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Linux <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../linux/cgroups/" class="dropdown-item">cgroups</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/containers/" class="dropdown-item">Containers in Linux</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/hugepages/" class="dropdown-item">Hugepages</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/meson/" class="dropdown-item">meson</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/namespaces/" class="dropdown-item">namespaces</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/old_java_version_with_xorgs_in_container/" class="dropdown-item">Old Java inside a container with xorgs</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Networking <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../networking/arp_and_the_neighbor_table/" class="dropdown-item">ARP and the Neighbor table</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/bonding_in_linux/" class="dropdown-item">Bonding in Linux</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/geneve_tunneling/" class="dropdown-item">Geneve tunneling</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/netlink/" class="dropdown-item">Netlink</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovn-kind/" class="dropdown-item">OVN kind</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovn_standalone_on_fedora31/" class="dropdown-item">OVN standalone on Fedora 31</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovs_recirculation/" class="dropdown-item">OVS packet recirculation</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovs-vxlan-tunnels-and-dscp/" class="dropdown-item">OVS VXLAN tunnels and DSCP</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovs_with_gdb/" class="dropdown-item">OVS with GDB</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/sctp/" class="dropdown-item">SCTP</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/wireguard/" class="dropdown-item">Wireguard</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">OpenShift <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../alertmanager/" class="dropdown-item">AlertManager</a>
+</li>
+                                    
+<li>
+    <a href="../cpu-manager-with-custom-machine-config-pool/" class="dropdown-item">CPU manager with custom MachineConfigPool</a>
+</li>
+                                    
+<li>
+    <a href="../crio-conmon-runc/" class="dropdown-item">Crio vs conmon vs runc</a>
+</li>
+                                    
+<li>
+    <a href="../openshift_httpbin_tshark_sidecar/" class="dropdown-item">Httpbin tshark sidecar container</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active">Infra nodes with MachineSets without worker label</a>
+</li>
+                                    
+<li>
+    <a href="../ingresscontroller_router_sharding_ocp_on_osp/" class="dropdown-item">Ingress Controller Sharding OCP on OSP</a>
+</li>
+                                    
+<li>
+    <a href="../ingress-controller-sharding-on-separate-vip/" class="dropdown-item">Ingress Controller Sharding on separate VIP</a>
+</li>
+                                    
+<li>
+    <a href="../istio-1.6-on-ocp.4.x/" class="dropdown-item">Istio 1.6 on OpenShift 4.x</a>
+</li>
+                                    
+<li>
+    <a href="../kata/" class="dropdown-item">kata containers and the kata operatora</a>
+</li>
+                                    
+<li>
+    <a href="../proxy-ocp-4.5/" class="dropdown-item">Proxy OCP 4.5</a>
+</li>
+                                    
+<li>
+    <a href="../scc/" class="dropdown-item">Security Context Constraints (SCC)</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/sctp/" class="dropdown-item">SCTP</a>
+</li>
+                                    
+<li>
+    <a href="../openshift_troubleshooting_etcd_state/" class="dropdown-item">Troubleshooting etcd state</a>
+</li>
+                                    
+<li>
+    <a href="../useful-ocp-curl/" class="dropdown-item">Querying the OCP 4.x upgrades info API</a>
+</li>
+                                    
+<li>
+    <a href="../troubleshooting_openshift_on_openstack_worker_creation/" class="dropdown-item">Troubleshooting OpenShift on OpenStack worker creation</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">OpenStack <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../openstack/reattach_to_running_deployment/" class="dropdown-item">Reattach to running deployment</a>
+</li>
+                                    
+<li>
+    <a href="../../openstack/using_clouds_yaml/" class="dropdown-item">Using clouds.yaml</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../openshift_httpbin_tshark_sidecar/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../ingresscontroller_router_sharding_ocp_on_osp/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#ocp-45-infra-nodes-with-machinesets-without-worker-label" class="nav-link">OCP 4.5 Infra nodes with MachineSets without worker label</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#how-to-create-infra-nodes-with-machinesets-but-without-using-the-worker-label" class="nav-link">How to create Infra nodes with Machinesets but without using the worker label</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="ocp-45-infra-nodes-with-machinesets-without-worker-label">OCP 4.5 Infra nodes with MachineSets without worker label</h1>
+<h2 id="how-to-create-infra-nodes-with-machinesets-but-without-using-the-worker-label">How to create Infra nodes with Machinesets but without using the worker label</h2>
+<p><a href="https://docs.openshift.com/container-platform/4.5/machine_management/creating-infrastructure-machinesets.html">https://docs.openshift.com/container-platform/4.5/machine_management/creating-infrastructure-machinesets.html</a> states how to create infra nodes with MachineSets. However, the "inconvenience" is that these infra nodes will show up as "infra,worker". How can one not have the "worker" label?</p>
+<p>The worker label is added by kubelet configuration as part of <code>--node-labels=node-role.kubernetes.io/worker,node.openshift.io/os_id=${ID}</code>. So this will require a custom systemd drop-in for the kubelet.service.</p>
+<h3 id="step-0-switch-to-project-openshift-machine-api">Step 0: Switch to project openshift-machine-api</h3>
+<p>Switch to the <code>openshift-machine-api</code> project:</p>
+<pre><code>oc project openshift-machine-api
+</code></pre>
+
+<h3 id="step-1-create-kubelet-configuration-drop-in-for-infra-node">Step 1: Create kubelet configuration drop-in for infra-node</h3>
+<p>To change booting node-labels a MachineConfig needs to be created as the labels are defined when the Kubelet is started with:</p>
+<pre><code>                --node-labels=node-role.kubernetes.io/worker,node.openshift.io/os_id=${ID} \
+</code></pre>
+
+<p>In order to create a new kubelet, create 03-infar-kubelet.yaml:</p>
+<pre><code>cat &lt;&lt;'EOF' &gt; 03-infra-kubelet.yaml
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: infra
+  name: 03-infra-kubelet
+spec:
+  config:
+    ignition:
+      config: {}
+      security:
+        tls: {}
+      timeouts: {}
+      version: 2.2.0
+    systemd:
+      units:
+        - name: kubelet.service
+          dropins:
+            - name: 20-change-label.conf
+              contents: |
+                [Service]
+                ExecStart=
+                ExecStart=/usr/bin/hyperkube \
+                    kubelet \
+                      --config=/etc/kubernetes/kubelet.conf \
+                      --bootstrap-kubeconfig=/etc/kubernetes/kubeconfig \
+                      --kubeconfig=/var/lib/kubelet/kubeconfig \
+                      --container-runtime=remote \
+                      --container-runtime-endpoint=/var/run/crio/crio.sock \
+                      --runtime-cgroups=/system.slice/crio.service \
+                      --node-labels=node-role.kubernetes.io/infra,node.openshift.io/os_id=${ID} \
+                      --minimum-container-ttl-duration=6m0s \
+                      --volume-plugin-dir=/etc/kubernetes/kubelet-plugins/volume/exec \
+                      --cloud-provider=aws \
+                       \
+                      --pod-infra-container-image=quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:dc0fe885d41cc4029caa3feacf71343806c81c8123abc91db90dc0e555fa5636 \
+                      --v=${KUBELET_LOG_LEVEL}
+EOF
+</code></pre>
+
+<pre><code>$ oc apply -f 03-infra-kubelet.yaml
+</code></pre>
+
+<h3 id="step-2-create-infra-secret">Step 2: Create infra secret</h3>
+<p>Create new user data for infra worker. The following takes the userdata from worker nodes (from the worker-user-data secret) and replaces any occurrence of 'worker' with 'infra':</p>
+<pre><code>oc get secret -n openshift-machine-api worker-user-data -o yaml | awk '/userData:/ {print $2}' | base64 -d | sed 's/worker/infra/g' | base64 -w0 &gt; userdata.base64 
+</code></pre>
+
+<p>Then, create a new secret:</p>
+<pre><code>cat &lt;&lt; EOF &gt; infra-user-data.yaml
+apiVersion: v1
+data:
+  disableTemplating: dHJ1ZQo=
+  userData: $(cat userdata.base64)  
+kind: Secret
+metadata:
+  name: infra-user-data
+  namespace: openshift-machine-api
+type: Opaque
+EOF
+oc apply -f infra-user-data.yaml
+</code></pre>
+
+<p>Verify:</p>
+<pre><code>$ oc get secret -n openshift-machine-api infra-user-data -o yaml | awk '/userData:/ {print $2}' | base64 -d | jq '.ignition.config.append[0].source'
+&quot;https://&lt;cluster URL&gt;:22623/config/infra&quot;
+</code></pre>
+
+<h3 id="step-3-create-machine-configuration-for-infra">Step 3: Create machine configuration for infra</h3>
+<p>Create a machine configuration pool. This machine configuration, for simplicity, will include all machine configurations for worker nodes, as well as for infra nodes. This is why it is important to name the machine configuration for the kubelet <code>03-infra-kubelet</code> (see above):</p>
+<pre><code>cat &lt;&lt;'EOF' &gt; infra-mcp.yaml
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfigPool
+metadata:
+  name: infra
+spec:
+  machineConfigSelector:
+    matchExpressions:
+    - key: machineconfiguration.openshift.io/role
+      operator: In
+      values:
+      - worker
+      - infra
+  maxUnavailable: 1
+  nodeSelector:
+    matchLabels:
+      node-role.kubernetes.io/infra: &quot;&quot;
+  paused: false
+EOF
+</code></pre>
+
+<p>Apply:</p>
+<pre><code>oc apply -f infra-mcp.yaml
+</code></pre>
+
+<h3 id="step-4-create-a-machineset-for-the-new-infra-node">Step 4: Create a machineset for the new infra node</h3>
+<p>First, create a new machineset:
+https://docs.openshift.com/container-platform/4.5/machine_management/creating-infrastructure-machinesets.html#machineset-yaml-aws_creating-infrastructure-machinesets</p>
+<p>Look at an existing machineset for how to fill in some of the blank values:</p>
+<pre><code>[akaris@linux infra-nodes]$ oc get machinesets -A
+NAMESPACE               NAME                              DESIRED   CURRENT   READY   AVAILABLE   AGE
+openshift-machine-api   akaris2-4kpk4-worker-eu-west-3a   1         1         1       1           112m
+openshift-machine-api   akaris2-4kpk4-worker-eu-west-3b   1         1         1       1           112m
+openshift-machine-api   akaris2-4kpk4-worker-eu-west-3c   1         1         1       1           112m
+</code></pre>
+
+<pre><code>$ oc get machineset -n openshift-machine-api akaris2-4kpk4-worker-eu-west-3a -o yaml &gt; akaris2-4kpk4-infra-eu-west-3a.yaml
+</code></pre>
+
+<p>Clean up the file and modify as instructed in https://docs.openshift.com/container-platform/4.5/machine_management/creating-infrastructure-machinesets.html#machineset-yaml-aws_creating-infrastructure-machinesets</p>
+<p>The example from the documentation will contain 'worker' in:</p>
+<pre><code>          iamInstanceProfile:
+            id: &lt;infrastructureID&gt;-worker-profile 
+</code></pre>
+
+<pre><code>          securityGroups:
+            - filters:
+                - name: tag:Name
+                  values:
+                    - &lt;infrastructureID&gt;-worker-sg 
+</code></pre>
+
+<pre><code>          userDataSecret:
+            name: worker-user-data
+</code></pre>
+
+<p>Make sure to change the userDataSecret to <code>infra-user-data</code>, contrary to what the documentation says:</p>
+<pre><code>          userDataSecret:
+            name: infra-user-data
+</code></pre>
+
+<p>The MachineSet, after modification - in this case, 3 replicas are requested, right away:</p>
+<pre><code>$ cat akaris2-4kpk4-infra-eu-west-3a.yaml
+apiVersion: machine.openshift.io/v1beta1
+kind: MachineSet
+metadata:
+  labels:
+    machine.openshift.io/cluster-api-cluster: akaris2-4kpk4
+  name: akaris2-4kpk4-infra-eu-west-3a
+  namespace: openshift-machine-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      machine.openshift.io/cluster-api-cluster: akaris2-4kpk4
+      machine.openshift.io/cluster-api-machineset: akaris2-4kpk4-infra-eu-west-3a
+  template:
+    metadata:
+      labels:
+        machine.openshift.io/cluster-api-cluster: akaris2-4kpk4
+        machine.openshift.io/cluster-api-machine-role: infra
+        machine.openshift.io/cluster-api-machine-type: infra
+        machine.openshift.io/cluster-api-machineset: akaris2-4kpk4-infra-eu-west-3a
+    spec:
+      metadata:
+        labels:
+          node-role.kubernetes.io/infra: &quot;&quot;
+      providerSpec:
+        value:
+          ami:
+            id: ami-(...)
+          apiVersion: awsproviderconfig.openshift.io/v1beta1
+          blockDevices:
+          - ebs:
+              iops: 0
+              volumeSize: 120
+              volumeType: gp2
+          credentialsSecret:
+            name: aws-cloud-credentials
+          deviceIndex: 0
+          iamInstanceProfile:
+            id: akaris2-4kpk4-worker-profile
+          instanceType: m5.large
+          kind: AWSMachineProviderConfig
+          metadata:
+            creationTimestamp: null
+          placement:
+            availabilityZone: eu-west-3a
+            region: eu-west-3
+          publicIp: null
+          securityGroups:
+          - filters:
+            - name: tag:Name
+              values:
+              - akaris2-4kpk4-worker-sg
+          subnet:
+            filters:
+            - name: tag:Name
+              values:
+              - akaris2-4kpk4-private-eu-west-3a
+          tags:
+          - name: kubernetes.io/cluster/akaris2-4kpk4
+            value: owned
+          userDataSecret:
+            name: infra-user-data
+</code></pre>
+
+<p>Apply the MachineSet:</p>
+<pre><code>$ oc apply -f akaris2-4kpk4-infra-eu-west-3a.yaml
+</code></pre>
+
+<h3 id="step-5-verify-machine-creation">Step 5: Verify Machine creation</h3>
+<p>Monitor machine configuration - right after creation of the MachineSet:</p>
+<pre><code>[akaris@linux infra-nodes]$ oc get machineconfigpool
+NAME     CONFIG                                             UPDATED   UPDATING   DEGRADED   MACHINECOUNT   READYMACHINECOUNT   UPDATEDMACHINECOUNT   DEGRADEDMACHINECOUNT   AGE
+infra    rendered-infra-d63625ee2cdc4637cc156a1ebf25e926    True      False      False      0              0                   0                     0                      4m9s
+master   rendered-master-8d007e81b9ebb00b4042722f2713f1ae   True      False      False      3              3                   3                     0                      116m
+worker   rendered-worker-9d6647aa43752e0eb71a221dd8b7e32e   True      False      False      3              3                   3                     0                      116m
+[akaris@linux infra-nodes]$ oc get machines
+NAME                                    PHASE         TYPE        REGION      ZONE         AGE
+akaris2-f74ht-infra-eu-west-3a-fctd5    Provisioned   m5.large    eu-west-3   eu-west-3a   49s
+akaris2-f74ht-infra-eu-west-3a-xtpcv    Provisioned   m5.large    eu-west-3   eu-west-3a   49s
+akaris2-f74ht-infra-eu-west-3a-zmvzh    Provisioned   m5.large    eu-west-3   eu-west-3a   49s
+akaris2-f74ht-master-0                  Running       m5.xlarge   eu-west-3   eu-west-3a   119m
+akaris2-f74ht-master-1                  Running       m5.xlarge   eu-west-3   eu-west-3b   119m
+akaris2-f74ht-master-2                  Running       m5.xlarge   eu-west-3   eu-west-3c   119m
+akaris2-f74ht-worker-eu-west-3a-4krrd   Running       m5.large    eu-west-3   eu-west-3a   111m
+akaris2-f74ht-worker-eu-west-3b-59z6n   Running       m5.large    eu-west-3   eu-west-3b   111m
+akaris2-f74ht-worker-eu-west-3c-chst9   Running       m5.large    eu-west-3   eu-west-3c   111m
+[akaris@linux infra-nodes]$ oc get machineset
+NAME                              DESIRED   CURRENT   READY   AVAILABLE   AGE
+akaris2-f74ht-infra-eu-west-3a    3         3                             58s
+akaris2-f74ht-worker-eu-west-3a   1         1         1       1           119m
+akaris2-f74ht-worker-eu-west-3b   1         1         1       1           119m
+akaris2-f74ht-worker-eu-west-3c   1         1         1       1           119m
+[akaris@linux infra-nodes]$ oc get nodes
+NAME                                         STATUS   ROLES    AGE    VERSION
+ip-10-0-148-174.eu-west-3.compute.internal   Ready    worker   105m   v1.17.1+b83bc57
+ip-10-0-159-35.eu-west-3.compute.internal    Ready    master   117m   v1.17.1+b83bc57
+ip-10-0-168-64.eu-west-3.compute.internal    Ready    master   118m   v1.17.1+b83bc57
+ip-10-0-191-238.eu-west-3.compute.internal   Ready    worker   105m   v1.17.1+b83bc57
+ip-10-0-208-80.eu-west-3.compute.internal    Ready    master   117m   v1.17.1+b83bc57
+ip-10-0-220-32.eu-west-3.compute.internal    Ready    worker   105m   v1.17.1+b83bc57
+</code></pre>
+
+<p>Wait:</p>
+<pre><code>[akaris@linux infra-nodes]$ oc get machineconfigpool
+NAME     CONFIG                                             UPDATED   UPDATING   DEGRADED   MACHINECOUNT   READYMACHINECOUNT   UPDATEDMACHINECOUNT   DEGRADEDMACHINECOUNT   AGE
+infra    rendered-infra-d63625ee2cdc4637cc156a1ebf25e926    True      False      False      3              3                   3                     0                      10m
+master   rendered-master-8d007e81b9ebb00b4042722f2713f1ae   True      False      False      3              3                   3                     0                      122m
+worker   rendered-worker-9d6647aa43752e0eb71a221dd8b7e32e   True      False      False      3              3                   3                     0                      122m
+[akaris@linux infra-nodes]$ oc get machineset
+NAME                              DESIRED   CURRENT   READY   AVAILABLE   AGE
+akaris2-f74ht-infra-eu-west-3a    3         3         3       3           7m15s
+akaris2-f74ht-worker-eu-west-3a   1         1         1       1           125m
+akaris2-f74ht-worker-eu-west-3b   1         1         1       1           125m
+akaris2-f74ht-worker-eu-west-3c   1         1         1       1           125m
+[akaris@linux infra-nodes]$ oc get machines
+NAME                                    PHASE     TYPE        REGION      ZONE         AGE
+akaris2-f74ht-infra-eu-west-3a-fctd5    Running   m5.large    eu-west-3   eu-west-3a   7m17s
+akaris2-f74ht-infra-eu-west-3a-xtpcv    Running   m5.large    eu-west-3   eu-west-3a   7m17s
+akaris2-f74ht-infra-eu-west-3a-zmvzh    Running   m5.large    eu-west-3   eu-west-3a   7m17s
+akaris2-f74ht-master-0                  Running   m5.xlarge   eu-west-3   eu-west-3a   125m
+akaris2-f74ht-master-1                  Running   m5.xlarge   eu-west-3   eu-west-3b   125m
+akaris2-f74ht-master-2                  Running   m5.xlarge   eu-west-3   eu-west-3c   125m
+akaris2-f74ht-worker-eu-west-3a-4krrd   Running   m5.large    eu-west-3   eu-west-3a   117m
+akaris2-f74ht-worker-eu-west-3b-59z6n   Running   m5.large    eu-west-3   eu-west-3b   117m
+akaris2-f74ht-worker-eu-west-3c-chst9   Running   m5.large    eu-west-3   eu-west-3c   117m
+[akaris@linux infra-nodes]$ oc get nodes
+NAME                                         STATUS   ROLES    AGE     VERSION
+ip-10-0-128-80.eu-west-3.compute.internal    Ready    infra    2m39s   v1.17.1+b83bc57
+ip-10-0-145-35.eu-west-3.compute.internal    Ready    infra    2m43s   v1.17.1+b83bc57
+ip-10-0-148-174.eu-west-3.compute.internal   Ready    worker   111m    v1.17.1+b83bc57
+ip-10-0-159-154.eu-west-3.compute.internal   Ready    infra    2m7s    v1.17.1+b83bc57
+ip-10-0-159-35.eu-west-3.compute.internal    Ready    master   124m    v1.17.1+b83bc57
+ip-10-0-168-64.eu-west-3.compute.internal    Ready    master   124m    v1.17.1+b83bc57
+ip-10-0-191-238.eu-west-3.compute.internal   Ready    worker   111m    v1.17.1+b83bc57
+ip-10-0-208-80.eu-west-3.compute.internal    Ready    master   124m    v1.17.1+b83bc57
+ip-10-0-220-32.eu-west-3.compute.internal    Ready    worker   111m    v1.17.1+b83bc57
+</code></pre>
+
+<h3 id="step-7-moving-resources-to-the-infra-nodes">Step 7: Moving resources to the infra nodes</h3>
+<p>The following steps are from:
+https://github.com/lbohnsac/OCP4/tree/master/infrastructure-node-setup</p>
+<p>Also see steps from:
+https://docs.openshift.com/container-platform/4.5/machine_management/creating-infrastructure-machinesets.html</p>
+<h4 id="move-the-router-bits">Move the router bits</h4>
+<p>Move the internal routers to the infra nodes</p>
+<pre><code>oc patch ingresscontrollers.operator.openshift.io default -n openshift-ingress-operator --type=merge \
+  --patch '{&quot;spec&quot;:{&quot;nodePlacement&quot;:{&quot;nodeSelector&quot;:{&quot;matchLabels&quot;:{&quot;node-role.kubernetes.io/infra&quot;:&quot;&quot;}}}}}'
+</code></pre>
+
+<p>Define 3 routers (default are 2!)</p>
+<pre><code>oc patch ingresscontrollers.operator.openshift.io default -n openshift-ingress-operator --type=merge \
+  --patch '{&quot;spec&quot;:{&quot;replicas&quot;: 3}}'
+</code></pre>
+
+<h4 id="move-the-registry-bits">Move the registry bits</h4>
+<p>Move the internal image registry to the infra nodes</p>
+<pre><code>oc patch configs.imageregistry.operator.openshift.io cluster --type=merge \
+  --patch '{&quot;spec&quot;:{&quot;nodeSelector&quot;:{&quot;node-role.kubernetes.io/infra&quot;: &quot;&quot;}}}'
+</code></pre>
+
+<p>Move the registry image pruner (from 4.4) to the infra nodes</p>
+<pre><code>oc patch imagepruners.imageregistry.operator.openshift.io cluster --type=merge \
+  --patch '{&quot;spec&quot;:{&quot;nodeSelector&quot;: {&quot;node-role.kubernetes.io/infra&quot;: &quot;&quot;}}}'
+</code></pre>
+
+<h4 id="move-the-logging-bits">Move the logging bits</h4>
+<p>Move the Kibana pod to the infras</p>
+<pre><code>oc patch clusterloggings.logging.openshift.io instance -n openshift-logging --type=merge \
+  --patch '{&quot;spec&quot;:{&quot;visualization&quot;:{&quot;kibana&quot;:{&quot;nodeSelector&quot;:{&quot;node-role.kubernetes.io/infra&quot;:&quot;&quot;}}}}}'
+</code></pre>
+
+<p>Move the curator pod to the infras</p>
+<pre><code>oc patch clusterloggings.logging.openshift.io instance -n openshift-logging --type=merge \
+  --patch '{&quot;spec&quot;:{&quot;curation&quot;:{&quot;curator&quot;:{&quot;nodeSelector&quot;:{&quot;node-role.kubernetes.io/infra&quot;:&quot;&quot;}}}}}'
+</code></pre>
+
+<p>Move the elasticsearch pods to the infras</p>
+<pre><code>oc patch clusterloggings.logging.openshift.io instance -n openshift-logging --type=merge \
+  --patch '{&quot;spec&quot;:{&quot;logStore&quot;:{&quot;elasticsearch&quot;:{&quot;nodeSelector&quot;:{&quot;node-role.kubernetes.io/infra&quot;:&quot;&quot;}}}}}'
+</code></pre>
+
+<h3 id="issues">Issues</h3>
+<p>The inconvenience with this is that the ExecStart of the dropin is now "hardcoded" and will not be updated / changed by the installer upon upgrade.</p>
+<h3 id="step-6-testing-upgrades">Step 6: Testing upgrades</h3>
+<pre><code>[akaris@linux infra-nodes]$ oc get clusterversion
+NAME      VERSION   AVAILABLE   PROGRESSING   SINCE   STATUS
+version   4.4.16    True        False         123m    Cluster version is 4.4.16
+[akaris@linux infra-nodes]$ oc adm upgrade
+Cluster version is 4.4.16
+
+No updates available. You may force an upgrade to a specific release image, but doing so may not be supported and result in downtime or data loss.
+
+#############################
+# set to 4.5-stable channel
+#############################
+[akaris@linux infra-nodes]$ oc edit clusterversion
+clusterversion.config.openshift.io/version edited
+
+
+[akaris@linux infra-nodes]$ oc adm upgrade
+Cluster version is 4.4.16
+
+Updates:
+
+VERSION IMAGE
+4.5.5   quay.io/openshift-release-dev/ocp-release@sha256:a58573e1c92f5258219022ec104ec254ded0a70370ee8ed2aceea52525639bd4
+[akaris@linux infra-nodes]$ oc adm upgrade --to-latest
+Updating to latest version 4.5.5
+</code></pre>
+
+<p>The upgrade succeeds:</p>
+<pre><code>[akaris@linux ipi]$ export KUBECONFIG=/home/akaris/cases/02729138/ipi/install-config/auth/kubeconfig
+[akaris@linux ipi]$ oc get nodes
+NAME                                         STATUS   ROLES    AGE   VERSION
+ip-10-0-128-80.eu-west-3.compute.internal    Ready    infra    17h   v1.18.3+08c38ef
+ip-10-0-145-35.eu-west-3.compute.internal    Ready    infra    17h   v1.18.3+08c38ef
+ip-10-0-148-174.eu-west-3.compute.internal   Ready    worker   19h   v1.18.3+08c38ef
+ip-10-0-159-154.eu-west-3.compute.internal   Ready    infra    17h   v1.18.3+08c38ef
+ip-10-0-159-35.eu-west-3.compute.internal    Ready    master   19h   v1.18.3+08c38ef
+ip-10-0-168-64.eu-west-3.compute.internal    Ready    master   19h   v1.18.3+08c38ef
+ip-10-0-191-238.eu-west-3.compute.internal   Ready    worker   19h   v1.18.3+08c38ef
+ip-10-0-208-80.eu-west-3.compute.internal    Ready    master   19h   v1.18.3+08c38ef
+ip-10-0-220-32.eu-west-3.compute.internal    Ready    worker   19h   v1.18.3+08c38ef
+[akaris@linux ipi]$ oc get clusterversion
+NAME      VERSION   AVAILABLE   PROGRESSING   SINCE   STATUS
+version   4.5.5     True        False         16h     Cluster version is 4.5.5
+[akaris@linux ipi]$ oc get machinesets
+NAME                              DESIRED   CURRENT   READY   AVAILABLE   AGE
+akaris2-f74ht-infra-eu-west-3a    3         3         3       3           17h
+akaris2-f74ht-worker-eu-west-3a   1         1         1       1           19h
+akaris2-f74ht-worker-eu-west-3b   1         1         1       1           19h
+akaris2-f74ht-worker-eu-west-3c   1         1         1       1           19h
+[akaris@linux ipi]$ oc get machines
+NAME                                    PHASE     TYPE        REGION      ZONE         AGE
+akaris2-f74ht-infra-eu-west-3a-fctd5    Running   m5.large    eu-west-3   eu-west-3a   17h
+akaris2-f74ht-infra-eu-west-3a-xtpcv    Running   m5.large    eu-west-3   eu-west-3a   17h
+akaris2-f74ht-infra-eu-west-3a-zmvzh    Running   m5.large    eu-west-3   eu-west-3a   17h
+akaris2-f74ht-master-0                  Running   m5.xlarge   eu-west-3   eu-west-3a   19h
+akaris2-f74ht-master-1                  Running   m5.xlarge   eu-west-3   eu-west-3b   19h
+akaris2-f74ht-master-2                  Running   m5.xlarge   eu-west-3   eu-west-3c   19h
+akaris2-f74ht-worker-eu-west-3a-4krrd   Running   m5.large    eu-west-3   eu-west-3a   19h
+akaris2-f74ht-worker-eu-west-3b-59z6n   Running   m5.large    eu-west-3   eu-west-3b   19h
+akaris2-f74ht-worker-eu-west-3c-chst9   Running   m5.large    eu-west-3   eu-west-3c   19h
+[akaris@linux ipi]$ oc get machineconfigpool
+NAME     CONFIG                                             UPDATED   UPDATING   DEGRADED   MACHINECOUNT   READYMACHINECOUNT   UPDATEDMACHINECOUNT   DEGRADEDMACHINECOUNT   AGE
+infra    rendered-infra-aa17b9b35abf210691d268dd4c7449d3    True      False      False      3              3                   3                     0                      17h
+master   rendered-master-2cc3abe4c49c6db04d9456744d0079f9   True      False      False      3              3                   3                     0                      19h
+worker   rendered-worker-d65740ba72e305c96782a27b8255dd89   True      False      False      3              3                   3                     0                      19h
+[akaris@linux ipi]$ oc get machineconfig
+NAME                                                        GENERATEDBYCONTROLLER                      IGNITIONVERSION   AGE
+00-master                                                   807abb900cf9976a1baad66eab17c6d76016e7b7   2.2.0             19h
+00-worker                                                   807abb900cf9976a1baad66eab17c6d76016e7b7   2.2.0             19h
+01-master-container-runtime                                 807abb900cf9976a1baad66eab17c6d76016e7b7   2.2.0             19h
+01-master-kubelet                                           807abb900cf9976a1baad66eab17c6d76016e7b7   2.2.0             19h
+01-worker-container-runtime                                 807abb900cf9976a1baad66eab17c6d76016e7b7   2.2.0             19h
+01-worker-kubelet                                           807abb900cf9976a1baad66eab17c6d76016e7b7   2.2.0             19h
+03-infra-kubelet                                                                                       2.2.0             17h
+99-master-d32a1dcd-1b7b-4999-8919-3bd59c24fdae-registries   807abb900cf9976a1baad66eab17c6d76016e7b7   2.2.0             19h
+99-master-ssh                                                                                          2.2.0             19h
+99-worker-f569c8d2-84df-4a5b-846a-9e090b9fb68d-registries   807abb900cf9976a1baad66eab17c6d76016e7b7   2.2.0             19h
+99-worker-ssh                                                                                          2.2.0             19h
+rendered-infra-aa17b9b35abf210691d268dd4c7449d3             807abb900cf9976a1baad66eab17c6d76016e7b7   2.2.0             16h
+rendered-infra-d63625ee2cdc4637cc156a1ebf25e926             601c2285f497bf7c73d84737b9977a0e697cb86a   2.2.0             17h
+rendered-master-2cc3abe4c49c6db04d9456744d0079f9            807abb900cf9976a1baad66eab17c6d76016e7b7   2.2.0             16h
+rendered-master-8d007e81b9ebb00b4042722f2713f1ae            601c2285f497bf7c73d84737b9977a0e697cb86a   2.2.0             19h
+rendered-worker-9d6647aa43752e0eb71a221dd8b7e32e            601c2285f497bf7c73d84737b9977a0e697cb86a   2.2.0             19h
+rendered-worker-d65740ba72e305c96782a27b8255dd89            807abb900cf9976a1baad66eab17c6d76016e7b7   2.2.0             16h
+[akaris@linux ipi]$ 
+</code></pre>
+
+<p>The one problem is the pod version on the infra nodes:</p>
+<pre><code>[akaris@linux ipi]$ oc get nodes
+NAME                                         STATUS   ROLES    AGE   VERSION
+ip-10-0-128-80.eu-west-3.compute.internal    Ready    infra    17h   v1.18.3+08c38ef
+ip-10-0-145-35.eu-west-3.compute.internal    Ready    infra    17h   v1.18.3+08c38ef
+ip-10-0-148-174.eu-west-3.compute.internal   Ready    worker   19h   v1.18.3+08c38ef
+ip-10-0-159-154.eu-west-3.compute.internal   Ready    infra    17h   v1.18.3+08c38ef
+ip-10-0-159-35.eu-west-3.compute.internal    Ready    master   19h   v1.18.3+08c38ef
+ip-10-0-168-64.eu-west-3.compute.internal    Ready    master   19h   v1.18.3+08c38ef
+ip-10-0-191-238.eu-west-3.compute.internal   Ready    worker   19h   v1.18.3+08c38ef
+ip-10-0-208-80.eu-west-3.compute.internal    Ready    master   19h   v1.18.3+08c38ef
+ip-10-0-220-32.eu-west-3.compute.internal    Ready    worker   19h   v1.18.3+08c38ef
+[akaris@linux ipi]$ oc debug node/ip-10-0-128-80.eu-west-3.compute.internal
+Starting pod/ip-10-0-128-80eu-west-3computeinternal-debug ...
+To use host binaries, run `chroot /host`
+Pod IP: 10.0.128.80
+If you don't see a command prompt, try pressing enter.
+sh-4.2# chroot /host
+sh-4.4# cat /etc/redhat-release 
+Red Hat Enterprise Linux CoreOS release 4.5
+sh-4.4# ps aux | grep kubelet
+root        1422  3.3  2.0 1461696 161600 ?      Ssl  Aug19  33:46 kubelet --config=/etc/kubernetes/kubelet.conf --bootstrap-kubeconfig=/etc/kubernetes/kubeconfig --kubeconfig=/var/lib/kubelet/kubeconfig --container-runtime=remote --container-runtime-endpoint=/var/run/crio/crio.sock --runtime-cgroups=/system.slice/crio.service --node-labels=node-role.kubernetes.io/infra,node.openshift.io/os_id=rhcos --minimum-container-ttl-duration=6m0s --volume-plugin-dir=/etc/kubernetes/kubelet-plugins/volume/exec --cloud-provider=aws --pod-infra-container-image=quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:dc0fe885d41cc4029caa3feacf71343806c81c8123abc91db90dc0e555fa5636 --v=4
+root     1232029  0.0  0.0   9180  1032 ?        S+   10:02   0:00 grep kubelet
+sh-4.4# 
+sh-4.4# grep pause /etc/crio/ -R
+/etc/crio/seccomp.json:             &quot;pause&quot;,
+/etc/crio/crio.conf.d/00-default:pause_image = &quot;quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:6e8bcc9c91267283f8b0edf1af0cb0d310c54d4f73905d9bcfb2a103a664fcb0&quot;
+/etc/crio/crio.conf.d/00-default:pause_image_auth_file = &quot;/var/lib/kubelet/config.json&quot;
+/etc/crio/crio.conf.d/00-default:pause_command = &quot;/usr/bin/pod&quot;
+sh-4.4# 
+</code></pre>
+
+<p>Compare that to the version on the worker nodes:</p>
+<pre><code>[akaris@linux ipi]$ oc get nodes
+NAME                                         STATUS   ROLES    AGE   VERSION
+ip-10-0-128-80.eu-west-3.compute.internal    Ready    infra    17h   v1.18.3+08c38ef
+ip-10-0-145-35.eu-west-3.compute.internal    Ready    infra    17h   v1.18.3+08c38ef
+ip-10-0-148-174.eu-west-3.compute.internal   Ready    worker   19h   v1.18.3+08c38ef
+ip-10-0-159-154.eu-west-3.compute.internal   Ready    infra    17h   v1.18.3+08c38ef
+ip-10-0-159-35.eu-west-3.compute.internal    Ready    master   19h   v1.18.3+08c38ef
+ip-10-0-168-64.eu-west-3.compute.internal    Ready    master   19h   v1.18.3+08c38ef
+ip-10-0-191-238.eu-west-3.compute.internal   Ready    worker   19h   v1.18.3+08c38ef
+ip-10-0-208-80.eu-west-3.compute.internal    Ready    master   19h   v1.18.3+08c38ef
+ip-10-0-220-32.eu-west-3.compute.internal    Ready    worker   19h   v1.18.3+08c38ef
+[akaris@linux ipi]$ oc debug node/ip-10-0-148-174.eu-west-3.compute.internal
+Starting pod/ip-10-0-148-174eu-west-3computeinternal-debug ...
+To use host binaries, run `chroot /host`
+Pod IP: 10.0.148.174
+If you don't see a command prompt, try pressing enter.
+sh-4.2# chroot /host
+sh-4.4# cat /etc/redhat-release
+Red Hat Enterprise Linux CoreOS release 4.5
+sh-4.4# ps aux | grep kubelet
+root        1421  5.5  2.5 1454268 196984 ?      Ssl  Aug19  56:01 kubelet --config=/etc/kubernetes/kubelet.conf --bootstrap-kubeconfig=/etc/kubernetes/kubeconfig --kubeconfig=/var/lib/kubelet/kubeconfig --container-runtime=remote --container-runtime-endpoint=/var/run/crio/crio.sock --runtime-cgroups=/system.slice/crio.service --node-labels=node-role.kubernetes.io/worker,node.openshift.io/os_id=rhcos --minimum-container-ttl-duration=6m0s --volume-plugin-dir=/etc/kubernetes/kubelet-plugins/volume/exec --cloud-provider=aws --pod-infra-container-image=quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:6e8bcc9c91267283f8b0edf1af0cb0d310c54d4f73905d9bcfb2a103a664fcb0 --v=4
+root     2138381  0.0  0.0   9180  1060 ?        S+   10:02   0:00 grep kubelet
+sh-4.4# grep pause /etc/crio/ -R
+/etc/crio/seccomp.json:             &quot;pause&quot;,
+/etc/crio/crio.conf.d/00-default:pause_image = &quot;quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:6e8bcc9c91267283f8b0edf1af0cb0d310c54d4f73905d9bcfb2a103a664fcb0&quot;
+/etc/crio/crio.conf.d/00-default:pause_image_auth_file = &quot;/var/lib/kubelet/config.json&quot;
+/etc/crio/crio.conf.d/00-default:pause_command = &quot;/usr/bin/pod&quot;
+</code></pre>
+
+<p>That <code>--pod-infra-container-image=</code> pod version is for the pause container; although as you can see above, the pause_image in crio.conf.d is always updated: 
+<a href="https://stackoverflow.com/questions/46630377/what-is-pod-infra-container-image-meant-for">https://stackoverflow.com/questions/46630377/what-is-pod-infra-container-image-meant-for</a></p>
+<pre><code>The pause container, which image the --pod-infra-container flag selects, is used so that multiple containers can be launched in a pod, while sharing resources. It mostly does nothing, and unless you have a very good reason to replace it with something custom, you shouldn't. It mostly invokes the pause system call (hence its name) but it also performs the important function of having PID 1 and making sure no zombie processes are kept around.
+
+An extremely complete article on the subject can be found here, from where I also shamelessly stole the following picture which illustrates where the pause container lives:
+</code></pre>
+
+<p>According to <a href="https://github.com/kubernetes/kubernetes/pull/70603">https://github.com/kubernetes/kubernetes/pull/70603</a> (although that comment is from 2018):</p>
+<pre><code>The kubelet allows you to set --pod-infra-container-image
+(also called PodSandboxImage in the kubelet config),
+which can be a custom location to the &quot;pause&quot; image in the case
+of Docker. Other CRIs are not supported.
+</code></pre>
+
+<p>And according to <a href="https://github.com/kubernetes/kubernetes/issues/86081">https://github.com/kubernetes/kubernetes/issues/86081</a> (from November 2019):</p>
+<pre><code>Kubelet flag &quot;pod-infra-container-image&quot; is invalid when using CRI-O
+</code></pre>
+
+<p>And according to the kubelet help, this only affects docker and doesn't affect us:</p>
+<pre><code>sh-4.4# kubelet --help | grep infra
+      --pod-infra-container-image string                                                                          The image whose network/ipc namespaces containers in each pod will use. This docker-specific flag only works when container-runtime is set to docker. (default &quot;k8s.gcr.io/pause:3.2&quot;)
+</code></pre>
+
+<p>As an additional step just to bring the infra nodes in line with the workers and the rest of the cluster, we could update that by inspecting the current worker kubelet configuration and then modify this post-upgrade:</p>
+<pre><code>[akaris@linux ipi]$ oc get machineconfig 01-worker-kubelet -o yaml | grep pod-infra-container-image
+                --pod-infra-container-image=quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:6e8bcc9c91267283f8b0edf1af0cb0d310c54d4f73905d9bcfb2a103a664fcb0 \
+[akaris@linux ipi]$ oc get machineconfig 03-infra-kubelet -o yaml | grep pod-infra-container-image | grep -v apiVersion
+                  --pod-infra-container-image=quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:dc0fe885d41cc4029caa3feacf71343806c81c8123abc91db90dc0e555fa5636 \
+[akaris@linux ipi]$ oc edit machineconfig 03-infra-kubelet
+machineconfig.machineconfiguration.openshift.io/03-infra-kubelet edited
+[akaris@linux ipi]$ oc get machineconfig 03-infra-kubelet -o yaml | grep pod-infra-container-image | grep -v apiVersion
+                  --pod-infra-container-image=quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:6e8bcc9c91267283f8b0edf1af0cb0d310c54d4f73905d9bcfb2a103a664fcb0 \
+</code></pre>
+
+<p>Which will then trigger a restart of the infra nodes:</p>
+<pre><code>[akaris@linux ipi]$ oc get machineconfigpool
+NAME     CONFIG                                             UPDATED   UPDATING   DEGRADED   MACHINECOUNT   READYMACHINECOUNT   UPDATEDMACHINECOUNT   DEGRADEDMACHINECOUNT   AGE
+infra    rendered-infra-aa17b9b35abf210691d268dd4c7449d3    False     True       False      3              0                   0                     0                      17h
+master   rendered-master-2cc3abe4c49c6db04d9456744d0079f9   True      False      False      3              3                   3                     0                      19h
+worker   rendered-worker-d65740ba72e305c96782a27b8255dd89   True      False      False      3              3                   3                     0                      19h
+[akaris@linux ipi]$ oc get machineconfig | grep infra
+03-infra-kubelet                                                                                       2.2.0             17h
+rendered-infra-aa17b9b35abf210691d268dd4c7449d3             807abb900cf9976a1baad66eab17c6d76016e7b7   2.2.0             17h
+rendered-infra-d63625ee2cdc4637cc156a1ebf25e926             601c2285f497bf7c73d84737b9977a0e697cb86a   2.2.0             17h
+rendered-infra-f3df01ebf7429a29582f3c46132fcf88             807abb900cf9976a1baad66eab17c6d76016e7b7   2.2.0             44s
+[akaris@linux ipi]$ 
+</code></pre>
+
+<p>And then eventually:</p>
+<pre><code>[akaris@linux ipi]$ oc get nodes
+NAME                                         STATUS   ROLES    AGE   VERSION
+ip-10-0-128-80.eu-west-3.compute.internal    Ready    infra    17h   v1.18.3+08c38ef
+ip-10-0-145-35.eu-west-3.compute.internal    Ready    infra    17h   v1.18.3+08c38ef
+ip-10-0-148-174.eu-west-3.compute.internal   Ready    worker   19h   v1.18.3+08c38ef
+ip-10-0-159-154.eu-west-3.compute.internal   Ready    infra    17h   v1.18.3+08c38ef
+ip-10-0-159-35.eu-west-3.compute.internal    Ready    master   19h   v1.18.3+08c38ef
+ip-10-0-168-64.eu-west-3.compute.internal    Ready    master   19h   v1.18.3+08c38ef
+ip-10-0-191-238.eu-west-3.compute.internal   Ready    worker   19h   v1.18.3+08c38ef
+ip-10-0-208-80.eu-west-3.compute.internal    Ready    master   19h   v1.18.3+08c38ef
+ip-10-0-220-32.eu-west-3.compute.internal    Ready    worker   19h   v1.18.3+08c38ef
+[akaris@linux ipi]$ oc get machineconfigpool
+NAME     CONFIG                                             UPDATED   UPDATING   DEGRADED   MACHINECOUNT   READYMACHINECOUNT   UPDATEDMACHINECOUNT   DEGRADEDMACHINECOUNT   AGE
+infra    rendered-infra-f3df01ebf7429a29582f3c46132fcf88    True      False      False      3              3                   3                     0                      18h
+master   rendered-master-2cc3abe4c49c6db04d9456744d0079f9   True      False      False      3              3                   3                     0                      19h
+worker   rendered-worker-d65740ba72e305c96782a27b8255dd89   True      False      False      3              3                   3                     0                      19h
+[akaris@linux ipi]$ oc get machines
+NAME                                    PHASE     TYPE        REGION      ZONE         AGE
+akaris2-f74ht-infra-eu-west-3a-fctd5    Running   m5.large    eu-west-3   eu-west-3a   18h
+akaris2-f74ht-infra-eu-west-3a-xtpcv    Running   m5.large    eu-west-3   eu-west-3a   18h
+akaris2-f74ht-infra-eu-west-3a-zmvzh    Running   m5.large    eu-west-3   eu-west-3a   18h
+akaris2-f74ht-master-0                  Running   m5.xlarge   eu-west-3   eu-west-3a   19h
+akaris2-f74ht-master-1                  Running   m5.xlarge   eu-west-3   eu-west-3b   19h
+akaris2-f74ht-master-2                  Running   m5.xlarge   eu-west-3   eu-west-3c   19h
+akaris2-f74ht-worker-eu-west-3a-4krrd   Running   m5.large    eu-west-3   eu-west-3a   19h
+akaris2-f74ht-worker-eu-west-3b-59z6n   Running   m5.large    eu-west-3   eu-west-3b   19h
+akaris2-f74ht-worker-eu-west-3c-chst9   Running   m5.large    eu-west-3   eu-west-3c   19h
+[akaris@linux ipi]$ oc debug node/ip-10-0-128-80.eu-west-3.compute.internal
+Starting pod/ip-10-0-128-80eu-west-3computeinternal-debug ...
+To use host binaries, run `chroot /host`
+Pod IP: 10.0.128.80
+If you don't see a command prompt, try pressing enter.
+sh-4.2# chroot /host
+sh-4.4# ps aux | grep kubelet
+root        1411  3.5  1.8 1484684 147368 ?      Ssl  10:16   0:23 kubelet --config=/etc/kubernetes/kubelet.conf --bootstrap-kubeconfig=/etc/kubernetes/kubeconfig --kubeconfig=/var/lib/kubelet/kubeconfig --container-runtime=remote --container-runtime-endpoint=/var/run/crio/crio.sock --runtime-cgroups=/system.slice/crio.service --node-labels=node-role.kubernetes.io/infra,node.openshift.io/os_id=rhcos --minimum-container-ttl-duration=6m0s --volume-plugin-dir=/etc/kubernetes/kubelet-plugins/volume/exec --cloud-provider=aws --pod-infra-container-image=quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:6e8bcc9c91267283f8b0edf1af0cb0d310c54d4f73905d9bcfb2a103a664fcb0 --v=4
+root       17471  0.0  0.0   9180  1052 ?        S+   10:27   0:00 grep kubelet
+</code></pre></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js" defer></script>
+        <script src="../../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

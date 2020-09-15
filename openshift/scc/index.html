@@ -46,6 +46,23 @@
                                 </ul>
                             </li>
                             <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Containers <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../linux/cgroups/" class="dropdown-item">cgroups</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/containers/" class="dropdown-item">Containers in Linux</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/namespaces/" class="dropdown-item">namespaces</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Linux <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     
@@ -149,6 +166,14 @@
                                     
 <li>
     <a href="../ingresscontroller_router_sharding_ocp_on_osp/" class="dropdown-item">Ingress Controller Sharding OCP on OSP</a>
+</li>
+                                    
+<li>
+    <a href="../ingress-controller-sharding-on-separate-vip/" class="dropdown-item">Ingress Controller Sharding on separate VIP</a>
+</li>
+                                    
+<li>
+    <a href="../istio-1.6-on-ocp.4.x/" class="dropdown-item">Istio 1.6 on OpenShift 4.x</a>
 </li>
                                     
 <li>
@@ -956,9 +981,9 @@ $ oc get pod test-0 -o yaml | grep scc
 <p>Lessons learned: we can apply multiple SCCs to a ServiceAccount. The default SCC is always <code>restricted</code>. The matching goes by priority first, then most restrictive policy, then by name. And if a policy does not match a specific request, another one might "jump in" and "help out". </p>
 <h2 id="resources">Resources</h2>
 <ul>
-<li><a href="[https://www.openshift.com/blog/managing-sccs-in-openshift">https://www.openshift.com/blog/managing-sccs-in-openshift</a></li>
-<li><a href="[https://docs.openshift.com/container-platform/3.11/admin_guide/manage_scc.html">https://docs.openshift.com/container-platform/3.11/admin_guide/manage_scc.html</a></li>
-<li><a href="[https://docs.openshift.com/container-platform/3.11/install_config/persistent_storage/pod_security_context.html">https://docs.openshift.com/container-platform/3.11/install_config/persistent_storage/pod_security_context.html</a></li>
+<li><a href="https://www.openshift.com/blog/managing-sccs-in-openshift">https://www.openshift.com/blog/managing-sccs-in-openshift</a></li>
+<li><a href="https://docs.openshift.com/container-platform/3.11/admin_guide/manage_scc.html">https://docs.openshift.com/container-platform/3.11/admin_guide/manage_scc.html</a></li>
+<li><a href="https://docs.openshift.com/container-platform/3.11/install_config/persistent_storage/pod_security_context.html">https://docs.openshift.com/container-platform/3.11/install_config/persistent_storage/pod_security_context.html</a></li>
 </ul></div>
             </div>
         </div>

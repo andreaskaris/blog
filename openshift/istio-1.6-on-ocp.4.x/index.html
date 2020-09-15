@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Istio 1.6 on OpenShift 4.x - Andreas Karis Blog</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+
+        <script src="../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Andreas Karis Blog</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ceph <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../ceph/ceph-manual-test/" class="dropdown-item">Ceph manual test with qemu</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Containers <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../linux/cgroups/" class="dropdown-item">cgroups</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/containers/" class="dropdown-item">Containers in Linux</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/namespaces/" class="dropdown-item">namespaces</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Linux <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../linux/cgroups/" class="dropdown-item">cgroups</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/containers/" class="dropdown-item">Containers in Linux</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/hugepages/" class="dropdown-item">Hugepages</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/meson/" class="dropdown-item">meson</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/namespaces/" class="dropdown-item">namespaces</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/old_java_version_with_xorgs_in_container/" class="dropdown-item">Old Java inside a container with xorgs</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Networking <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../networking/arp_and_the_neighbor_table/" class="dropdown-item">ARP and the Neighbor table</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/bonding_in_linux/" class="dropdown-item">Bonding in Linux</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/geneve_tunneling/" class="dropdown-item">Geneve tunneling</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/netlink/" class="dropdown-item">Netlink</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovn-kind/" class="dropdown-item">OVN kind</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovn_standalone_on_fedora31/" class="dropdown-item">OVN standalone on Fedora 31</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovs_recirculation/" class="dropdown-item">OVS packet recirculation</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovs-vxlan-tunnels-and-dscp/" class="dropdown-item">OVS VXLAN tunnels and DSCP</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovs_with_gdb/" class="dropdown-item">OVS with GDB</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/sctp/" class="dropdown-item">SCTP</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/wireguard/" class="dropdown-item">Wireguard</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">OpenShift <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../alertmanager/" class="dropdown-item">AlertManager</a>
+</li>
+                                    
+<li>
+    <a href="../cpu-manager-with-custom-machine-config-pool/" class="dropdown-item">CPU manager with custom MachineConfigPool</a>
+</li>
+                                    
+<li>
+    <a href="../crio-conmon-runc/" class="dropdown-item">Crio vs conmon vs runc</a>
+</li>
+                                    
+<li>
+    <a href="../openshift_httpbin_tshark_sidecar/" class="dropdown-item">Httpbin tshark sidecar container</a>
+</li>
+                                    
+<li>
+    <a href="../ocp4-infra-nodes-with-machineset-without-worker-label/" class="dropdown-item">Infra nodes with MachineSets without worker label</a>
+</li>
+                                    
+<li>
+    <a href="../ingresscontroller_router_sharding_ocp_on_osp/" class="dropdown-item">Ingress Controller Sharding OCP on OSP</a>
+</li>
+                                    
+<li>
+    <a href="../ingress-controller-sharding-on-separate-vip/" class="dropdown-item">Ingress Controller Sharding on separate VIP</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active">Istio 1.6 on OpenShift 4.x</a>
+</li>
+                                    
+<li>
+    <a href="../kata/" class="dropdown-item">kata containers and the kata operatora</a>
+</li>
+                                    
+<li>
+    <a href="../proxy-ocp-4.5/" class="dropdown-item">Proxy OCP 4.5</a>
+</li>
+                                    
+<li>
+    <a href="../scc/" class="dropdown-item">Security Context Constraints (SCC)</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/sctp/" class="dropdown-item">SCTP</a>
+</li>
+                                    
+<li>
+    <a href="../openshift_troubleshooting_etcd_state/" class="dropdown-item">Troubleshooting etcd state</a>
+</li>
+                                    
+<li>
+    <a href="../useful-ocp-curl/" class="dropdown-item">Querying the OCP 4.x upgrades info API</a>
+</li>
+                                    
+<li>
+    <a href="../troubleshooting_openshift_on_openstack_worker_creation/" class="dropdown-item">Troubleshooting OpenShift on OpenStack worker creation</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">OpenStack <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../openstack/reattach_to_running_deployment/" class="dropdown-item">Reattach to running deployment</a>
+</li>
+                                    
+<li>
+    <a href="../../openstack/using_clouds_yaml/" class="dropdown-item">Using clouds.yaml</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../ingress-controller-sharding-on-separate-vip/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../kata/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#istio-16-on-openshfit-4x" class="nav-link">Istio 1.6 on OpenShfit 4.x</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#resources" class="nav-link">Resources</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#installation-instructions" class="nav-link">Installation instructions</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="istio-16-on-openshfit-4x">Istio 1.6 on OpenShfit 4.x</h1>
+<p>How to install upstream istio 1.6 on OCP 4.x on AWS</p>
+<h2 id="resources">Resources</h2>
+<p>Instructions for upstream Istio with OpenShift:
+<a href="https://istio.io/latest/docs/setup/platform-setup/openshift/">https://istio.io/latest/docs/setup/platform-setup/openshift/</a></p>
+<p>I then installed istioctl:
+<a href="https://istio.io/latest/docs/ops/diagnostic-tools/istioctl/">https://istio.io/latest/docs/ops/diagnostic-tools/istioctl/</a></p>
+<p>And then <em>DO NOT</em> follow:
+<a href="https://istio.io/latest/docs/setup/install/standalone-operator/">https://istio.io/latest/docs/setup/install/standalone-operator/</a></p>
+<p>The standalone operator configuration does not work, so instead follow:
+<a href="https://istio.io/latest/docs/setup/additional-setup/cni/">https://istio.io/latest/docs/setup/additional-setup/cni/</a></p>
+<p>But be aware of:
+<a href="https://istio.io/latest/docs/setup/additional-setup/cni/#hosted-kubernetes-settings">https://istio.io/latest/docs/setup/additional-setup/cni/#hosted-kubernetes-settings</a></p>
+<p>Install the bookinfo application:
+<a href="https://istio.io/latest/docs/examples/bookinfo/">https://istio.io/latest/docs/examples/bookinfo/</a></p>
+<h2 id="installation-instructions">Installation instructions</h2>
+<p>Make sure the cluster was correctly installed:</p>
+<pre><code>[akaris@linux upi]$ oc get clusterversion
+NAME      VERSION   AVAILABLE   PROGRESSING   SINCE   STATUS
+version   4.4.16    True        False         2d1h    Cluster version is 4.4.16
+</code></pre>
+
+<pre><code>[akaris@linux upi]$ oc new-project istio-system
+Now using project &quot;istio-system&quot; on server &quot;https://api.akaris-upi.focused-solutions.support:6443&quot;.
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app django-psql-example
+
+to build a new example application in Python. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=gcr.io/hello-minikube-zero-install/hello-node
+</code></pre>
+
+<pre><code>[akaris@linux upi]$ oc adm policy add-scc-to-group anyuid system:serviceaccounts:istio-system
+securitycontextconstraints.security.openshift.io/anyuid added to groups: [&quot;system:serviceaccounts:istio-system&quot;]
+</code></pre>
+
+<p>Install istiocli:</p>
+<pre><code>[akaris@linux upi]$  curl -sL https://istio.io/downloadIstioctl | sh -
+Downloading istioctl-1.6.8 from https://github.com/istio/istio/releases/download/1.6.8/istioctl-1.6.8-linux.tar.gz ... 
+Failed. 
+
+Trying with TARGET_ARCH. Downloading istioctl-1.6.8 from https://github.com/istio/istio/releases/download/1.6.8/istioctl-1.6.8-linux-amd64.tar.gz ...
+istioctl-1.6.8-linux-amd64.tar.gz download complete!
+
+Add the istioctl to your path with:
+  export PATH=$PATH:$HOME/.istioctl/bin 
+
+Begin the Istio pre-installation verification check by running:
+     istioctl verify-install 
+
+Need more information? Visit https://istio.io/docs/reference/commands/istioctl/ 
+[akaris@linux upi]$ export PATH=$PATH:$HOME/.istioctl/bin^C
+[akaris@linux upi]$ export PATH=$PATH:$HOME/.istioctl/bin
+[akaris@linux upi]$ istioctl verify-install
+Error: could not load IstioOperator from cluster: the server could not find the requested resource.  Use --filename 
+</code></pre>
+
+<p>The above error is normal. Nothing was installed yet.</p>
+<p>Follow <a href="https://istio.io/latest/docs/setup/additional-setup/cni/">https://istio.io/latest/docs/setup/additional-setup/cni/</a>:</p>
+<pre><code>$ cat &lt;&lt;EOF &gt; istio-cni.yaml
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  components:
+    cni:
+      enabled: true
+  values:
+    cni:
+      excludeNamespaces:
+       - istio-system
+       - kube-system
+      logLevel: info
+EOF
+</code></pre>
+
+<p>For OpenShift, then follow: <a href="https://istio.io/latest/docs/setup/additional-setup/cni/#hosted-kubernetes-settings">https://istio.io/latest/docs/setup/additional-setup/cni/#hosted-kubernetes-settings</a>:</p>
+<p>Therefore, run:</p>
+<pre><code>[akaris@linux upi]$ istioctl install -f istio-cni.yaml --set components.cni.namespace=kube-system --set values.cni.cniBinDir=/var/lib/cni/bin --set values.cni.cniConfDir=/etc/cni/multus/net.d --set values.cni.chained=false --set values.cni.cniConfFileName=&quot;istio-cni.conf&quot; --set values.sidecarInjectorWebhook.injectedAnnotations.&quot;k8s\.v1\.cni\.cncf\.io/networks&quot;=istio-cni
+✔ Istio core installed                                                                                                
+✔ Istiod installed                                                                                                    
+✔ Addons installed                                                                                                    
+✔ Ingress gateways installed                                                                                          
+✔ CNI installed                                                                                                       
+- Pruning removed resources                                                                                             Pruned object DaemonSet:istio-system:istio-cni-node.
+  Pruned object ConfigMap:istio-system:istio-cni-config.
+  Pruned object ServiceAccount:istio-system:istio-cni.
+✔ Installation complete  
+</code></pre>
+
+<p>Verify the installation:</p>
+<pre><code>[akaris@linux upi]$ istioctl verify-install 
+ClusterRole: istio-cni.default checked successfully
+ClusterRole: istio-cni-repair-role.default checked successfully
+ClusterRoleBinding: istio-cni.default checked successfully
+ClusterRoleBinding: istio-cni-repair-rolebinding.default checked successfully
+ConfigMap: istio-cni-config.kube-system checked successfully
+DaemonSet: istio-cni-node.kube-system checked successfully
+ServiceAccount: istio-cni.kube-system checked successfully
+HorizontalPodAutoscaler: istio-ingressgateway.istio-system checked successfully
+Deployment: istio-ingressgateway.istio-system checked successfully
+PodDisruptionBudget: istio-ingressgateway.istio-system checked successfully
+Role: istio-ingressgateway-sds.istio-system checked successfully
+RoleBinding: istio-ingressgateway-sds.istio-system checked successfully
+Service: istio-ingressgateway.istio-system checked successfully
+ServiceAccount: istio-ingressgateway-service-account.istio-system checked successfully
+ClusterRole: prometheus-istio-system.default checked successfully
+ClusterRoleBinding: prometheus-istio-system.default checked successfully
+ConfigMap: prometheus.istio-system checked successfully
+Deployment: prometheus.istio-system checked successfully
+Service: prometheus.istio-system checked successfully
+ServiceAccount: prometheus.istio-system checked successfully
+HorizontalPodAutoscaler: istiod.istio-system checked successfully
+ConfigMap: istio.istio-system checked successfully
+Deployment: istiod.istio-system checked successfully
+ConfigMap: istio-sidecar-injector.istio-system checked successfully
+MutatingWebhookConfiguration: istio-sidecar-injector.default checked successfully
+PodDisruptionBudget: istiod.istio-system checked successfully
+Service: istiod.istio-system checked successfully
+EnvoyFilter: metadata-exchange-1.4.istio-system checked successfully
+EnvoyFilter: stats-filter-1.4.istio-system checked successfully
+EnvoyFilter: metadata-exchange-1.5.istio-system checked successfully
+EnvoyFilter: tcp-metadata-exchange-1.5.istio-system checked successfully
+EnvoyFilter: stats-filter-1.5.istio-system checked successfully
+EnvoyFilter: tcp-stats-filter-1.5.istio-system checked successfully
+EnvoyFilter: metadata-exchange-1.6.istio-system checked successfully
+EnvoyFilter: tcp-metadata-exchange-1.6.istio-system checked successfully
+EnvoyFilter: stats-filter-1.6.istio-system checked successfully
+EnvoyFilter: tcp-stats-filter-1.6.istio-system checked successfully
+ClusterRole: istiod-istio-system.default checked successfully
+ClusterRole: istio-reader-istio-system.default checked successfully
+ClusterRoleBinding: istio-reader-istio-system.default checked successfully
+ClusterRoleBinding: istiod-pilot-istio-system.default checked successfully
+ServiceAccount: istio-reader-service-account.istio-system checked successfully
+ServiceAccount: istiod-service-account.istio-system checked successfully
+ValidatingWebhookConfiguration: istiod-istio-system.default checked successfully
+CustomResourceDefinition: httpapispecs.config.istio.io.default checked successfully
+CustomResourceDefinition: httpapispecbindings.config.istio.io.default checked successfully
+CustomResourceDefinition: quotaspecs.config.istio.io.default checked successfully
+CustomResourceDefinition: quotaspecbindings.config.istio.io.default checked successfully
+CustomResourceDefinition: destinationrules.networking.istio.io.default checked successfully
+CustomResourceDefinition: envoyfilters.networking.istio.io.default checked successfully
+CustomResourceDefinition: gateways.networking.istio.io.default checked successfully
+CustomResourceDefinition: serviceentries.networking.istio.io.default checked successfully
+CustomResourceDefinition: sidecars.networking.istio.io.default checked successfully
+CustomResourceDefinition: virtualservices.networking.istio.io.default checked successfully
+CustomResourceDefinition: workloadentries.networking.istio.io.default checked successfully
+CustomResourceDefinition: attributemanifests.config.istio.io.default checked successfully
+CustomResourceDefinition: handlers.config.istio.io.default checked successfully
+CustomResourceDefinition: instances.config.istio.io.default checked successfully
+CustomResourceDefinition: rules.config.istio.io.default checked successfully
+CustomResourceDefinition: clusterrbacconfigs.rbac.istio.io.default checked successfully
+CustomResourceDefinition: rbacconfigs.rbac.istio.io.default checked successfully
+CustomResourceDefinition: serviceroles.rbac.istio.io.default checked successfully
+CustomResourceDefinition: servicerolebindings.rbac.istio.io.default checked successfully
+CustomResourceDefinition: authorizationpolicies.security.istio.io.default checked successfully
+CustomResourceDefinition: peerauthentications.security.istio.io.default checked successfully
+CustomResourceDefinition: requestauthentications.security.istio.io.default checked successfully
+CustomResourceDefinition: adapters.config.istio.io.default checked successfully
+CustomResourceDefinition: templates.config.istio.io.default checked successfully
+CustomResourceDefinition: istiooperators.install.istio.io.default checked successfully
+Checked 25 custom resource definitions
+Checked 1 Istio Deployments
+Istio is installed successfully
+[akaris@linux upi]$ 
+</code></pre>
+
+<p>That will create the istio pods that are needed for the CNI plugin:</p>
+<pre><code>[akaris@linux upi]$ oc get pods -A | grep istio
+istio-system                                            istio-ingressgateway-6c77d7f498-d58gx                                1/1     Running     0          33m
+istio-system                                            istiod-58f84ffddc-r2bj9                                              1/1     Running     0          33m
+istio-system                                            prometheus-5db67458fb-5m67n                                          2/2     Running     0          33m
+kube-system                                             istio-cni-node-52ktn                                                 2/2     Running     0          56s
+kube-system                                             istio-cni-node-794mr                                                 2/2     Running     0          56s
+kube-system                                             istio-cni-node-gggvm                                                 2/2     Running     0          56s
+kube-system                                             istio-cni-node-nd72d                                                 2/2     Running     0          56s
+kube-system                                             istio-cni-node-p2w5f                                                 2/2     Running     0          56s
+kube-system                                             istio-cni-node-vqjkb                                                 2/2     Running     0          56s
+</code></pre>
+
+<p>Create the bookinfo app according to <a href="https://istio.io/latest/docs/examples/bookinfo/">https://istio.io/latest/docs/examples/bookinfo/</a>:</p>
+<pre><code>[akaris@linux upi]$ oc new-project bookinfo
+Now using project &quot;bookinfo&quot; on server &quot;https://api.akaris-upi.focused-solutions.support:6443&quot;.
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app django-psql-example
+
+to build a new example application in Python. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=gcr.io/hello-minikube-zero-install/hello-node
+</code></pre>
+
+<p>Adjust SCCs according to <a href="https://istio.io/latest/docs/setup/platform-setup/openshift/#privileged-security-context-constraints-for-application-sidecars">https://istio.io/latest/docs/setup/platform-setup/openshift/#privileged-security-context-constraints-for-application-sidecars</a>:</p>
+<pre><code>The Istio sidecar injected into each application pod runs with user ID 1337, 
+which is not allowed by default in OpenShift. To allow this user ID to be used, 
+execute the following commands. Replace &lt;target-namespace&gt; with the appropriate namespace.
+</code></pre>
+
+<p>So execute:</p>
+<pre><code>[akaris@linux upi]$ oc adm policy add-scc-to-group privileged system:serviceaccounts:bookinfo
+securitycontextconstraints.security.openshift.io/privileged added to groups: [&quot;system:serviceaccounts:bookinfo&quot;]
+[akaris@linux upi]$ oc adm policy add-scc-to-group anyuid system:serviceaccounts:bookinfo
+securitycontextconstraints.security.openshift.io/anyuid added to groups: [&quot;system:serviceaccounts:bookinfo&quot;]
+</code></pre>
+
+<p>Verify SCC configuration - in SCC 4.5, check <code>oc get clusterrolebindings | grep scc</code> instead.</p>
+<pre><code>[akaris@linux upi]$ oc get scc anyuid -o yaml | grep serv -C3
+  type: RunAsAny
+groups:
+- system:cluster-admins
+- system:serviceaccounts:istio-system
+kind: SecurityContextConstraints
+metadata:
+  annotations:
+</code></pre>
+
+<p>Now, create the application:</p>
+<pre><code>oc apply -f https://raw.githubusercontent.com/istio/istio/release-1.6/samples/bookinfo/platform/kube/bookinfo.yaml
+</code></pre>
+
+<pre><code>[akaris@linux upi]$ oc get pods
+NAME                              READY   STATUS    RESTARTS   AGE
+details-v1-5974b67c8-nd7kl        2/2     Running   0          83s
+productpage-v1-64794f5db4-gl7c9   2/2     Running   0          83s
+ratings-v1-c6cdf8d98-z987h        2/2     Running   0          83s
+reviews-v1-7f6558b974-6z84q       2/2     Running   0          83s
+reviews-v2-6cb6ccd848-l8s56       2/2     Running   0          83s
+reviews-v3-cc56b578-9vvqv         2/2     Running   0          83s
+</code></pre>
+
+<p>Now, create the gateway:</p>
+<pre><code>[akaris@linux upi]$ oc apply -f https://raw.githubusercontent.com/istio/istio/release-1.6/samples/bookinfo/networking/bookinfo-gateway.yaml
+gateway.networking.istio.io/bookinfo-gateway created
+</code></pre>
+
+<pre><code>[akaris@linux upi]$ oc  get svc istio-ingressgateway -n istio-system
+NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP                                                               PORT(S)                                                      AGE
+istio-ingressgateway   LoadBalancer   172.30.44.45   af0e3e39e3f544f55a59da6578212ff5-1911792852.eu-west-3.elb.amazonaws.com   15021:31538/TCP,80:31367/TCP,443:31276/TCP,15443:30398/TCP   47m
+</code></pre>
+
+<p>Get variables to connect to the gateway:
+<a href="https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/#determining-the-ingress-ip-and-ports">https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/#determining-the-ingress-ip-and-ports</a></p>
+<p>There's an issue in the instructions for the <code>INGRESS_HOST</code>. With AWS, it needs to be <code>.status.loadBalancer.ingress[0].hostname</code> and not <code>.status.loadBalancer.ingress[0].ip</code>:</p>
+<pre><code>[akaris@linux upi]$ export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+[akaris@linux upi]$ export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name==&quot;http2&quot;)].port}')
+[akaris@linux upi]$ export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name==&quot;https&quot;)].port}')
+[akaris@linux upi]$ export TCP_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name==&quot;tcp&quot;)].port}')
+[akaris@linux upi]$ export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+</code></pre>
+
+<p>Now, connect to the application with curl:</p>
+<pre><code>[akaris@linux upi]$ curl -s &quot;http://${GATEWAY_URL}/productpage&quot; | grep -o &quot;&lt;title&gt;.*&lt;/title&gt;&quot;
+&lt;title&gt;Simple Bookstore App&lt;/title&gt;
+</code></pre></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js" defer></script>
+        <script src="../../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -1,28 +1,30 @@
-### How to install upstream istio 1.6 on OCP 4.x on AWS ###
+# Istio 1.6 on OpenShfit 4.x #
 
-#### Resources ####
+How to install upstream istio 1.6 on OCP 4.x on AWS
+
+## Resources ##
 
 Instructions for upstream Istio with OpenShift:
-https://istio.io/latest/docs/setup/platform-setup/openshift/
+[https://istio.io/latest/docs/setup/platform-setup/openshift/](https://istio.io/latest/docs/setup/platform-setup/openshift/)
 
 I then installed istioctl:
-https://istio.io/latest/docs/ops/diagnostic-tools/istioctl/
+[https://istio.io/latest/docs/ops/diagnostic-tools/istioctl/](https://istio.io/latest/docs/ops/diagnostic-tools/istioctl/)
 
 And then *DO NOT* follow:
-https://istio.io/latest/docs/setup/install/standalone-operator/
+[https://istio.io/latest/docs/setup/install/standalone-operator/](https://istio.io/latest/docs/setup/install/standalone-operator/)
 
 The standalone operator configuration does not work, so instead follow:
-https://istio.io/latest/docs/setup/additional-setup/cni/
+[https://istio.io/latest/docs/setup/additional-setup/cni/](https://istio.io/latest/docs/setup/additional-setup/cni/)
 
 But be aware of:
-https://istio.io/latest/docs/setup/additional-setup/cni/#hosted-kubernetes-settings
+[https://istio.io/latest/docs/setup/additional-setup/cni/#hosted-kubernetes-settings](https://istio.io/latest/docs/setup/additional-setup/cni/#hosted-kubernetes-settings)
 
 Install the bookinfo application:
-https://istio.io/latest/docs/examples/bookinfo/
+[https://istio.io/latest/docs/examples/bookinfo/](https://istio.io/latest/docs/examples/bookinfo/)
 
-#### Installation instructions ####
+## Installation instructions ##
 
-~~~
+Make sure the cluster was correctly installed:
 ~~~
 [akaris@linux upi]$ oc get clusterversion
 NAME      VERSION   AVAILABLE   PROGRESSING   SINCE   STATUS
@@ -71,7 +73,7 @@ Error: could not load IstioOperator from cluster: the server could not find the 
 
 The above error is normal. Nothing was installed yet.
 
-Follow https://istio.io/latest/docs/setup/additional-setup/cni/
+Follow [https://istio.io/latest/docs/setup/additional-setup/cni/](https://istio.io/latest/docs/setup/additional-setup/cni/):
 ~~~
 $ cat <<EOF > istio-cni.yaml
 apiVersion: install.istio.io/v1alpha1
@@ -89,7 +91,7 @@ spec:
 EOF
 ~~~
 
-For OpenShift, then follow: https://istio.io/latest/docs/setup/additional-setup/cni/#hosted-kubernetes-settings:
+For OpenShift, then follow: [https://istio.io/latest/docs/setup/additional-setup/cni/#hosted-kubernetes-settings](https://istio.io/latest/docs/setup/additional-setup/cni/#hosted-kubernetes-settings):
 
 Therefore, run:
 ~~~
@@ -197,8 +199,8 @@ kube-system                                             istio-cni-node-p2w5f    
 kube-system                                             istio-cni-node-vqjkb                                                 2/2     Running     0          56s
 ~~~
  
-Create the bookinfo app according to https://istio.io/latest/docs/examples/bookinfo/:
- ~~~
+Create the bookinfo app according to [https://istio.io/latest/docs/examples/bookinfo/](https://istio.io/latest/docs/examples/bookinfo/):
+~~~
 [akaris@linux upi]$ oc new-project bookinfo
 Now using project "bookinfo" on server "https://api.akaris-upi.focused-solutions.support:6443".
 
@@ -211,7 +213,7 @@ to build a new example application in Python. Or use kubectl to deploy a simple 
     kubectl create deployment hello-node --image=gcr.io/hello-minikube-zero-install/hello-node
 ~~~
 
-Adjust SCCs according to https://istio.io/latest/docs/setup/platform-setup/openshift/#privileged-security-context-constraints-for-application-sidecars:
+Adjust SCCs according to [https://istio.io/latest/docs/setup/platform-setup/openshift/#privileged-security-context-constraints-for-application-sidecars](https://istio.io/latest/docs/setup/platform-setup/openshift/#privileged-security-context-constraints-for-application-sidecars):
 ~~~
 The Istio sidecar injected into each application pod runs with user ID 1337, 
 which is not allowed by default in OpenShift. To allow this user ID to be used, 
@@ -267,7 +269,7 @@ istio-ingressgateway   LoadBalancer   172.30.44.45   af0e3e39e3f544f55a59da65782
 ~~~
 
 Get variables to connect to the gateway:
-https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/#determining-the-ingress-ip-and-ports
+[https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/#determining-the-ingress-ip-and-ports](https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/#determining-the-ingress-ip-and-ports)
 
 There's an issue in the instructions for the `INGRESS_HOST`. With AWS, it needs to be `.status.loadBalancer.ingress[0].hostname` and not `.status.loadBalancer.ingress[0].ip`:
 ~~~
@@ -283,4 +285,3 @@ Now, connect to the application with curl:
 [akaris@linux upi]$ curl -s "http://${GATEWAY_URL}/productpage" | grep -o "<title>.*</title>"
 <title>Simple Bookstore App</title>
 ~~~
- 

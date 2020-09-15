@@ -1,8 +1,10 @@
-* It is important to know that each node can only host one ingress router. You will need a specific role for each INGRESS type and different INGRESS types cannot be hosted on the same worker node. This is due to the particularities of the `HostNetwork` network type.
+# Ingress Controller Sharding on separate VIP
 
-* The following example uses the OpenStack IPI but the vSphere IPI should behave similarly.
+It is important to know that each node can only host one ingress router with `HostNetwork` networking. You will need a specific role for each INGRESS type and different INGRESS types cannot be hosted on the same worker node. This is due to the particularities of the `HostNetwork` network type.
 
-### Step 1: Scale out by 2 more worker nodes ###
+The following example uses the OpenStack IPI.
+
+## Step 1: Scale out by 2 more worker nodes ##
 
 Scale out the worker role. This step might have to be improved.
 ~~~
@@ -24,7 +26,7 @@ akaris-osc-6klvk-worker-lp2df   Ready    worker   5h6m    v1.18.3+012b3ec
 akaris-osc-6klvk-worker-zhs67   Ready    worker   2m57s   v1.18.3+012b3ec
 ~~~
 
-### Step 2: Add additional interface to additional nodes ###
+## Step 2: Add additional interface to additional nodes ##
 
 This step will be executed within the underlying infrastructure provider. In this example case, OpenShift is hosted on top of OpenStack.
 
@@ -260,9 +262,9 @@ Repeat the same on the other node:
 (...)
 ~~~
 
-### Step 3: create new role and assign new nodes to the role ###
+## Step 3: create new role and assign new nodes to the role ##
 
-Follow https://www.redhat.com/en/blog/openshift-container-platform-4-how-does-machine-config-pool-work with modifications.
+Follow [https://www.redhat.com/en/blog/openshift-container-platform-4-how-does-machine-config-pool-work with modifications](https://www.redhat.com/en/blog/openshift-container-platform-4-how-does-machine-config-pool-work).
 
 Run this via a script that's triggered by a systemd unit file:
 ~~~
@@ -425,7 +427,7 @@ PING 10.0.92.205 (10.0.92.205) 56(84) bytes of data.
 rtt min/avg/max/mdev = 1.242/1.242/1.242/0.000 ms
 ~~~
 
-### Step 4: Configure keepalived template for the staging node ###
+## Step 4: Configure keepalived template for the staging node ##
 ~~~
 cat <<'EOF' > keepalived.conf.tmpl
 # TODO: Improve this check. The port is assumed to be alive.
@@ -557,10 +559,10 @@ Last login: Tue Aug 11 19:14:19 2020 from 10.0.88.55
 [core@akaris-osc-6klvk-worker-zhs67 ~]$ 
 ~~~
 
-### Step 5: Configure an Ingress, use Ingress controller sharding ###
+## Step 5: Configure an Ingress, use Ingress controller sharding ##
 
 Use:
-https://docs.openshift.com/container-platform/4.5/networking/ingress-operator.html#nw-ingress-sharding_configuring-ingress
+[https://docs.openshift.com/container-platform/4.5/networking/ingress-operator.html#nw-ingress-sharding_configuring-ingress](https://docs.openshift.com/container-platform/4.5/networking/ingress-operator.html#nw-ingress-sharding_configuring-ingress)
 
 For example, the following Ingress route should work and be served by the 2 `staging` workers:
 ~~~
@@ -647,7 +649,7 @@ router-staging-86c864549c-7stx8   1/1     Running   0          14m    192.168.1.
 router-staging-86c864549c-nkz28   1/1     Running   0          14m    192.168.2.48    akaris-osc-6klvk-worker-zhs67   <none>           <none>
 ~~~
 
-### Step 6: Expose route ###
+## Step 6: Expose route ##
 
 ~~~
 oc new-project test
@@ -755,7 +757,7 @@ httpbin-ingress-z9tgf   httpbin-ingress.staging.akaris-osc.... ... 1 more   /   
 }
 ~~~
 
-### Step 7: Security hardening ###
+## Step 7: Security hardening ##
 
 This is out of scope of this PoC, but note that at the moment, the default Ingress can still handle all domains and thus if the client configures its resolver appropriately, can reach the application via the default VIP.
 
@@ -805,7 +807,7 @@ Nginx A
 
 Read the documentation about IngressController sharding for further details.
 
-### Step 8: Troubleshooting ###
+## Step 8: Troubleshooting ##
 
 Again, a bit outside of the scope of this PoC - the debug pods for my `staging` nodes stopped working overnight. This would need some further troubleshooting:
 ~~~

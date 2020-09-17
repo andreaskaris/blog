@@ -8,7 +8,7 @@ Follow the OpenShift documentation. The documentation isn't very detailed (at le
 
 * [https://docs.openshift.com/container-platform/4.5/installing/install_config/installing-restricted-networks-preparations.html](https://docs.openshift.com/container-platform/4.5/installing/install_config/installing-restricted-networks-preparations.html)
 
-## Setting up a private the registry server 
+## Setting up a private registry server 
 
 After creating a virtual machine that will serve as a registry, install podman and httpd-tools:
 ~~~
@@ -105,8 +105,11 @@ subject=C = DE, ST = NRW, L = Dusseldorf, O = Acme Inc., CN = 192.0.2.100, email
 Getting CA Private Key
 Enter pass phrase for ../rootCA.key:
 ~~~
-See: 
+
+See:
+ 
 * [https://github.com/openssl/openssl/issues/6481](https://github.com/openssl/openssl/issues/6481)
+
 * [https://security.stackexchange.com/questions/150078/missing-x509-extensions-with-an-openssl-generated-certificate](https://security.stackexchange.com/questions/150078/missing-x509-extensions-with-an-openssl-generated-certificate)
 
 Then, trust the certificate and make sure that it passes verification and that it contains the SAN entries:

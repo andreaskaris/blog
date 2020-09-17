@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Installing a cluster with a mirror registry - Andreas Karis Blog</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+
+        <script src="../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Andreas Karis Blog</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ceph <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../ceph/ceph-manual-test/" class="dropdown-item">Ceph manual test with qemu</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Containers <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../linux/cgroups/" class="dropdown-item">cgroups</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/containers/" class="dropdown-item">Containers in Linux</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/namespaces/" class="dropdown-item">namespaces</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Linux <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../linux/cgroups/" class="dropdown-item">cgroups</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/containers/" class="dropdown-item">Containers in Linux</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/hugepages/" class="dropdown-item">Hugepages</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/meson/" class="dropdown-item">meson</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/namespaces/" class="dropdown-item">namespaces</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/old_java_version_with_xorgs_in_container/" class="dropdown-item">Old Java inside a container with xorgs</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Networking <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../networking/arp_and_the_neighbor_table/" class="dropdown-item">ARP and the Neighbor table</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/bonding_in_linux/" class="dropdown-item">Bonding in Linux</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/geneve_tunneling/" class="dropdown-item">Geneve tunneling</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/juniper_x520/" class="dropdown-item">Configure Juniper switch</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/netlink/" class="dropdown-item">Netlink</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovn-kind/" class="dropdown-item">OVN kind</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovn_standalone_on_fedora31/" class="dropdown-item">OVN standalone on Fedora 31</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovs_recirculation/" class="dropdown-item">OVS packet recirculation</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovs-vxlan-tunnels-and-dscp/" class="dropdown-item">OVS VXLAN tunnels and DSCP</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovs_with_gdb/" class="dropdown-item">OVS with GDB</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/sctp/" class="dropdown-item">SCTP</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/wireguard/" class="dropdown-item">Wireguard</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">OpenShift <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../alertmanager/" class="dropdown-item">AlertManager</a>
+</li>
+                                    
+<li>
+    <a href="../cpu-manager-with-custom-machine-config-pool/" class="dropdown-item">CPU manager with custom MachineConfigPool</a>
+</li>
+                                    
+<li>
+    <a href="../crio-conmon-runc/" class="dropdown-item">Crio vs conmon vs runc</a>
+</li>
+                                    
+<li>
+    <a href="../openshift_httpbin_tshark_sidecar/" class="dropdown-item">Httpbin tshark sidecar container</a>
+</li>
+                                    
+<li>
+    <a href="../ocp4-infra-nodes-with-machineset-without-worker-label/" class="dropdown-item">Infra nodes with MachineSets without worker label</a>
+</li>
+                                    
+<li>
+    <a href="../ingresscontroller_router_sharding_ocp_on_osp/" class="dropdown-item">Ingress Controller Sharding OCP on OSP</a>
+</li>
+                                    
+<li>
+    <a href="../ingress-controller-sharding-on-separate-vip/" class="dropdown-item">Ingress Controller Sharding on separate VIP</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active">Installing a cluster with a mirror registry</a>
+</li>
+                                    
+<li>
+    <a href="../istio-1.6-on-ocp.4.x/" class="dropdown-item">Istio 1.6 on OpenShift 4.x</a>
+</li>
+                                    
+<li>
+    <a href="../kata/" class="dropdown-item">kata containers and the kata operatora</a>
+</li>
+                                    
+<li>
+    <a href="../proxy-ocp-4.5/" class="dropdown-item">Proxy OCP 4.5</a>
+</li>
+                                    
+<li>
+    <a href="../scc/" class="dropdown-item">Security Context Constraints (SCC)</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/sctp/" class="dropdown-item">SCTP</a>
+</li>
+                                    
+<li>
+    <a href="../openshift_troubleshooting_etcd_state/" class="dropdown-item">Troubleshooting etcd state</a>
+</li>
+                                    
+<li>
+    <a href="../useful-ocp-curl/" class="dropdown-item">Querying the OCP 4.x upgrades info API</a>
+</li>
+                                    
+<li>
+    <a href="../troubleshooting_openshift_on_openstack_worker_creation/" class="dropdown-item">Troubleshooting OpenShift on OpenStack worker creation</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">OpenStack <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../openstack/reattach_to_running_deployment/" class="dropdown-item">Reattach to running deployment</a>
+</li>
+                                    
+<li>
+    <a href="../../openstack/using_clouds_yaml/" class="dropdown-item">Using clouds.yaml</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../ingress-controller-sharding-on-separate-vip/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../istio-1.6-on-ocp.4.x/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#openshfit-mirror-registry-setup" class="nav-link">OpenShfit mirror registry setup</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#setting-up-a-private-the-registry-server" class="nav-link">Setting up a private the registry server</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#mirroring-openshift-container-images-into-private-registry-and-preparing-openshift-install" class="nav-link">Mirroring OpenShift container images into private registry and preparing openshift-install</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#installing-a-disconnected-cluster" class="nav-link">Installing a disconnected cluster</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="openshfit-mirror-registry-setup">OpenShfit mirror registry setup</h1>
+<p>In the following, we will run a container registry without hostname (only IP address) and self-signed CA and certificate. We need a virtual machine that serves as the container registry and a host that serves as the OpenShift install server. These can both be on the same machine, to simplify things further.</p>
+<p>All steps below clarify and should give an easy walkthrough of the OpenShift restricted network installation guide. </p>
+<p>Follow the OpenShift documentation. The documentation isn't very detailed (at least at the moment), so I'm going through the documentation with an example deployment.
+* <a href="https://docs.openshift.com/container-platform/4.5/installing/install_config/installing-restricted-networks-preparations.html">https://docs.openshift.com/container-platform/4.5/installing/install_config/installing-restricted-networks-preparations.html</a></p>
+<h2 id="setting-up-a-private-the-registry-server">Setting up a private the registry server</h2>
+<p>After creating a virtual machine that will serve as a registry, install podman and httpd-tools:</p>
+<pre><code>[root@mirror ~]# sudo yum -y install podman httpd-tools
+</code></pre>
+
+<p>Now, generate a self-signed CA:</p>
+<pre><code>[root@mirror ~]# mkdir CA
+[root@mirror ~]# cd CA
+[root@mirror CA]# openssl genrsa -des3 -out rootCA.key 4096
+Generating RSA private key, 4096 bit long modulus
+.++
+....................................................++
+e is 65537 (0x10001)
+Enter pass phrase for rootCA.key:
+Verifying - Enter pass phrase for rootCA.key:
+[root@mirror CA]# ll
+total 4
+-rw-r--r--. 1 root root 3311 Feb  3 09:45 rootCA.key
+[root@mirror CA]# openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 10240 -out rootCA.crt
+Enter pass phrase for rootCA.key:
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [XX]:DE
+State or Province Name (full name) []:NRW
+Locality Name (eg, city) [Default City]:Acme.Inc
+Organization Name (eg, company) [Default Company Ltd]:
+Organizational Unit Name (eg, section) []:acme.root
+Common Name (eg, your name or your server's hostname) []:
+Email Address []:
+[root@mirror CA]# ll
+total 8
+-rw-r--r--. 1 root root 1960 Feb  3 09:47 rootCA.crt
+-rw-r--r--. 1 root root 3311 Feb  3 09:45 rootCA.key
+</code></pre>
+
+<p>Trust this rootCA on the mirror registry node and on the node where you are running the OpenShift installer:</p>
+<pre><code>sudo cp rootCA.crt  /etc/pki/ca-trust/source/anchors/
+sudo update-ca-trust extract
+</code></pre>
+
+<p>Create a certificate signing request:</p>
+<pre><code>mkdir certificates
+cd certificates
+cat&lt;&lt;'EOF'&gt;config 
+[ req ]
+distinguished_name = req_distinguished_name
+prompt = no
+req_extensions = v3_req
+
+[ req_distinguished_name ]
+C=&quot;DE&quot;
+ST=&quot;NRW&quot;
+L=&quot;Dusseldorf&quot;
+O=&quot;Acme Inc.&quot;
+CN=&quot;54.93.195.61&quot;
+emailAddress=&quot;akaris@example.com&quot;
+
+[ v3_req ]
+
+#basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = 54.93.195.61
+IP.1 = 54.93.195.61
+DNS.2 = 172.31.43.58
+IP.2 = 172.31.43.58
+EOF
+openssl genrsa -out domain.key 4096
+openssl req -new -key domain.key -nodes -out domain.csr -config config
+</code></pre>
+
+<p>Verify the CSR:</p>
+<pre><code>[root@mirror certificates]#  openssl req -in domain.csr -noout -text | grep -i dns
+                DNS:54.93.195.61, IP Address:54.93.195.61, DNS:172.31.43.58, IP Address:172.31.43.58
+</code></pre>
+
+<p>Sign your certificate with the rootCA key and force the SAN entries:</p>
+<pre><code>[root@mirror certificates]# openssl x509 -req -in domain.csr -CA ../rootCA.crt -CAkey ../rootCA.key -CAcreateserial -out domain.crt -days 3650 -sha256 -extensions v3_req -extfile config 
+Signature ok
+subject=C = DE, ST = NRW, L = Dusseldorf, O = Acme Inc., CN = 54.93.195.61, emailAddress = akaris@example.com
+Getting CA Private Key
+Enter pass phrase for ../rootCA.key:
+</code></pre>
+
+<p>See: 
+* <a href="https://github.com/openssl/openssl/issues/6481">https://github.com/openssl/openssl/issues/6481</a>
+* <a href="https://security.stackexchange.com/questions/150078/missing-x509-extensions-with-an-openssl-generated-certificate">https://security.stackexchange.com/questions/150078/missing-x509-extensions-with-an-openssl-generated-certificate</a></p>
+<p>Then, trust the certificate and make sure that it passes verification and that it contains the SAN entries:</p>
+<pre><code>[root@mirror certificates]# openssl x509 -in domain.crt -noout -text | grep IP
+                DNS:54.93.195.61, IP Address:54.93.195.61, DNS:172.31.43.58, IP Address:172.31.43.58
+[root@mirror certificates]# openssl verify -verbose domain.crt
+domain.crt: OK
+</code></pre>
+
+<p>In case of issues with certificate verification, verify the cert directly against the root CA file to determine the failure domain:</p>
+<pre><code>[root@mirror certificates]# openssl verify -CAfile ../rootCA.crt domain.crt 
+domain.crt: OK
+</code></pre>
+
+<p>Generate directories for the registry:</p>
+<pre><code>sudo mkdir -p /opt/registry/{auth,certs,data}
+</code></pre>
+
+<p>Copy the certificate into /opt/registry/certs as described in the documentation:</p>
+<pre><code>sudo cp domain.key  /opt/registry/certs/
+sudo cp domain.crt  /opt/registry/certs/
+</code></pre>
+
+<p>Generate a username and password and store in an htpasswd file for authentication with the registry, e.g. <code>root</code> / <code>password</code>:</p>
+<pre><code>sudo htpasswd -bBc /opt/registry/auth/htpasswd root password
+</code></pre>
+
+<p>Run the containter with:</p>
+<pre><code>sudo podman run --name mirror-registry \
+  -p 5000:5000 -v /opt/registry/data:/var/lib/registry:z      \
+  -v /opt/registry/auth:/auth:z      -e &quot;REGISTRY_AUTH=htpasswd&quot;      \
+  -e &quot;REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm&quot;      \
+  -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd      \
+  -v /opt/registry/certs:/certs:z      \
+  -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt      \
+  -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key      \
+  -d docker.io/library/registry:2
+</code></pre>
+
+<p>Open the firewall with iptables or firewall-cmd as describe in the documentation. In my case, I'm not running a firewall so this step is not needed.</p>
+<p>Then, verify:</p>
+<pre><code>[root@mirror ~]# openssl s_client -connect 54.93.195.61:5000
+CONNECTED(00000003)
+Can't use SSL_get_servername
+depth=1 C = DE, ST = NRW, L = Acme.Inc, O = Default Company Ltd, OU = acme.root
+verify return:1
+depth=0 C = DE, ST = NRW, L = Dusseldorf, O = Acme Inc., CN = 54.93.195.61, emailAddress = akaris@example.com
+verify return:1
+---
+Certificate chain
+ 0 s:C = DE, ST = NRW, L = Dusseldorf, O = Acme Inc., CN = 54.93.195.61, emailAddress = akaris@example.com
+   i:C = DE, ST = NRW, L = Acme.Inc, O = Default Company Ltd, OU = acme.root
+---
+(...)
+Verification: OK
+(...)
+</code></pre>
+
+<p>And make sure that curl does not report an issue:</p>
+<pre><code>[root@mirror certificates]# curl -u root:password https://54.93.195.61:5000/v2/_catalog
+{&quot;repositories&quot;:[]}
+</code></pre>
+
+<p>If using a separate installation server, make sure that the same verification works from there.</p>
+<h2 id="mirroring-openshift-container-images-into-private-registry-and-preparing-openshift-install">Mirroring OpenShift container images into private registry and preparing openshift-install</h2>
+<p>Connect to the installation server and follow steps from the installation guide:
+<a href="https://docs.openshift.com/container-platform/4.5/installing/install_config/installing-restricted-networks-preparations.html">https://docs.openshift.com/container-platform/4.5/installing/install_config/installing-restricted-networks-preparations.html</a></p>
+<h3 id="merging-the-pull-secrets">Merging the pull secrets</h3>
+<p>Download your pull-secret from <a href="https://cloud.redhat.com/openshift/install/pull-secret">https://cloud.redhat.com/openshift/install/pull-secret</a>.</p>
+<p>At time of this writing, a bug makes this procedure a bit more clumsy: <a href="https://bugzilla.redhat.com/show_bug.cgi?id=1866588">https://bugzilla.redhat.com/show_bug.cgi?id=1866588</a></p>
+<pre><code>$ oc registry login --to ./pull-secret.json --registry &quot;54.93.195.61:5000&quot; --auth-basic=root:password
+error: Missing or incomplete configuration info.  Please point to an existing, complete config file:
+
+
+  1. Via the command-line flag --kubeconfig
+  2. Via the KUBECONFIG environment variable
+  3. In your home directory as ~/.kube/config
+
+To view or setup config directly use the 'config' command.
+</code></pre>
+
+<p>Instead, either follow:
+<a href="https://docs.openshift.com/container-platform/4.2/installing/install_config/installing-restricted-networks-preparations.html#installation-adding-registry-pull-secret_installing-restricted-networks-preparations">https://docs.openshift.com/container-platform/4.2/installing/install_config/installing-restricted-networks-preparations.html#installation-adding-registry-pull-secret_installing-restricted-networks-preparations</a></p>
+<p>Or, more elegantly, create a pull secret with podman:</p>
+<pre><code>$ podman login -u root -p password --authfile pull-secret-podman.json https://54.93.195.61:5000
+WARNING! Using --password via the cli is insecure. Please consider using --password-stdin
+Login Succeeded!
+$ cat pull-secret-podman.json
+{
+    &quot;auths&quot;: {
+        &quot;54.93.195.61:5000&quot;: {
+            &quot;auth&quot;: &quot;cm9vdDpwYXNzd29yZA==&quot;
+        }
+    }
+</code></pre>
+
+<p>Install jq</p>
+<pre><code>sudo yum install jq -y
+</code></pre>
+
+<p>Then, merge both secrets:</p>
+<pre><code>jq -c --argjson var &quot;$(jq .auths pull-secret-podman.json)&quot; '.auths += $var' pull-secret.json &gt; pull-secret-merged.json
+</code></pre>
+
+<h3 id="mirroring-the-container-images">Mirroring the container images</h3>
+<p>Get <code>$OCP_RELEASE</code> from <a href="https://quay.io/repository/openshift-release-dev/ocp-release?tag=latest&amp;tab=tags">https://quay.io/repository/openshift-release-dev/ocp-release?tag=latest&amp;tab=tags</a> and export required env variables, e.g.:</p>
+<pre><code>[root@mirror ~]#  env | egrep 'OCP|LOCAL|PRODUCT|RELEASE'
+export RELEASE_NAME=ocp-release
+export LOCAL_SECRET_JSON=pull-secret-merged.json
+export OCP_RELEASE=4.5.9
+export PRODUCT_REPO=openshift-release-dev
+export LOCAL_REPOSITORY=ocp4/openshift4
+export LOCAL_REGISTRY=54.93.195.61:5000
+export ARCHITECTURE=x86_64
+export REMOVABLE_MEDIA_PATH=removable_media
+</code></pre>
+
+<p>If you want to simulate the removable media steps, create a directory to simulate removable media and export the variable:</p>
+<pre><code>export REMOVABLE_MEDIA_PATH=removable_media
+mkdir removable_media
+</code></pre>
+
+<p>Now, continue with the rest of the instructions from <a href="https://docs.openshift.com/container-platform/4.5/installing/install_config/installing-restricted-networks-preparations.html#installation-mirror-repository_installing-restricted-networks-preparations">https://docs.openshift.com/container-platform/4.5/installing/install_config/installing-restricted-networks-preparations.html#installation-mirror-repository_installing-restricted-networks-preparations</a></p>
+<p>For example:</p>
+<pre><code>$ oc adm -a ${LOCAL_SECRET_JSON} release mirror      --from=quay.io/${PRODUCT_REPO}/${RELEASE_NAME}:${OCP_RELEASE}-${ARCHITECTURE}      --to=${LOCAL_REGISTRY}/${LOCAL_REPOSITORY}      --to-release-image=${LOCAL_REGISTRY}/${LOCAL_REPOSITORY}:${OCP_RELEASE}-${ARCHITECTURE}
+</code></pre>
+
+<p>After mirroring the images, the following instructions will be presented:</p>
+<pre><code>(...)
+Success
+Update image:  54.93.195.61:5000/ocp4/openshift4:4.5.9-x86_64
+Mirror prefix: 54.93.195.61:5000/ocp4/openshift4
+
+To use the new mirrored repository to install, add the following section to the install-config.yaml:
+
+imageContentSources:
+- mirrors:
+  - 54.93.195.61:5000/ocp4/openshift4
+  source: quay.io/openshift-release-dev/ocp-release
+- mirrors:
+  - 54.93.195.61:5000/ocp4/openshift4
+  source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
+
+
+To use the new mirrored repository for upgrades, use the following to create an ImageContentSourcePolicy:
+
+apiVersion: operator.openshift.io/v1alpha1
+kind: ImageContentSourcePolicy
+metadata:
+  name: example
+spec:
+  repositoryDigestMirrors:
+  - mirrors:
+    - 54.93.195.61:5000/ocp4/openshift4
+    source: quay.io/openshift-release-dev/ocp-release
+  - mirrors:
+    - 54.93.195.61:5000/ocp4/openshift4
+    source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
+</code></pre>
+
+<p>Make sure to save these instructions for later.</p>
+<p>Verify contents of the local registry:</p>
+<pre><code>[ec2-user@ip-172-31-43-58 ~]$ curl -u root:password https://54.93.195.61:5000/v2/_catalog | jq
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    37  100    37    0     0   1121      0 --:--:-- --:--:-- --:--:--  1121
+{
+  &quot;repositories&quot;: [
+    &quot;ocp4/openshift4&quot;
+  ]
+}
+[ec2-user@ip-172-31-43-58 ~]$ curl -u root:password https://54.93.195.61:5000/v2/ocp4/openshift4/tags/list | jq
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  3241  100  3241    0     0   102k      0 --:--:-- --:--:-- --:--:--  102k
+{
+  &quot;name&quot;: &quot;ocp4/openshift4&quot;,
+  &quot;tags&quot;: [
+    &quot;4.5.9-kube-storage-version-migrator&quot;,
+    &quot;4.5.9-csi-snapshot-controller&quot;,
+    &quot;4.5.9-cluster-kube-apiserver-operator&quot;,
+    &quot;4.5.9-grafana&quot;,
+    &quot;4.5.9-cluster-update-keys&quot;,
+    &quot;4.5.9-hyperkube&quot;,
+    &quot;4.5.9-container-networking-plugins&quot;,
+    &quot;4.5.9-etcd&quot;,
+    &quot;4.5.9-baremetal-operator&quot;,
+    &quot;4.5.9-jenkins-agent-nodejs&quot;,
+    &quot;4.5.9-cluster-monitoring-operator&quot;,
+    &quot;4.5.9-installer&quot;,
+    &quot;4.5.9-aws-machine-controllers&quot;,
+    &quot;4.5.9-kube-etcd-signer-server&quot;,
+    &quot;4.5.9-kuryr-controller&quot;,
+    &quot;4.5.9-oauth-server&quot;,
+    &quot;4.5.9-cluster-authentication-operator&quot;,
+    &quot;4.5.9-operator-lifecycle-manager&quot;,
+    &quot;4.5.9-haproxy-router&quot;,
+    &quot;4.5.9-cluster-node-tuning-operator&quot;,
+    &quot;4.5.9-openshift-state-metrics&quot;,
+    &quot;4.5.9-prom-label-proxy&quot;,
+    &quot;4.5.9-cluster-kube-scheduler-operator&quot;,
+    &quot;4.5.9-machine-os-content&quot;,
+    &quot;4.5.9-cli-artifacts&quot;,
+    &quot;4.5.9-cluster-kube-controller-manager-operator&quot;,
+    &quot;4.5.9-libvirt-machine-controllers&quot;,
+    &quot;4.5.9-console-operator&quot;,
+    &quot;4.5.9-prometheus-operator&quot;,
+    &quot;4.5.9-openshift-apiserver&quot;,
+    &quot;4.5.9-x86_64&quot;,
+    &quot;4.5.9-console&quot;,
+    &quot;4.5.9-operator-marketplace&quot;,
+    &quot;4.5.9-cluster-etcd-operator&quot;,
+    &quot;4.5.9-k8s-prometheus-adapter&quot;,
+    &quot;4.5.9-ironic-inspector&quot;,
+    &quot;4.5.9-kube-rbac-proxy&quot;,
+    &quot;4.5.9-machine-config-operator&quot;,
+    &quot;4.5.9-ovirt-machine-controllers&quot;,
+    &quot;4.5.9-cluster-dns-operator&quot;,
+    &quot;4.5.9-aws-pod-identity-webhook&quot;,
+    &quot;4.5.9-ironic-machine-os-downloader&quot;,
+    &quot;4.5.9-cluster-csi-snapshot-controller-operator&quot;,
+    &quot;4.5.9-cluster-image-registry-operator&quot;,
+    &quot;4.5.9-kube-proxy&quot;,
+    &quot;4.5.9-cluster-autoscaler-operator&quot;,
+    &quot;4.5.9-multus-whereabouts-ipam-cni&quot;,
+    &quot;4.5.9-cluster-bootstrap&quot;,
+    &quot;4.5.9-insights-operator&quot;,
+    &quot;4.5.9-keepalived-ipfailover&quot;,
+    &quot;4.5.9-machine-api-operator&quot;,
+    &quot;4.5.9-azure-machine-controllers&quot;,
+    &quot;4.5.9-cluster-policy-controller&quot;,
+    &quot;4.5.9-cluster-machine-approver&quot;,
+    &quot;4.5.9-deployer&quot;,
+    &quot;4.5.9-installer-artifacts&quot;,
+    &quot;4.5.9-gcp-machine-controllers&quot;,
+    &quot;4.5.9-service-ca-operator&quot;,
+    &quot;4.5.9-prometheus-config-reloader&quot;,
+    &quot;4.5.9-oauth-proxy&quot;,
+    &quot;4.5.9-ovn-kubernetes&quot;,
+    &quot;4.5.9-prometheus&quot;,
+    &quot;4.5.9-sdn&quot;,
+    &quot;4.5.9-ironic-hardware-inventory-recorder&quot;,
+    &quot;4.5.9-baremetal-runtimecfg&quot;,
+    &quot;4.5.9-baremetal-installer&quot;,
+    &quot;4.5.9-ironic-ipa-downloader&quot;,
+    &quot;4.5.9-operator-registry&quot;,
+    &quot;4.5.9-pod&quot;,
+    &quot;4.5.9-multus-cni&quot;,
+    &quot;4.5.9-cloud-credential-operator&quot;,
+    &quot;4.5.9-kuryr-cni&quot;,
+    &quot;4.5.9-cluster-kube-storage-version-migrator-operator&quot;,
+    &quot;4.5.9-docker-builder&quot;,
+    &quot;4.5.9-telemeter&quot;,
+    &quot;4.5.9-tools&quot;,
+    &quot;4.5.9-docker-registry&quot;,
+    &quot;4.5.9-baremetal-machine-controllers&quot;,
+    &quot;4.5.9-tests&quot;,
+    &quot;4.5.9-cluster-svcat-controller-manager-operator&quot;,
+    &quot;4.5.9-cluster-ingress-operator&quot;,
+    &quot;4.5.9-kube-client-agent&quot;,
+    &quot;4.5.9-cli&quot;,
+    &quot;4.5.9-ironic-static-ip-manager&quot;,
+    &quot;4.5.9-jenkins&quot;,
+    &quot;4.5.9-cluster-node-tuned&quot;,
+    &quot;4.5.9-cluster-storage-operator&quot;,
+    &quot;4.5.9-prometheus-node-exporter&quot;,
+    &quot;4.5.9-openstack-machine-controllers&quot;,
+    &quot;4.5.9-cluster-openshift-apiserver-operator&quot;,
+    &quot;4.5.9-ironic&quot;,
+    &quot;4.5.9-cluster-version-operator&quot;,
+    &quot;4.5.9-local-storage-static-provisioner&quot;,
+    &quot;4.5.9-mdns-publisher&quot;,
+    &quot;4.5.9-multus-route-override-cni&quot;,
+    &quot;4.5.9-thanos&quot;,
+    &quot;4.5.9-cluster-config-operator&quot;,
+    &quot;4.5.9-jenkins-agent-maven&quot;,
+    &quot;4.5.9-openshift-controller-manager&quot;,
+    &quot;4.5.9-prometheus-alertmanager&quot;,
+    &quot;4.5.9-cluster-autoscaler&quot;,
+    &quot;4.5.9-configmap-reloader&quot;,
+    &quot;4.5.9-multus-admission-controller&quot;,
+    &quot;4.5.9-kube-state-metrics&quot;,
+    &quot;4.5.9-coredns&quot;,
+    &quot;4.5.9-cluster-openshift-controller-manager-operator&quot;,
+    &quot;4.5.9-cluster-samples-operator&quot;,
+    &quot;4.5.9-cluster-svcat-apiserver-operator&quot;,
+    &quot;4.5.9-must-gather&quot;,
+    &quot;4.5.9-cluster-network-operator&quot;
+  ]
+}
+</code></pre>
+
+<p>Now, extract the new <code>openshift-install</code> command:</p>
+<pre><code>$ oc adm -a ${LOCAL_SECRET_JSON} release extract --command=openshift-install &quot;${LOCAL_REGISTRY}/${LOCAL_REPOSITORY}:${OCP_RELEASE}-${ARCHITECTURE}
+</code></pre>
+
+<p>The resulting file can be found in the current working directory:</p>
+<pre><code>$ ls openshift-install
+openshift-install
+</code></pre>
+
+<h2 id="installing-a-disconnected-cluster">Installing a disconnected cluster</h2>
+<p>Once the new openshift-install client was created, continue with the actual cluster installation.</p>
+<p>For example, on AWS, use <a href="https://docs.openshift.com/container-platform/4.5/installing/installing_aws/installing-restricted-networks-aws.html#installing-restricted-networks-aws">https://docs.openshift.com/container-platform/4.5/installing/installing_aws/installing-restricted-networks-aws.html#installing-restricted-networks-aws</a></p>
+<p>Create and then modify the <code>install-config.yaml</code> file on the installation server. Make sure to add <code>imageContentSources</code> (from the output of the last command) and also add the rootCA to the <code>additionalTrustBundle</code>:</p>
+<pre><code>cat install-config.yaml
+(...)
+imageContentSources:
+- mirrors:
+  - 10.10.181.198:5000/ocp4/openshift4
+  source: quay.io/openshift-release-dev/ocp-release
+- mirrors:
+  - 10.10.181.198:5000/ocp4/openshift4
+  source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
+additionalTrustBundle: |
+  -----BEGIN CERTIFICATE-----
+  MIIFxjCCA66gAwIBAgIJAOpJf+VRkKHUMA0GCSqGSIb3DQEBCwUAMIGKMQswCQYD
+  VQQGEwJVUzEXMBUGA1UECAwOTm9ydGggQ2Fyb2xpbmExEDAOBgNVBAcMB1JhbGVp
+  (... contents of CA/rootCA.crt ...)
+  oxmeuWzlWvcOCb4Usxa9m0rO95fa5Af2QoA4qxlvi7JoTypRR/zAskqHmcsaTfJN
+  k4p3g3YK5u5tvbzERBTfl8bfbd/eIwBLNMDwmKk2z42bcP1OAAHHqCfChvc1Zasr
+  TFVS2yQvfvvYSzW6tQE9UphVIiXeQhGhl7+TQ1wgoHRQL3pZRwxX9PrT
+  -----END CERTIFICATE-----
+(...)
+</code></pre>
+
+<p>Also, make sure to modify the <code>pullSecret</code> section in install-config.yaml to include the credentials for the custom registry:</p>
+<pre><code>pullSecret: '(... contents of pull-secret-merged.json ...)'
+</code></pre>
+
+<p>Steps for modifying <code>install-config.yaml</code> can be found in <a href="https://docs.openshift.com/container-platform/4.5/installing/installing_aws/installing-restricted-networks-aws.html#installation-generate-aws-user-infra-install-config_installing-restricted-networks-aws">https://docs.openshift.com/container-platform/4.5/installing/installing_aws/installing-restricted-networks-aws.html#installation-generate-aws-user-infra-install-config_installing-restricted-networks-aws</a></p>
+<p>Follow any further steps from the restricted installation documentation. Finally, run the installation. Use the custom <code>openshift-install</code> binary that was generated earlier:</p>
+<pre><code> ./openshift-install create cluster --dir=install-config/ --log-level=debug
+</code></pre></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js" defer></script>
+        <script src="../../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -5,6 +5,7 @@ In the following, we will run a container registry without hostname (only IP add
 All steps below clarify and should give an easy walkthrough of the OpenShift restricted network installation guide. 
 
 Follow the OpenShift documentation. The documentation isn't very detailed (at least at the moment), so I'm going through the documentation with an example deployment.
+
 * [https://docs.openshift.com/container-platform/4.5/installing/install_config/installing-restricted-networks-preparations.html](https://docs.openshift.com/container-platform/4.5/installing/install_config/installing-restricted-networks-preparations.html)
 
 ## Setting up a private the registry server 
@@ -71,7 +72,7 @@ C="DE"
 ST="NRW"
 L="Dusseldorf"
 O="Acme Inc."
-CN="54.93.195.61"
+CN="192.0.2.100"
 emailAddress="akaris@example.com"
 
 [ v3_req ]
@@ -81,10 +82,10 @@ keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 subjectAltName = @alt_names
 
 [alt_names]
-DNS.1 = 54.93.195.61
-IP.1 = 54.93.195.61
-DNS.2 = 172.31.43.58
-IP.2 = 172.31.43.58
+DNS.1 = 192.0.2.100
+IP.1 = 192.0.2.100
+DNS.2 = 192.0.3.100
+IP.2 = 192.0.3.100
 EOF
 openssl genrsa -out domain.key 4096
 openssl req -new -key domain.key -nodes -out domain.csr -config config
@@ -93,14 +94,14 @@ openssl req -new -key domain.key -nodes -out domain.csr -config config
 Verify the CSR:
 ~~~
 [root@mirror certificates]#  openssl req -in domain.csr -noout -text | grep -i dns
-                DNS:54.93.195.61, IP Address:54.93.195.61, DNS:172.31.43.58, IP Address:172.31.43.58
+                DNS:192.0.2.100, IP Address:192.0.2.100, DNS:192.0.3.100, IP Address:192.0.3.100
 ~~~
 
 Sign your certificate with the rootCA key and force the SAN entries:
 ~~~
 [root@mirror certificates]# openssl x509 -req -in domain.csr -CA ../rootCA.crt -CAkey ../rootCA.key -CAcreateserial -out domain.crt -days 3650 -sha256 -extensions v3_req -extfile config 
 Signature ok
-subject=C = DE, ST = NRW, L = Dusseldorf, O = Acme Inc., CN = 54.93.195.61, emailAddress = akaris@example.com
+subject=C = DE, ST = NRW, L = Dusseldorf, O = Acme Inc., CN = 192.0.2.100, emailAddress = akaris@example.com
 Getting CA Private Key
 Enter pass phrase for ../rootCA.key:
 ~~~
@@ -111,7 +112,7 @@ See:
 Then, trust the certificate and make sure that it passes verification and that it contains the SAN entries:
 ~~~
 [root@mirror certificates]# openssl x509 -in domain.crt -noout -text | grep IP
-                DNS:54.93.195.61, IP Address:54.93.195.61, DNS:172.31.43.58, IP Address:172.31.43.58
+                DNS:192.0.2.100, IP Address:192.0.2.100, DNS:192.0.3.100, IP Address:192.0.3.100
 [root@mirror certificates]# openssl verify -verbose domain.crt
 domain.crt: OK
 ~~~
@@ -155,16 +156,16 @@ Open the firewall with iptables or firewall-cmd as describe in the documentation
 
 Then, verify:
 ~~~
-[root@mirror ~]# openssl s_client -connect 54.93.195.61:5000
+[root@mirror ~]# openssl s_client -connect 192.0.2.100:5000
 CONNECTED(00000003)
 Can't use SSL_get_servername
 depth=1 C = DE, ST = NRW, L = Acme.Inc, O = Default Company Ltd, OU = acme.root
 verify return:1
-depth=0 C = DE, ST = NRW, L = Dusseldorf, O = Acme Inc., CN = 54.93.195.61, emailAddress = akaris@example.com
+depth=0 C = DE, ST = NRW, L = Dusseldorf, O = Acme Inc., CN = 192.0.2.100, emailAddress = akaris@example.com
 verify return:1
 ---
 Certificate chain
- 0 s:C = DE, ST = NRW, L = Dusseldorf, O = Acme Inc., CN = 54.93.195.61, emailAddress = akaris@example.com
+ 0 s:C = DE, ST = NRW, L = Dusseldorf, O = Acme Inc., CN = 192.0.2.100, emailAddress = akaris@example.com
    i:C = DE, ST = NRW, L = Acme.Inc, O = Default Company Ltd, OU = acme.root
 ---
 (...)
@@ -174,7 +175,7 @@ Verification: OK
 
 And make sure that curl does not report an issue:
 ~~~
-[root@mirror certificates]# curl -u root:password https://54.93.195.61:5000/v2/_catalog
+[root@mirror certificates]# curl -u root:password https://192.0.2.100:5000/v2/_catalog
 {"repositories":[]}
 ~~~
 
@@ -192,7 +193,7 @@ Download your pull-secret from [https://cloud.redhat.com/openshift/install/pull-
 At time of this writing, a bug makes this procedure a bit more clumsy: [https://bugzilla.redhat.com/show_bug.cgi?id=1866588](https://bugzilla.redhat.com/show_bug.cgi?id=1866588)
 
 ~~~
-$ oc registry login --to ./pull-secret.json --registry "54.93.195.61:5000" --auth-basic=root:password
+$ oc registry login --to ./pull-secret.json --registry "192.0.2.100:5000" --auth-basic=root:password
 error: Missing or incomplete configuration info.  Please point to an existing, complete config file:
 
 
@@ -208,13 +209,13 @@ Instead, either follow:
 
 Or, more elegantly, create a pull secret with podman:
 ~~~
-$ podman login -u root -p password --authfile pull-secret-podman.json https://54.93.195.61:5000
+$ podman login -u root -p password --authfile pull-secret-podman.json https://192.0.2.100:5000
 WARNING! Using --password via the cli is insecure. Please consider using --password-stdin
 Login Succeeded!
 $ cat pull-secret-podman.json
 {
 	"auths": {
-		"54.93.195.61:5000": {
+		"192.0.2.100:5000": {
 			"auth": "cm9vdDpwYXNzd29yZA=="
 		}
 	}
@@ -240,7 +241,7 @@ export LOCAL_SECRET_JSON=pull-secret-merged.json
 export OCP_RELEASE=4.5.9
 export PRODUCT_REPO=openshift-release-dev
 export LOCAL_REPOSITORY=ocp4/openshift4
-export LOCAL_REGISTRY=54.93.195.61:5000
+export LOCAL_REGISTRY=192.0.2.100:5000
 export ARCHITECTURE=x86_64
 export REMOVABLE_MEDIA_PATH=removable_media
 ~~~
@@ -262,17 +263,17 @@ After mirroring the images, the following instructions will be presented:
 ~~~
 (...)
 Success
-Update image:  54.93.195.61:5000/ocp4/openshift4:4.5.9-x86_64
-Mirror prefix: 54.93.195.61:5000/ocp4/openshift4
+Update image:  192.0.2.100:5000/ocp4/openshift4:4.5.9-x86_64
+Mirror prefix: 192.0.2.100:5000/ocp4/openshift4
 
 To use the new mirrored repository to install, add the following section to the install-config.yaml:
 
 imageContentSources:
 - mirrors:
-  - 54.93.195.61:5000/ocp4/openshift4
+  - 192.0.2.100:5000/ocp4/openshift4
   source: quay.io/openshift-release-dev/ocp-release
 - mirrors:
-  - 54.93.195.61:5000/ocp4/openshift4
+  - 192.0.2.100:5000/ocp4/openshift4
   source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
 
 
@@ -285,10 +286,10 @@ metadata:
 spec:
   repositoryDigestMirrors:
   - mirrors:
-    - 54.93.195.61:5000/ocp4/openshift4
+    - 192.0.2.100:5000/ocp4/openshift4
     source: quay.io/openshift-release-dev/ocp-release
   - mirrors:
-    - 54.93.195.61:5000/ocp4/openshift4
+    - 192.0.2.100:5000/ocp4/openshift4
     source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
 ~~~
 
@@ -296,7 +297,7 @@ Make sure to save these instructions for later.
 
 Verify contents of the local registry:
 ~~~
-[ec2-user@ip-172-31-43-58 ~]$ curl -u root:password https://54.93.195.61:5000/v2/_catalog | jq
+$ curl -u root:password https://192.0.2.100:5000/v2/_catalog | jq
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100    37  100    37    0     0   1121      0 --:--:-- --:--:-- --:--:--  1121
@@ -305,7 +306,7 @@ Verify contents of the local registry:
     "ocp4/openshift4"
   ]
 }
-[ec2-user@ip-172-31-43-58 ~]$ curl -u root:password https://54.93.195.61:5000/v2/ocp4/openshift4/tags/list | jq
+$ curl -u root:password https://192.0.2.100:5000/v2/ocp4/openshift4/tags/list | jq
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100  3241  100  3241    0     0   102k      0 --:--:-- --:--:-- --:--:--  102k

@@ -1,5 +1,30 @@
 # Juniper commands
 
+The following commands were validated against a qfx5100-48s-6q with Junos 17.3R3-S4.2:
+~~~
+root@gss-sw02> show version 
+fpc0:
+--------------------------------------------------------------------------
+Hostname: sw02
+Model: qfx5100-48s-6q
+Junos: 17.3R3-S4.2
+JUNOS Base OS boot [17.3R3-S4.2]
+JUNOS Base OS Software Suite [17.3R3-S4.2]
+JUNOS Crypto Software Suite [17.3R3-S4.2]
+JUNOS Crypto Software Suite [17.3R3-S4.2]
+JUNOS Online Documentation [17.3R3-S4.2]
+JUNOS Kernel Software Suite [17.3R3-S4.2]
+JUNOS Packet Forwarding Engine Support (qfx-ex-x86-32) [17.3R3-S4.2]
+JUNOS Routing Software Suite [17.3R3-S4.2]
+JUNOS jsd [i386-17.3R3-S4.2-jet-1]
+JUNOS SDN Software Suite [17.3R3-S4.2]
+JUNOS Enterprise Software Suite [17.3R3-S4.2]
+JUNOS Web Management Platform Package [17.3R3-S4.2]
+JUNOS py-base-i386 [17.3R3-S4.2]
+JUNOS py-extensions-i386 [17.3R3-S4.2]
+JUNOS Host Software [17.3R3-S4.2]
+~~~
+
 ## How to label interfaces on a Juniper switch with X520 cards ##
 
 Enable console logging on the Juniper switch:

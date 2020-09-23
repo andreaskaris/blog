@@ -1,3 +1,27 @@
+# Hints for installing a kubernetes cluster on Fedora #
+
+Hints for installing a kubernetes cluster on Fedora in a virtual environment for lab purposes
+
+## DNS | /etc/hosts for all nodes ##
+
+Make sure to set up `/etc/hosts` on all nodes:
+~~~
+cat<<EOF>/etc/hosts
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+192.168.122.250 api.example.com
+192.168.122.140 vm2
+192.168.122.77 vm4
+192.168.122.248 vm1
+192.168.122.70 vm3
+192.168.122.117 vm5
+EOF
+~~~
+
+## Keepalived configuration for master nodes ##
+
+Master nodes can be set up with the following keepalived configuration for HA:
+~~~
 cat<<'EOF'>/etc/keepalived/keepalived.conf 
 vrrp_instance vip {
  state MASTER
@@ -11,7 +35,9 @@ vrrp_instance vip {
  }
 }
 EOF
+~~~
 
+~~~
 cat<<'EOF'>/usr/local/sbin/notify-keepalived.sh
 #!/bin/bash
 TYPE=$1
@@ -33,19 +59,16 @@ case $STATE in
                   ;;
 esac
 EOF
+~~~
+
+~~~
 chmod +x /usr/local/sbin/notify-keepalived.sh
+~~~
 
-cat<<EOF>/etc/hosts
-127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
-::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
-192.168.122.250 api.example.com
-192.168.122.140 vm2
-192.168.122.77 vm4
-192.168.122.248 vm1
-192.168.122.70 vm3
-192.168.122.117 vm5
-EOF
+## haproxy setup on master nodes ##
 
+This goes hand in hand with the keepalived coniguration mentioned earlier - run this on all of the masters:
+~~~
 cat<<EOF>/etc/haproxy/haproxy.cfg
 global
     log         127.0.0.1 local2
@@ -88,9 +111,12 @@ backend app
     server  app2 vm2:6443 check
     server  app3 vm3:6443 check
 EOF
+~~~
 
 ### Install more recent version of containerd ###
 
+In Fedora 31, it's required to install a more recent version of containerd than what is provided by the package manager:
+~~~
 yum install containerd -y
 tar -xf containerd-1.3.0.linux-amd64.tar.gz
 mv bin/* /usr/local/sbin/.
@@ -113,31 +139,39 @@ systemctl daemon-reload
 systemctl restart containerd
 systemctl enable containerd
 crictl --runtime-endpoint=/var/run/containerd/containerd.sock info
+~~~
 
+## Revert Fedora to use cgroupv1 ##
 
-Revert Fedora 31 to cgroupv1:
-https://medium.com/nttlabs/cgroup-v2-596d035be4d7
+Revert Fedora 31 to cgroupv1 as this will not work with cgroupv2
+[https://medium.com/nttlabs/cgroup-v2-596d035be4d7](https://medium.com/nttlabs/cgroup-v2-596d035be4d7)
 
+~~~
 sudo dnf install -y grubby
 sudo grubby \
   --update-kernel=ALL \
   --args="systemd.unified_cgroup_hierarchy=0"
+~~~
 
+## Work around issues with Flannel in k8s 1.16 ##
 
-Problems with flanel in k8s 1.16:
-https://stackoverflow.com/questions/58024643/kubernetes-master-node-not-ready-state
-https://github.com/coreos/flannel/issues/1185
+Problems with flannel in k8s 1.16:
+[https://stackoverflow.com/questions/58024643/kubernetes-master-node-not-ready-state](https://stackoverflow.com/questions/58024643/kubernetes-master-node-not-ready-state)
+[https://github.com/coreos/flannel/issues/1185](https://github.com/coreos/flannel/issues/1185)
 
-
-
+~~~
 [root@vm1 ~]# ADVERTISE_URL="https://127.0.0.1:2379"
 [root@vm1 ~]# ETCDCTL_API=3 etcdctl --endpoints $ADVERTISE_URL --cacert /etc/kubernetes/pki/etcd/ca.crt --key /etc/kubernetes/pki/etcd/server.key --cert /etc/kubernetes/pki/etcd/server.crt --insecure-skip-tls-verify member list
 7f6515a7c372e765, started, vm3, https://192.168.122.70:2380, https://192.168.122.70:2379
 cf8371b51a17571b, started, vm2, https://192.168.122.140:2380, https://192.168.122.140:2379
 ec403cb4ca539d7b, started, vm1, https://192.168.122.248:2380, https://192.168.122.248:2379
+~~~
 
+~~~
 ETCDCTL_API=3 etcdctl --endpoints $ADVERTISE_URL --cacert /etc/kubernetes/pki/etcd/ca.crt --key /etc/kubernetes/pki/etcd/server.key --cert /etc/kubernetes/pki/etcd/server.crt get --prefix /registry -w json | python -m json.tool
+~~~
 
+~~~
 [root@vm1 ~]# ETCDCTL_API=3 etcdctl --endpoints $ADVERTISE_URL --cacert /etc/kubernetes/pki/etcd/ca.crt --key /etc/kubernetes/pki/etcd/server.key --cert /etc/kubernetes/pki/etcd/server.crt get --prefix /registry --keys-only | grep flann
 /registry/clusterrolebindings/flannel
 /registry/clusterroles/flannel
@@ -160,15 +194,10 @@ ETCDCTL_API=3 etcdctl --endpoints $ADVERTISE_URL --cacert /etc/kubernetes/pki/et
 /registry/podsecuritypolicy/psp.flannel.unprivileged
 /registry/secrets/kube-system/flannel-token-ff78q
 /registry/serviceaccounts/kube-system/flannel
+~~~
 
-
-
-
+~~~
 [root@vm1 ~]# kubectl exec -it kube-flannel-ds-amd64-7gd69 -n kube-system /bin/bash
-bash-4.4# 
-bash-4.4# 
-bash-4.4# 
-bash-4.4# 
 bash-4.4# ps
 PID   USER     TIME  COMMAND
     1 root      0:08 /opt/bin/flanneld --ip-masq --kube-subnet-mgr
@@ -182,13 +211,12 @@ bash-4.4# cat /etc/kube-flannel/net-conf.json
   }
 }
 bash-4.4# 
+~~~
 
-
-https://github.com/coreos/flannel/blob/master/Documentation/configuration.md
-
+[https://github.com/coreos/flannel/blob/master/Documentation/configuration.md](https://github.com/coreos/flannel/blob/master/Documentation/configuration.md)
 
 Issue with systemd and flannel:
-https://github.com/coreos/flannel/issues/1155
+[https://github.com/coreos/flannel/issues/1155](https://github.com/coreos/flannel/issues/1155)
 ~~~
 cat<<'EOF'>/etc/systemd/network/10-flannel.link
 [Match]

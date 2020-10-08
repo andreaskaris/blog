@@ -44,6 +44,7 @@ nav:
   - kata containers and the kata operatora: openshift/kata.md  
   - Proxy OCP 4.5: openshift/proxy-ocp-4.5.md
   - Security Context Constraints (SCC): openshift/scc.md
+  - SElinux labels fix: openshift/fix-selinux-labels-coreos.md
   - SCTP: networking/sctp.md
   - Troubleshooting etcd state: openshift/openshift_troubleshooting_etcd_state.md
   - Querying the OCP 4.x upgrades info API: openshift/useful-ocp-curl.md

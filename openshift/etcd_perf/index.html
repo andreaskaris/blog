@@ -278,7 +278,7 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-level="2"><a href="#how-to-test-etcd-performance-in-red-hat-openshift-container-platform-45-and-above" class="nav-link">How to test etcd performance in Red Hat OpenShift Container Platform 4.5 and above</a>
+            <li class="nav-item" data-level="2"><a href="#how-to-test-etcd-performance" class="nav-link">How to test etcd performance</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -287,7 +287,7 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h2 id="how-to-test-etcd-performance-in-red-hat-openshift-container-platform-45-and-above">How to test etcd performance in Red Hat OpenShift Container Platform 4.5 and above</h2>
+<h2 id="how-to-test-etcd-performance">How to test etcd performance</h2>
 <h3 id="background">Background</h3>
 <p>For more background about etcd performance, see: <a href="https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/performance.md">https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/performance.md</a></p>
 <p>For hardware recommendations, see: <a href="https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/hardware.md#example-hardware-configurations">https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/hardware.md#example-hardware-configurations</a></p>
@@ -416,6 +416,7 @@ func (r *report) processResults() {
 </code></pre>
 
 <h3 id="running-the-tests">Running the tests</h3>
+<p>The following illustrated how to test etcd performance in OpenShift 4.5</p>
 <p>Get the name of one of the etcd pods:</p>
 <pre><code>ETCD_POD=$(oc -n openshift-etcd get pods -l app=etcd -o name | head -1)
 </code></pre>

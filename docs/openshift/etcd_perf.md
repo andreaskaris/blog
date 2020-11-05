@@ -1,4 +1,4 @@
-## How to test etcd performance in Red Hat OpenShift Container Platform 4.5 and above
+## How to test etcd performance
 
 ### Background 
 
@@ -122,8 +122,9 @@ func (r *report) processResults() {
 (...)
 ~~~
 
-
 ### Running the tests
+
+The following illustrated how to test etcd performance in OpenShift 4.5
 
 Get the name of one of the etcd pods:
 ~~~

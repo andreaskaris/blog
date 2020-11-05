@@ -34,6 +34,7 @@ nav:
   - AlertManager: openshift/alertmanager.md
   - CPU manager with custom MachineConfigPool: openshift/cpu-manager-with-custom-machine-config-pool.md
   - Crio vs conmon vs runc: openshift/crio-conmon-runc.md  
+  - Etcd Performance tests: openshift/etcd_perf.md
   - Httpbin tshark sidecar container: openshift/openshift_httpbin_tshark_sidecar.md
   - Hints for installing kubernetes on Fedora: openshift/kubernetes_cluster.md
   - Infra nodes with MachineSets without worker label: openshift/ocp4-infra-nodes-with-machineset-without-worker-label.md

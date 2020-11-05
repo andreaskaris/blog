@@ -3,8 +3,10 @@
 ### Background 
 
 For more background about etcd performance, see: [https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/performance.md](https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/performance.md)
+Also see: [https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/performance.md](https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/performance.md)
+For etcd cluster hardware recommendations, see: [https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/hardware.md#example-hardware-configurations](https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/hardware.md#example-hardware-configurations)
 
-For hardware recommendations, see: [https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/hardware.md#example-hardware-configurations](https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/hardware.md#example-hardware-configurations)
+### etcdctl check perf - how it works
 
 The above hardware configuration table has slightly different definitions of size compared to `etcdctl check perf`.
 
@@ -122,7 +124,7 @@ func (r *report) processResults() {
 (...)
 ~~~
 
-### Running the tests
+### Running etcdctl check perf
 
 The following illustrated how to test etcd performance in OpenShift 4.5
 

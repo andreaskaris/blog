@@ -278,7 +278,7 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-level="1"><a href="#openshfit-mirror-registry-setup" class="nav-link">OpenShfit mirror registry setup</a>
+            <li class="nav-item" data-level="1"><a href="#openshift-mirror-registry-setup" class="nav-link">OpenShift mirror registry setup</a>
               <ul class="nav flex-column">
             <li class="nav-item" data-level="2"><a href="#setting-up-a-private-registry-server" class="nav-link">Setting up a private registry server</a>
               <ul class="nav flex-column">
@@ -299,7 +299,7 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="openshfit-mirror-registry-setup">OpenShfit mirror registry setup</h1>
+<h1 id="openshift-mirror-registry-setup">OpenShift mirror registry setup</h1>
 <p>In the following, we will run a container registry without hostname (only IP address) and self-signed CA and certificate. We need a virtual machine that serves as the container registry and a host that serves as the OpenShift install server. These can both be on the same machine, to simplify things further.</p>
 <p>All steps below clarify and should give an easy walkthrough of the OpenShift restricted network installation guide. </p>
 <p>Follow the OpenShift documentation. The documentation isn't very detailed (at least at the moment), so I'm going through the documentation with an example deployment.</p>
@@ -314,32 +314,10 @@
 <p>Now, generate a self-signed CA:</p>
 <pre><code>[root@mirror ~]# mkdir CA
 [root@mirror ~]# cd CA
-[root@mirror CA]# openssl genrsa -des3 -out rootCA.key 4096
-Generating RSA private key, 4096 bit long modulus
-.++
-....................................................++
-e is 65537 (0x10001)
-Enter pass phrase for rootCA.key:
-Verifying - Enter pass phrase for rootCA.key:
-[root@mirror CA]# ll
-total 4
--rw-r--r--. 1 root root 3311 Feb  3 09:45 rootCA.key
-[root@mirror CA]# openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 10240 -out rootCA.crt
-Enter pass phrase for rootCA.key:
-You are about to be asked to enter information that will be incorporated
-into your certificate request.
-What you are about to enter is what is called a Distinguished Name or a DN.
-There are quite a few fields but you can leave some blank
-For some fields there will be a default value,
-If you enter '.', the field will be left blank.
------
-Country Name (2 letter code) [XX]:DE
-State or Province Name (full name) []:NRW
-Locality Name (eg, city) [Default City]:Acme.Inc
-Organization Name (eg, company) [Default Company Ltd]:
-Organizational Unit Name (eg, section) []:acme.root
-Common Name (eg, your name or your server's hostname) []:
-Email Address []:
+[root@mirror CA]# openssl genrsa -out rootCA.key 4096
+(...)
+[root@mirror CA]# openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 10240 -out rootCA.crt -subj &quot;/C=CA/ST=Arctica/L=Northpole/O=Acme Inc/OU=DevOps/CN=www.example.com/emailAddress=dev@www.example.com&quot;
+(...)
 [root@mirror CA]# ll
 total 8
 -rw-r--r--. 1 root root 1960 Feb  3 09:47 rootCA.crt

@@ -1,4 +1,4 @@
-# OpenShfit mirror registry setup
+# OpenShift mirror registry setup
 
 In the following, we will run a container registry without hostname (only IP address) and self-signed CA and certificate. We need a virtual machine that serves as the container registry and a host that serves as the OpenShift install server. These can both be on the same machine, to simplify things further.
 
@@ -19,32 +19,10 @@ Now, generate a self-signed CA:
 ~~~
 [root@mirror ~]# mkdir CA
 [root@mirror ~]# cd CA
-[root@mirror CA]# openssl genrsa -des3 -out rootCA.key 4096
-Generating RSA private key, 4096 bit long modulus
-.++
-....................................................++
-e is 65537 (0x10001)
-Enter pass phrase for rootCA.key:
-Verifying - Enter pass phrase for rootCA.key:
-[root@mirror CA]# ll
-total 4
--rw-r--r--. 1 root root 3311 Feb  3 09:45 rootCA.key
-[root@mirror CA]# openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 10240 -out rootCA.crt
-Enter pass phrase for rootCA.key:
-You are about to be asked to enter information that will be incorporated
-into your certificate request.
-What you are about to enter is what is called a Distinguished Name or a DN.
-There are quite a few fields but you can leave some blank
-For some fields there will be a default value,
-If you enter '.', the field will be left blank.
------
-Country Name (2 letter code) [XX]:DE
-State or Province Name (full name) []:NRW
-Locality Name (eg, city) [Default City]:Acme.Inc
-Organization Name (eg, company) [Default Company Ltd]:
-Organizational Unit Name (eg, section) []:acme.root
-Common Name (eg, your name or your server's hostname) []:
-Email Address []:
+[root@mirror CA]# openssl genrsa -out rootCA.key 4096
+(...)
+[root@mirror CA]# openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 10240 -out rootCA.crt -subj "/C=CA/ST=Arctica/L=Northpole/O=Acme Inc/OU=DevOps/CN=www.example.com/emailAddress=dev@www.example.com"
+(...)
 [root@mirror CA]# ll
 total 8
 -rw-r--r--. 1 root root 1960 Feb  3 09:47 rootCA.crt

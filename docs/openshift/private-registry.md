@@ -1,9 +1,13 @@
 # Setting up a private registry
 
+#### Prerequisites
+
 After creating a virtual machine that will serve as a registry, install podman and httpd-tools:
 ~~~
 [root@mirror ~]# sudo yum -y install podman httpd-tools
 ~~~
+
+#### Generating certificate authority and registry certificates
 
 Now, generate a self-signed CA:
 ~~~
@@ -105,6 +109,12 @@ sudo cp domain.key  /opt/registry/certs/
 sudo cp domain.crt  /opt/registry/certs/
 ~~~
 
+#### Starting the registry
+
+You have 2 options here. Password protect your registry, or don't.
+
+##### Password protection
+
 Generate a username and password and store in an htpasswd file for authentication with the registry, e.g. `root` / `password`:
 ~~~
 sudo htpasswd -bBc /opt/registry/auth/htpasswd root password
@@ -123,6 +133,20 @@ sudo podman run --name mirror-registry \
   -d docker.io/library/registry:2
 ~~~
 
+##### No password protection
+
+Simply run the containter with:
+~~~
+sudo podman run --name mirror-registry \
+  -p 5000:5000 -v /opt/registry/data:/var/lib/registry:z      \
+  -v /opt/registry/certs:/certs:z      \
+  -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt      \
+  -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key      \
+  -d docker.io/library/registry:2
+~~~
+
+##### Generating a systemd service for the registry
+
 Generate a service file so that the container autostarts:
 ~~~
 [root@kind certificates]# podman generate systemd --name mirror-registry > /etc/systemd/system/mirror-registry-container.service
@@ -132,7 +156,11 @@ Created symlink /etc/systemd/system/multi-user.target.wants/mirror-registry-cont
 Created symlink /etc/systemd/system/default.target.wants/mirror-registry-container.service → /etc/systemd/system/mirror-registry-container.service.
 ~~~
 
+#### Configuring the firewall
+
 Open the firewall with iptables or firewall-cmd as describe in the documentation. In my case, I'm not running a firewall so this step is not needed.
+
+#### Verification 
 
 Then, verify:
 ~~~

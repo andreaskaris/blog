@@ -123,6 +123,15 @@ sudo podman run --name mirror-registry \
   -d docker.io/library/registry:2
 ~~~
 
+Generate a service file so that the container autostarts:
+~~~
+[root@kind certificates]# podman generate systemd --name mirror-registry > /etc/systemd/system/mirror-registry-container.service
+[root@kind certificates]# systemctl daemon-reload
+[root@kind certificates]# systemctl enable --now mirror-registry-container
+Created symlink /etc/systemd/system/multi-user.target.wants/mirror-registry-container.service → /etc/systemd/system/mirror-registry-container.service.
+Created symlink /etc/systemd/system/default.target.wants/mirror-registry-container.service → /etc/systemd/system/mirror-registry-container.service.
+~~~
+
 Open the firewall with iptables or firewall-cmd as describe in the documentation. In my case, I'm not running a firewall so this step is not needed.
 
 Then, verify:

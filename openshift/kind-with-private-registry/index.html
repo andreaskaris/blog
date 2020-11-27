@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../../img/favicon.ico">
-        <title>Private container registry - Andreas Karis Blog</title>
+        <title>Kind with private registry - Andreas Karis Blog</title>
         <link href="../../css/bootstrap.min.css" rel="stylesheet">
         <link href="../../css/font-awesome.min.css" rel="stylesheet">
         <link href="../../css/base.css" rel="stylesheet">
@@ -148,7 +148,7 @@
 </li>
                                 </ul>
                             </li>
-                            <li class="dropdown active">
+                            <li class="dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">OpenShift <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     
@@ -201,7 +201,7 @@
 </li>
                                     
 <li>
-    <a href="./" class="dropdown-item active">Private container registry</a>
+    <a href="../private-registry/" class="dropdown-item">Private container registry</a>
 </li>
                                     
 <li>
@@ -254,16 +254,6 @@
                                 <i class="fa fa-search"></i> Search
                             </a>
                         </li>
-                            <li class="nav-item">
-                                <a rel="prev" href="../kata/" class="nav-link">
-                                    <i class="fa fa-arrow-left"></i> Previous
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a rel="next" href="../proxy-ocp-4.5/" class="nav-link">
-                                    Next <i class="fa fa-arrow-right"></i>
-                                </a>
-                            </li>
                     </ul>
                 </div>
             </div>
@@ -282,8 +272,16 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-level="1"><a href="#setting-up-a-private-registry" class="nav-link">Setting up a private registry</a>
+            <li class="nav-item" data-level="1"><a href="#kind-with-private-registry" class="nav-link">Kind with private registry</a>
               <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#setting-up-a-private-registry-server" class="nav-link">Setting up a private registry server</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#setting-up-kind" class="nav-link">Setting up kind</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
               </ul>
             </li>
         </ul>
@@ -291,172 +289,32 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="setting-up-a-private-registry">Setting up a private registry</h1>
-<h4 id="prerequisites">Prerequisites</h4>
-<p>After creating a virtual machine that will serve as a registry, install podman and httpd-tools:</p>
-<pre><code>[root@mirror ~]# sudo yum -y install podman httpd-tools
-</code></pre>
-
-<h4 id="generating-certificate-authority-and-registry-certificates">Generating certificate authority and registry certificates</h4>
-<p>Now, generate a self-signed CA:</p>
-<pre><code>[root@mirror ~]# mkdir CA
-[root@mirror ~]# cd CA
-[root@mirror CA]# openssl genrsa -out rootCA.key 4096
-(...)
-[root@mirror CA]# openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 10240 -out rootCA.crt -subj &quot;/C=CA/ST=Arctica/L=Northpole/O=Acme Inc/OU=DevOps/CN=www.example.com/emailAddress=dev@www.example.com&quot;
-(...)
-[root@mirror CA]# ll
-total 8
--rw-r--r--. 1 root root 1960 Feb  3 09:47 rootCA.crt
--rw-r--r--. 1 root root 3311 Feb  3 09:45 rootCA.key
-</code></pre>
-
-<p>Trust this rootCA on the mirror registry node and on the node where you are running the OpenShift installer:</p>
-<pre><code>sudo cp rootCA.crt  /etc/pki/ca-trust/source/anchors/
-sudo update-ca-trust extract
-</code></pre>
-
-<p>Create a certificate signing request:</p>
-<pre><code>mkdir certificates
-cd certificates
-cat&lt;&lt;'EOF'&gt;config 
-[ req ]
-distinguished_name = req_distinguished_name
-prompt = no
-req_extensions = v3_req
-
-[ req_distinguished_name ]
-C=&quot;DE&quot;
-ST=&quot;NRW&quot;
-L=&quot;Dusseldorf&quot;
-O=&quot;Acme Inc.&quot;
-CN=&quot;192.0.2.100&quot;
-emailAddress=&quot;akaris@example.com&quot;
-
-[ v3_req ]
-
-#basicConstraints = CA:FALSE
-keyUsage = nonRepudiation, digitalSignature, keyEncipherment
-subjectAltName = @alt_names
-
-[alt_names]
-DNS.1 = 192.0.2.100
-IP.1 = 192.0.2.100
-DNS.2 = 192.0.3.100
-IP.2 = 192.0.3.100
+<h1 id="kind-with-private-registry">Kind with private registry</h1>
+<h2 id="setting-up-a-private-registry-server">Setting up a private registry server</h2>
+<p>Follow <a href="https://andreaskaris.github.io/blog/openshift/private-registry/">https://andreaskaris.github.io/blog/openshift/private-registry/</a></p>
+<p>Create a registry without authentication and make sure that the certificates are signed for DNS <code>kind</code> and that the registry can be queried via <code>curl https://kind:5000/v2/_catalog</code>.</p>
+<h2 id="setting-up-kind">Setting up kind</h2>
+<h3 id="skipping-certificate-validation">Skipping certificate validation</h3>
+<p>Deploy kind with <code>containerConfigPatches</code> to skip registry verification:</p>
+<pre><code>cat &lt;&lt;'EOF' &gt; kindconfig.yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+# 3 control plane node and 1 workers
+nodes:
+- role: control-plane
+# - role: worker
+containerdConfigPatches:
+- |-
+  [plugins.&quot;io.containerd.grpc.v1.cri&quot;.registry.mirrors.&quot;kind:5000&quot;]
+    endpoint = [&quot;https://kind:5000&quot;]
+  [plugins.&quot;io.containerd.grpc.v1.cri&quot;.registry.configs.&quot;kind:5000&quot;.tls]
+    insecure_skip_verify = true
 EOF
-openssl genrsa -out domain.key 4096
-openssl req -new -key domain.key -nodes -out domain.csr -config config
 </code></pre>
 
-<p>Verify the CSR:</p>
-<pre><code>[root@mirror certificates]#  openssl req -in domain.csr -noout -text | grep -i dns
-                DNS:192.0.2.100, IP Address:192.0.2.100, DNS:192.0.3.100, IP Address:192.0.3.100
-</code></pre>
-
-<p>Sign your certificate with the rootCA key and force the SAN entries:</p>
-<pre><code>[root@mirror certificates]# openssl x509 -req -in domain.csr -CA ../rootCA.crt -CAkey ../rootCA.key -CAcreateserial -out domain.crt -days 3650 -sha256 -extensions v3_req -extfile config 
-Signature ok
-subject=C = DE, ST = NRW, L = Dusseldorf, O = Acme Inc., CN = 192.0.2.100, emailAddress = akaris@example.com
-Getting CA Private Key
-Enter pass phrase for ../rootCA.key:
-</code></pre>
-
-<p>See:</p>
-<ul>
-<li>
-<p><a href="https://github.com/openssl/openssl/issues/6481">https://github.com/openssl/openssl/issues/6481</a></p>
-</li>
-<li>
-<p><a href="https://security.stackexchange.com/questions/150078/missing-x509-extensions-with-an-openssl-generated-certificate">https://security.stackexchange.com/questions/150078/missing-x509-extensions-with-an-openssl-generated-certificate</a></p>
-</li>
-</ul>
-<p>Then, trust the certificate and make sure that it passes verification and that it contains the SAN entries:</p>
-<pre><code>[root@mirror certificates]# openssl x509 -in domain.crt -noout -text | grep IP
-                DNS:192.0.2.100, IP Address:192.0.2.100, DNS:192.0.3.100, IP Address:192.0.3.100
-[root@mirror certificates]# openssl verify -verbose domain.crt
-domain.crt: OK
-</code></pre>
-
-<p>In case of issues with certificate verification, verify the cert directly against the root CA file to determine the failure domain:</p>
-<pre><code>[root@mirror certificates]# openssl verify -CAfile ../rootCA.crt domain.crt 
-domain.crt: OK
-</code></pre>
-
-<p>Generate directories for the registry:</p>
-<pre><code>sudo mkdir -p /opt/registry/{auth,certs,data}
-</code></pre>
-
-<p>Copy the certificate into /opt/registry/certs as described in the documentation:</p>
-<pre><code>sudo cp domain.key  /opt/registry/certs/
-sudo cp domain.crt  /opt/registry/certs/
-</code></pre>
-
-<h4 id="starting-the-registry">Starting the registry</h4>
-<p>You have 2 options here. Password protect your registry, or don't.</p>
-<h5 id="password-protection">Password protection</h5>
-<p>Generate a username and password and store in an htpasswd file for authentication with the registry, e.g. <code>root</code> / <code>password</code>:</p>
-<pre><code>sudo htpasswd -bBc /opt/registry/auth/htpasswd root password
-</code></pre>
-
-<p>Run the containter with:</p>
-<pre><code>sudo podman run --name mirror-registry \
-  -p 5000:5000 -v /opt/registry/data:/var/lib/registry:z      \
-  -v /opt/registry/auth:/auth:z      -e &quot;REGISTRY_AUTH=htpasswd&quot;      \
-  -e &quot;REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm&quot;      \
-  -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd      \
-  -v /opt/registry/certs:/certs:z      \
-  -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt      \
-  -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key      \
-  -d docker.io/library/registry:2
-</code></pre>
-
-<h5 id="no-password-protection">No password protection</h5>
-<p>Simply run the containter with:</p>
-<pre><code>sudo podman run --name mirror-registry \
-  -p 5000:5000 -v /opt/registry/data:/var/lib/registry:z      \
-  -v /opt/registry/certs:/certs:z      \
-  -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt      \
-  -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key      \
-  -d docker.io/library/registry:2
-</code></pre>
-
-<h5 id="generating-a-systemd-service-for-the-registry">Generating a systemd service for the registry</h5>
-<p>Generate a service file so that the container autostarts:</p>
-<pre><code>[root@kind certificates]# podman generate systemd --name mirror-registry &gt; /etc/systemd/system/mirror-registry-container.service
-[root@kind certificates]# systemctl daemon-reload
-[root@kind certificates]# systemctl enable --now mirror-registry-container
-Created symlink /etc/systemd/system/multi-user.target.wants/mirror-registry-container.service → /etc/systemd/system/mirror-registry-container.service.
-Created symlink /etc/systemd/system/default.target.wants/mirror-registry-container.service → /etc/systemd/system/mirror-registry-container.service.
-</code></pre>
-
-<h4 id="configuring-the-firewall">Configuring the firewall</h4>
-<p>Open the firewall with iptables or firewall-cmd as describe in the documentation. In my case, I'm not running a firewall so this step is not needed.</p>
-<h4 id="verification">Verification</h4>
-<p>Then, verify:</p>
-<pre><code>[root@mirror ~]# openssl s_client -connect 192.0.2.100:5000
-CONNECTED(00000003)
-Can't use SSL_get_servername
-depth=1 C = DE, ST = NRW, L = Acme.Inc, O = Default Company Ltd, OU = acme.root
-verify return:1
-depth=0 C = DE, ST = NRW, L = Dusseldorf, O = Acme Inc., CN = 192.0.2.100, emailAddress = akaris@example.com
-verify return:1
----
-Certificate chain
- 0 s:C = DE, ST = NRW, L = Dusseldorf, O = Acme Inc., CN = 192.0.2.100, emailAddress = akaris@example.com
-   i:C = DE, ST = NRW, L = Acme.Inc, O = Default Company Ltd, OU = acme.root
----
-(...)
-Verification: OK
-(...)
-</code></pre>
-
-<p>And make sure that curl does not report an issue:</p>
-<pre><code>[root@mirror certificates]# curl -u root:password https://192.0.2.100:5000/v2/_catalog
-{&quot;repositories&quot;:[]}
-</code></pre>
-
-<p>If using a separate installation server, make sure that the same verification works from there.</p></div>
+<p>Then, create the cluster with:</p>
+<pre><code>kind create cluster -v1 --config kindconfig.yaml
+</code></pre></div>
             </div>
         </div>
 

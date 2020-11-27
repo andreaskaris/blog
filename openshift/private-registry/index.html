@@ -406,6 +406,14 @@ sudo cp domain.crt  /opt/registry/certs/
   -d docker.io/library/registry:2
 </code></pre>
 
+<p>Generate a service file so that the container autostarts:</p>
+<pre><code>[root@kind certificates]# podman generate systemd --name mirror-registry &gt; /etc/systemd/system/mirror-registry-container.service
+[root@kind certificates]# systemctl daemon-reload
+[root@kind certificates]# systemctl enable --now mirror-registry-container
+Created symlink /etc/systemd/system/multi-user.target.wants/mirror-registry-container.service → /etc/systemd/system/mirror-registry-container.service.
+Created symlink /etc/systemd/system/default.target.wants/mirror-registry-container.service → /etc/systemd/system/mirror-registry-container.service.
+</code></pre>
+
 <p>Open the firewall with iptables or firewall-cmd as describe in the documentation. In my case, I'm not running a firewall so this step is not needed.</p>
 <p>Then, verify:</p>
 <pre><code>[root@mirror ~]# openssl s_client -connect 192.0.2.100:5000

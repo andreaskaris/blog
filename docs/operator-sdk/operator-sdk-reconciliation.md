@@ -239,6 +239,7 @@ So, `r.Get()` will return a `Request` of type `HTTP` `GET`: [https://godoc.org/k
 #### context, context.TODO(), context.Background()
 
 I have to do some further research, but:
+
 * [https://essential-go.programming-books.io/context-todo-vs-context-background-d5224e27ff724a33a79cb4e03a5eb333](https://essential-go.programming-books.io/context-todo-vs-context-background-d5224e27ff724a33a79cb4e03a5eb333)
 * [https://developer.mongodb.com/community/forums/t/go-why-context-todo-and-not-context-background/5009/2](https://developer.mongodb.com/community/forums/t/go-why-context-todo-and-not-context-background/5009/2)
 * [https://ddcode.net/2019/05/11/is-golangs-context-background-and-context-todo-the-same-behavior/](https://ddcode.net/2019/05/11/is-golangs-context-background-and-context-todo-the-same-behavior/)

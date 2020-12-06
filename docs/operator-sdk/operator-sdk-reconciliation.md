@@ -426,7 +426,7 @@ spec:
 oc apply -f config/samples/example_v1alpha1_example_namespace_test1.yaml
 ~~~
 
-As expected, the reconcile loop get triggered for this object.
+As expected, the reconcile loop gets triggered for this object.
 
 ~~~
 uid=$(oc get example -n test1 -o json example-sample | jq -r '.metadata.uid')
@@ -436,7 +436,7 @@ namespace=$(oc get example -n test1 -o json example-sample | jq -r '.metadata.na
 name=$(oc get example -n test1 -o json example-sample | jq -r '.metadata.name')
 ~~~
 
-Then, spawn a deployment and set the test1/example-sammple CR as the owner:
+Then, spawn a deployment and set the test1/example-sample CR as the owner:
 ~~~
 cat << EOF | oc apply -f -
 apiVersion: apps/v1
@@ -505,7 +505,7 @@ deployment.apps/fedora-deployment scaled
 2020-12-03T03:26:49.646-0500	DEBUG	controller	Successfully Reconciled	{"reconcilerGroup": "example.example.com", "reconcilerKind": "Example", "controller": "example", "name": "example-sample", "namespace": "test1"}
 ~~~
 
-The `Owns` method can be rewritten with:
+The `Owns` method can be rewritten with the `Watches` method (see the next section for further details). The following example behaves exactly the same as the earlier code:
 ~~~
 import (
         (...)
@@ -535,11 +535,11 @@ func (r *ExampleReconciler) SetupWithManager(mgr ctrl.Manager) error {
 
 ##### Watches for independent resources
 
-If you want to monitor other custom resources which are not owned by this Controller, that's also possible.
+If you want to monitor other custom resources which are not owned by this Controller, that's also possible. For some theory on this, see [https://godoc.org/sigs.k8s.io/controller-runtime/pkg/handler](https://godoc.org/sigs.k8s.io/controller-runtime/pkg/handler).
 
 ###### Watching for changes to Nodes
 
-For example, let's monitor updates to `Node`s. If any node in the cluster is updated, then we are going to inform all of the Example Custom Resources.
+For example, let's monitor updates to `Node`s. If any node in the cluster is updated, then we are going to inform all of the `Example` Custom Resources.
 
 ~~~
 (...)

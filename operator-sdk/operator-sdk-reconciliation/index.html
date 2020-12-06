@@ -632,7 +632,7 @@ example.example.example.com/example-sample created
 
 <p>Whenever something happens to an object of type <code>&amp;examplev1alpha1.Example{}</code>, this controller's <code>Reconcile</code> will be triggered. The only information that it will be passed is a <code>controllerruntime.Request</code> which is an alias to <code>reconcile.Request</code> and inherits from <code>types.NamespacedName</code>: <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/reconcile#Request">https://godoc.org/sigs.k8s.io/controller-runtime/pkg/reconcile#Request</a> and <a href="https://github.com/kubernetes-sigs/controller-runtime/blob/43331a6c8f823b497660b368deb4311ae2030206/alias.go#L39">https://github.com/kubernetes-sigs/controller-runtime/blob/43331a6c8f823b497660b368deb4311ae2030206/alias.go#L39</a> and <a href="https://github.com/kubernetes/apimachinery/blob/master/pkg/types/namespacedname.go#L37">https://github.com/kubernetes/apimachinery/blob/master/pkg/types/namespacedname.go#L37</a></p>
 <h4 id="triggering-the-reconciler">Triggering the reconciler</h4>
-<p>When the reconciler is triggered is decided by the configuration isinside the <code>SetupWithManager</code> method:</p>
+<p>The <code>SetupWithManager</code> method determines when the reconciler is triggered:</p>
 <pre><code>import (
 (...)
         (...)ctrl &quot;sigs.k8s.io/controller-runtime&quot;

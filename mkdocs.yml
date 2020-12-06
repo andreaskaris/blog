@@ -54,5 +54,5 @@ nav:
 - OpenStack:
   - Reattach to running deployment: openstack/reattach_to_running_deployment.md
   - Using clouds.yaml: openstack/using_clouds_yaml.md
-- OperatorSDK
+- OperatorSDK:
   - Controller Reconciliation: operator-sdk/operator-sdk-reconciliation.md

@@ -533,10 +533,12 @@ type resourceMeta struct {
 <p><code>r.Get().NamespaceIfScoped(key.Namespace, r.isNamespaced()).Resource(r.resource()).Name(key.Name).Do(ctx)</code> formats and executes the request. Returns a Result object for easy response processing: <a href="https://godoc.org/k8s.io/client-go/rest#Request.Do">https://godoc.org/k8s.io/client-go/rest#Request.Do</a></p>
 <p><code>r.Get().NamespaceIfScoped(key.Namespace, r.isNamespaced()).Resource(r.resource()).Name(key.Name).Do(ctx).Into(obj)</code> converts the <code>Result</code> object by writing the result into the object. Once this is successfully done, <code>obj</code> will now contain what was retrieved by running the query.</p>
 <h4 id="context-contexttodo-contextbackground">context, context.TODO(), context.Background()</h4>
-<p>I have to do some further research, but:
-* <a href="https://essential-go.programming-books.io/context-todo-vs-context-background-d5224e27ff724a33a79cb4e03a5eb333">https://essential-go.programming-books.io/context-todo-vs-context-background-d5224e27ff724a33a79cb4e03a5eb333</a>
-* <a href="https://developer.mongodb.com/community/forums/t/go-why-context-todo-and-not-context-background/5009/2">https://developer.mongodb.com/community/forums/t/go-why-context-todo-and-not-context-background/5009/2</a>
-* <a href="https://ddcode.net/2019/05/11/is-golangs-context-background-and-context-todo-the-same-behavior/">https://ddcode.net/2019/05/11/is-golangs-context-background-and-context-todo-the-same-behavior/</a></p>
+<p>I have to do some further research, but:</p>
+<ul>
+<li><a href="https://essential-go.programming-books.io/context-todo-vs-context-background-d5224e27ff724a33a79cb4e03a5eb333">https://essential-go.programming-books.io/context-todo-vs-context-background-d5224e27ff724a33a79cb4e03a5eb333</a></li>
+<li><a href="https://developer.mongodb.com/community/forums/t/go-why-context-todo-and-not-context-background/5009/2">https://developer.mongodb.com/community/forums/t/go-why-context-todo-and-not-context-background/5009/2</a></li>
+<li><a href="https://ddcode.net/2019/05/11/is-golangs-context-background-and-context-todo-the-same-behavior/">https://ddcode.net/2019/05/11/is-golangs-context-background-and-context-todo-the-same-behavior/</a></li>
+</ul>
 <h3 id="working-with-reconcile">Working with <code>Reconcile</code></h3>
 <h4 id="what-triggers-reconcile-and-what-information-is-passed-to-the-method">What triggers <code>Reconcile</code> and what information is passed to the method?</h4>
 <p>Let's modify the <code>Reconcile</code> method to log whenever it is triggered and to capture the contents of the req object.</p>

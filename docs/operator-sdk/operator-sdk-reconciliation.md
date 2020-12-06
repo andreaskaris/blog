@@ -350,7 +350,7 @@ Whenever something happens to an object of type `&examplev1alpha1.Example{}`, th
 
 #### Triggering the reconciler
 
-When the reconciler is triggered is decided by the configuration isinside the `SetupWithManager` method:
+The `SetupWithManager` method determines when the reconciler is triggered:
 ~~~
 import (
 (...)

@@ -696,7 +696,7 @@ spec:
 oc apply -f config/samples/example_v1alpha1_example_namespace_test1.yaml
 </code></pre>
 
-<p>As expected, the reconcile loop get triggered for this object.</p>
+<p>As expected, the reconcile loop gets triggered for this object.</p>
 <pre><code>uid=$(oc get example -n test1 -o json example-sample | jq -r '.metadata.uid')
 apiversion=$(oc get example -n test1 -o json example-sample | jq -r '.apiVersion')
 kind=$(oc get example -n test1 -o json example-sample | jq -r '.kind')
@@ -704,7 +704,7 @@ namespace=$(oc get example -n test1 -o json example-sample | jq -r '.metadata.na
 name=$(oc get example -n test1 -o json example-sample | jq -r '.metadata.name')
 </code></pre>
 
-<p>Then, spawn a deployment and set the test1/example-sammple CR as the owner:</p>
+<p>Then, spawn a deployment and set the test1/example-sample CR as the owner:</p>
 <pre><code>cat &lt;&lt; EOF | oc apply -f -
 apiVersion: apps/v1
 kind: Deployment
@@ -769,7 +769,7 @@ deployment.apps/fedora-deployment scaled
 2020-12-03T03:26:49.646-0500    DEBUG   controller  Successfully Reconciled {&quot;reconcilerGroup&quot;: &quot;example.example.com&quot;, &quot;reconcilerKind&quot;: &quot;Example&quot;, &quot;controller&quot;: &quot;example&quot;, &quot;name&quot;: &quot;example-sample&quot;, &quot;namespace&quot;: &quot;test1&quot;}
 </code></pre>
 
-<p>The <code>Owns</code> method can be rewritten with:</p>
+<p>The <code>Owns</code> method can be rewritten with the <code>Watches</code> method (see the next section for further details). The following example behaves exactly the same as the earlier code:</p>
 <pre><code>import (
         (...)
         appsv1 &quot;k8s.io/api/apps/v1&quot;
@@ -797,9 +797,9 @@ func (r *ExampleReconciler) SetupWithManager(mgr ctrl.Manager) error {
 </code></pre>
 
 <h5 id="watches-for-independent-resources">Watches for independent resources</h5>
-<p>If you want to monitor other custom resources which are not owned by this Controller, that's also possible.</p>
+<p>If you want to monitor other custom resources which are not owned by this Controller, that's also possible. For some theory on this, see <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/handler">https://godoc.org/sigs.k8s.io/controller-runtime/pkg/handler</a>.</p>
 <h6 id="watching-for-changes-to-nodes">Watching for changes to Nodes</h6>
-<p>For example, let's monitor updates to <code>Node</code>s. If any node in the cluster is updated, then we are going to inform all of the Example Custom Resources.</p>
+<p>For example, let's monitor updates to <code>Node</code>s. If any node in the cluster is updated, then we are going to inform all of the <code>Example</code> Custom Resources.</p>
 <pre><code>(...)
 import (
 (...)

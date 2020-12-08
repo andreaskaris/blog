@@ -43,6 +43,7 @@ nav:
   - Installing a cluster with a mirror registry: openshift/openshift_mirror_registry.md
   - Istio 1.6 on OpenShift 4.x: openshift/istio-1.6-on-ocp.4.x.md
   - kata containers and the kata operatora: openshift/kata.md  
+  - Kind with private registry: openshift/kind-with-private-registry.md
   - Private container registry: openshift/private-registry.md
   - Proxy OCP 4.5: openshift/proxy-ocp-4.5.md
   - Security Context Constraints (SCC): openshift/scc.md

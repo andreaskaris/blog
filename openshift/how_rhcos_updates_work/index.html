@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>How RHCOS updates work - Andreas Karis Blog</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+
+        <script src="../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Andreas Karis Blog</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ceph <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../ceph/ceph-manual-test/" class="dropdown-item">Ceph manual test with qemu</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Containers <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../linux/cgroups/" class="dropdown-item">cgroups</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/containers/" class="dropdown-item">Containers in Linux</a>
+</li>
+                                    
+<li>
+    <a href="../list_docker_registry_containers/" class="dropdown-item">List container images in registry</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/namespaces/" class="dropdown-item">namespaces</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Linux <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../linux/cgroups/" class="dropdown-item">cgroups</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/containers/" class="dropdown-item">Containers in Linux</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/hugepages/" class="dropdown-item">Hugepages</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/meson/" class="dropdown-item">meson</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/namespaces/" class="dropdown-item">namespaces</a>
+</li>
+                                    
+<li>
+    <a href="../../linux/old_java_version_with_xorgs_in_container/" class="dropdown-item">Old Java inside a container with xorgs</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Networking <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../networking/arp_and_the_neighbor_table/" class="dropdown-item">ARP and the Neighbor table</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/bonding_in_linux/" class="dropdown-item">Bonding in Linux</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/geneve_tunneling/" class="dropdown-item">Geneve tunneling</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/juniper_x520/" class="dropdown-item">Configure Juniper switch</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/netlink/" class="dropdown-item">Netlink</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovn-kind/" class="dropdown-item">OVN kind</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovn_standalone_on_fedora31/" class="dropdown-item">OVN standalone on Fedora 31</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovs_recirculation/" class="dropdown-item">OVS packet recirculation</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovs-vxlan-tunnels-and-dscp/" class="dropdown-item">OVS VXLAN tunnels and DSCP</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/ovs_with_gdb/" class="dropdown-item">OVS with GDB</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/sctp/" class="dropdown-item">SCTP</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/wireguard/" class="dropdown-item">Wireguard</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">OpenShift <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../alertmanager/" class="dropdown-item">AlertManager</a>
+</li>
+                                    
+<li>
+    <a href="../cpu-manager-with-custom-machine-config-pool/" class="dropdown-item">CPU manager with custom MachineConfigPool</a>
+</li>
+                                    
+<li>
+    <a href="../crio-conmon-runc/" class="dropdown-item">Crio vs conmon vs runc</a>
+</li>
+                                    
+<li>
+    <a href="../etcd_perf/" class="dropdown-item">Etcd Performance tests</a>
+</li>
+                                    
+<li>
+    <a href="../openshift_httpbin_tshark_sidecar/" class="dropdown-item">Httpbin tshark sidecar container</a>
+</li>
+                                    
+<li>
+    <a href="../kubernetes_cluster/" class="dropdown-item">Hints for installing kubernetes on Fedora</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active">How RHCOS updates work</a>
+</li>
+                                    
+<li>
+    <a href="../ocp4-infra-nodes-with-machineset-without-worker-label/" class="dropdown-item">Infra nodes with MachineSets without worker label</a>
+</li>
+                                    
+<li>
+    <a href="../ingresscontroller_router_sharding_ocp_on_osp/" class="dropdown-item">Ingress Controller Sharding OCP on OSP</a>
+</li>
+                                    
+<li>
+    <a href="../ingress-controller-sharding-on-separate-vip/" class="dropdown-item">Ingress Controller Sharding on separate VIP</a>
+</li>
+                                    
+<li>
+    <a href="../openshift_mirror_registry/" class="dropdown-item">Installing a cluster with a mirror registry</a>
+</li>
+                                    
+<li>
+    <a href="../istio-1.6-on-ocp.4.x/" class="dropdown-item">Istio 1.6 on OpenShift 4.x</a>
+</li>
+                                    
+<li>
+    <a href="../kata/" class="dropdown-item">kata containers and the kata operatora</a>
+</li>
+                                    
+<li>
+    <a href="../kind-with-private-registry/" class="dropdown-item">Kind with private registry</a>
+</li>
+                                    
+<li>
+    <a href="../mounting-container-image/" class="dropdown-item">Mount a container image</a>
+</li>
+                                    
+<li>
+    <a href="../../openstack/install_openshift_on_openstack/" class="dropdown-item">OpenShift on OpenStack</a>
+</li>
+                                    
+<li>
+    <a href="../private-registry/" class="dropdown-item">Private container registry</a>
+</li>
+                                    
+<li>
+    <a href="../proxy-ocp-4.5/" class="dropdown-item">Proxy OCP 4.5</a>
+</li>
+                                    
+<li>
+    <a href="../scc/" class="dropdown-item">Security Context Constraints (SCC)</a>
+</li>
+                                    
+<li>
+    <a href="../fix-selinux-labels-coreos/" class="dropdown-item">SElinux labels fix</a>
+</li>
+                                    
+<li>
+    <a href="../../networking/sctp/" class="dropdown-item">SCTP</a>
+</li>
+                                    
+<li>
+    <a href="../openshift_troubleshooting_etcd_state/" class="dropdown-item">Troubleshooting etcd state</a>
+</li>
+                                    
+<li>
+    <a href="../useful-ocp-curl/" class="dropdown-item">Querying the OCP 4.x upgrades info API</a>
+</li>
+                                    
+<li>
+    <a href="../troubleshooting_openshift_on_openstack_worker_creation/" class="dropdown-item">Troubleshooting OpenShift on OpenStack worker creation</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">OpenStack <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../openstack/reattach_to_running_deployment/" class="dropdown-item">Reattach to running deployment</a>
+</li>
+                                    
+<li>
+    <a href="../../openstack/using_clouds_yaml/" class="dropdown-item">Using clouds.yaml</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">OperatorSDK <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../operator-sdk/operator-sdk-reconciliation/" class="dropdown-item">Controller Reconciliation</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../kubernetes_cluster/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../ocp4-infra-nodes-with-machineset-without-worker-label/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="2"><a href="#how-rhcos-updates-work" class="nav-link">How RHCOS updates work</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="2"><a href="#force-pivoting-a-nodes-os-via-the-machineconfigoperator-or-pivot" class="nav-link">Force pivoting a node's OS via the MachineConfigOperator or pivot</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h2 id="how-rhcos-updates-work">How RHCOS updates work</h2>
+<ul>
+<li>https://github.com/openshift/machine-config-operator/blob/1d4e8d0a4658fe9a9683bdf41c6444db10ee876a/docs/MachineConfigDaemon.md#os-updates</li>
+</ul>
+<pre><code>OS updates
+
+In addition to handling Ignition configs, the MachineConfigDaemon also takes care of updating the base operating system.
+
+Updates are provided via the OSImageURL component of a MachineConfig object. This should generally be controlled by the cluster-version-operator, and its current existence in MachineConfig objects should be thought of as an implementation detail.
+
+MachineConfigDaemon only supports updating Red Hat CoreOS, which uses rpm-ostree. The OSImageURL refers to a container image that carries inside it an OSTree payload. When the OSImageURL changes, it will be passed to the pivot command which is included in Red Hat CoreOS, and in turn takes care of passing it to rpm-ostree.
+
+Once an update is prepared (in terms of a new bootloader entry which points to a new OSTree &quot;deployment&quot; or filesystem tree), then the MachineConfigDaemon will reboot.
+</code></pre>
+
+<h2 id="force-pivoting-a-nodes-os-via-the-machineconfigoperator-or-pivot">Force pivoting a node's OS via the MachineConfigOperator or pivot</h2>
+<h3 id="obtaining-the-image-url">Obtaining the image URL</h3>
+<p>Select a release that you would like to pivot to from:
+* https://quay.io/repository/openshift-release-dev/ocp-release?tag=latest&amp;tab=tags</p>
+<p>Select a release image and get the docker/podman pull for that release image:</p>
+<pre><code>docker pull quay.io/openshift-release-dev/ocp-release@sha256:8a9e40df2a19db4cc51dc8624d54163bef6e88b7d88cc0f577652ba25466e338
+</code></pre>
+
+<p>Follow https://andreaskaris.github.io/blog/openshift/mounting-container-image/ to inspect the image on an external host:</p>
+<pre><code># yum install buildah -y
+# buildah from quay.io/openshift-release-dev/ocp-release@sha256:8a9e40df2a19db4cc51dc8624d54163bef6e88b7d88cc0f577652ba25466e338
+# buildah ps
+CONTAINER ID  BUILDER  IMAGE ID     IMAGE NAME                       CONTAINER NAME
+970e896c4c23     *     9fd52d5d304d quay.io/openshift-release-dev... ocp-release-working-container
+# buildah mount ocp-release-working-container
+/var/lib/containers/storage/overlay/d9682dba5a0b1291805c6b430124f6d7a2bab23d22c28c3f023932d17a29cc5b/merged
+</code></pre>
+
+<p>Now, inspect the image catalog:</p>
+<pre><code># DIR=/var/lib/containers/storage/overlay/d9682dba5a0b1291805c6b430124f6d7a2bab23d22c28c3f023932d17a29cc5b/merged
+# less $DIR/release-manifests/image-references
+</code></pre>
+
+<p>And get the machine-os image:</p>
+<pre><code># cat $DIR/release-manifests/image-references | jq '.spec.tags[] | select(.name == &quot;machine-os-content&quot;) .from.name'
+{
+  &quot;name&quot;: &quot;machine-os-content&quot;,
+  &quot;annotations&quot;: {
+    &quot;io.openshift.build.commit.id&quot;: &quot;&quot;,
+    &quot;io.openshift.build.commit.ref&quot;: &quot;&quot;,
+    &quot;io.openshift.build.source-location&quot;: &quot;&quot;,
+    &quot;io.openshift.build.version-display-names&quot;: &quot;machine-os=Red Hat Enterprise Linux CoreOS&quot;,
+    &quot;io.openshift.build.versions&quot;: &quot;machine-os=46.82.202101191342-0&quot;,
+    &quot;release.openshift.io/inconsistency&quot;: &quot;[\&quot;Multiple versions of RPM containers-common used\&quot;, \&quot;Multiple versions of RPM cri-o used\&quot;, \&quot;Multiple versions of RPM dnsmasq used\&quot;, \&quot;Multiple versions of RPM skopeo used\&quot;]&quot;
+  },
+  &quot;from&quot;: {
+    &quot;kind&quot;: &quot;DockerImage&quot;,
+    &quot;name&quot;: &quot;quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:8869972a7f3cf7be7c936ef5b3277f20da7f5b577d66e37a5b9db25889c2a515&quot;
+  },
+  &quot;generation&quot;: 2,
+  &quot;importPolicy&quot;: {},
+  &quot;referencePolicy&quot;: {
+    &quot;type&quot;: &quot;Source&quot;
+  }
+}
+</code></pre>
+
+<pre><code># cat $DIR/release-manifests/image-references | jq '.spec.tags[] | select(.name == &quot;machine-os-content&quot;) .from.name'
+&quot;quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:8869972a7f3cf7be7c936ef5b3277f20da7f5b577d66e37a5b9db25889c2a515&quot;
+</code></pre>
+
+<h3 id="using-pivot-command-to-force-pivot-on-a-node">Using pivot command to force pivot on a node</h3>
+<p>Using <code>/run/bin/machine-config-daemon pivot</code>, it is possible to pivot to another os image. As this can easily run into issues, one should have IPMI access to the node:</p>
+<pre><code># ssh core@openshift-worker-0.example.com
+(...)
+[root@openshift-worker-0 ~]# rpm-ostree status
+State: idle
+Deployments:
+● pivot://quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:4c5b83a192734ad6aa33da798f51b4b7ebe0f633ed63d53867a0c3fb73993024
+              CustomOrigin: Managed by machine-config-operator
+                   Version: 46.82.202012051820-0 (2020-12-05T18:24:10Z)
+
+  pivot://quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:4c5b83a192734ad6aa33da798f51b4b7ebe0f633ed63d53867a0c3fb73993024
+              CustomOrigin: Managed by machine-config-operator
+                   Version: 46.82.202012051820-0 (2020-12-05T18:24:10Z)
+[root@openshift-worker-0 ~]# /run/bin/machine-config-daemon pivot quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:8869972a7f3cf7be7c936ef5b3277f20da7f5b577d66e37a5b9db25889c2a515
+I0121 22:27:41.460321   13015 run.go:18] Running: nice -- ionice -c 3 oc image extract --path /:/run/mco-machine-os-content/os-content-638982111 --registry-config /var/lib/kubelet/config.json quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:8869972a7f3cf7be7c936ef5b3277f20da7f5b577d66e37a5b9db25889c2a515
+I0121 22:28:00.620039   13015 rpm-ostree.go:261] Running captured: rpm-ostree status --json
+I0121 22:28:00.655338   13015 rpm-ostree.go:179] Previous pivot: quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:4c5b83a192734ad6aa33da798f51b4b7ebe0f633ed63d53867a0c3fb73993024
+I0121 22:28:01.701252   13015 rpm-ostree.go:211] Pivoting to: 46.82.202101191342-0 (478636b3f9d960112359f202481507e4c5467dcccdc4e8faba291de4abb3b8bc)
+I0121 22:28:01.701306   13015 rpm-ostree.go:243] Executing rebase from repo path /run/mco-machine-os-content/os-content-638982111/srv/repo with customImageURL pivot://quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:8869972a7f3cf7be7c936ef5b3277f20da7f5b577d66e37a5b9db25889c2a515 and checksum 478636b3f9d960112359f202481507e4c5467dcccdc4e8faba291de4abb3b8bc
+I0121 22:28:01.701314   13015 rpm-ostree.go:261] Running captured: rpm-ostree rebase --experimental /run/mco-machine-os-content/os-content-638982111/srv/repo:478636b3f9d960112359f202481507e4c5467dcccdc4e8faba291de4abb3b8bc --custom-origin-url pivot://quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:8869972a7f3cf7be7c936ef5b3277f20da7f5b577d66e37a5b9db25889c2a515 --custom-origin-description Managed by machine-config-operator
+[root@openshift-worker-0 ~]# rpm-ostree status
+State: idle
+Deployments:
+  pivot://quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:8869972a7f3cf7be7c936ef5b3277f20da7f5b577d66e37a5b9db25889c2a515
+              CustomOrigin: Managed by machine-config-operator
+                   Version: 46.82.202101191342-0 (2021-01-19T13:45:40Z)
+                      Diff: 19 upgraded
+
+● pivot://quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:4c5b83a192734ad6aa33da798f51b4b7ebe0f633ed63d53867a0c3fb73993024
+              CustomOrigin: Managed by machine-config-operator
+                   Version: 46.82.202012051820-0 (2020-12-05T18:24:10Z)
+
+  pivot://quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:4c5b83a192734ad6aa33da798f51b4b7ebe0f633ed63d53867a0c3fb73993024
+              CustomOrigin: Managed by machine-config-operator
+                   Version: 46.82.202012051820-0 (2020-12-05T18:24:10Z)
+[root@openshift-worker-0 ~]# reboot
+Connection to openshift-worker-0.example.com closed by remote host.
+Connection to openshift-worker-0.example.com closed.
+</code></pre>
+
+<p>After the reboot, verify:</p>
+<pre><code>[root@openshift-worker-0 ~]# rpm-ostree status
+State: idle
+Deployments:
+● pivot://quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:8869972a7f3cf7be7c936ef5b3277f20da7f5b577d66e37a5b9db25889c2a515
+              CustomOrigin: Managed by machine-config-operator
+                   Version: 46.82.202101191342-0 (2021-01-19T13:45:40Z)
+
+  pivot://quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:4c5b83a192734ad6aa33da798f51b4b7ebe0f633ed63d53867a0c3fb73993024
+              CustomOrigin: Managed by machine-config-operator
+                   Version: 46.82.202012051820-0 (2020-12-05T18:24:10Z)
+</code></pre>
+
+<p>Note that the MachineConfigPool for the role will now report a mismatch:</p>
+<pre><code># oc describe mcp worker
+(...)
+    Message:               Node openshift-worker-0 is reporting: &quot;unexpected on-disk state validating against rendered-worker-0820700c2d496a3cacc73c82b7cd5c5f: expected target osImageURL \&quot;quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:4c5b83a192734ad6aa33da798f51b4b7ebe0f633ed63d53867a0c3fb73993024\&quot;, have \&quot;quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:8869972a7f3cf7be7c936ef5b3277f20da7f5b577d66e37a5b9db25889c2a515\&quot;&quot;
+(...)
+</code></pre>
+
+<p>To roll back, simply pivot back to the original image on the same worker node:</p>
+<pre><code># /run/bin/machine-config-daemon pivot quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:4c5b83a192734ad6aa33da798f51b4b7ebe0f633ed63d53867a0c3fb73993024
+</code></pre>
+
+<pre><code>[root@openshift-worker-0 ~]# /run/bin/machine-config-daemon pivot quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:4c5b83a192734ad6aa33da798f51b4b7ebe0f633ed63d53867a0c3fb73993024
+I0122 10:28:54.824754  701236 run.go:18] Running: nice -- ionice -c 3 oc image extract --path /:/run/mco-machine-os-content/os-content-026372431 --registry-config /var/lib/kubelet/config.json quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:4c5b83a192734ad6aa33da798f51b4b7ebe0f633ed63d53867a0c3fb73993024
+I0122 10:29:25.677174  701236 rpm-ostree.go:261] Running captured: rpm-ostree status --json
+I0122 10:29:25.762600  701236 rpm-ostree.go:179] Previous pivot: quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:8869972a7f3cf7be7c936ef5b3277f20da7f5b577d66e37a5b9db25889c2a515
+I0122 10:29:26.382134  701236 rpm-ostree.go:211] Pivoting to: 46.82.202012051820-0 (7e014b64b96536487eb3701fa4f0e604697730bde2f2f9034c4f56c024c67119)
+I0122 10:29:26.382152  701236 rpm-ostree.go:243] Executing rebase from repo path /run/mco-machine-os-content/os-content-026372431/srv/repo with customImageURL pivot://quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:4c5b83a192734ad6aa33da798f51b4b7ebe0f633ed63d53867a0c3fb73993024 and checksum 7e014b64b96536487eb3701fa4f0e604697730bde2f2f9034c4f56c024c67119
+I0122 10:29:26.382177  701236 rpm-ostree.go:261] Running captured: rpm-ostree rebase --experimental /run/mco-machine-os-content/os-content-026372431/srv/repo:7e014b64b96536487eb3701fa4f0e604697730bde2f2f9034c4f56c024c67119 --custom-origin-url pivot://quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:4c5b83a192734ad6aa33da798f51b4b7ebe0f633ed63d53867a0c3fb73993024 --custom-origin-description Managed by machine-config-operator
+[root@openshift-worker-0 ~]# rpm-ostree status
+State: idle
+Deployments:
+  pivot://quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:4c5b83a192734ad6aa33da798f51b4b7ebe0f633ed63d53867a0c3fb73993024
+              CustomOrigin: Managed by machine-config-operator
+                   Version: 46.82.202012051820-0 (2020-12-05T18:24:10Z)
+                      Diff: 19 downgraded
+
+● pivot://quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:8869972a7f3cf7be7c936ef5b3277f20da7f5b577d66e37a5b9db25889c2a515
+              CustomOrigin: Managed by machine-config-operator
+                   Version: 46.82.202101191342-0 (2021-01-19T13:45:40Z)
+
+  pivot://quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:4c5b83a192734ad6aa33da798f51b4b7ebe0f633ed63d53867a0c3fb73993024
+              CustomOrigin: Managed by machine-config-operator
+                   Version: 46.82.202012051820-0 (2020-12-05T18:24:10Z)
+[root@openshift-worker-0 ~]# reboot
+</code></pre>
+
+<h3 id="using-the-machine-config-osimageurl-configmap-to-pivot-all-nodes">Using the  machine-config-osimageurl ConfigMap to pivot all nodes</h3>
+<blockquote>
+<p>For more details, see: https://github.com/openshift/machine-config-operator/blob/master/docs/HACKING.md#applying-a-custom-oscontainer</p>
+</blockquote>
+<p>First, disable the cluster-version-operator:</p>
+<pre><code>$ oc -n openshift-cluster-version scale --replicas=0 deploy/cluster-version-operator
+deployment.apps/cluster-version-operator scaled
+</code></pre>
+
+<p>Then, update the <code>machine-config-osimageurl</code> configmap:</p>
+<pre><code>[root@openshift-jumpserver-0 ~]# oc patch cm -n openshift-machine-config-operator machine-config-osimageurl --type=merge -p '{&quot;data&quot;: {&quot;osImageURL&quot;:&quot;quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:8869972a7f3cf7be7c936ef5b3277f20da7f5b577d66e37a5b9db25889c2a515&quot;}'
+configmap/machine-config-osimageurl patched
+[root@openshift-jumpserver-0 ~]# oc get -o yaml cm -n openshift-machine-config-operator machine-config-osimageurl
+apiVersion: v1
+data:
+  osImageURL: quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:8869972a7f3cf7be7c936ef5b3277f20da7f5b577d66e37a5b9db25889c2a515
+  releaseVersion: 4.6.8
+kind: ConfigMap
+metadata:
+  creationTimestamp: &quot;2020-12-22T16:48:36Z&quot;
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:data: {}
+    manager: cluster-version-operator
+    operation: Update
+    time: &quot;2020-12-23T10:47:03Z&quot;
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:data:
+        f:osImageURL: {}
+        f:releaseVersion: {}
+    manager: kubectl-patch
+    operation: Update
+    time: &quot;2021-01-22T10:25:15Z&quot;
+  name: machine-config-osimageurl
+  namespace: openshift-machine-config-operator
+  resourceVersion: &quot;17699272&quot;
+  selfLink: /api/v1/namespaces/openshift-machine-config-operator/configmaps/machine-config-osimageurl
+  uid: b26e3885-15e8-4ccc-8e84-d03bed956ea9
+</code></pre>
+
+<blockquote>
+<p>Note: Do not patch <code>releaseVersion</code>, or the MachineConfigOperator will complain if it detects a version mismatch:</p>
+</blockquote>
+<pre><code># oc logs machine-config-operator-b956c8ccc-mktl5
+(...)
+E0122 10:30:34.398824       1 operator.go:314] refusing to read osImageURL version &quot;4.6.13&quot;, operator version &quot;4.6.8&quot;
+(...)
+</code></pre>
+
+<p>Now, the MachineConfigOperator will create new <code>rendered-&lt;role&gt;</code> MachineConfigurations:</p>
+<pre><code># oc get mc
+NAME                                               GENERATEDBYCONTROLLER                      IGNITIONVERSION   AGE
+00-master                                          c470febe19e3b004fb99baa6679e7597f50554c5   3.1.0             30d
+00-worker                                          c470febe19e3b004fb99baa6679e7597f50554c5   3.1.0             30d
+01-master-container-runtime                        c470febe19e3b004fb99baa6679e7597f50554c5   3.1.0             30d
+01-master-kubelet                                  c470febe19e3b004fb99baa6679e7597f50554c5   3.1.0             30d
+01-worker-container-runtime                        c470febe19e3b004fb99baa6679e7597f50554c5   3.1.0             30d
+01-worker-kubelet                                  c470febe19e3b004fb99baa6679e7597f50554c5   3.1.0             30d
+99-master-generated-registries                     c470febe19e3b004fb99baa6679e7597f50554c5   3.1.0             30d
+99-master-mtu                                                                                 2.2.0             30d
+99-master-ssh                                                                                 3.1.0             30d
+99-worker-generated-registries                     c470febe19e3b004fb99baa6679e7597f50554c5   3.1.0             30d
+99-worker-mtu                                                                                 2.2.0             30d
+99-worker-ssh                                                                                 3.1.0             30d
+rendered-master-219315c6f26485a186b6bab35c0c32ba   c470febe19e3b004fb99baa6679e7597f50554c5   3.1.0             3m44s
+rendered-master-bc9b6c496348bd8e46b0cf7f5a4d852f   6896f6bc491fde7e8314631652f70841c7f9f31d   3.1.0             30d
+rendered-master-ddd54a7e3be109e549ff25b0250472cd   c470febe19e3b004fb99baa6679e7597f50554c5   3.1.0             29d
+rendered-worker-0820700c2d496a3cacc73c82b7cd5c5f   c470febe19e3b004fb99baa6679e7597f50554c5   3.1.0             29d
+rendered-worker-643d787eaa872b91fd73db39aba74619   6896f6bc491fde7e8314631652f70841c7f9f31d   3.1.0             30d
+rendered-worker-98a743e40098703869e9a8e0083f4f4a   c470febe19e3b004fb99baa6679e7597f50554c5   3.1.0             3m44s
+# oc get mc -o yaml rendered-worker-98a743e40098703869e9a8e0083f4f4a | grep -i 'osImageURL'
+        f:osImageURL: {}
+  osImageURL: quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:8869972a7f3cf7be7c936ef5b3277f20da7f5b577d66e37a5b9db25889c2a515
+</code></pre>
+
+<p>And the MachineConfigPools will be updated, node by node:</p>
+<pre><code># oc get mcp
+NAME     CONFIG                                             UPDATED   UPDATING   DEGRADED   MACHINECOUNT   READYMACHINECOUNT   UPDATEDMACHINECOUNT   DEGRADEDMACHINECOUNT   AGE
+master   rendered-master-ddd54a7e3be109e549ff25b0250472cd   False     True       False      3              1                   1                     0                      30d
+worker   rendered-worker-0820700c2d496a3cacc73c82b7cd5c5f   False     True       False      2              0                   0                     0                      30d
+</code></pre>
+
+<p>Wait until this completes and then verify on the nodes:</p>
+<pre><code>[root@openshift-master-0 ~]# rpm-ostree status
+State: idle
+Deployments:
+● pivot://quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:8869972a7f3cf7be7c936ef5b3277f20da7f5b577d66e37a5b9db25889c2a515
+              CustomOrigin: Managed by machine-config-operator
+                   Version: 46.82.202101191342-0 (2021-01-19T13:45:40Z)
+
+  pivot://quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:4c5b83a192734ad6aa33da798f51b4b7ebe0f633ed63d53867a0c3fb73993024
+              CustomOrigin: Managed by machine-config-operator
+                   Version: 46.82.202012051820-0 (2020-12-05T18:24:10Z)
+</code></pre></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js" defer></script>
+        <script src="../../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

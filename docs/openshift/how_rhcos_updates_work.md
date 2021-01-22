@@ -19,6 +19,7 @@ Once an update is prepared (in terms of a new bootloader entry which points to a
 ### Obtaining the image URL
 
 Select a release that you would like to pivot to from:
+
 * https://quay.io/repository/openshift-release-dev/ocp-release?tag=latest&tab=tags
 
 Select a release image and get the docker/podman pull for that release image:

@@ -338,8 +338,10 @@ Once an update is prepared (in terms of a new bootloader entry which points to a
 
 <h2 id="force-pivoting-a-nodes-os-via-the-machineconfigoperator-or-pivot">Force pivoting a node's OS via the MachineConfigOperator or pivot</h2>
 <h3 id="obtaining-the-image-url">Obtaining the image URL</h3>
-<p>Select a release that you would like to pivot to from:
-* https://quay.io/repository/openshift-release-dev/ocp-release?tag=latest&amp;tab=tags</p>
+<p>Select a release that you would like to pivot to from:</p>
+<ul>
+<li>https://quay.io/repository/openshift-release-dev/ocp-release?tag=latest&amp;tab=tags</li>
+</ul>
 <p>Select a release image and get the docker/podman pull for that release image:</p>
 <pre><code>docker pull quay.io/openshift-release-dev/ocp-release@sha256:8a9e40df2a19db4cc51dc8624d54163bef6e88b7d88cc0f577652ba25466e338
 </code></pre>

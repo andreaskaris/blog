@@ -79,6 +79,10 @@
 </li>
                                     
 <li>
+    <a href="../java-idrac-issues/" class="dropdown-item">Java Idrac Issues</a>
+</li>
+                                    
+<li>
     <a href="../hugepages/" class="dropdown-item">Hugepages</a>
 </li>
                                     
@@ -342,7 +346,7 @@ buildah commit java-container java-image
 </code></pre>
 
 <p>Test container:</p>
-<pre><code>podman run -ti -e DISPLAY --rm -v /run/user/1000/gdm/Xauthority:/run/user/0/gdm/Xauthority:Z --net=host localhost/java-image javaws xclock
+<pre><code>podman run -ti -e DISPLAY --rm -v /run/user/1000/gdm/Xauthority:/run/user/0/gdm/Xauthority:Z --net=host localhost/java-image xclock
 </code></pre>
 
 <p>If this does not work, check <code>journalctl -f</code>. I got:</p>
@@ -386,7 +390,7 @@ sudo semodule -i mycontainer.ci
                 </p>
                 <form>
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
                     </div>
                 </form>
                 <div id="mkdocs-search-results"></div>

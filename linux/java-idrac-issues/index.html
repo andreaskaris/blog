@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../../img/favicon.ico">
-        <title>Ceph manual test with qemu - Andreas Karis Blog</title>
+        <title>Java Idrac Issues - Andreas Karis Blog</title>
         <link href="../../css/bootstrap.min.css" rel="stylesheet">
         <link href="../../css/font-awesome.min.css" rel="stylesheet">
         <link href="../../css/base.css" rel="stylesheet">
@@ -36,12 +36,12 @@
                             <li class="navitem">
                                 <a href="../.." class="nav-link">Home</a>
                             </li>
-                            <li class="dropdown active">
+                            <li class="dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ceph <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="./" class="dropdown-item active">Ceph manual test with qemu</a>
+    <a href="../../ceph/ceph-manual-test/" class="dropdown-item">Ceph manual test with qemu</a>
 </li>
                                 </ul>
                             </li>
@@ -50,11 +50,11 @@
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="../../linux/cgroups/" class="dropdown-item">cgroups</a>
+    <a href="../cgroups/" class="dropdown-item">cgroups</a>
 </li>
                                     
 <li>
-    <a href="../../linux/containers/" class="dropdown-item">Containers in Linux</a>
+    <a href="../containers/" class="dropdown-item">Containers in Linux</a>
 </li>
                                     
 <li>
@@ -62,40 +62,40 @@
 </li>
                                     
 <li>
-    <a href="../../linux/namespaces/" class="dropdown-item">namespaces</a>
+    <a href="../namespaces/" class="dropdown-item">namespaces</a>
 </li>
                                 </ul>
                             </li>
-                            <li class="dropdown">
+                            <li class="dropdown active">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Linux <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="../../linux/cgroups/" class="dropdown-item">cgroups</a>
+    <a href="../cgroups/" class="dropdown-item">cgroups</a>
 </li>
                                     
 <li>
-    <a href="../../linux/containers/" class="dropdown-item">Containers in Linux</a>
+    <a href="../containers/" class="dropdown-item">Containers in Linux</a>
 </li>
                                     
 <li>
-    <a href="../../linux/java-idrac-issues/" class="dropdown-item">Java Idrac Issues</a>
+    <a href="./" class="dropdown-item active">Java Idrac Issues</a>
 </li>
                                     
 <li>
-    <a href="../../linux/hugepages/" class="dropdown-item">Hugepages</a>
+    <a href="../hugepages/" class="dropdown-item">Hugepages</a>
 </li>
                                     
 <li>
-    <a href="../../linux/meson/" class="dropdown-item">meson</a>
+    <a href="../meson/" class="dropdown-item">meson</a>
 </li>
                                     
 <li>
-    <a href="../../linux/namespaces/" class="dropdown-item">namespaces</a>
+    <a href="../namespaces/" class="dropdown-item">namespaces</a>
 </li>
                                     
 <li>
-    <a href="../../linux/old_java_version_with_xorgs_in_container/" class="dropdown-item">Old Java inside a container with xorgs</a>
+    <a href="../old_java_version_with_xorgs_in_container/" class="dropdown-item">Old Java inside a container with xorgs</a>
 </li>
                                 </ul>
                             </li>
@@ -284,12 +284,12 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../.." class="nav-link">
+                                <a rel="prev" href="../containers/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../../linux/cgroups/" class="nav-link">
+                                <a rel="next" href="../hugepages/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -311,32 +311,8 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-level="1"><a href="#using-ceph-with-qemu-kvm-manually" class="nav-link">Using Ceph with qemu-kvm manually</a>
+            <li class="nav-item" data-level="2"><a href="#issues-with-dell-idrac-and-workaround" class="nav-link">Issues with Dell iDrac and workaround</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#install-ceph" class="nav-link">Install Ceph</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#installing-ceph-credentials-to-etcceph" class="nav-link">Installing ceph credentials to /etc/ceph</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#creating-a-pool" class="nav-link">Creating a pool</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#downloading-and-customizing-rhel-qcow2" class="nav-link">Downloading and customizing RHEL qcow2</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#converting-and-uploading-image-into-ceph-pool" class="nav-link">Converting and uploading image into Ceph pool</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#booting-a-vm-from-the-raw-ceph-image-with-libvirt" class="nav-link">Booting a VM from the raw Ceph image with libvirt</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
               </ul>
             </li>
         </ul>
@@ -344,54 +320,87 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="using-ceph-with-qemu-kvm-manually">Using Ceph with qemu-kvm manually</h1>
-<h2 id="install-ceph">Install Ceph</h2>
-<p>Create a Ceph cluster according to: 
-<a href="https://access.redhat.com/documentation/en-us/red_hat_ceph_storage/3/html/container_guide/deploying-red-hat-ceph-storage-in-containers">https://access.redhat.com/documentation/en-us/red_hat_ceph_storage/3/html/container_guide/deploying-red-hat-ceph-storage-in-containers</a></p>
-<h2 id="installing-ceph-credentials-to-etcceph">Installing ceph credentials to /etc/ceph</h2>
-<p>Make sure that all required ceph credentials are in /etc/ceph. In this case, I copied them directly from /etc/ceph on one of my monitor nodes.</p>
-<h2 id="creating-a-pool">Creating a pool</h2>
-<pre><code>ceph osd pool create rbd-pool 128
-rbd pool init rbd-pool
+<h2 id="issues-with-dell-idrac-and-workaround">Issues with Dell iDrac and workaround</h2>
+<p>Since my upgrade to Fedora 33, some of our iDrac servers wouldn't accept keyboard input any more.</p>
+<pre><code>[akaris@linux cases]$ /usr/libexec/icedtea-web/javaws viewer.jnlp 
+selected jre: /usr/lib/jvm/jre-11-openjdk
+WARNING: package javax.jnlp not in java.desktop
+Fri Feb 19 18:32:21 CET 2021 [INFO   ] net.sourceforge.jnlp.runtime.EnvironmentPrinter: OpenWebStartLauncher called with args: [viewer.jnlp].
+Fri Feb 19 18:32:21 CET 2021 [INFO   ] net.sourceforge.jnlp.runtime.EnvironmentPrinter: OS: Linux
+Fri Feb 19 18:32:21 CET 2021 [INFO   ] net.sourceforge.jnlp.runtime.EnvironmentPrinter: Java Runtime Red Hat, Inc.-11.0.10
+(...)
+
+ Client random: 1741975
+ KVM session state SESSION_RUNNING
+ KVM session is running.
+Exception in thread &quot;AWT-EventQueue-1&quot; java.lang.NoSuchMethodError: 'java.awt.peer.ComponentPeer java.awt.Window.getPeer()'
+    at com.avocent.kvm.nativekeyboard.NativeKVM.a(Unknown Source)
+    at com.avocent.kvm.nativekeyboard.b.a(Unknown Source)
+    at com.avocent.kvm.nativekeyboard.b.b(Unknown Source)
+    at com.avocent.kvm.nativekeyboard.b.windowOpened(Unknown Source)
+    at java.desktop/java.awt.AWTEventMulticaster.windowOpened(AWTEventMulticaster.java:348)
+    at java.desktop/java.awt.Window.processWindowEvent(Window.java:2075)
+    at java.desktop/javax.swing.JFrame.processWindowEvent(JFrame.java:298)
+    at java.desktop/java.awt.Window.processEvent(Window.java:2037)
+    at java.desktop/java.awt.Component.dispatchEventImpl(Component.java:5011)
+    at java.desktop/java.awt.Container.dispatchEventImpl(Container.java:2321)
+    at java.desktop/java.awt.Window.dispatchEventImpl(Window.java:2772)
+    at java.desktop/java.awt.Component.dispatchEvent(Component.java:4843)
+    at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:772)
+    at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:721)
+    at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:715)
+    at java.base/java.security.AccessController.doPrivileged(Native Method)
+    at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:85)
+    at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:95)
+    at java.desktop/java.awt.EventQueue$5.run(EventQueue.java:745)
+    at java.desktop/java.awt.EventQueue$5.run(EventQueue.java:743)
+    at java.base/java.security.AccessController.doPrivileged(Native Method)
+    at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:85)
+    at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:742)
+    at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)
+    at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)
+    at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)
+    at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)
+    at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+    at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
+ Video connect status: true
+CoreSessionListener : state running
+in CoreSessionListner : fireOnSessionStateChanged 
+APCP 8100 status recvd. Status: 0
+ KVM session state SESSION_RUNNING
+ KVM session is running.
+in CoreSessionListner : fireOnSessionStateChanged 
+ KVM session state SESSION_RUNNING
+ KVM session is running.
+process() DisplayResolutionResponse: resolution change [1024x768]
+ Call to resize from outside event thread.
+** Max Size: W = 1920 H = 1053
+ Call to resize from outside event thread.
+** Window Pref Size: W = 1024 H = 841
+** Max Size: W = 1920 H = 1053
+** Window Pref Size: W = 1024 H = 841
+Boot Device: Local:
+   Resource Key: NextBoot_0
+   Resource Key: NextBoot_1
+   Resource Key: NextBoot_6
+   Resource Key: NextBoot_15
+   Resource Key: NextBoot_5
+   Resource Key: NextBoot_2
+   Resource Key: NextBoot_7
+   Resource Key: NextBoot_8
+   Resource Key: NextBoot_16
+   Resource Key: NextBoot_18
+   Resource Key: NextBoot_17
+   Resource Key: NextBoot_19
 </code></pre>
 
-<h2 id="downloading-and-customizing-rhel-qcow2">Downloading and customizing RHEL qcow2</h2>
-<p>Download the RHEL qcow2 from <a href="https://access.redhat.com">https://access.redhat.com</a>, e.g.: <a href="https://access.redhat.com/downloads/content/69/ver=/rhel---7/7.7/x86_64/product-software">https://access.redhat.com/downloads/content/69/ver=/rhel---7/7.7/x86_64/product-software</a></p>
-<p>Install libguestfs-tools:</p>
-<pre><code>yum install libguestfs-tools -y
+<p>I installed Adopt JDK 8 to fix this: https://adoptopenjdk.net/installation.html?variant=openjdk8&amp;jvmVariant=hotspot#x64_linux-jdk</p>
+<p>Execute the following command to configure icdetea:</p>
+<pre><code>$ /usr/libexec/icedtea-web/itweb-settings
 </code></pre>
 
-<p>Change the root password of the image:</p>
-<pre><code>virt-customize -a rhel-server-7.8-beta-1-x86_64-kvm.qcow2 --password root:password
-# or, if needed:
-# export LIBGUESTFS_BACKEND=direct ; virt-customize -a rhel-server-7.8-beta-1-x86_64-kvm.qcow2 --password root:password
-</code></pre>
-
-<h2 id="converting-and-uploading-image-into-ceph-pool">Converting and uploading image into Ceph pool</h2>
-<pre><code>qemu-img convert -f qcow2 -O raw rhel-server-7.8-beta-1-x86_64-kvm.qcow2 rbd:rbd-pool/rhel-server
-</code></pre>
-
-<h4 id="booting-a-vm-from-the-raw-ceph-image-with-qemu-kvm">Booting a VM from the raw Ceph image with QEMU-KVM</h4>
-<p>Start a VM that directly uses the uploaded image from the Ceph pool:</p>
-<pre><code>/usr/libexec/qemu-kvm -drive file=rbd:rbd-pool/rhel-server -nographic -m 1024
-</code></pre>
-
-<p>To get out of qemu-kvm, type <code>CTRL-a x</code></p>
-<p>You should be able to log into the image with credentials: <code>root</code> / <code>password</code></p>
-<blockquote>
-<p><strong>Note:</strong> With the RHEL cloud image, the screen will show grub, then go blank for a while. This is normal, just wait for a few seconds.</p>
-</blockquote>
-<h2 id="booting-a-vm-from-the-raw-ceph-image-with-libvirt">Booting a VM from the raw Ceph image with libvirt</h2>
-<p>See:
-<a href="https://blog.modest-destiny.com/posts/kvm-libvirt-add-ceph-rbd-pool/">https://blog.modest-destiny.com/posts/kvm-libvirt-add-ceph-rbd-pool/</a></p>
-<pre><code>[root@undercloud-0 ~]# DISK_SIZE=$(qemu-img  info rhel-server-7.8-beta-1-x86_64-kvm.raw | awk -F '[(|)]' '/virtual size/ {print $(NF-1)}' | awk '{print $1}')
-[root@undercloud-0 ~]# virsh vol-create-as $CEPH_POOL rhel $DISK_SIZE --format raw
-Vol rhel created
-
-[root@undercloud-0 ~]# virsh vol-upload --pool $CEPH_POOL rhel rhel-server-7.8-beta-1-x86_64-kvm.raw
-error: cannot upload to volume rhel
-error: this function is not supported by the connection driver: storage pool doesn't support volume upload
-</code></pre></div>
+<p>Adopt openJDK in JVM Settings and connect with openjdk.</p>
+<p>See: https://translate.google.com/translate?sl=auto&amp;tl=en&amp;u=https://minimonk.net/10111</p></div>
             </div>
         </div>
 

@@ -30,7 +30,7 @@ sudo setenforce 0
 
 Test container:
 ~~~
-podman run -ti -e DISPLAY --rm -v /run/user/1000/gdm/Xauthority:/run/user/0/gdm/Xauthority:Z --net=host localhost/java-image javaws xclock
+podman run -ti -e DISPLAY --rm -v /run/user/1000/gdm/Xauthority:/run/user/0/gdm/Xauthority:Z --net=host localhost/java-image xclock
 ~~~
 
 If this does not work, check `journalctl -f`. I got:

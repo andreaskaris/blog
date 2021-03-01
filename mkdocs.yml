@@ -38,6 +38,7 @@ nav:
   - Etcd Performance tests: openshift/etcd_perf.md
   - Httpbin tshark sidecar container: openshift/openshift_httpbin_tshark_sidecar.md
   - Hints for installing kubernetes on Fedora: openshift/kubernetes_cluster.md
+  - Horiontal Pod Autoscaler: openshift/HPA.md
   - How RHCOS updates work: openshift/how_rhcos_updates_work.md
   - Infra nodes with MachineSets without worker label: openshift/ocp4-infra-nodes-with-machineset-without-worker-label.md
   - Ingress Controller Sharding OCP on OSP: openshift/ingresscontroller_router_sharding_ocp_on_osp.md

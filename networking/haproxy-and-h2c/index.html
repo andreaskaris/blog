@@ -329,6 +329,14 @@
                     <div class="col-md-9" role="main">
 
 <h2 id="haproxy-and-http2-with-a-focus-on-h2c">haproxy and HTTP2 with a focus on h2c</h2>
+<p>This blog article focuses on haproxy's capabilities when it comes to protocol upgrades from HTTP/1.1 to HTTP/2 - all in the context of connection termination on the haproxy side. 
+All tests will create one TCP connection from the client to the haproxy frontend and another TCP connection from the haproxy backend to the backend server.</p>
+<p>haproxy can support HTTP/2 via encrypted as well as via clear text connections. For encrypted connections, haproxy allows protocol negotiation with ALPN (Application-Layer Protocol Negotiation).</p>
+<ul>
+<li>https://en.wikipedia.org/wiki/Application-Layer_Protocol_Negotiation</li>
+</ul>
+<p>ALPN is a TLS protocol extension. Thus, this feature requires TLS connections from the client to the haproxy frontend and from the haproxy backend to the backend server.</p>
+<p>haproxy does not support the <code>Upgrade: h2c</code> statement. Hence, it is possible to establish either HTTP/1.1 or HTTP/2 connections, but clear text connections cannot be upgraded from HTTP/1.1 to HTTP/2.</p>
 <h3 id="some-theory-h2-vs-h2c">Some theory - h2 vs h2c</h3>
 <p>For the differences between HTTP/2 and h2c, see RFC 7540:</p>
 <ul>

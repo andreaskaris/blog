@@ -20,6 +20,7 @@ nav:
   - Old Java inside a container with xorgs: linux/old_java_version_with_xorgs_in_container.md
 - Networking:
   - ARP and the Neighbor table: networking/arp_and_the_neighbor_table.md
+  - BPF and tcpdump: networking/bpf-and-tcpdump.md
   - Bonding in Linux: networking/bonding_in_linux.md  
   - Configure Juniper switch: networking/juniper_x520.md
   - haproxy and HTTP/2: networking/haproxy-and-h2c.md

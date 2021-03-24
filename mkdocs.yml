@@ -1,6 +1,6 @@
 site_name: Andreas Karis Blog
 theme: 
-  name: mkdocs
+  name: gitbook
 nav:
 - Home: index.md
 - Ceph:

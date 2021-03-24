@@ -356,3 +356,8 @@ cp bpftool/bpftool /usr/local/bin/.
 ~~~
 
 (... TBD ...)
+
+
+## Sniffing traffic with golang
+
+* [https://itnext.io/sniffing-creds-with-go-a-journey-with-libpcap-73bc3e74966](https://itnext.io/sniffing-creds-with-go-a-journey-with-libpcap-73bc3e74966)

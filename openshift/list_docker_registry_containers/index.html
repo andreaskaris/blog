@@ -1,336 +1,304 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
-        
-        
-        <link rel="shortcut icon" href="../../img/favicon.ico">
-        <title>List container images in registry - Andreas Karis Blog</title>
-        <link href="../../css/bootstrap.min.css" rel="stylesheet">
-        <link href="../../css/font-awesome.min.css" rel="stylesheet">
-        <link href="../../css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+<head>
+<meta charset="utf-8">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<title>List container images in registry - Andreas Karis Blog</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-        <script src="../../js/jquery-1.10.2.min.js" defer></script>
-        <script src="../../js/bootstrap.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script> 
-    </head>
+<meta name="generator" content="mkdocs-1.1.2, mkdocs-gitbook-1.0.7">
 
-    <body>
-        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
-            <div class="container">
-                <a class="navbar-brand" href="../..">Andreas Karis Blog</a>
-                <!-- Expander button -->
-                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+<link rel="shortcut icon" href="../../images/favicon.ico" type="image/x-icon">
+<meta name="HandheldFriendly" content="true"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta rel="next" href="" />
+<link href="../../css/style.min.css" rel="stylesheet"> 
+</head>
 
-                <!-- Expanded navigation -->
-                <div id="navbar-collapse" class="navbar-collapse collapse">
-                        <!-- Main navigation -->
-                        <ul class="nav navbar-nav">
-                            <li class="navitem">
-                                <a href="../.." class="nav-link">Home</a>
-                            </li>
-                            <li class="dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Ceph <b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    
-<li>
-    <a href="../../ceph/ceph-manual-test/" class="dropdown-item">Ceph manual test with qemu</a>
-</li>
-                                </ul>
-                            </li>
-                            <li class="dropdown active">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Containers <b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    
-<li>
-    <a href="../../linux/cgroups/" class="dropdown-item">cgroups</a>
-</li>
-                                    
-<li>
-    <a href="../../linux/containers/" class="dropdown-item">Containers in Linux</a>
-</li>
-                                    
-<li>
-    <a href="./" class="dropdown-item active">List container images in registry</a>
-</li>
-                                    
-<li>
-    <a href="../../linux/namespaces/" class="dropdown-item">namespaces</a>
-</li>
-                                </ul>
-                            </li>
-                            <li class="dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Linux <b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    
-<li>
-    <a href="../../linux/cgroups/" class="dropdown-item">cgroups</a>
-</li>
-                                    
-<li>
-    <a href="../../linux/containers/" class="dropdown-item">Containers in Linux</a>
-</li>
-                                    
-<li>
-    <a href="../../linux/java-idrac-issues/" class="dropdown-item">Java Idrac Issues</a>
-</li>
-                                    
-<li>
-    <a href="../../linux/hugepages/" class="dropdown-item">Hugepages</a>
-</li>
-                                    
-<li>
-    <a href="../../linux/meson/" class="dropdown-item">meson</a>
-</li>
-                                    
-<li>
-    <a href="../../linux/namespaces/" class="dropdown-item">namespaces</a>
-</li>
-                                    
-<li>
-    <a href="../../linux/old_java_version_with_xorgs_in_container/" class="dropdown-item">Old Java inside a container with xorgs</a>
-</li>
-                                </ul>
-                            </li>
-                            <li class="dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Networking <b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    
-<li>
-    <a href="../../networking/arp_and_the_neighbor_table/" class="dropdown-item">ARP and the Neighbor table</a>
-</li>
-                                    
-<li>
-    <a href="../../networking/bpf-and-tcpdump/" class="dropdown-item">BPF and tcpdump</a>
-</li>
-                                    
-<li>
-    <a href="../../networking/bonding_in_linux/" class="dropdown-item">Bonding in Linux</a>
-</li>
-                                    
-<li>
-    <a href="../../networking/juniper_x520/" class="dropdown-item">Configure Juniper switch</a>
-</li>
-                                    
-<li>
-    <a href="../../networking/haproxy-and-h2c/" class="dropdown-item">haproxy and HTTP/2</a>
-</li>
-                                    
-<li>
-    <a href="../../networking/geneve_tunneling/" class="dropdown-item">Geneve tunneling</a>
-</li>
-                                    
-<li>
-    <a href="../../networking/netlink/" class="dropdown-item">Netlink</a>
-</li>
-                                    
-<li>
-    <a href="../../networking/ovn-kind/" class="dropdown-item">OVN kind</a>
-</li>
-                                    
-<li>
-    <a href="../../networking/ovn_standalone_on_fedora31/" class="dropdown-item">OVN standalone on Fedora 31</a>
-</li>
-                                    
-<li>
-    <a href="../../networking/ovs_recirculation/" class="dropdown-item">OVS packet recirculation</a>
-</li>
-                                    
-<li>
-    <a href="../../networking/ovs-vxlan-tunnels-and-dscp/" class="dropdown-item">OVS VXLAN tunnels and DSCP</a>
-</li>
-                                    
-<li>
-    <a href="../../networking/ovs_with_gdb/" class="dropdown-item">OVS with GDB</a>
-</li>
-                                    
-<li>
-    <a href="../../networking/sctp/" class="dropdown-item">SCTP</a>
-</li>
-                                    
-<li>
-    <a href="../../networking/wireguard/" class="dropdown-item">Wireguard</a>
-</li>
-                                </ul>
-                            </li>
-                            <li class="dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">OpenShift <b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    
-<li>
-    <a href="../alertmanager/" class="dropdown-item">AlertManager</a>
-</li>
-                                    
-<li>
-    <a href="../cpu-manager-with-custom-machine-config-pool/" class="dropdown-item">CPU manager with custom MachineConfigPool</a>
-</li>
-                                    
-<li>
-    <a href="../crio-conmon-runc/" class="dropdown-item">Crio vs conmon vs runc</a>
-</li>
-                                    
-<li>
-    <a href="../etcd_perf/" class="dropdown-item">Etcd Performance tests</a>
-</li>
-                                    
-<li>
-    <a href="../openshift_httpbin_tshark_sidecar/" class="dropdown-item">Httpbin tshark sidecar container</a>
-</li>
-                                    
-<li>
-    <a href="../kubernetes_cluster/" class="dropdown-item">Hints for installing kubernetes on Fedora</a>
-</li>
-                                    
-<li>
-    <a href="../HPA/" class="dropdown-item">Horizontal Pod Autoscaler</a>
-</li>
-                                    
-<li>
-    <a href="../how_rhcos_updates_work/" class="dropdown-item">How RHCOS updates work</a>
-</li>
-                                    
-<li>
-    <a href="../ocp4-infra-nodes-with-machineset-without-worker-label/" class="dropdown-item">Infra nodes with MachineSets without worker label</a>
-</li>
-                                    
-<li>
-    <a href="../ingresscontroller_router_sharding_ocp_on_osp/" class="dropdown-item">Ingress Controller Sharding OCP on OSP</a>
-</li>
-                                    
-<li>
-    <a href="../ingress-controller-sharding-on-separate-vip/" class="dropdown-item">Ingress Controller Sharding on separate VIP</a>
-</li>
-                                    
-<li>
-    <a href="../openshift_mirror_registry/" class="dropdown-item">Installing a cluster with a mirror registry</a>
-</li>
-                                    
-<li>
-    <a href="../istio-1.6-on-ocp.4.x/" class="dropdown-item">Istio 1.6 on OpenShift 4.x</a>
-</li>
-                                    
-<li>
-    <a href="../kata/" class="dropdown-item">kata containers and the kata operatora</a>
-</li>
-                                    
-<li>
-    <a href="../kind-with-private-registry/" class="dropdown-item">Kind with private registry</a>
-</li>
-                                    
-<li>
-    <a href="../mounting-container-image/" class="dropdown-item">Mount a container image</a>
-</li>
-                                    
-<li>
-    <a href="../../openstack/install_openshift_on_openstack/" class="dropdown-item">OpenShift on OpenStack</a>
-</li>
-                                    
-<li>
-    <a href="../private-registry/" class="dropdown-item">Private container registry</a>
-</li>
-                                    
-<li>
-    <a href="../proxy-ocp-4.5/" class="dropdown-item">Proxy OCP 4.5</a>
-</li>
-                                    
-<li>
-    <a href="../scc/" class="dropdown-item">Security Context Constraints (SCC)</a>
-</li>
-                                    
-<li>
-    <a href="../fix-selinux-labels-coreos/" class="dropdown-item">SElinux labels fix</a>
-</li>
-                                    
-<li>
-    <a href="../../networking/sctp/" class="dropdown-item">SCTP</a>
-</li>
-                                    
-<li>
-    <a href="../openshift_troubleshooting_etcd_state/" class="dropdown-item">Troubleshooting etcd state</a>
-</li>
-                                    
-<li>
-    <a href="../useful-ocp-curl/" class="dropdown-item">Querying the OCP 4.x upgrades info API</a>
-</li>
-                                    
-<li>
-    <a href="../troubleshooting_openshift_on_openstack_worker_creation/" class="dropdown-item">Troubleshooting OpenShift on OpenStack worker creation</a>
-</li>
-                                </ul>
-                            </li>
-                            <li class="dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">OpenStack <b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    
-<li>
-    <a href="../../openstack/reattach_to_running_deployment/" class="dropdown-item">Reattach to running deployment</a>
-</li>
-                                    
-<li>
-    <a href="../../openstack/using_clouds_yaml/" class="dropdown-item">Using clouds.yaml</a>
-</li>
-                                </ul>
-                            </li>
-                            <li class="dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">OperatorSDK <b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    
-<li>
-    <a href="../../operator-sdk/operator-sdk-reconciliation/" class="dropdown-item">Controller Reconciliation</a>
-</li>
-                                </ul>
-                            </li>
-                        </ul>
+<body>
+<div class="book">
+<div class="book-summary">
+<div id="book-search-input" role="search">
+<input type="text" placeholder="Type to search" />
+</div> <!-- end of book-search-input -->
 
-                    <ul class="nav navbar-nav ml-auto">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
-                                <i class="fa fa-search"></i> Search
-                            </a>
-                        </li>
-                            <li class="nav-item">
-                                <a rel="prev" href="../../linux/containers/" class="nav-link">
-                                    <i class="fa fa-arrow-left"></i> Previous
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a rel="next" href="../../linux/namespaces/" class="nav-link">
-                                    Next <i class="fa fa-arrow-right"></i>
-                                </a>
-                            </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+<nav role="navigation">
+<ul class="summary">
+<li>
+<a href="../.." target="_blank" class="custom-link">Andreas Karis Blog</a>
+</li>
+<li class="divider"></li>
+<li class="chapter" data-path="">
+<a href="../..">Home</a>
+<li class="header">Ceph</li>
 
-        <div class="container">
-            <div class="row">
-                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
-            <span class="fa fa-angle-down"></span>
-        </button>
-    </div>
+<li>
+<a href="../../ceph/ceph-manual-test/" class="">Ceph manual test with qemu</a>
+</li>
 
-    
-    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
-        <ul class="nav flex-column">
-            
-            <li class="nav-item" data-level="1"><a href="#list-all-images-in-a-registry" class="nav-link">List all images in a registry</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-        </ul>
-    </div>
-</div></div>
-                    <div class="col-md-9" role="main">
+<li class="header">Containers</li>
+
+<li>
+<a href="../../linux/cgroups/" class="">cgroups</a>
+</li>
+
+<li>
+<a href="../../linux/containers/" class="">Containers in Linux</a>
+</li>
+
+<li>
+<a href="./" class="active">List container images in registry</a>
+</li>
+
+<li>
+<a href="../../linux/namespaces/" class="">namespaces</a>
+</li>
+
+<li class="header">Linux</li>
+
+<li>
+<a href="../../linux/cgroups/" class="">cgroups</a>
+</li>
+
+<li>
+<a href="../../linux/containers/" class="">Containers in Linux</a>
+</li>
+
+<li>
+<a href="../../linux/java-idrac-issues/" class="">Java Idrac Issues</a>
+</li>
+
+<li>
+<a href="../../linux/hugepages/" class="">Hugepages</a>
+</li>
+
+<li>
+<a href="../../linux/meson/" class="">meson</a>
+</li>
+
+<li>
+<a href="../../linux/namespaces/" class="">namespaces</a>
+</li>
+
+<li>
+<a href="../../linux/old_java_version_with_xorgs_in_container/" class="">Old Java inside a container with xorgs</a>
+</li>
+
+<li class="header">Networking</li>
+
+<li>
+<a href="../../networking/arp_and_the_neighbor_table/" class="">ARP and the Neighbor table</a>
+</li>
+
+<li>
+<a href="../../networking/bpf-and-tcpdump/" class="">BPF and tcpdump</a>
+</li>
+
+<li>
+<a href="../../networking/bonding_in_linux/" class="">Bonding in Linux</a>
+</li>
+
+<li>
+<a href="../../networking/juniper_x520/" class="">Configure Juniper switch</a>
+</li>
+
+<li>
+<a href="../../networking/haproxy-and-h2c/" class="">haproxy and HTTP/2</a>
+</li>
+
+<li>
+<a href="../../networking/geneve_tunneling/" class="">Geneve tunneling</a>
+</li>
+
+<li>
+<a href="../../networking/netlink/" class="">Netlink</a>
+</li>
+
+<li>
+<a href="../../networking/ovn-kind/" class="">OVN kind</a>
+</li>
+
+<li>
+<a href="../../networking/ovn_standalone_on_fedora31/" class="">OVN standalone on Fedora 31</a>
+</li>
+
+<li>
+<a href="../../networking/ovs_recirculation/" class="">OVS packet recirculation</a>
+</li>
+
+<li>
+<a href="../../networking/ovs-vxlan-tunnels-and-dscp/" class="">OVS VXLAN tunnels and DSCP</a>
+</li>
+
+<li>
+<a href="../../networking/ovs_with_gdb/" class="">OVS with GDB</a>
+</li>
+
+<li>
+<a href="../../networking/sctp/" class="">SCTP</a>
+</li>
+
+<li>
+<a href="../../networking/wireguard/" class="">Wireguard</a>
+</li>
+
+<li class="header">OpenShift</li>
+
+<li>
+<a href="../alertmanager/" class="">AlertManager</a>
+</li>
+
+<li>
+<a href="../cpu-manager-with-custom-machine-config-pool/" class="">CPU manager with custom MachineConfigPool</a>
+</li>
+
+<li>
+<a href="../crio-conmon-runc/" class="">Crio vs conmon vs runc</a>
+</li>
+
+<li>
+<a href="../etcd_perf/" class="">Etcd Performance tests</a>
+</li>
+
+<li>
+<a href="../openshift_httpbin_tshark_sidecar/" class="">Httpbin tshark sidecar container</a>
+</li>
+
+<li>
+<a href="../kubernetes_cluster/" class="">Hints for installing kubernetes on Fedora</a>
+</li>
+
+<li>
+<a href="../HPA/" class="">Horizontal Pod Autoscaler</a>
+</li>
+
+<li>
+<a href="../how_rhcos_updates_work/" class="">How RHCOS updates work</a>
+</li>
+
+<li>
+<a href="../ocp4-infra-nodes-with-machineset-without-worker-label/" class="">Infra nodes with MachineSets without worker label</a>
+</li>
+
+<li>
+<a href="../ingresscontroller_router_sharding_ocp_on_osp/" class="">Ingress Controller Sharding OCP on OSP</a>
+</li>
+
+<li>
+<a href="../ingress-controller-sharding-on-separate-vip/" class="">Ingress Controller Sharding on separate VIP</a>
+</li>
+
+<li>
+<a href="../openshift_mirror_registry/" class="">Installing a cluster with a mirror registry</a>
+</li>
+
+<li>
+<a href="../istio-1.6-on-ocp.4.x/" class="">Istio 1.6 on OpenShift 4.x</a>
+</li>
+
+<li>
+<a href="../kata/" class="">kata containers and the kata operatora</a>
+</li>
+
+<li>
+<a href="../kind-with-private-registry/" class="">Kind with private registry</a>
+</li>
+
+<li>
+<a href="../mounting-container-image/" class="">Mount a container image</a>
+</li>
+
+<li>
+<a href="../../openstack/install_openshift_on_openstack/" class="">OpenShift on OpenStack</a>
+</li>
+
+<li>
+<a href="../private-registry/" class="">Private container registry</a>
+</li>
+
+<li>
+<a href="../proxy-ocp-4.5/" class="">Proxy OCP 4.5</a>
+</li>
+
+<li>
+<a href="../scc/" class="">Security Context Constraints (SCC)</a>
+</li>
+
+<li>
+<a href="../fix-selinux-labels-coreos/" class="">SElinux labels fix</a>
+</li>
+
+<li>
+<a href="../../networking/sctp/" class="">SCTP</a>
+</li>
+
+<li>
+<a href="../openshift_troubleshooting_etcd_state/" class="">Troubleshooting etcd state</a>
+</li>
+
+<li>
+<a href="../useful-ocp-curl/" class="">Querying the OCP 4.x upgrades info API</a>
+</li>
+
+<li>
+<a href="../troubleshooting_openshift_on_openstack_worker_creation/" class="">Troubleshooting OpenShift on OpenStack worker creation</a>
+</li>
+
+<li class="header">OpenStack</li>
+
+<li>
+<a href="../../openstack/reattach_to_running_deployment/" class="">Reattach to running deployment</a>
+</li>
+
+<li>
+<a href="../../openstack/using_clouds_yaml/" class="">Using clouds.yaml</a>
+</li>
+
+<li class="header">OperatorSDK</li>
+
+<li>
+<a href="../../operator-sdk/operator-sdk-reconciliation/" class="">Controller Reconciliation</a>
+</li>
+
+<li class="divider"></li>
+
+
+
+<li><a href="http://www.mkdocs.org">
+Published with MkDocs
+</a></li>
+
+<li><a href="https://github.com/GitbookIO/theme-default">
+Theme by GitBook
+</a></li>
+</ul>
+
+</nav>
+
+</div> <!-- end of book-summary -->
+
+<div class="book-body">
+<div class="body-inner">
+<div class="book-header" role="navigation">
+
+<!-- Title -->
+<h1>
+<i class="fa fa-circle-o-notch fa-spin"></i>
+<a href="." ></a>
+</h1>
+
+</div> <!-- end of book-header -->
+
+<div class="page-wrapper" tabindex="-1" role="main">
+<div class="page-inner">
+<div id="book-search-results">
+<div class="search-noresults">
+
+<section class="normal markdown-section">
+
+
 
 <h1 id="list-all-images-in-a-registry">List all images in a registry</h1>
 <p>How to list all container images in a registry:</p>
@@ -342,84 +310,35 @@ curl -X GET https://local-registry:4443/v2/fedora-infrared/tags/list
 {&quot;name&quot;:&quot;fedora1&quot;,&quot;tags&quot;:[&quot;latest&quot;]}
 curl -X GET https://local-registry:4443/v2/fedora-rundeck/tags/list
 {&quot;name&quot;:&quot;fedora2&quot;,&quot;tags&quot;:[&quot;latest&quot;]}
-</code></pre></div>
-            </div>
-        </div>
+</code></pre>
 
-        <footer class="col-md-12">
-            <hr>
-            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
-        <script>
-            var base_url = "../..",
-                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
-        </script>
-        <script src="../../js/base.js" defer></script>
-        <script src="../../search/main.js" defer></script>
 
-        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="searchModalLabel">Search</h4>
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-            </div>
-            <div class="modal-body">
-                <p>
-                    From here you can search these documents. Enter
-                    your search terms below.
-                </p>
-                <form>
-                    <div class="form-group">
-                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
-                    </div>
-                </form>
-                <div id="mkdocs-search-results"></div>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
-</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-            </div>
-            <div class="modal-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Keys</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="help shortcut"><kbd>?</kbd></td>
-                    <td>Open this help</td>
-                  </tr>
-                  <tr>
-                    <td class="next shortcut"><kbd>n</kbd></td>
-                    <td>Next page</td>
-                  </tr>
-                  <tr>
-                    <td class="prev shortcut"><kbd>p</kbd></td>
-                    <td>Previous page</td>
-                  </tr>
-                  <tr>
-                    <td class="search shortcut"><kbd>s</kbd></td>
-                    <td>Search</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
-</div>
+</section>
+</div> <!-- end of search-noresults -->
+<div class="search-results">
+<div class="has-results">
 
-    </body>
+<h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+<ul class="search-results-list"></ul>
+
+</div> <!-- end of has-results -->
+<div class="no-results">
+
+<h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+
+</div> <!-- end of no-results -->
+</div> <!-- end of search-results -->
+</div> <!-- end of book-search-results -->
+
+</div> <!-- end of page-inner -->
+</div> <!-- end of page-wrapper -->
+
+</div> <!-- end of body-inner -->
+
+</div> <!-- end of book-body -->
+<script src="../../js/main.js"></script>
+<script src="../../search/main.js"></script>
+<script src="../../js/gitbook.min.js"></script>
+<script src="../../js/theme.min.js"></script>
+</body>
 </html>

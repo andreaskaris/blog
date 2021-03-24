@@ -1,6 +1,6 @@
 site_name: Andreas Karis Blog
 theme: 
-  name: bootstrap4
+  name: material
 nav:
 - Home: index.md
 - Ceph:

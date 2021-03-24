@@ -4,6 +4,8 @@ theme:
   palette:
     primary: blue grey
     accent: red
+  features:
+    - toc.integrate
 hide:
   - toc
 nav:

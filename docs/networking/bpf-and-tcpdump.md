@@ -80,6 +80,26 @@ Now, let's look at a live capture from the loopback interface. We should expect 
 
 The expression is different now! Why is that? Well, the kernel has an internal optimization and will actually store VLAN information in a location with negative offset.
 
+The reason for this is that the kernel no longer passes vlan tag information as-is to libpcap. See [https://bugs.launchpad.net/ubuntu/+source/tcpdump/+bug/1641429](https://bugs.launchpad.net/ubuntu/+source/tcpdump/+bug/1641429) for further details:
+~~~
+The kernel now longer passes vlan tag information as-is to libpcap, instead BPF needs to access ancillary data.
+
+That is the reason "vlan 114" works (because it does the right thing), and a manual filter doesn't, because libpcap never actually sees this.
+
+Offsets are negative because this is the way to access this ancillary data (like vlan tags) in the Linux kernel:
+https://github.com/torvalds/linux/blob/6f0d349d922ba44e4348a17a78ea51b7135965b1/include/uapi/linux/filter.h#L60
+~~~
+
+And see the kernel documentation as well: [https://github.com/torvalds/linux/blob/7acac4b3196caee5e21fb5ea53f8bc124e6a16fc/include/uapi/linux/filter.h#L60](https://github.com/torvalds/linux/blob/7acac4b3196caee5e21fb5ea53f8bc124e6a16fc/include/uapi/linux/filter.h#L60):
+Raw
+
+/* RATIONALE. Negative offsets are invalid in BPF.
+   We use them to reference ancillary data.
+   Unlike introduction new instructions, it does not break
+   existing compilers/optimizers.
+ */
+~~~
+
 For example, let's look for VLAN 32 (0x20):
 ~~~
 [root@host ~]# tcpdump -r lo.pcap vlan 32 -d
@@ -115,14 +135,18 @@ That, too, makes sense. But if we do a live capture, the logic becomes more comp
 (014) ret      #0
 ~~~
 
-### Source code analysis
+As a conclusion:
+
+* Data from a `.pcap` file is treated as if everything came directly from the wire, the offsets are the same as we'd see them on the physical layer
+* When we capture data from an interface, libpcap will use kernel ancillary data but it will also add a fallback expression in newer versions
+
+### How does tcpdump compile user provided expressions - Source code analysis
 
 Let's look at how tcpdump (by means of libpcap) compiles its expressions into the appropriate BPF bytecode.
 
 tcpdump will compile different types of BPF depending on if the optimization flag is set but also particularly depending on if we open a file for reading or if we run a live capture.
 
-
-The `-r` parameter is read here:
+The `-r` indicates to read from a file and the parameter is read here:
 
 * [https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1759](https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1759)
 
@@ -138,11 +162,75 @@ Opening a file for reading:
 
 This is done here:
 ~~~
+#ifdef HAVE_PCAP_SET_TSTAMP_PRECISION
 		pd = pcap_open_offline_with_tstamp_precision(RFileName,
 		    ndo->ndo_tstamp_precision, ebuf);
+#else
+		pd = pcap_open_offline(RFileName, ebuf);
+#endif
 ~~~
 
-(... TBD ...)
+If `-r` is not specified, then libpcap will listen on the interface instead:
+
+* [https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2135](https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2135)
+~~~
+		/*
+		 * Try to open the interface with the specified name.
+		 */
+		pd = open_interface(device, ndo, ebuf);
+~~~
+
+If a file was used as an input or an socket on a network interface determines how the BPF will be compiled. The the section above.
+
+The actual compilation of the user provided filter expression to BPF happens here:
+
+* [https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2238](https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2238)
+~~~
+	if (pcap_compile(pd, &fcode, cmdbuf, Oflag, netmask) < 0)
+		error("%s", pcap_geterr(pd));
+~~~
+
+If the `dflag` is set, tcpdump will call libpcap's `bpf_dump` function to print the expression in one of three formats:
+
+* [https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1600](https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1600)
+~~~
+		case 'D':
+			Dflag++;
+			break;
+~~~
+
+* [https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2240](https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2240)
+~~~
+	if (dflag) {
+		bpf_dump(&fcode, dflag);
+		pcap_close(pd);
+		free(cmdbuf);
+		pcap_freecode(&fcode);
+		exit_tcpdump(S_SUCCESS);
+	}
+~~~
+
+The different dump formats are explained in the man page:
+~~~
+man tcpdump
+(...)
+       -d     Dump the compiled packet-matching code in a human readable form to standard output and stop.
+
+              Please  mind  that  although code compilation is always DLT-specific, typically it is impossible (and
+              unnecessary) to specify which DLT to use for the dump because tcpdump uses either the DLT of the  in‐
+              put  pcap  file  specified with -r, or the default DLT of the network interface specified with -i, or
+              the particular DLT of the network interface specified with -y and -i respectively. In these cases the
+              dump shows the same exact code that would filter the input file or the network interface without -d.
+
+              However, when neither -r nor -i is specified, specifying -d prevents tcpdump from guessing a suitable
+              network interface (see -i).  In this case the DLT defaults to EN10MB and can be set to another  valid
+              value manually with -y.
+
+       -dd    Dump packet-matching code as a C program fragment.
+
+       -ddd   Dump packet-matching code as decimal numbers (preceded with a count).
+(...)
+~~~
 
 ### Building a filter expression compiler
 

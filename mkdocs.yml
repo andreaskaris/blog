@@ -1,6 +1,6 @@
 site_name: Andreas Karis Blog
 theme: 
-  name: gitbook
+  name: bootstrap4
 nav:
 - Home: index.md
 - Ceph:

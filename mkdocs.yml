@@ -5,7 +5,7 @@ theme:
     primary: blue grey
     accent: red
   hide:
-  - navigation # Hide navigation
+  - toc
 nav:
 - Home: index.md
 - Ceph:

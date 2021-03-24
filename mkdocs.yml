@@ -4,7 +4,7 @@ theme:
   palette:
     primary: blue grey
     accent: red
-  hide:
+hide:
   - toc
 nav:
 - Home: index.md

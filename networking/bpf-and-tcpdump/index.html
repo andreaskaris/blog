@@ -576,6 +576,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#using-bpf-in-iptables-expressions" class="md-nav__link">
+    Using BPF in iptables expressions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#compile-bpf-kernel-tools" class="md-nav__link">
     Compile BPF kernel tools
   </a>
@@ -1363,7 +1370,7 @@ reading from file lo.pcap, link-type EN10MB (Ethernet)
         error(&quot;%s&quot;, pcap_geterr(pd));
 </code></pre>
 
-<p>If the <code>dflag</code> is set, tcpdump will call libpcap's <code>bpf_dump</code> function to print the expression in one of three formats:</p>
+<p>If the <code>-d</code> parameter (and thus the <code>dflag</code>) is set, tcpdump will call libpcap's <code>bpf_dump</code> function to print the expression in one of three formats:</p>
 <ul>
 <li><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1600">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1600</a></li>
 </ul>
@@ -1428,7 +1435,6 @@ yum install libpcap-devel -y
 // https://github.com/the-tcpdump-group/tcpdump/blob/master/tcpdump.c#L2238
 // https://www.tcpdump.org/pcap.html
 
-// #include &lt;pcap.h&gt;
 #include &lt;string.h&gt;
 #include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
@@ -1568,11 +1574,109 @@ Compiling expression 'vlan 32'
 6 0 0 0
 </code></pre>
 
+<p>Or let's create another filter expression, just as another example:</p>
+<pre><code>#  ./libpcap_expression_compiler host 127.0.0.254 and tcp and port 5353
+Compiling expression 'host 127.0.0.254 and tcp and port 5353'
+
+*** Dump compiled packet-matching code (-d) ***
+
+(000) ldh      [12]
+(001) jeq      #0x800           jt 2    jf 16
+(002) ld       [26]
+(003) jeq      #0x7f0000fe      jt 6    jf 4
+(004) ld       [30]
+(005) jeq      #0x7f0000fe      jt 6    jf 16
+(006) ldb      [23]
+(007) jeq      #0x6             jt 8    jf 16
+(008) ldh      [20]
+(009) jset     #0x1fff          jt 16   jf 10
+(010) ldxb     4*([14]&amp;0xf)
+(011) ldh      [x + 14]
+(012) jeq      #0x14e9          jt 15   jf 13
+(013) ldh      [x + 16]
+(014) jeq      #0x14e9          jt 15   jf 16
+(015) ret      #8192
+(016) ret      #0
+
+*** Dump packet-matching code as a C program fragment (-dd) ***
+
+{ 0x28, 0, 0, 0x0000000c },
+{ 0x15, 0, 14, 0x00000800 },
+{ 0x20, 0, 0, 0x0000001a },
+{ 0x15, 2, 0, 0x7f0000fe },
+{ 0x20, 0, 0, 0x0000001e },
+{ 0x15, 0, 10, 0x7f0000fe },
+{ 0x30, 0, 0, 0x00000017 },
+{ 0x15, 0, 8, 0x00000006 },
+{ 0x28, 0, 0, 0x00000014 },
+{ 0x45, 6, 0, 0x00001fff },
+{ 0xb1, 0, 0, 0x0000000e },
+{ 0x48, 0, 0, 0x0000000e },
+{ 0x15, 2, 0, 0x000014e9 },
+{ 0x48, 0, 0, 0x00000010 },
+{ 0x15, 0, 1, 0x000014e9 },
+{ 0x6, 0, 0, 0x00002000 },
+{ 0x6, 0, 0, 0x00000000 },
+
+*** Dump packet-matching code as decimal numbers (-ddd) ***
+
+17
+40 0 0 12
+21 0 14 2048
+32 0 0 26
+21 2 0 2130706686
+32 0 0 30
+21 0 10 2130706686
+48 0 0 23
+21 0 8 6
+40 0 0 20
+69 6 0 8191
+177 0 0 14
+72 0 0 14
+21 2 0 5353
+72 0 0 16
+21 0 1 5353
+6 0 0 8192
+6 0 0 0
+</code></pre>
+
 <h2 id="using-bpf">Using BPF</h2>
 <ul>
 <li><a href="https://www.kernel.org/doc/Documentation/networking/filter.txt">https://www.kernel.org/doc/Documentation/networking/filter.txt</a></li>
 <li><a href="https://github.com/torvalds/linux/tree/master/tools/bpf">https://github.com/torvalds/linux/tree/master/tools/bpf</a></li>
 </ul>
+<h3 id="using-bpf-in-iptables-expressions">Using BPF in iptables expressions</h3>
+<p>BPF allows us to write complex iptables rules. First, let's compile a rule into Byte format with tcpdump:</p>
+<pre><code># tcpdump -i lo -ddd host 127.0.0.254 and tcp and port 5353 | tr '\n' ','
+17,40 0 0 12,21 0 14 2048,32 0 0 26,21 2 0 2130706686,32 0 0 30,21 0 10 2130706686,48 0 0 23,21 0 8 6,40 0 0 20,69 6 0 8191,177 0 0 14,72 0 0 14,21 2 0 5353,72 0 0 16,21 0 1 5353,6 0 0 262144,6 0 0 0,
+</code></pre>
+
+<p>Let's add the IP address to our localhost interface:</p>
+<pre><code>ip a a 127.0.0.254/32 dev lo
+</code></pre>
+
+<p>And also run a little web server for the sake of this test:</p>
+<pre><code>#  python3 -m http.server 5353 --bind 127.0.0.254 &amp;
+# Serving HTTP on 127.0.0.254 port 5353 (http://127.0.0.254:5353/) ...
+</code></pre>
+
+<p>Test:</p>
+<pre><code># curl http://127.0.0.254:5353 -I
+127.0.0.254 - - [24/Mar/2021 11:52:58] &quot;HEAD / HTTP/1.1&quot; 200 -
+HTTP/1.0 200 OK
+Server: SimpleHTTP/0.6 Python/3.6.8
+Date: Wed, 24 Mar 2021 11:52:58 GMT
+Content-type: text/html; charset=utf-8
+Content-Length: 3267
+</code></pre>
+
+<p>Now, let's create an iptables rule that will match on the Byte code:</p>
+<pre><code>iptables -I INPUT \
+    -m bpf --bytecode &quot;17,40 0 0 12,21 0 14 2048,32 0 0 26,21 2 0 2130706686,32 0 0 30,21 0 10 2130706686,48 0 0 23,21 0 8 6,40 0 0 20,69 6 0 8191,177 0 0 14,72 0 0 14,21 2 0 5353,72 0 0 16,21 0 1 5353,6 0 0 262144,6 0 0 0,&quot; \
+    -j REJECT
+</code></pre>
+
+<p>The above, however, does not match. (TBD)</p>
 <h3 id="compile-bpf-kernel-tools">Compile BPF kernel tools</h3>
 <p>Install build dependencies:</p>
 <pre><code>yum install '@Development Tools' -y
@@ -1601,7 +1705,9 @@ cp bpf_jit_disasm /usr/local/bin/.
 cp bpftool/bpftool /usr/local/bin/.
 </code></pre>
 
-<p>(... TBD ...)</p>
+<ul>
+<li><a href="https://www.kernel.org/doc/Documentation/networking/filter.txt">https://www.kernel.org/doc/Documentation/networking/filter.txt</a></li>
+</ul>
 <h2 id="sniffing-traffic-with-golang">Sniffing traffic with golang</h2>
 <ul>
 <li><a href="https://itnext.io/sniffing-creds-with-go-a-journey-with-libpcap-73bc3e74966">https://itnext.io/sniffing-creds-with-go-a-journey-with-libpcap-73bc3e74966</a></li>

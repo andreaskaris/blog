@@ -152,7 +152,9 @@
                     
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
@@ -1219,172 +1221,6 @@
                 </div>
               </div>
             
-            
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#base-setup" class="md-nav__link">
-    Base setup
-  </a>
-  
-    <nav class="md-nav" aria-label="Base setup">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#single-node-db-on-ovn1" class="md-nav__link">
-    Single node DB on ovn1
-  </a>
-  
-    <nav class="md-nav" aria-label="Single node DB on ovn1">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#configuration-and-installation" class="md-nav__link">
-    Configuration and installation
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#verification" class="md-nav__link">
-    Verification
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adding-virtual-network-with-one-virtual-switch-s0" class="md-nav__link">
-    Adding virtual network with one virtual switch s0
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adding-virtual-network-with-one-virtual-switch-s1" class="md-nav__link">
-    Adding virtual network with one virtual switch s1
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adding-virtual-router-r1" class="md-nav__link">
-    Adding virtual router r1 ##
-  </a>
-  
-    <nav class="md-nav" aria-label="Adding virtual router r1 ##">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#introduction" class="md-nav__link">
-    Introduction
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#setup" class="md-nav__link">
-    Setup
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adding-external-gateway-router-non-distributed" class="md-nav__link">
-    Adding external gateway  router, non-distributed
-  </a>
-  
-    <nav class="md-nav" aria-label="Adding external gateway  router, non-distributed">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#introduction_1" class="md-nav__link">
-    Introduction
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#setup_1" class="md-nav__link">
-    Setup
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#inspecting-tunnel-encapsulations" class="md-nav__link">
-    Inspecting tunnel encapsulations
-  </a>
-  
-    <nav class="md-nav" aria-label="Inspecting tunnel encapsulations">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#introduction_2" class="md-nav__link">
-    Introduction
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#distributed-gateway-router" class="md-nav__link">
-    Distributed gateway router
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#resources" class="md-nav__link">
-    Resources
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
             
           
           <div class="md-content" data-md-component="content">
@@ -2816,7 +2652,7 @@ rtt min/avg/max/mdev = 1.815/3.360/4.906/1.545 ms
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fb4a9340.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fb4a9340.min.js", "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.a1c7c35e.min.js"></script>

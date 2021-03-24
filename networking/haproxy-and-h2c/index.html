@@ -152,7 +152,9 @@
                     
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
@@ -1216,171 +1218,6 @@
                 </div>
               </div>
             
-            
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#haproxy-and-http2-with-a-focus-on-h2c" class="md-nav__link">
-    haproxy and HTTP2 with a focus on h2c
-  </a>
-  
-    <nav class="md-nav" aria-label="haproxy and HTTP2 with a focus on h2c">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#some-theory-h2-vs-h2c" class="md-nav__link">
-    Some theory - h2 vs h2c
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#upgrade-h2c-with-haproxy" class="md-nav__link">
-    Upgrade h2c with haproxy
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#poc" class="md-nav__link">
-    POC
-  </a>
-  
-    <nav class="md-nav" aria-label="POC">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#poc-reproducer" class="md-nav__link">
-    POC reproducer
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#httpd-basaeline" class="md-nav__link">
-    HTTPD basaeline
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#testing-the-haproxy-frontend-side" class="md-nav__link">
-    Testing the haproxy frontend side
-  </a>
-  
-    <nav class="md-nav" aria-label="Testing the haproxy frontend side">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#testing-to-force-h2http11-in-that-order" class="md-nav__link">
-    Testing to force h2,http/1.1 in that order
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#forcing-only-http2" class="md-nav__link">
-    Forcing only HTTP/2
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#permitting-either-http11-or-http2-on-the-frontend-no-upgrade" class="md-nav__link">
-    Permitting either HTTP/1.1 or HTTP/2 on the frontend, no upgrade
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#testing-the-haproxy-backend-side" class="md-nav__link">
-    Testing the haproxy backend side
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#baseline-http-only-virtual-server" class="md-nav__link">
-    Baseline, HTTP only virtual server
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#baseline-http2-virtual-server-unencrypted" class="md-nav__link">
-    Baseline, HTTP/2 virtual server, unencrypted
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#forcing-http2-on-the-frontend" class="md-nav__link">
-    Forcing HTTP/2 on the frontend
-  </a>
-  
-    <nav class="md-nav" aria-label="Forcing HTTP/2 on the frontend">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#not-forcing-http2-on-the-frontend" class="md-nav__link">
-    Not forcing HTTP/2 on the frontend
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#forcing-http2-on-the-frontend-http11-on-the-backend" class="md-nav__link">
-    Forcing HTTP/2 on the frontend, HTTP/1.1 on the backend
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tlsalpn-protocol-detection-for-http2" class="md-nav__link">
-    TLS/ALPN protocol detection for HTTP/2
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
             
           
           <div class="md-content" data-md-component="content">
@@ -2640,7 +2477,7 @@ Transmission Control Protocol, Src Port: 8082, Dst Port: 34182, Seq: 2364, Ack: 
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fb4a9340.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fb4a9340.min.js", "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.a1c7c35e.min.js"></script>

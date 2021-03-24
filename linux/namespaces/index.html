@@ -152,7 +152,9 @@
                     
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
@@ -1431,192 +1433,6 @@
               </div>
             
             
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#what-is-a-namespace" class="md-nav__link">
-    What is a namespace?
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#unshare-the-tool-to-create-new-namespaces" class="md-nav__link">
-    unshare - the tool to create new namespaces
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-to-list-namespaces" class="md-nav__link">
-    How to list namespaces
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#namespace-types" class="md-nav__link">
-    namespace types
-  </a>
-  
-    <nav class="md-nav" aria-label="namespace types">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#uts-namespace" class="md-nav__link">
-    UTS namespace
-  </a>
-  
-    <nav class="md-nav" aria-label="UTS namespace">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
-    Example
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#network-namespaces" class="md-nav__link">
-    network namespaces
-  </a>
-  
-    <nav class="md-nav" aria-label="network namespaces">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example_1" class="md-nav__link">
-    Example
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mount-namespaces" class="md-nav__link">
-    mount namespaces
-  </a>
-  
-    <nav class="md-nav" aria-label="mount namespaces">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example_2" class="md-nav__link">
-    Example
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pid-namespaces" class="md-nav__link">
-    PID namespaces
-  </a>
-  
-    <nav class="md-nav" aria-label="PID namespaces">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example_3" class="md-nav__link">
-    Example
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#user-namespaces" class="md-nav__link">
-    user namespaces
-  </a>
-  
-    <nav class="md-nav" aria-label="user namespaces">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example_4" class="md-nav__link">
-    Example
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ipc-namespaces" class="md-nav__link">
-    IPC namespaces
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cgroup-namespaces-and-their-purpose" class="md-nav__link">
-    cgroup namespaces and their purpose
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#building-containers-the-namespace-part-of-it" class="md-nav__link">
-    Building containers - the namespace part of it
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#resources" class="md-nav__link">
-    Resources
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
           
           <div class="md-content" data-md-component="content">
             <article class="md-content__inner md-typeset">
@@ -2292,7 +2108,7 @@ user_namespaces (7)  - overview of Linux user namespaces
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fb4a9340.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fb4a9340.min.js", "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.a1c7c35e.min.js"></script>

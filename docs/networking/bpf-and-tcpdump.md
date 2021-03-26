@@ -741,7 +741,7 @@ And also run a little web server for the sake of this test:
 #  python3 -m http.server 8080 &
 ~~~
 
-Test:
+Run curl against the web server just to check that it's serving documents and can be reached:
 ~~~
 # curl 192.168.122.92:8080 -I
 HTTP/1.0 200 OK
@@ -751,20 +751,21 @@ Content-type: text/html; charset=utf-8
 Content-Length: 2272
 ~~~
 
-Now, let's create an iptables rule that will match on the Byte code:
+Now, let's create an iptables rule that will match on the Byte code and apply it:
 ~~~
-iptables -I INPUT -m bpf --bytecode "23,48 0 0 0,84 0 0 240,21 0 6 96,48 0 0 6,21 0 17 6,40 0 0 40,21 14 0 8080,40 0 0 42,21 12 13 8080,48 0 0 0,84 0 0 240,21 0 10 64,48 0 0 9,21 0 8 6,40 0 0 6,69 6 0 8191,177 0 0 0,72 0 0 0,21 2 0 8080,72 0 0 2,21 0 1 8080,6 0 0 65535,6 0 0 0" --j REJECT
+# iptables -I INPUT -m bpf --bytecode "23,48 0 0 0,84 0 0 240,21 0 6 96,48 0 0 6,21 0 17 6,40 0 0 40,21 14 0 8080,40 0 0 42,21 12 13 8080,48 0 0 0,84 0 0 240,21 0 10 64,48 0 0 9,21 0 8 6,40 0 0 6,69 6 0 8191,177 0 0 0,72 0 0 0,21 2 0 8080,72 0 0 2,21 0 1 8080,6 0 0 65535,6 0 0 0" --j REJECT
 ~~~
 > This *must* be from `nbpf_compile`!
 
-And this is now blocked:
+After applying the rule, we can no longer contact the web server:
 ~~~
 # curl 192.168.122.92:8080 -I
 curl: (7) Failed connect to 192.168.122.92:8080; Connection refused
 ~~~
 
+And we can see that this rule here was matched:
 ~~~
-[root@kind ~]# iptables -L INPUT -nv
+# iptables -L INPUT -nv
 Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
  pkts bytes target     prot opt in     out     source               destination         
     5   300 REJECT     all  --  *      *       0.0.0.0/0            0.0.0.0/0           match bpf 48 0 0 0,84 0 0 240,21 0 6 96,48 0 0 6,21 0 17 6,40 0 0 40,21 14 0 8080,40 0 0 42,21 12 13 8080,48 0 0 0,84 0 0 240,21 0 10 64,48 0 0 9,21 0 8 6,40 0 0 6,69 6 0 8191,177 0 0 0,72 0 0 0,21 2 0 8080,72 0 0 2,21 0 1 8080,6 0 0 65535,6 0 0 0 reject-with icmp-port-unreachable

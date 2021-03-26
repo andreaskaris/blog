@@ -260,6 +260,7 @@ cat <<'EOF' > libpcap_expression_compiler.c
 // From:
 // https://github.com/the-tcpdump-group/tcpdump/blob/master/tcpdump.c#L2238
 // https://www.tcpdump.org/pcap.html
+// https://git.netfilter.org/iptables/tree/utils/nfbpf_compile.c
 
 #include <string.h>
 #include <stdio.h>
@@ -270,66 +271,77 @@ cat <<'EOF' > libpcap_expression_compiler.c
  * Concatenate all input arguments into a long string
  */
 char * concat_args(int argc, char **argv) {
-	char * arg_string;
-	int len;
+    char * arg_string;
+    int len;
 
         for(int i=1; i<argc; i++) {
             len += strlen(argv[i]);
         }
         arg_string = (char *)malloc(len+argc-1);
 
-	for (int i=1; i < argc; i++) {
-		if(i != 1) {
-			arg_string = strcat(arg_string, " ");
-		}
-		arg_string = strcat(arg_string, argv[i]);
-	}
+    for (int i=1; i < argc; i++) {
+        if(i != 1) {
+            arg_string = strcat(arg_string, " ");
+        }
+        arg_string = strcat(arg_string, argv[i]);
+    }
 
-	return arg_string;
+    return arg_string;
 }
 
 int main(int argc, char **argv) {
-	pcap_t *handle;
-	char dev[] = "lo";
-	char errbuf[PCAP_ERRBUF_SIZE];
-	struct bpf_program fcode;
-	bpf_u_int32 localnet = 0, netmask = 0;
-	int Oflag = 1;
+    pcap_t *handle;
+    char dev[] = "lo";
+    char errbuf[PCAP_ERRBUF_SIZE];
+    struct bpf_program fcode;
+    bpf_u_int32 localnet = 0, netmask = 0;
+    int Oflag = 1;
 
-	char * filter_exp = concat_args(argc, argv);
-	if(argc <= 1) {
-		fprintf(stderr, "Empty filter expression\n");
-		exit(1);
-	}
-	printf("Compiling expression '%s'\n\n", filter_exp);
+    char * filter_exp = concat_args(argc, argv);
+    if(argc <= 1) {
+        fprintf(stderr, "Empty filter expression\n");
+        exit(1);
+    }
+    printf("Compiling expression '%s'\n\n", filter_exp);
 
-	if (pcap_lookupnet(dev, &localnet, &netmask, errbuf) == -1) {
-		fprintf(stderr, "Can't get netmask for device %s\n", dev);
-		localnet = 0;
-		netmask = 0;
-	}
-	handle = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
-	if (handle == NULL) {
-		fprintf(stderr, "Couldn't open device %s: %s\n", dev, errbuf);
-		return(2);
-	}
-	if (pcap_compile(handle, &fcode, filter_exp, Oflag, netmask) < 0) {
-		fprintf(stderr, "Couldn't parse filter %s: %s\n", filter_exp, pcap_geterr(handle));
-		 return(2);
-	}
-	
-	printf("*** Dump compiled packet-matching code (-d) ***\n\n");
-	bpf_dump(&fcode, 1);
-	printf("\n*** Dump packet-matching code as a C program fragment (-dd) ***\n\n");
-	bpf_dump(&fcode, 2);
-	printf("\n*** Dump packet-matching code as decimal numbers (-ddd) ***\n\n");
-	bpf_dump(&fcode, 3);
+    if (pcap_lookupnet(dev, &localnet, &netmask, errbuf) == -1) {
+        fprintf(stderr, "Can't get netmask for device %s\n", dev);
+        localnet = 0;
+        netmask = 0;
+    }
+    handle = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
+    if (handle == NULL) {
+        fprintf(stderr, "Couldn't open device %s: %s\n", dev, errbuf);
+        return(2);
+    }
+    if (pcap_compile(handle, &fcode, filter_exp, Oflag, netmask) < 0) {
+        fprintf(stderr, "Couldn't parse filter %s: %s\n", filter_exp, pcap_geterr(handle));
+         return(2);
+    }
 
-	pcap_close(handle);
-	free(filter_exp);
-	pcap_freecode(&fcode);
+    printf("*** Dump compiled packet-matching code (-d) ***\n\n");
+    bpf_dump(&fcode, 1);
+    printf("\n*** Dump packet-matching code as a C program fragment (-dd) ***\n\n");
+    bpf_dump(&fcode, 2);
+    printf("\n*** Dump packet-matching code as bytecode (-ddd) ***\n\n");
+    bpf_dump(&fcode, 3);
 
-	exit(0);
+    // https://git.netfilter.org/iptables/tree/utils/nfbpf_compile.c
+    printf("\n*** Dump packet-matching code as bytecode (on one line) ***\n\n");
+    struct bpf_insn *ins;
+    ins = fcode.bf_insns;
+
+    printf("%d,", fcode.bf_len);
+    for (int i = 0; i < fcode.bf_len-1; ++ins, ++i) {
+	printf("%u %u %u %u,", ins->code, ins->jt, ins->jf, ins->k);
+    }
+    printf("%u %u %u %u\n", ins->code, ins->jt, ins->jf, ins->k);
+
+    pcap_close(handle);
+    free(filter_exp);
+    pcap_freecode(&fcode);
+
+    exit(0);
 }
 EOF
 ~~~
@@ -385,7 +397,7 @@ Compiling expression 'vlan 32'
 { 0x6, 0, 0, 0x00002000 },
 { 0x6, 0, 0, 0x00000000 },
 
-*** Dump packet-matching code as decimal numbers (-ddd) ***
+*** Dump packet-matching code as bytecode (-ddd) ***
 
 15
 48 0 0 4294963248
@@ -403,11 +415,15 @@ Compiling expression 'vlan 32'
 21 0 1 32
 6 0 0 8192
 6 0 0 0
+
+*** Dump packet-matching code as bytecode (on one line) ***
+
+15,48 0 0 4294963248,21 4 0 1,40 0 0 12,21 2 0 33024,21 1 0 34984,21 0 8 37120,48 0 0 4294963248,21 0 2 1,48 0 0 4294963244,5 0 0 1,40 0 0 14,84 0 0 4095,21 0 1 32,6 0 0 8192,6 0 0 0
 ~~~
 
 Or let's create another filter expression, just as another example:
 ~~~
-#  ./libpcap_expression_compiler host 127.0.0.254 and tcp and port 5353
+# ./libpcap_expression_compiler host 127.0.0.254 and tcp and port 5353
 Compiling expression 'host 127.0.0.254 and tcp and port 5353'
 
 *** Dump compiled packet-matching code (-d) ***
@@ -450,7 +466,7 @@ Compiling expression 'host 127.0.0.254 and tcp and port 5353'
 { 0x6, 0, 0, 0x00002000 },
 { 0x6, 0, 0, 0x00000000 },
 
-*** Dump packet-matching code as decimal numbers (-ddd) ***
+*** Dump packet-matching code as bytecode (-ddd) ***
 
 17
 40 0 0 12
@@ -470,6 +486,10 @@ Compiling expression 'host 127.0.0.254 and tcp and port 5353'
 21 0 1 5353
 6 0 0 8192
 6 0 0 0
+
+*** Dump packet-matching code as bytecode (on one line) ***
+
+17,40 0 0 12,21 0 14 2048,32 0 0 26,21 2 0 2130706686,32 0 0 30,21 0 10 2130706686,48 0 0 23,21 0 8 6,40 0 0 20,69 6 0 8191,177 0 0 14,72 0 0 14,21 2 0 5353,72 0 0 16,21 0 1 5353,6 0 0 8192,6 0 0 0
 ~~~
 
 ## Using BPF 
@@ -629,43 +649,123 @@ For further details, see:
 
 ### Using BPF in iptables expressions
 
-BPF allows us to write complex iptables rules. First, let's compile a rule into Byte format with tcpdump:
+BPF allows us to write complex iptables rules. However, if you simply try using the rules that  we had compiled above, you will soon find out that this does not work. 
+
+Instead, look at the following resources:
+
+* [https://www.lowendtalk.com/discussion/47469/bpf-a-bytecode-for-filtering](https://www.lowendtalk.com/discussion/47469/bpf-a-bytecode-for-filtering)
+* [https://git.netfilter.org/iptables/tree/utils/nfbpf_compile.c](https://git.netfilter.org/iptables/tree/utils/nfbpf_compile.c)
+
+`nfbpf_compile` will create slightly different Bytecode, suited for iptables. Here's the full script from the above link (just in case the original resource changes):
 ~~~
-# tcpdump -i lo -ddd host 127.0.0.254 and tcp and port 5353 | tr '\n' ','
-17,40 0 0 12,21 0 14 2048,32 0 0 26,21 2 0 2130706686,32 0 0 30,21 0 10 2130706686,48 0 0 23,21 0 8 6,40 0 0 20,69 6 0 8191,177 0 0 14,72 0 0 14,21 2 0 5353,72 0 0 16,21 0 1 5353,6 0 0 262144,6 0 0 0,
+cat <<'EOF' > nbpf_compile.c
+/*
+ * BPF program compilation tool
+ *
+ * Generates decimal output, similar to `tcpdump -ddd ...`.
+ * Unlike tcpdump, will generate for any given link layer type.
+ *
+ * Written by Willem de Bruijn (willemb@google.com)
+ * Copyright Google, Inc. 2013
+ * Licensed under the GNU General Public License version 2 (GPLv2)
+*/
+
+#include <pcap.h>
+#include <stdio.h>
+
+int main(int argc, char **argv)
+{
+	struct bpf_program program;
+	struct bpf_insn *ins;
+	int i, dlt = DLT_RAW;
+
+	if (argc < 2 || argc > 3) {
+		fprintf(stderr, "Usage:    %s [link] '<program>'\n\n"
+				"          link is a pcap linklayer type:\n"
+				"          one of EN10MB, RAW, SLIP, ...\n\n"
+				"Examples: %s RAW 'tcp and greater 100'\n"
+				"          %s EN10MB 'ip proto 47'\n'",
+				argv[0], argv[0], argv[0]);
+		return 1;
+	}
+
+	if (argc == 3) {
+		dlt = pcap_datalink_name_to_val(argv[1]);
+		if (dlt == -1) {
+			fprintf(stderr, "Unknown datalinktype: %s\n", argv[1]);
+			return 1;
+		}
+	}
+
+	if (pcap_compile_nopcap(65535, dlt, &program, argv[argc - 1], 1,
+				PCAP_NETMASK_UNKNOWN)) {
+		fprintf(stderr, "Compilation error\n");
+		return 1;
+	}
+
+	printf("%d,", program.bf_len);
+	ins = program.bf_insns;
+	for (i = 0; i < program.bf_len-1; ++ins, ++i)
+		printf("%u %u %u %u,", ins->code, ins->jt, ins->jf, ins->k);
+
+	printf("%u %u %u %u\n", ins->code, ins->jt, ins->jf, ins->k);
+
+	pcap_freecode(&program);
+	return 0;
+}
+EOF
 ~~~
 
-Let's add the IP address to our localhost interface:
+Compile this with:
 ~~~
-ip a a 127.0.0.254/32 dev lo
+gcc nbpf_compile.c -o nbpf_compile -lpcap
+~~~
+
+Now, run this:
+~~~
+# ./nbpf_compile RAW 'tcp port 8080'
+23,48 0 0 0,84 0 0 240,21 0 6 96,48 0 0 6,21 0 17 6,40 0 0 40,21 14 0 8080,40 0 0 42,21 12 13 8080,48 0 0 0,84 0 0 240,21 0 10 64,48 0 0 9,21 0 8 6,40 0 0 6,69 6 0 8191,177 0 0 0,72 0 0 0,21 2 0 8080,72 0 0 2,21 0 1 8080,6 0 0 65535,6 0 0 0
+~~~
+
+Compare this to the tcpdump output which will not work:
+~~~
+# tcpdump -r  test.pcap -d tcp port 8080 -ddd | tr '\n' ' '
+reading from file test.pcap, link-type EN10MB (Ethernet)
+20 40 0 0 12 21 0 6 34525 48 0 0 20 21 0 15 6 40 0 0 54 21 12 0 8080 40 0 0 56 21 10 11 8080 21 0 10 2048 48 0 0 23 21 0 8 6 40 0 0 20 69 6 0 8191 177 0 0 14 72 0 0 14 21 2 0 8080 72 0 0 16 21 0 1 8080 6 0 0 262144 6 0 0 0 
+# tcpdump -i lo  -d tcp port 8080 -ddd | tr '\n' ' '
+20 40 0 0 12 21 0 6 34525 48 0 0 20 21 0 15 6 40 0 0 54 21 12 0 8080 40 0 0 56 21 10 11 8080 21 0 10 2048 48 0 0 23 21 0 8 6 40 0 0 20 69 6 0 8191 177 0 0 14 72 0 0 14 21 2 0 8080 72 0 0 16 21 0 1 8080 6 0 0 262144 6 0 0 0
 ~~~
 
 And also run a little web server for the sake of this test:
 ~~~
-#  python3 -m http.server 5353 --bind 127.0.0.254 &
-# Serving HTTP on 127.0.0.254 port 5353 (http://127.0.0.254:5353/) ...
+#  python3 -m http.server 8080 &
 ~~~
 
 Test:
 ~~~
-# curl http://127.0.0.254:5353 -I
-127.0.0.254 - - [24/Mar/2021 11:52:58] "HEAD / HTTP/1.1" 200 -
+# curl 192.168.122.92:8080 -I
 HTTP/1.0 200 OK
 Server: SimpleHTTP/0.6 Python/3.6.8
-Date: Wed, 24 Mar 2021 11:52:58 GMT
+Date: Fri, 26 Mar 2021 15:46:30 GMT
 Content-type: text/html; charset=utf-8
-Content-Length: 3267
+Content-Length: 2272
 ~~~
 
 Now, let's create an iptables rule that will match on the Byte code:
 ~~~
-iptables -I INPUT \
-    -m bpf --bytecode "17,40 0 0 12,21 0 14 2048,32 0 0 26,21 2 0 2130706686,32 0 0 30,21 0 10 2130706686,48 0 0 23,21 0 8 6,40 0 0 20,69 6 0 8191,177 0 0 14,72 0 0 14,21 2 0 5353,72 0 0 16,21 0 1 5353,6 0 0 262144,6 0 0 0," \
-    -j REJECT
+iptables -I INPUT -m bpf --bytecode "23,48 0 0 0,84 0 0 240,21 0 6 96,48 0 0 6,21 0 17 6,40 0 0 40,21 14 0 8080,40 0 0 42,21 12 13 8080,48 0 0 0,84 0 0 240,21 0 10 64,48 0 0 9,21 0 8 6,40 0 0 6,69 6 0 8191,177 0 0 0,72 0 0 0,21 2 0 8080,72 0 0 2,21 0 1 8080,6 0 0 65535,6 0 0 0" --j REJECT
+~~~
+> This *must* be from `nbpf_compile`!
+
+And this is now blocked:
+~~~
+# curl 192.168.122.92:8080 -I
+curl: (7) Failed connect to 192.168.122.92:8080; Connection refused
 ~~~
 
-The above, however, does not match. (TBD)
-
-## Sniffing traffic with golang
-
-* [https://itnext.io/sniffing-creds-with-go-a-journey-with-libpcap-73bc3e74966](https://itnext.io/sniffing-creds-with-go-a-journey-with-libpcap-73bc3e74966)
+~~~
+[root@kind ~]# iptables -L INPUT -nv
+Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+    5   300 REJECT     all  --  *      *       0.0.0.0/0            0.0.0.0/0           match bpf 48 0 0 0,84 0 0 240,21 0 6 96,48 0 0 6,21 0 17 6,40 0 0 40,21 14 0 8080,40 0 0 42,21 12 13 8080,48 0 0 0,84 0 0 240,21 0 10 64,48 0 0 9,21 0 8 6,40 0 0 6,69 6 0 8191,177 0 0 0,72 0 0 0,21 2 0 8080,72 0 0 2,21 0 1 8080,6 0 0 65535,6 0 0 0 reject-with icmp-port-unreachable
+~~~

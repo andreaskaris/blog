@@ -236,7 +236,7 @@ man tcpdump
 
 #### Documentation
 
-In order to build a filter expressioin compiler, we look at the source code:
+In order to build a filter expression compiler, we look at the source code:
 
 * [https://github.com/the-tcpdump-group/tcpdump/blob/master/tcpdump.c#L2238](https://github.com/the-tcpdump-group/tcpdump/blob/master/tcpdump.c#L2238)
 
@@ -477,6 +477,156 @@ Compiling expression 'host 127.0.0.254 and tcp and port 5353'
 * [https://www.kernel.org/doc/Documentation/networking/filter.txt](https://www.kernel.org/doc/Documentation/networking/filter.txt)
 * [https://github.com/torvalds/linux/tree/master/tools/bpf](https://github.com/torvalds/linux/tree/master/tools/bpf)
 
+### Compiling BPF Bytecode
+
+In order to get to BPF Bytecode, there is an easy, an intermediate and a more complex way.
+
+#### tcpdump with filter expression
+
+This is the easiest way:
+~~~
+# tcpdump -i lo -e -nn  "tcp dst port 8080" -d 
+(000) ldh      [12]
+(001) jeq      #0x86dd          jt 2	jf 6
+(002) ldb      [20]
+(003) jeq      #0x6             jt 4	jf 15
+(004) ldh      [56]
+(005) jeq      #0x1f90          jt 14	jf 15
+(006) jeq      #0x800           jt 7	jf 15
+(007) ldb      [23]
+(008) jeq      #0x6             jt 9	jf 15
+(009) ldh      [20]
+(010) jset     #0x1fff          jt 15	jf 11
+(011) ldxb     4*([14]&0xf)
+(012) ldh      [x + 16]
+(013) jeq      #0x1f90          jt 14	jf 15
+(014) ret      #262144
+(015) ret      #0
+~~~
+
+You get the Bytecode with:
+~~~
+# tcpdump -i lo -e -nn  "tcp dst port 8080" -ddd | tr '\n' ','
+16,40 0 0 12,21 0 4 34525,48 0 0 20,21 0 11 6,40 0 0 56,21 8 9 8080,21 0 8 2048,48 0 0 23,21 0 6 6,40 0 0 20,69 4 0 8191,177 0 0 14,72 0 0 16,21 0 1 8080,6 0 0 262144,6 0 0 0,
+~~~
+
+#### tcpdump with explicit offset expression
+
+Let's get a bit more fancy. In `test.pcap`, I captured a TCP request to port 8080. The hexdump looks as follows:
+~~~
+# tcpdump -e -nn -r test.pcap -XX | tail -n 12
+reading from file test.pcap, link-type EN10MB (Ethernet)
+dropped privs to tcpdump
+07:03:36.901256 00:00:00:00:00:00 > 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 66: 192.168.122.92.36166 > 192.168.122.92.8080: Flags [F.], seq 84, ack 1993, win 1373, options [nop,nop,TS val 3322938017 ecr 3322938017], length 0
+	0x0000:  0000 0000 0000 0000 0000 0000 0800 4500  ..............E.
+	0x0010:  0034 7023 4000 4006 5497 c0a8 7a5c c0a8  .4p#@.@.T...z\..
+	0x0020:  7a5c 8d46 1f90 86e0 b75e 7a9a 5a92 8011  z\.F.....^z.Z...
+	0x0030:  055d 7630 0000 0101 080a c610 02a1 c610  .]v0............
+	0x0040:  02a1                                     ..
+07:03:36.901275 00:00:00:00:00:00 > 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 66: 192.168.122.92.8080 > 192.168.122.92.36166: Flags [.], ack 85, win 342, options [nop,nop,TS val 3322938017 ecr 3322938017], length 0
+	0x0000:  0000 0000 0000 0000 0000 0000 0800 4500  ..............E.
+	0x0010:  0034 f1fa 4000 4006 d2bf c0a8 7a5c c0a8  .4..@.@.....z\..
+	0x0020:  7a5c 1f90 8d46 7a9a 5a92 86e0 b75f 8010  z\...Fz.Z...._..
+	0x0030:  0156 7630 0000 0101 080a c610 02a1 c610  .Vv0............
+	0x0040:  02a1    
+~~~
+
+We want to identify all packets with a dst port of `8080` (or `0x1f90` in hex notation). Each visual block in the hexdump is a half word, or 16 bits. Offsets in tcpdump are specified in Bytes, and the dst port field is 2 Bytes in lenght. We are looking for the 18th half word, or Bytes 36 and 37. The tcpdump expression would hence be:
+~~~
+ether[36:2] == 0x1f90
+~~~
+
+Here's the result of the filter:
+~~~
+# tcpdump -e -nn -r test.pcap ether[36:2] == 0x1f90
+reading from file test.pcap, link-type EN10MB (Ethernet)
+dropped privs to tcpdump
+07:03:36.900276 00:00:00:00:00:00 > 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 74: 192.168.122.92.36166 > 192.168.122.92.8080: Flags [S], seq 2262873866, win 43690, options [mss 65495,sackOK,TS val 3322938016 ecr 0,nop,wscale 7], length 0
+07:03:36.900297 00:00:00:00:00:00 > 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 66: 192.168.122.92.36166 > 192.168.122.92.8080: Flags [.], ack 2056934090, win 342, options [nop,nop,TS val 3322938016 ecr 3322938016], length 0
+07:03:36.900328 00:00:00:00:00:00 > 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 149: 192.168.122.92.36166 > 192.168.122.92.8080: Flags [P.], seq 0:83, ack 1, win 342, options [nop,nop,TS val 3322938016 ecr 3322938016], length 83: HTTP: GET / HTTP/1.1
+07:03:36.901097 00:00:00:00:00:00 > 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 66: 192.168.122.92.36166 > 192.168.122.92.8080: Flags [.], ack 156, win 350, options [nop,nop,TS val 3322938016 ecr 3322938016], length 0
+07:03:36.901122 00:00:00:00:00:00 > 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 66: 192.168.122.92.36166 > 192.168.122.92.8080: Flags [.], ack 1992, win 1373, options [nop,nop,TS val 3322938017 ecr 3322938016], length 0
+07:03:36.901256 00:00:00:00:00:00 > 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 66: 192.168.122.92.36166 > 192.168.122.92.8080: Flags [F.], seq 83, ack 1993, win 1373, options [nop,nop,TS val 3322938017 ecr 3322938017], length 0
+~~~
+
+And the compiled expression:
+~~~
+# tcpdump -e -nn -i lo ether[36:2] == 0x1f90 -d
+(000) ldh      [36]
+(001) jeq      #0x1f90          jt 2	jf 3
+(002) ret      #262144
+(003) ret      #0
+# tcpdump -e -nn -i lo ether[36:2] == 0x1f90 -ddd | tr '\n' ','
+4,40 0 0 36,21 0 1 8080,6 0 0 262144,6 0 0 0,
+~~~
+
+#### Using BPF asm-like code
+
+##### Compiling helper binaries 
+
+First, you will need the bpf_asm binary from the kernel source code. 
+
+For RHEL/CentOS 8, install build dependencies:
+~~~
+yum install '@Development Tools' -y
+yum install gcc-toolset -y
+yum install binutils-devel -y
+yum install readline-devel -y
+yum install elfutils-libelf-devel -y
+yum install clang -y
+yum install llvm -y
+~~~
+
+Get the kernel source code on RHEL / CentOS:
+~~~
+mkdir -p kernel/src
+cd kernel/
+yumdownloader --source kernel
+cp kernel-*.src.rpm src/ ; cd src ; rpm2cpio kernel-*.src.rpm | cpio -idmv
+tar -xf linux-*.tar.xz
+~~~
+
+Compile the BPF toolset:
+~~~
+cd $(find . -path '*tools/bpf')
+make all
+cp bpf_asm /usr/local/bin/.
+cp bpf_dbg /usr/local/bin/.
+cp bpf_jit_disasm /usr/local/bin/.
+cp bpftool/bpftool /usr/local/bin/.
+~~~
+
+##### Building Byte code
+
+Now, create the following ASM like code:
+~~~
+# cat test.bpf 
+     ldh [36]
+     jneq #0x1f90, lb_1
+     ret #1
+
+lb_1:
+     ret #0
+~~~
+
+And compile it with:
+~~~
+# bpf_asm test.bpf 
+4,40 0 0 36,21 0 1 8080,6 0 0 1,6 0 0 0,
+~~~
+
+Compare this to the earlier output of `tcpdump -ddd`:
+~~~
+# tcpdump -e -nn -i lo ether[36:2] == 0x1f90 -ddd | tr '\n' ','
+4,40 0 0 36,21 0 1 8080,6 0 0 262144,6 0 0 0,
+~~~
+
+The only thing that's different here is the return code.
+
+For further details, see:
+
+* [https://www.kernel.org/doc/Documentation/networking/filter.txt](https://www.kernel.org/doc/Documentation/networking/filter.txt)
+
 ### Using BPF in iptables expressions
 
 BPF allows us to write complex iptables rules. First, let's compile a rule into Byte format with tcpdump:
@@ -515,40 +665,6 @@ iptables -I INPUT \
 ~~~
 
 The above, however, does not match. (TBD)
-
-### Compile BPF kernel tools
-
-Install build dependencies:
-~~~
-yum install '@Development Tools' -y
-yum install gcc-toolset -y
-yum install binutils-devel -y
- yum install readline-devel -y
-yum install elfutils-libelf-devel -y
- yum install clang -y
-yum install llvm -y
-~~~
-
-Get the kernel source code on RHEL / CentOS:
-~~~
-mkdir -p kernel/src
-cd kernel/
-yumdownloader --source kernel
-cp kernel-*.src.rpm src/ ; cd src ; rpm2cpio kernel-*.src.rpm | cpio -idmv
-tar -xf linux-*.tar.xz
-~~~
-
-Compile the BPF toolset:
-~~~
-cd kernel-*/tools/bpf
-make all
-cp bpf_asm /usr/local/bin/.
-cp bpf_dbg /usr/local/bin/.
-cp bpf_jit_disasm /usr/local/bin/.
-cp bpftool/bpftool /usr/local/bin/.
-~~~
-
-* [https://www.kernel.org/doc/Documentation/networking/filter.txt](https://www.kernel.org/doc/Documentation/networking/filter.txt)
 
 ## Sniffing traffic with golang
 

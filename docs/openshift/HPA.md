@@ -25,6 +25,7 @@ First, deploy the HPA-Tester deployment. The deployment runs 2 applications whic
 
 Deploy the deployment in a dedicated namespace with:
 ~~~
+oc new-project hpa-test || oc project hpa-test
 oc apply -f role-list-deployments-pods.yaml
 oc apply -f role-binding-list-deployments-pods.yaml
 oc apply -f deployment-hpa-tester.yaml

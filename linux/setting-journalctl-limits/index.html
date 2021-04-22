@@ -1185,8 +1185,8 @@ Apr 10 13:00:43 node-0 NetworkManager[1962]: &lt;info&gt;  [1618059643.6773] dhc
 Apr 10 13:00:43 node-0 NetworkManager[1962]: &lt;info&gt;  [1618059643.6774] dhcp4 (enp4s0f1): state changed timeout -&gt; done
 </code></pre>
 
-<p>And the size of <code>/var/log/journal</code> will fluctuate as new data is written to the logs and old data is erased:
-[root@node-0 ~]# while true; do du -s /var/log/journal/ ; sleep 5 ;done
+<p>And the size of <code>/var/log/journal</code> will fluctuate as new data is written to the logs and old data is erased:</p>
+<pre><code>[root@node-0 ~]# while true; do du -s /var/log/journal/ ; sleep 5 ;done
 2064492 /var/log/journal/
 2113640 /var/log/journal/
 2097252 /var/log/journal/
@@ -1194,9 +1194,9 @@ Apr 10 13:00:43 node-0 NetworkManager[1962]: &lt;info&gt;  [1618059643.6774] dhc
 ^C
 [root@node-0 ~]# journalctl | head -n 3
 -- Logs begin at Tue 2021-04-13 17:31:58 UTC, end at Thu 2021-04-22 15:16:04 UTC. --
-Apr 13 17:31:58 node-0 NetworkManager[1962]: <info>  [1618335118.6725] policy: auto-activating connection 'Wired connection 7' (d434db97-6ad2-3255-adfd-b2826bcb31a9)
-Apr 13 17:31:58 node-0 NetworkManager[1962]: <info>  [1618335118.6735] device (enp4s0f0): Activation: starting connection 'Wired connection 4' (f0a93efd-0bb7-36f6-9630-b7eb53a4f591)
-~~~</p>
+Apr 13 17:31:58 node-0 NetworkManager[1962]: &lt;info&gt;  [1618335118.6725] policy: auto-activating connection 'Wired connection 7' (d434db97-6ad2-3255-adfd-b2826bcb31a9)
+Apr 13 17:31:58 node-0 NetworkManager[1962]: &lt;info&gt;  [1618335118.6735] device (enp4s0f0): Activation: starting connection 'Wired connection 4' (f0a93efd-0bb7-36f6-9630-b7eb53a4f591)
+</code></pre>
                 
               
               

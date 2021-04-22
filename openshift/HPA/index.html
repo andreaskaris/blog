@@ -410,6 +410,18 @@
   
 
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/setting-journalctl-limits/" class="md-nav__link">
+        Setting journalctl limis
+      </a>
+    </li>
+  
+
+          
         </ul>
       </nav>
     </li>
@@ -1173,7 +1185,8 @@ cd kubernetes/hpa-test
 <h4 id="deploying-an-hpa-tester-deployment">Deploying an HPA tester deployment</h4>
 <p>First, deploy the HPA-Tester deployment. The deployment runs 2 applications which simulate a cumulative load.  Meaning that <code>COMBINED_CPU_MS</code> and <code>COMBINED_MEMORY_MB</code> will be divided by the number of replicas for the deployment and each pod will then individually run that fraction of memory and CPU load. This check happens every <code>SLEEP_TIME</code> seconds.</p>
 <p>Deploy the deployment in a dedicated namespace with:</p>
-<pre><code>oc apply -f role-list-deployments-pods.yaml
+<pre><code>oc new-project hpa-test || oc project hpa-test
+oc apply -f role-list-deployments-pods.yaml
 oc apply -f role-binding-list-deployments-pods.yaml
 oc apply -f deployment-hpa-tester.yaml
 </code></pre>

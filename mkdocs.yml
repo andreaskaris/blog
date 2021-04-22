@@ -6,6 +6,8 @@ theme:
     accent: red
   features:
     - toc.integrate
+plugins:
+  - git-revision-date-localized
 hide:
   - toc
 nav:

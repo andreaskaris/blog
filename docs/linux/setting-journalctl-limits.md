@@ -80,6 +80,7 @@ Apr 10 13:00:43 node-0 NetworkManager[1962]: <info>  [1618059643.6774] dhcp4 (en
 ~~~
 
 And the size of `/var/log/journal` will fluctuate as new data is written to the logs and old data is erased:
+~~~
 [root@node-0 ~]# while true; do du -s /var/log/journal/ ; sleep 5 ;done
 2064492	/var/log/journal/
 2113640	/var/log/journal/

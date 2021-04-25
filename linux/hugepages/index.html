@@ -988,8 +988,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1181,11 +1181,9 @@ void main() {
         getline(&amp;line,&amp;size,stdin);
 }
 </code></pre>
-
 <p>Compile this:</p>
 <pre><code>gcc mmap.c  -o mmap
 </code></pre>
-
 <p>Run the binary and follow the onscreen instructions:</p>
 <pre><code>[root@dell-r430-30 ~]# ./mmap 
 Memory address 0x2aaac0000000
@@ -1225,7 +1223,6 @@ to verify this.
 
 When you are done, please hit return to end the program
 </code></pre>
-
 <p>Verify reserved hugepages and actually allocated hugepages. 
 Also note that writing 1GB to the hugepage actually takes quite some time:</p>
 <pre><code>[root@dell-r430-30 ~]# grep -R '' /sys/kernel/mm/hugepages/hugepages-1048576kB/
@@ -1286,7 +1283,6 @@ Also note that writing 1GB to the hugepage actually takes quite some time:</p>
 /sys/devices/system/node/node1/meminfo:Node 1 HugePages_Free:     16
 /sys/devices/system/node/node1/meminfo:Node 1 HugePages_Surp:      0
 </code></pre>
-
 <h3 id="example-2-allocating-hugepages-right-away">Example 2 - Allocating hugepages right away</h3>
 <p>Instead of having to write to the hugepage to allocate it, we can populate the page right away and it will show up in used pages right away:</p>
 <pre><code>man mmap
@@ -1297,7 +1293,6 @@ Also note that writing 1GB to the hugepage actually takes quite some time:</p>
               for private mappings only since Linux 2.6.23.
 (...)
 </code></pre>
-
 <p>The application is <code>mmap2.c</code>:</p>
 <pre><code>#include &lt;sys/mman.h&gt;
 #include &lt;stdio.h&gt;
@@ -1332,7 +1327,6 @@ void main() {
         getline(&amp;line,&amp;size,stdin);
 }
 </code></pre>
-
 <p>Testing:</p>
 <pre><code>[root@dell-r430-30 ~]# gcc mmap2.c -o mmap2
 [root@dell-r430-30 ~]# ./mmap2 
@@ -1345,7 +1339,6 @@ to verify this.
 When you are done, please hit return
 
 </code></pre>
-
 <pre><code>[root@dell-r430-30 ~]# find /sys -name meminfo | xargs grep -i huge
 /sys/devices/system/node/node0/meminfo:Node 0 AnonHugePages:         0 kB
 /sys/devices/system/node/node0/meminfo:Node 0 HugePages_Total:    16
@@ -1357,7 +1350,6 @@ When you are done, please hit return
 /sys/devices/system/node/node1/meminfo:Node 1 HugePages_Surp:      0
 [root@dell-r430-30 ~]# 
 </code></pre>
-
 <h2 id="sharing-hugepages-between-processes">Sharing hugepages between processes</h2>
 <p>In vhost_user, OVS-DPDK and qemu-kvm instances share the same hugepages for DMA copies. <a href="https://access.redhat.com/solutions/3394851">https://access.redhat.com/solutions/3394851</a>. Let's emulate this with 2 sample applications.</p>
 <p><a href="http://nuncaalaprimera.com/2014/using-hugepage-backed-buffers-in-linux-kernel-driver">http://nuncaalaprimera.com/2014/using-hugepage-backed-buffers-in-linux-kernel-driver</a></p>
@@ -1557,7 +1549,6 @@ int main(int argc , char ** argv) {
     }
 }
 </code></pre>
-
 <h2 id="resources">Resources</h2>
 <p><a href="https://lwn.net/Articles/374424/">https://lwn.net/Articles/374424/</a></p>
 <p><a href="https://www.kernel.org/doc/Documentation/vm/hugetlbpage.txt">https://www.kernel.org/doc/Documentation/vm/hugetlbpage.txt</a></p>

@@ -961,8 +961,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1124,7 +1124,6 @@ PING 192.168.124.2 (192.168.124.2) 56(84) bytes of data.
 rtt min/avg/max/mdev = 1.158/1.158/1.158/0.000 ms
 [root@rhel-test1 ~]# 
 </code></pre>
-
 <pre><code>[root@rhel-test2 ~]# ip link add dev vxlan0 type vxlan remote 192.168.0.12 vni 1234 dstport 4789
 [root@rhel-test2 ~]# ip a a 192.168.124.2/30 vxlan0
 Error: either &quot;local&quot; is duplicate, or &quot;vxlan0&quot; is a garbage.
@@ -1143,7 +1142,6 @@ listening on vxlan0, link-type EN10MB (Ethernet), capture size 65535 bytes
 0 packets dropped by kernel
 [root@rhel-test2 ~]# 
 </code></pre>
-
 <pre><code>[akaris@wks-akaris geneve]$ tshark -r vxlan.pcap -V frame.number==43
 Frame 43: 148 bytes on wire (1184 bits), 148 bytes captured (1184 bits)
     Encapsulation type: Ethernet (1)
@@ -1364,7 +1362,6 @@ Internet Control Message Protocol
         Data: 7d0b060000000000101112131415161718191a1b1c1d1e1f...
         [Length: 48]
 </code></pre>
-
 <h3 id="geneve">Geneve</h3>
 <p><a href="https://www.ietf.org/id/draft-ietf-nvo3-geneve-10.txt">https://www.ietf.org/id/draft-ietf-nvo3-geneve-10.txt</a></p>
 <pre><code>3.3.  UDP Header
@@ -1391,7 +1388,6 @@ Internet Control Message Protocol
       Geneve packets and MUST NOT be reversed for different ends of a
       connection as is done with TCP.
 </code></pre>
-
 <pre><code>[cloud-user@rhel-test1 ~]$ sudo -i
 [root@rhel-test1 ~]# ip link add dev gnv0 type geneve remote 192.168.22.1 vni 1234
 [root@rhel-test1 ~]# ip link ls dev gnv0
@@ -1434,7 +1430,6 @@ PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
 rtt min/avg/max/mdev = 1.614/2.180/3.308/0.798 ms
 [root@rhel-test1 ~]# 
 </code></pre>
-
 <pre><code>sudo -i[cloud-user@rhel-test2 ~]$ sudo -i
 [root@rhel-test2 ~]# ip a
 1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN qlen 1
@@ -1454,7 +1449,6 @@ rtt min/avg/max/mdev = 1.614/2.180/3.308/0.798 ms
 [root@rhel-test2 ~]# ip a a dev gnv0 192.168.123.2/30
 [root@rhel-test2 ~]# 
 </code></pre>
-
 <pre><code>[root@overcloud-compute-0 ~]# ip link ls | grep tap
 22: tapf1d88f44-52: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1446 qdisc pfifo_fast master qbrf1d88f44-52 state UNKNOWN mode DEFAULT group default qlen 1000
 [root@overcloud-compute-0 ~]# tcpdump -nne -itapf1d88f44-52 not port 22
@@ -1505,7 +1499,6 @@ listening on tapf1d88f44-52, link-type EN10MB (Ethernet), capture size 262144 by
 0 packets dropped by kernel
 [root@overcloud-compute-0 ~]# 
 </code></pre>
-
 <pre><code>[akaris@wks-akaris geneve]$ tshark -r geneve.pcap -V frame.number==102
 Frame 102: 148 bytes on wire (1184 bits), 148 bytes captured (1184 bits)
     Encapsulation type: Ethernet (1)

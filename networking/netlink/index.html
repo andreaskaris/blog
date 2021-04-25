@@ -1049,8 +1049,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1198,7 +1198,6 @@ used for configuring mac80211-based wireless drivers, use Netlink to communicate
 from userspace. Netlink provides a standard socket-based interface for userspace processes, and a 
 kernel-side API for internal use by kernel modules. Originally, Netlink used the AF_NETLINK socket family. 
 </code></pre>
-
 <p><a href="https://en.wikipedia.org/wiki/Netlink">https://en.wikipedia.org/wiki/Netlink</a></p>
 <p>Netlink is defined and thoroughly described in <a href="https://tools.ietf.org/html/rfc3549">RFC3549</a></p>
 <p>The idea is to keep code that's critical for performance in the kernel and to move anything related to control and management in user-space (<a href="https://www.linuxjournal.com/article/7356">https://www.linuxjournal.com/article/7356</a>).</p>
@@ -1208,7 +1207,6 @@ processes and a special kernel API for kernel modules. Netlink socket uses the a
 compared to AF_INET used by TCP/IP socket. Each netlink socket feature defines its own protocol type in the 
 kernel header file include/linux/netlink.h. 
 </code></pre>
-
 <p><a href="https://www.linuxjournal.com/article/7356">https://www.linuxjournal.com/article/7356</a></p>
 <h3 id="who-uses-netlink-examples">Who uses Netlink? Examples</h3>
 <p>Just a few examples:
@@ -1242,7 +1240,6 @@ socket(AF_LOCAL, SOCK_DGRAM|SOCK_CLOEXEC, 0) = 4
 recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{&quot;\24\0\0\0\3\0\2\0\330A\367[Av\2\0\0\0\0\0&quot;, 32768}], msg_controllen=0, msg_flags=0}, 0) = 20
 +++ exited with 0 +++
 </code></pre>
-
 <ul>
 <li>OVS</li>
 </ul>
@@ -1258,7 +1255,6 @@ recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov
 <pre><code>[akaris@wks-akaris c]$ gcc messenger.c -o messenger
 [akaris@wks-akaris c]$ 
 </code></pre>
-
 <p>Then run, in one CLI the receiver:</p>
 <pre><code>[akaris@wks-akaris c]$ ./messenger receiver
 This node is a receiver
@@ -1268,7 +1264,6 @@ Datagram content: MSG
 Received datagram from 127.0.0.1
 Datagram content: MSG
 </code></pre>
-
 <p>In the other CLI the sender:</p>
 <pre><code>[akaris@wks-akaris c]$ ./messenger sender
 This node is a sender
@@ -1277,7 +1272,6 @@ Starting sender
 This node is a sender
 Starting sender
 </code></pre>
-
 <h4 id="python">Python</h4>
 <h5 id="resources_1">Resources</h5>
 <p><a href="https://wiki.python.org/moin/UdpCommunication">https://wiki.python.org/moin/UdpCommunication</a></p>
@@ -1293,7 +1287,6 @@ Datagram content:  b'MSG'
 Received datagram from  ('127.0.0.1', 39735)
 Datagram content:  b'MSG'
 </code></pre>
-
 <p>Run the client in another CLI:</p>
 <pre><code>[akaris@wks-akaris python]$ ./messenger.py sender
 This node is a sender
@@ -1303,7 +1296,6 @@ This node is a sender
 Starting sender
 [akaris@wks-akaris python]$ 
 </code></pre>
-
 <h3 id="how-to-use-netlink-programming-example">How to use Netlink - programming example</h3>
 <p><a href="https://www.linuxjournal.com/article/7356">https://www.linuxjournal.com/article/7356</a> has a walkthrough for using Netlink in C.</p>
 <p><a href="https://www.linuxjournal.com/article/8498">https://www.linuxjournal.com/article/8498</a> as well.</p>
@@ -1313,12 +1305,10 @@ Starting sender
 <p>Compile the code:</p>
 <pre><code>gcc netlink.c -o netlink
 </code></pre>
-
 <p>Start the application and while the application is running, modify the routing table:</p>
 <pre><code>[akaris@wks-akaris python]$ sudo ip r a 4.3.2.0/30 via 127.0.0.1
 [akaris@wks-akaris python]$ sudo ip r d 4.3.2.0/30 via 127.0.0.1
 </code></pre>
-
 <p>The application will yield the following. We can see live when the route is added and when it is deleted:</p>
 <pre><code>[akaris@wks-akaris c]$ ./netlink 
 Starting netlink receiverd
@@ -1327,7 +1317,6 @@ Netmask: 30
 nlmsg_len: 60, nlmsg_type 25, nlmsg_flags: 0, nlmsg_seq: 1543015717, nlmsg_pid: 15343
 Netmask: 30
 </code></pre>
-
 <p>Note that a more complete example can be found here: <a href="https://gist.github.com/cl4u2/5204374">https://gist.github.com/cl4u2/5204374</a></p>
 <h4 id="python_1">Python</h4>
 <p>The following python application monitors any route changes that happen in the kernel:
@@ -1336,7 +1325,6 @@ Netmask: 30
 <pre><code>[akaris@wks-akaris python]$ sudo ip r a 4.3.2.0/30 via 127.0.0.1
 [akaris@wks-akaris python]$ sudo ip r d 4.3.2.0/30 via 127.0.0.1
 </code></pre>
-
 <p>The application will yield the following. We can see live when the route is added and when it is deleted:</p>
 <pre><code>[akaris@wks-akaris python]$ ./netlink.py 
 Netlink header:  60 RTM_NEWROUTE 1536 1543012056 13037
@@ -1348,7 +1336,6 @@ Netlink payload:  2 30 0 0 254 3 0 1 0
 Netmask: 30
 IP:  b'\x04\x03\x02\x00'
 </code></pre>
-
 <p>strace'ing the application reveals even more about the message structure:</p>
 <pre><code>[akaris@wks-akaris python]$ strace -e trace=network ./netlink.py 
 socket(AF_NETLINK, SOCK_RAW|SOCK_CLOEXEC, NETLINK_ROUTE) = 3
@@ -1365,7 +1352,6 @@ Netmask: 30
 IP:  b'\x04\x03\x02\x00'
 recvfrom(3, 
 </code></pre>
-
 <h3 id="resources_2">Resources</h3>
 <p><a href="https://en.wikipedia.org/wiki/Netlink">https://en.wikipedia.org/wiki/Netlink</a></p>
 <p><a href="https://tools.ietf.org/html/rfc3549">https://tools.ietf.org/html/rfc3549</a></p>

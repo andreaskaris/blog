@@ -1086,8 +1086,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1232,7 +1232,6 @@
 <p>Now that you have a good idea about this, let's look at how tcpdump compiles the following filter expression:</p>
 <pre><code>icmp
 </code></pre>
-
 <p>This will be straight forward:</p>
 <pre><code>[root@host ~]# tcpdump -i lo icmp -d
 (000) ldh      [12]
@@ -1242,7 +1241,6 @@
 (004) ret      #262144
 (005) ret      #0
 </code></pre>
-
 <p>We'd also expect this to be the same if we look at a file capture:</p>
 <pre><code>[root@host ~]# timeout 1 tcpdump -i lo -w lo.pcap
 dropped privs to tcpdump
@@ -1259,12 +1257,10 @@ reading from file lo.pcap, link-type EN10MB (Ethernet)
 (004) ret      #262144
 (005) ret      #0
 </code></pre>
-
 <p>So far, so good and straight forward. We look at byte 23 and check if the IP protocol number is 1. Before that, we check the ethernet header in byte 12 and make sure that we are using IP.</p>
 <p>But what happens if we use this expression?</p>
 <pre><code>vlan
 </code></pre>
-
 <p>We'd expect to look into byte 12 of the ethernet header and make sure that we have the ethertype for 802.1q there. So we'd want to see 0x8100 and if we look for Q-in-Q we'd look for 0x88A8 and for double tagging we'd also look for 0x9100:</p>
 <ul>
 <li><a href="https://en.wikipedia.org/wiki/EtherType">https://en.wikipedia.org/wiki/EtherType</a></li>
@@ -1279,7 +1275,6 @@ reading from file lo.pcap, link-type EN10MB (Ethernet)
 (004) ret      #262144
 (005) ret      #0
 </code></pre>
-
 <p>Now, let's look at a live capture from the loopback interface. We should expect the same expression:</p>
 <pre><code>[root@host ~]# tcpdump -i lo vlan -d
 (000) ldb      [-4048]
@@ -1291,7 +1286,6 @@ reading from file lo.pcap, link-type EN10MB (Ethernet)
 (006) ret      #262144
 (007) ret      #0
 </code></pre>
-
 <p>The expression is different now! Why is that? Well, the kernel has an internal optimization and will actually store VLAN information in a location with negative offset.</p>
 <p>The reason for this is that the kernel no longer passes vlan tag information as-is to libpcap. See <a href="https://bugs.launchpad.net/ubuntu/+source/tcpdump/+bug/1641429">https://bugs.launchpad.net/ubuntu/+source/tcpdump/+bug/1641429</a> for further details:</p>
 <pre><code>The kernel now longer passes vlan tag information as-is to libpcap, instead BPF needs to access ancillary data.
@@ -1301,7 +1295,6 @@ That is the reason &quot;vlan 114&quot; works (because it does the right thing),
 Offsets are negative because this is the way to access this ancillary data (like vlan tags) in the Linux kernel:
 https://github.com/torvalds/linux/blob/6f0d349d922ba44e4348a17a78ea51b7135965b1/include/uapi/linux/filter.h#L60
 </code></pre>
-
 <p>And see the kernel documentation as well: <a href="https://github.com/torvalds/linux/blob/7acac4b3196caee5e21fb5ea53f8bc124e6a16fc/include/uapi/linux/filter.h#L60">https://github.com/torvalds/linux/blob/7acac4b3196caee5e21fb5ea53f8bc124e6a16fc/include/uapi/linux/filter.h#L60</a>:</p>
 <pre><code>/* RATIONALE. Negative offsets are invalid in BPF.
    We use them to reference ancillary data.
@@ -1309,7 +1302,6 @@ https://github.com/torvalds/linux/blob/6f0d349d922ba44e4348a17a78ea51b7135965b1/
    existing compilers/optimizers.
  */
 </code></pre>
-
 <p>For example, let's look for VLAN 32 (0x20):</p>
 <pre><code>[root@host ~]# tcpdump -r lo.pcap vlan 32 -d
 reading from file lo.pcap, link-type EN10MB (Ethernet)
@@ -1323,7 +1315,6 @@ reading from file lo.pcap, link-type EN10MB (Ethernet)
 (007) ret      #262144
 (008) ret      #0
 </code></pre>
-
 <p>That, too, makes sense. But if we do a live capture, the logic becomes more complex:</p>
 <pre><code>[root@host ~]# tcpdump -i lo vlan 32 -d
 (000) ldb      [-4048]
@@ -1342,7 +1333,6 @@ reading from file lo.pcap, link-type EN10MB (Ethernet)
 (013) ret      #262144
 (014) ret      #0
 </code></pre>
-
 <p>As a conclusion:</p>
 <ul>
 <li>Data from a <code>.pcap</code> file is treated as if everything came directly from the wire, the offsets are the same as we'd see them on the physical layer</li>
@@ -1359,7 +1349,6 @@ reading from file lo.pcap, link-type EN10MB (Ethernet)
             RFileName = optarg;
             break;
 </code></pre>
-
 <p>Opening a file for reading:</p>
 <ul>
 <li><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2053">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2053</a></li>
@@ -1372,7 +1361,6 @@ reading from file lo.pcap, link-type EN10MB (Ethernet)
         pd = pcap_open_offline(RFileName, ebuf);
 #endif
 </code></pre>
-
 <p>If <code>-r</code> is not specified, then libpcap will listen on the interface instead:</p>
 <ul>
 <li><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2135">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2135</a></li>
@@ -1382,7 +1370,6 @@ reading from file lo.pcap, link-type EN10MB (Ethernet)
          */
         pd = open_interface(device, ndo, ebuf);
 </code></pre>
-
 <p>If a file was used as an input or an socket on a network interface determines how the BPF will be compiled. The the section above.</p>
 <p>The actual compilation of the user provided filter expression to BPF happens here:</p>
 <ul>
@@ -1391,7 +1378,6 @@ reading from file lo.pcap, link-type EN10MB (Ethernet)
 <pre><code>    if (pcap_compile(pd, &amp;fcode, cmdbuf, Oflag, netmask) &lt; 0)
         error(&quot;%s&quot;, pcap_geterr(pd));
 </code></pre>
-
 <p>If the <code>-d</code> parameter (and thus the <code>dflag</code>) is set, tcpdump will call libpcap's <code>bpf_dump</code> function to print the expression in one of three formats:</p>
 <ul>
 <li><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1600">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1600</a></li>
@@ -1400,7 +1386,6 @@ reading from file lo.pcap, link-type EN10MB (Ethernet)
             Dflag++;
             break;
 </code></pre>
-
 <ul>
 <li><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2240">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2240</a></li>
 </ul>
@@ -1412,7 +1397,6 @@ reading from file lo.pcap, link-type EN10MB (Ethernet)
         exit_tcpdump(S_SUCCESS);
     }
 </code></pre>
-
 <p>The different dump formats are explained in the man page:</p>
 <pre><code>man tcpdump
 (...)
@@ -1433,7 +1417,6 @@ reading from file lo.pcap, link-type EN10MB (Ethernet)
        -ddd   Dump packet-matching code as decimal numbers (preceded with a count).
 (...)
 </code></pre>
-
 <h3 id="building-a-filter-expression-compiler">Building a filter expression compiler</h3>
 <h4 id="documentation">Documentation</h4>
 <p>In order to build a filter expression compiler, we look at the source code:</p>
@@ -1449,7 +1432,6 @@ reading from file lo.pcap, link-type EN10MB (Ethernet)
 <pre><code>subscription-manager repos --enable=codeready-builder-for-rhel-8-x86_64-rpms 
 yum install libpcap-devel -y
 </code></pre>
-
 <h4 id="creating-the-code">Creating the code</h4>
 <p>Now, create the following code:</p>
 <pre><code>cat &lt;&lt;'EOF' &gt; libpcap_expression_compiler.c
@@ -1541,12 +1523,10 @@ int main(int argc, char **argv) {
 }
 EOF
 </code></pre>
-
 <h4 id="compiling-the-code">Compiling the code</h4>
 <p>And compile it:</p>
 <pre><code>gcc libpcap_expression_compiler.c -o libpcap_expression_compiler -lpcap
 </code></pre>
-
 <h4 id="using-the-tool">Using the tool</h4>
 <p>The tool will now produce the same output as tcpdump with the <code>-d</code>, <code>-dd</code> or <code>-ddd</code> flag set:</p>
 <pre><code># ./libpcap_expression_compiler vlan 32
@@ -1611,7 +1591,6 @@ Compiling expression 'vlan 32'
 
 15,48 0 0 4294963248,21 4 0 1,40 0 0 12,21 2 0 33024,21 1 0 34984,21 0 8 37120,48 0 0 4294963248,21 0 2 1,48 0 0 4294963244,5 0 0 1,40 0 0 14,84 0 0 4095,21 0 1 32,6 0 0 8192,6 0 0 0
 </code></pre>
-
 <p>Or let's create another filter expression, just as another example:</p>
 <pre><code># ./libpcap_expression_compiler host 127.0.0.254 and tcp and port 5353
 Compiling expression 'host 127.0.0.254 and tcp and port 5353'
@@ -1681,7 +1660,6 @@ Compiling expression 'host 127.0.0.254 and tcp and port 5353'
 
 17,40 0 0 12,21 0 14 2048,32 0 0 26,21 2 0 2130706686,32 0 0 30,21 0 10 2130706686,48 0 0 23,21 0 8 6,40 0 0 20,69 6 0 8191,177 0 0 14,72 0 0 14,21 2 0 5353,72 0 0 16,21 0 1 5353,6 0 0 8192,6 0 0 0
 </code></pre>
-
 <h2 id="bpf-bytecode">BPF Bytecode</h2>
 <ul>
 <li><a href="https://www.kernel.org/doc/Documentation/networking/filter.txt">https://www.kernel.org/doc/Documentation/networking/filter.txt</a></li>
@@ -1709,12 +1687,10 @@ Compiling expression 'host 127.0.0.254 and tcp and port 5353'
 (014) ret      #262144
 (015) ret      #0
 </code></pre>
-
 <p>You get the Bytecode with:</p>
 <pre><code># tcpdump -i lo -e -nn  &quot;tcp dst port 8080&quot; -ddd | tr '\n' ','
 16,40 0 0 12,21 0 4 34525,48 0 0 20,21 0 11 6,40 0 0 56,21 8 9 8080,21 0 8 2048,48 0 0 23,21 0 6 6,40 0 0 20,69 4 0 8191,177 0 0 14,72 0 0 16,21 0 1 8080,6 0 0 262144,6 0 0 0,
 </code></pre>
-
 <h4 id="tcpdump-with-explicit-offset-expression">tcpdump with explicit offset expression</h4>
 <p>Let's get a bit more fancy. In <code>test.pcap</code>, I captured a TCP request to port 8080. The hexdump looks as follows:</p>
 <pre><code># tcpdump -e -nn -r test.pcap -XX | tail -n 12
@@ -1733,11 +1709,9 @@ dropped privs to tcpdump
     0x0030:  0156 7630 0000 0101 080a c610 02a1 c610  .Vv0............
     0x0040:  02a1    
 </code></pre>
-
 <p>We want to identify all packets with a dst port of <code>8080</code> (or <code>0x1f90</code> in hex notation). Each visual block in the hexdump is a half word, or 16 bits. Offsets in tcpdump are specified in Bytes, and the dst port field is 2 Bytes in lenght. We are looking for the 18th half word, or Bytes 36 and 37. The tcpdump expression would hence be:</p>
 <pre><code>ether[36:2] == 0x1f90
 </code></pre>
-
 <p>Here's the result of the filter:</p>
 <pre><code># tcpdump -e -nn -r test.pcap ether[36:2] == 0x1f90
 reading from file test.pcap, link-type EN10MB (Ethernet)
@@ -1749,7 +1723,6 @@ dropped privs to tcpdump
 07:03:36.901122 00:00:00:00:00:00 &gt; 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 66: 192.168.122.92.36166 &gt; 192.168.122.92.8080: Flags [.], ack 1992, win 1373, options [nop,nop,TS val 3322938017 ecr 3322938016], length 0
 07:03:36.901256 00:00:00:00:00:00 &gt; 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 66: 192.168.122.92.36166 &gt; 192.168.122.92.8080: Flags [F.], seq 83, ack 1993, win 1373, options [nop,nop,TS val 3322938017 ecr 3322938017], length 0
 </code></pre>
-
 <p>And the compiled expression:</p>
 <pre><code># tcpdump -e -nn -i lo ether[36:2] == 0x1f90 -d
 (000) ldh      [36]
@@ -1759,7 +1732,6 @@ dropped privs to tcpdump
 # tcpdump -e -nn -i lo ether[36:2] == 0x1f90 -ddd | tr '\n' ','
 4,40 0 0 36,21 0 1 8080,6 0 0 262144,6 0 0 0,
 </code></pre>
-
 <h4 id="using-bpf-asm-like-code">Using BPF asm-like code</h4>
 <h5 id="compiling-helper-binaries">Compiling helper binaries</h5>
 <p>First, you will need the bpf_asm binary from the kernel source code. </p>
@@ -1772,7 +1744,6 @@ yum install elfutils-libelf-devel -y
 yum install clang -y
 yum install llvm -y
 </code></pre>
-
 <p>Get the kernel source code on RHEL / CentOS:</p>
 <pre><code>mkdir -p kernel/src
 cd kernel/
@@ -1780,7 +1751,6 @@ yumdownloader --source kernel
 cp kernel-*.src.rpm src/ ; cd src ; rpm2cpio kernel-*.src.rpm | cpio -idmv
 tar -xf linux-*.tar.xz
 </code></pre>
-
 <p>Compile the BPF toolset:</p>
 <pre><code>cd $(find . -path '*tools/bpf')
 make all
@@ -1789,7 +1759,6 @@ cp bpf_dbg /usr/local/bin/.
 cp bpf_jit_disasm /usr/local/bin/.
 cp bpftool/bpftool /usr/local/bin/.
 </code></pre>
-
 <h5 id="building-byte-code">Building Byte code</h5>
 <p>Now, create the following ASM like code:</p>
 <pre><code># cat test.bpf 
@@ -1800,17 +1769,14 @@ cp bpftool/bpftool /usr/local/bin/.
 lb_1:
      ret #0
 </code></pre>
-
 <p>And compile it with:</p>
 <pre><code># bpf_asm test.bpf 
 4,40 0 0 36,21 0 1 8080,6 0 0 1,6 0 0 0,
 </code></pre>
-
 <p>Compare this to the earlier output of <code>tcpdump -ddd</code>:</p>
 <pre><code># tcpdump -e -nn -i lo ether[36:2] == 0x1f90 -ddd | tr '\n' ','
 4,40 0 0 36,21 0 1 8080,6 0 0 262144,6 0 0 0,
 </code></pre>
-
 <p>The only thing that's different here is the return code.</p>
 <p>For further details, see:</p>
 <ul>
@@ -1881,16 +1847,13 @@ int main(int argc, char **argv)
 }
 EOF
 </code></pre>
-
 <p>Compile this with:</p>
 <pre><code>gcc nbpf_compile.c -o nbpf_compile -lpcap
 </code></pre>
-
 <p>Now, run this:</p>
 <pre><code># ./nbpf_compile RAW 'tcp port 8080'
 23,48 0 0 0,84 0 0 240,21 0 6 96,48 0 0 6,21 0 17 6,40 0 0 40,21 14 0 8080,40 0 0 42,21 12 13 8080,48 0 0 0,84 0 0 240,21 0 10 64,48 0 0 9,21 0 8 6,40 0 0 6,69 6 0 8191,177 0 0 0,72 0 0 0,21 2 0 8080,72 0 0 2,21 0 1 8080,6 0 0 65535,6 0 0 0
 </code></pre>
-
 <p>Compare this to the tcpdump output which will not work:</p>
 <pre><code># tcpdump -r  test.pcap -d tcp port 8080 -ddd | tr '\n' ' '
 reading from file test.pcap, link-type EN10MB (Ethernet)
@@ -1898,11 +1861,9 @@ reading from file test.pcap, link-type EN10MB (Ethernet)
 # tcpdump -i lo  -d tcp port 8080 -ddd | tr '\n' ' '
 20 40 0 0 12 21 0 6 34525 48 0 0 20 21 0 15 6 40 0 0 54 21 12 0 8080 40 0 0 56 21 10 11 8080 21 0 10 2048 48 0 0 23 21 0 8 6 40 0 0 20 69 6 0 8191 177 0 0 14 72 0 0 14 21 2 0 8080 72 0 0 16 21 0 1 8080 6 0 0 262144 6 0 0 0
 </code></pre>
-
 <p>And also run a little web server for the sake of this test:</p>
 <pre><code>#  python3 -m http.server 8080 &amp;
 </code></pre>
-
 <p>Run curl against the web server just to check that it's serving documents and can be reached:</p>
 <pre><code># curl 192.168.122.92:8080 -I
 HTTP/1.0 200 OK
@@ -1911,11 +1872,9 @@ Date: Fri, 26 Mar 2021 15:46:30 GMT
 Content-type: text/html; charset=utf-8
 Content-Length: 2272
 </code></pre>
-
 <p>Now, let's create an iptables rule that will match on the Byte code and apply it:</p>
 <pre><code># iptables -I INPUT -m bpf --bytecode &quot;23,48 0 0 0,84 0 0 240,21 0 6 96,48 0 0 6,21 0 17 6,40 0 0 40,21 14 0 8080,40 0 0 42,21 12 13 8080,48 0 0 0,84 0 0 240,21 0 10 64,48 0 0 9,21 0 8 6,40 0 0 6,69 6 0 8191,177 0 0 0,72 0 0 0,21 2 0 8080,72 0 0 2,21 0 1 8080,6 0 0 65535,6 0 0 0&quot; --j REJECT
 </code></pre>
-
 <blockquote>
 <p>This <em>must</em> be from <code>nbpf_compile</code>!</p>
 </blockquote>
@@ -1923,7 +1882,6 @@ Content-Length: 2272
 <pre><code># curl 192.168.122.92:8080 -I
 curl: (7) Failed connect to 192.168.122.92:8080; Connection refused
 </code></pre>
-
 <p>And we can see that this rule here was matched:</p>
 <pre><code># iptables -L INPUT -nv
 Chain INPUT (policy ACCEPT 0 packets, 0 bytes)

@@ -996,8 +996,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1152,14 +1152,12 @@
 <pre><code># oc adm policy add-scc-to-user anyuid -z default
 scc &quot;anyuid&quot; added to: [&quot;system:serviceaccount:default:default&quot;]
 </code></pre>
-
 <h3 id="openshift-httpbin-with-tshark-sidecar">OpenShift httpbin with tshark sidecar</h3>
 <p>The following allows us to see any incoming requests to httpbin but to filter out httpbin's answers.</p>
 <p>Prerequisites:</p>
 <pre><code># oc adm policy add-scc-to-user anyuid -z default
 scc &quot;anyuid&quot; added to: [&quot;system:serviceaccount:default:default&quot;]
 </code></pre>
-
 <p>Create file <code>httpbin.yaml</code>:</p>
 <pre><code>apiVersion: route.openshift.io/v1
 kind: Route
@@ -1237,11 +1235,9 @@ spec:
         - &quot;--access-logformat&quot;
         - &quot;'%(h)s %(t)s %(r)s %(s)s Host: %({Host}i)s} Header-i: %({Header}i)s Header-o: %({Header}o)s'&quot;
 </code></pre>
-
 <p>Apply config:</p>
 <pre><code>oc apply -f httpbin.yaml 
 </code></pre>
-
 <p>Get the pod name and loolk at the pod's logs for container <code>tshark</code>:</p>
 <pre><code>[root@master-0 ~]# oc get pods -l app=httpbin-pod
 NAME                               READY     STATUS    RESTARTS   AGE
@@ -1345,7 +1341,6 @@ Hypertext Transfer Protocol
         Request URI: /post
         Request Version: HTTP/1.1
 </code></pre>
-
 <h3 id="configuring-alertmanager-to-send-webhooks-to-httpbin-pod">Configuring Alertmanager to send webhooks to httpbin pod</h3>
 <p>Prerequisites:
 * https://docs.openshift.com/container-platform/3.11/install_config/prometheus_cluster_monitoring.html</p>
@@ -1353,7 +1348,6 @@ Hypertext Transfer Protocol
 <pre><code>$ oc adm policy add-cluster-role-to-user cluster-monitoring-view myuser
 cluster role &quot;cluster-monitoring-view&quot; added: &quot;myuser&quot;
 </code></pre>
-
 <p>We can use the above to tell alertmanager to use httpbin as its web hook:</p>
 <pre><code>$ oc get routes -n openshift-monitoring
 NAME                HOST/PORT                                                                     PATH      SERVICES            PORT      TERMINATION   WILDCARD
@@ -1361,11 +1355,9 @@ alertmanager-main   alertmanager-main-openshift-monitoring.apps.akaris2.lab.pnq2
 grafana             grafana-openshift-monitoring.apps.akaris2.lab.pnq2.cee.redhat.com                       grafana             https     reencrypt     None
 prometheus-k8s      prometheus-k8s-openshift-monitoring.apps.akaris2.lab.pnq2.cee.redhat.com                prometheus-k8s      web       reencrypt     None
 </code></pre>
-
 <p>Now, access:</p>
 <pre><code>https://alertmanager-main-openshift-monitoring.apps.akaris2.lab.pnq2.cee.redhat.com
 </code></pre>
-
 <p>The status page will show the current alertmanager configuration.</p>
 <p>The following Red Hat knowledge base solution shows how to update the alertmanager config: https://access.redhat.com/solutions/3804781</p>
 <p>Create file: <code>~/group_vars/OSEv3.yml</code>:</p>
@@ -1406,11 +1398,9 @@ prometheus-k8s      prometheus-k8s-openshift-monitoring.apps.akaris2.lab.pnq2.ce
     webhook_configs:
       - url: &quot;http://httpbin.apps.akaris2.lab.pnq2.cee.redhat.com/anything&quot;
 </code></pre>
-
 <p>And run:</p>
 <pre><code>ansible-playbook -i hosts openshift-ansible/playbooks/openshift-monitoring/config.yml -e=&quot;openshift_cluster_monitoring_operator_install=true&quot;
 </code></pre>
-
 <p>Verify:</p>
 <pre><code>$ oc get secret -n openshift-monitoring alertmanager-main -o yaml | awk '/alertmanager.yaml:/ {print $NF}' | base64 -d
 global:
@@ -1449,14 +1439,12 @@ receivers:
   webhook_configs:
     - url: &quot;http://httpbin.apps.akaris2.lab.pnq2.cee.redhat.com/anything&quot;
 </code></pre>
-
 <p>Restart pods:</p>
 <pre><code>$ oc delete pods --selector=app=alertmanager -n openshift-monitoring
 pod &quot;alertmanager-main-0&quot; deleted
 pod &quot;alertmanager-main-1&quot; deleted
 pod &quot;alertmanager-main-2&quot; deleted
 </code></pre>
-
 <p>And check in the web interface of alertmanager to make sure that the new configuration shows up.</p>
 <h3 id="loading-the-cluster">Loading the cluster</h3>
 <p>An easy way to generate an alert in a small lab is to trigger alert <code>KubeletTooManyPods</code>. Go to prometheus and check its configuration:</p>
@@ -1470,7 +1458,6 @@ annotations:
   message: Kubelet {{ $labels.instance }} is running {{ $value }} Pods, close to the
     limit of 250.
 </code></pre>
-
 <p>Then, create the following busybox deployment with a number of pods that exceeds this number, e.g.:
 <code>busybox.yaml</code>:</p>
 <pre><code>apiVersion: apps/v1
@@ -1497,10 +1484,8 @@ spec:
           - infinity
         imagePullPolicy: IfNotPresent
 </code></pre>
-
 <pre><code>oc apply -f busybox.yaml
 </code></pre>
-
 <p>The cluster will need some time to create those pods and it'll take 15 minutes for the alarm to fire. So take a coffee and come back later. Once the alarm fires in prometheus, go to alertmanager and make sure that it shows there, too.</p>
 <p>Among others, Alertmanager should show:</p>
 <pre><code>alertname=&quot;KubeletTooManyPods&quot;
@@ -1509,14 +1494,12 @@ message:    Kubelet 10.74.176.204:10250 is running 250 Pods, close to the limit 
 severity=&quot;warning&quot;
 service=&quot;kubelet&quot;prometheus=&quot;openshift-monitoring/k8s&quot;namespace=&quot;kube-system&quot;job=&quot;kubelet&quot;instance=&quot;10.74.176.204:10250&quot;endpoint=&quot;https-metrics&quot;
 </code></pre>
-
 <p>Now, it's time to go back to the httpbin pod.</p>
 <h3 id="monitoring-incoming-webhook-reuests">Monitoring incoming webhook reuests</h3>
 <p>Get the pod name:</p>
 <pre><code># oc get pods | grep httpbin
 httpbin-deploymentconfig-8-8crvh     2/2       Running   0          1h
 </code></pre>
-
 <p>And check the logs of the tshark container which will show a verbose packet capture of HTTP with a destination port of 80 (so we are not capturing the response):</p>
 <pre><code># oc logs httpbin-deploymentconfig-8-8crvh -c tshark | tail -n 400
 (...)

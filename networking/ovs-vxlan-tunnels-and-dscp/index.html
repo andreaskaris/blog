@@ -1017,8 +1017,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1157,11 +1157,9 @@
 <pre><code>yum install openvswitch -y
 systemctl enable --now openvswitch
 </code></pre>
-
 <pre><code>[root@ovs-tunnel-test-1 ~]# ovs-vsctl show | grep version
     ovs_version: &quot;2.13.0&quot;
 </code></pre>
-
 <h2 id="setup">Setup</h2>
 <ul>
 <li>node A</li>
@@ -1178,7 +1176,6 @@ ip -n private link set dev veth-guest up
 ip -n private link set dev lo up
 ip -n private a a dev veth-guest 192.168.123.1/24
 </code></pre>
-
 <ul>
 <li>node B</li>
 </ul>
@@ -1194,7 +1191,6 @@ ip -n private link set dev veth-guest up
 ip -n private link set dev lo up
 ip -n private a a dev veth-guest 192.168.123.2/24
 </code></pre>
-
 <h2 id="only-setting-the-ecn-bits-to-ect0-tos-0x2">Only setting the ECN bits to ECT(0) - ToS 0x2</h2>
 <pre><code>[root@ovs-tunnel-test-1 ~]# ip netns exec private ping 192.168.123.2 -c1 -W1 -Q 0x2
 PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
@@ -1205,7 +1201,6 @@ PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
 rtt min/avg/max/mdev = 2.513/2.513/2.513/0.000 ms
 [root@ovs-tunnel-test-1 ~]# 
 </code></pre>
-
 <pre><code>[root@ovs-tunnel-test-2 ~]# tshark -nn -i eth0 -O ip port vxlan
 Running as user &quot;root&quot; and group &quot;root&quot;. This could be dangerous.
 Capturing on 'eth0'
@@ -1299,7 +1294,6 @@ Internet Protocol Version 4, Src: 192.168.123.2, Dst: 192.168.123.1
     Destination: 192.168.123.1
 Internet Control Message Protocol
 </code></pre>
-
 <h2 id="expedited-forwarding-and-ect0-tos-0xba">Expedited forwarding and ECT(0) - ToS 0xba</h2>
 <pre><code>[root@ovs-tunnel-test-1 ~]# ip netns exec private ping 192.168.123.2 -c1 -W1 -Q 0xba
 PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
@@ -1311,7 +1305,6 @@ rtt min/avg/max/mdev = 1.471/1.471/1.471/0.000 ms
 [root@ovs-tunnel-test-1 ~]# ^C
 [root@ovs-tunnel-test-1 ~]# 
 </code></pre>
-
 <pre><code>[root@ovs-tunnel-test-2 ~]# tshark -nn -i eth0 -O ip port vxlan
 Running as user &quot;root&quot; and group &quot;root&quot;. This could be dangerous.
 Capturing on 'eth0'
@@ -1407,7 +1400,6 @@ Internet Control Message Protocol
 
 ^C2 packets captured
 </code></pre>
-
 <h2 id="tos-0xba-with-tos-inherit">ToS 0xba with tos = inherit</h2>
 <ul>
 <li><code>0xba</code> = <code>EF</code> with ECN bits set to <code>10</code></li>
@@ -1420,7 +1412,6 @@ Prior to its deprecation, the Type of Service field was defined as follows from 
 7   6   5   4   3   2   1   0
 Precedence  Type of Service     Unused (0)
 </code></pre>
-
 <ul>
 <li><a href="http://www.openvswitch.org/support/dist-docs/ovs-vswitchd.conf.db.5.txt">http://www.openvswitch.org/support/dist-docs/ovs-vswitchd.conf.db.5.txt</a></li>
 </ul>
@@ -1432,11 +1423,9 @@ Precedence  Type of Service     Unused (0)
               (otherwise  it  will be 0). The ECN fields are always inherited.
               Default is 0.
 </code></pre>
-
 <p>Run this on both hosts:</p>
 <pre><code>ovs-vsctl set interface vxlan0 options:tos=inherit
 </code></pre>
-
 <pre><code>[root@ovs-tunnel-test-1 ~]# ip netns exec private ping 192.168.123.2 -c1 -W1 -Q 0xba
 PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
 64 bytes from 192.168.123.2: icmp_seq=1 ttl=64 time=2.49 ms
@@ -1446,7 +1435,6 @@ PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
 rtt min/avg/max/mdev = 2.486/2.486/2.486/0.000 ms
 [root@ovs-tunnel-test-1 ~]# 
 </code></pre>
-
 <pre><code>[root@ovs-tunnel-test-2 ~]# tshark -nn -i eth0 -O ip port vxlan
 Running as user &quot;root&quot; and group &quot;root&quot;. This could be dangerous.
 Capturing on 'eth0'
@@ -1540,7 +1528,6 @@ Internet Protocol Version 4, Src: 192.168.123.2, Dst: 192.168.123.1
     Destination: 192.168.123.1
 Internet Control Message Protocol
 </code></pre>
-
 <h2 id="force-a-specific-tos-value-to-the-outer-header">Force a specific ToS value to the outer header</h2>
 <p>Valid values for the ToS only manipulate the legacy type of service field and leave the legacy IP precedence and ECN fields at 0:</p>
 <pre><code>000 111 00 - 0x1c
@@ -1552,12 +1539,10 @@ Internet Control Message Protocol
 000 001 00 - 0x4
 000 000 00 - 0x0
 </code></pre>
-
 <p><code>AF41</code> is ToS <code>0x22</code> - this is not in the aforementioned list and hence all bits will be set to 0.</p>
 <p>Run on both hosts:</p>
 <pre><code>ovs-vsctl set interface vxlan0 options:tos=0x22
 </code></pre>
-
 <p>Verify - note that this marks down the class to 000000. 0x22 is an invalid value??? Perhaps???</p>
 <pre><code>[root@ovs-tunnel-test-1 ~]# ip netns exec private ping 192.168.123.2 -c1 -W1 -Q 0xba
 PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
@@ -1568,7 +1553,6 @@ PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
 rtt min/avg/max/mdev = 1.103/1.103/1.103/0.000 ms
 [root@ovs-tunnel-test-1 ~]# 
 </code></pre>
-
 <pre><code>[root@ovs-tunnel-test-2 ~]# tshark -nn -i eth0 -O ip port vxlan
 Running as user &quot;root&quot; and group &quot;root&quot;. This could be dangerous.
 Capturing on 'eth0'
@@ -1662,11 +1646,9 @@ Internet Protocol Version 4, Src: 192.168.123.2, Dst: 192.168.123.1
     Destination: 192.168.123.1
 Internet Control Message Protocol
 </code></pre>
-
 <p>Here is a valid test - on both nodes, set:</p>
 <pre><code>ovs-vsctl set interface vxlan0 options:tos=0xc
 </code></pre>
-
 <pre><code>[root@ovs-tunnel-test-1 ~]# ip netns exec private ping 192.168.123.2 -c1 -W1 -Q 0xba
 PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
 64 bytes from 192.168.123.2: icmp_seq=1 ttl=64 time=2.77 ms
@@ -1675,7 +1657,6 @@ PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
 1 packets transmitted, 1 received, 0% packet loss, time 0ms
 rtt min/avg/max/mdev = 2.774/2.774/2.774/0.000 ms
 </code></pre>
-
 <pre><code>[root@ovs-tunnel-test-2 ~]# tshark -nn -i eth0 -O ip port vxlan
 Running as user &quot;root&quot; and group &quot;root&quot;. This could be dangerous.
 Capturing on 'eth0'
@@ -1771,7 +1752,6 @@ Internet Control Message Protocol
 
 2 packets captured
 </code></pre>
-
 <h3 id="further-troubleshooting">Further troubleshooting</h3>
 <pre><code>    [root@ovs-tunnel-test-1 ~]# ovs-vsctl set interface vxlan0 options:tos=0xb8
     [root@ovs-tunnel-test-1 ~]# systemctl restart openvswitch
@@ -1831,7 +1811,6 @@ Internet Control Message Protocol
     recirc_id(0),in_port(3),eth(src=56:13:a0:be:1f:f4,dst=16:28:3c:ba:5b:13),eth_type(0x0806), packets:1, bytes:42, used:8.951s, actions:set(tunnel(dst=192.168.122.41,tos=0xb8,ttl=64,tp_dst=4789,flags(df))),2
     [root@ovs-tunnel-test-2 ~]#
 </code></pre>
-
 <h3 id="test-with-rhel-77">Test with RHEL 7.7</h3>
 <p>The restart is only to reset the dpctl flows. Not necessary to apply the change. In RHEL 7.7, the first 3 bits are set correctly.</p>
 <pre><code>[root@ovs-tunnel-test-1 ~]# ovs-vsctl set interface vxlan0 options:tos=inherit
@@ -1851,7 +1830,6 @@ recirc_id(0),tunnel(tun_id=0x0,src=192.168.122.175,dst=192.168.122.42,tos=0xba,f
 recirc_id(0),in_port(3),eth(src=fe:61:62:0e:3b:65,dst=56:73:90:10:20:5f),eth_type(0x0806), packets:0, bytes:0, used:never, actions:set(tunnel(dst=192.168.122.175,ttl=64,tp_dst=4789,flags(df))),2
 [root@ovs-tunnel-test-1 ~]# 
 </code></pre>
-
 <pre><code>[root@ovs-tunnel-test-2 ~]# ovs-vsctl set interface vxlan0 options:tos=inherit
 [root@ovs-tunnel-test-2 ~]# systemctl restart openvswitch
 (reverse-i-search)`t': systemctl restart openvswi^Ch
@@ -1882,7 +1860,6 @@ recirc_id(0),tunnel(tun_id=0x0,src=192.168.122.42,dst=192.168.122.175,flags(-df-
 recirc_id(0),in_port(3),eth(src=56:73:90:10:20:5f,dst=fe:61:62:0e:3b:65),eth_type(0x0800),ipv4(tos=0xba,frag=no), packets:0, bytes:0, used:never, actions:set(tunnel(dst=192.168.122.42,tos=0xba,ttl=64,tp_dst=4789,flags(df))),2
 [root@ovs-tunnel-test-2 ~]# 
 </code></pre>
-
 <p>And explicitly setting this, e.g. to 1111 1100:</p>
 <pre><code>[root@ovs-tunnel-test-1 ~]# systemctl restart openvswitch
 [root@ovs-tunnel-test-1 ~]# ovs-vsctl set interface vxlan0 options:tos=0xfc
@@ -1899,7 +1876,6 @@ recirc_id(0),in_port(3),eth(src=fe:61:62:0e:3b:65,dst=56:73:90:10:20:5f),eth_typ
 recirc_id(0),tunnel(tun_id=0x0,src=192.168.122.175,dst=192.168.122.42,tos=0xfe,flags(-df-csum+key)),in_port(2),eth(src=56:73:90:10:20:5f,dst=fe:61:62:0e:3b:65),eth_type(0x0800),ipv4(frag=no), packets:0, bytes:0, used:never, actions:3
 [root@ovs-tunnel-test-1 ~]# 
 </code></pre>
-
 <pre><code>[root@ovs-tunnel-test-2 ~]# systemctl restart openvswitch
 [root@ovs-tunnel-test-2 ~]# ovs-vsctl set interface vxlan0 options:tos=0xfc
 [root@ovs-tunnel-test-2 ~]# tshark -nn -i eth0 -O ip port 4789 | egrep 'Frame|Differentiated Services|Explicit Congestion Notification'
@@ -1927,7 +1903,6 @@ recirc_id(0),in_port(3),eth(src=56:73:90:10:20:5f,dst=fe:61:62:0e:3b:65),eth_typ
 recirc_id(0),tunnel(tun_id=0x0,src=192.168.122.42,dst=192.168.122.175,tos=0xfc,flags(-df-csum+key)),in_port(2),eth(src=fe:61:62:0e:3b:65,dst=56:73:90:10:20:5f),eth_type(0x0806), packets:0, bytes:0, used:never, actions:3
 [root@ovs-tunnel-test-2 ~]# 
 </code></pre>
-
 <p>The outer header is correctly set to 1111 1110.</p>
 <h2 id="bug">BUG</h2>
 <p>My tests were affected by: <a href="https://bugzilla.redhat.com/show_bug.cgi?id=1862166">https://bugzilla.redhat.com/show_bug.cgi?id=1862166</a></p>
@@ -1947,7 +1922,6 @@ recirc_id(0),tunnel(tun_id=0x0,src=192.168.122.42,dst=192.168.122.175,tos=0xfc,f
         }
     }
 </code></pre>
-
 <h2 id="resources">Resources</h2>
 <ul>
 <li><a href="https://www.tucny.com/Home/dscp-tos">https://www.tucny.com/Home/dscp-tos</a></li>

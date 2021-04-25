@@ -996,8 +996,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1135,7 +1135,6 @@
 <p>After creating a virtual machine that will serve as a registry, install podman and httpd-tools:</p>
 <pre><code>[root@mirror ~]# sudo yum -y install podman httpd-tools
 </code></pre>
-
 <h4 id="generating-certificate-authority-and-registry-certificates">Generating certificate authority and registry certificates</h4>
 <p>Now, generate a self-signed CA:</p>
 <pre><code>[root@mirror ~]# mkdir CA
@@ -1149,12 +1148,10 @@ total 8
 -rw-r--r--. 1 root root 1960 Feb  3 09:47 rootCA.crt
 -rw-r--r--. 1 root root 3311 Feb  3 09:45 rootCA.key
 </code></pre>
-
 <p>Trust this rootCA on the mirror registry node and on the node where you are running the OpenShift installer:</p>
 <pre><code>sudo cp rootCA.crt  /etc/pki/ca-trust/source/anchors/
 sudo update-ca-trust extract
 </code></pre>
-
 <p>Create a certificate signing request:</p>
 <pre><code>mkdir certificates
 cd certificates
@@ -1187,12 +1184,10 @@ EOF
 openssl genrsa -out domain.key 4096
 openssl req -new -key domain.key -nodes -out domain.csr -config config
 </code></pre>
-
 <p>Verify the CSR:</p>
 <pre><code>[root@mirror certificates]#  openssl req -in domain.csr -noout -text | grep -i dns
                 DNS:192.0.2.100, IP Address:192.0.2.100, DNS:192.0.3.100, IP Address:192.0.3.100
 </code></pre>
-
 <p>Sign your certificate with the rootCA key and force the SAN entries:</p>
 <pre><code>[root@mirror certificates]# openssl x509 -req -in domain.csr -CA ../rootCA.crt -CAkey ../rootCA.key -CAcreateserial -out domain.crt -days 3650 -sha256 -extensions v3_req -extfile config 
 Signature ok
@@ -1200,7 +1195,6 @@ subject=C = DE, ST = NRW, L = Dusseldorf, O = Acme Inc., CN = 192.0.2.100, email
 Getting CA Private Key
 Enter pass phrase for ../rootCA.key:
 </code></pre>
-
 <p>See:</p>
 <ul>
 <li>
@@ -1216,28 +1210,23 @@ Enter pass phrase for ../rootCA.key:
 [root@mirror certificates]# openssl verify -verbose domain.crt
 domain.crt: OK
 </code></pre>
-
 <p>In case of issues with certificate verification, verify the cert directly against the root CA file to determine the failure domain:</p>
 <pre><code>[root@mirror certificates]# openssl verify -CAfile ../rootCA.crt domain.crt 
 domain.crt: OK
 </code></pre>
-
 <p>Generate directories for the registry:</p>
 <pre><code>sudo mkdir -p /opt/registry/{auth,certs,data}
 </code></pre>
-
 <p>Copy the certificate into /opt/registry/certs as described in the documentation:</p>
 <pre><code>sudo cp domain.key  /opt/registry/certs/
 sudo cp domain.crt  /opt/registry/certs/
 </code></pre>
-
 <h4 id="starting-the-registry">Starting the registry</h4>
 <p>You have 2 options here. Password protect your registry, or don't.</p>
 <h5 id="password-protection">Password protection</h5>
 <p>Generate a username and password and store in an htpasswd file for authentication with the registry, e.g. <code>root</code> / <code>password</code>:</p>
 <pre><code>sudo htpasswd -bBc /opt/registry/auth/htpasswd root password
 </code></pre>
-
 <p>Run the containter with:</p>
 <pre><code>sudo podman run --name mirror-registry \
   -p 5000:5000 -v /opt/registry/data:/var/lib/registry:z      \
@@ -1249,7 +1238,6 @@ sudo cp domain.crt  /opt/registry/certs/
   -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key      \
   -d docker.io/library/registry:2
 </code></pre>
-
 <h5 id="no-password-protection">No password protection</h5>
 <p>Simply run the containter with:</p>
 <pre><code>sudo podman run --name mirror-registry \
@@ -1259,7 +1247,6 @@ sudo cp domain.crt  /opt/registry/certs/
   -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key      \
   -d docker.io/library/registry:2
 </code></pre>
-
 <h5 id="generating-a-systemd-service-for-the-registry">Generating a systemd service for the registry</h5>
 <p>Generate a service file so that the container autostarts:</p>
 <pre><code>[root@kind certificates]# podman generate systemd --name mirror-registry &gt; /etc/systemd/system/mirror-registry-container.service
@@ -1268,7 +1255,6 @@ sudo cp domain.crt  /opt/registry/certs/
 Created symlink /etc/systemd/system/multi-user.target.wants/mirror-registry-container.service → /etc/systemd/system/mirror-registry-container.service.
 Created symlink /etc/systemd/system/default.target.wants/mirror-registry-container.service → /etc/systemd/system/mirror-registry-container.service.
 </code></pre>
-
 <h4 id="configuring-the-firewall">Configuring the firewall</h4>
 <p>Open the firewall with iptables or firewall-cmd as describe in the documentation. In my case, I'm not running a firewall so this step is not needed.</p>
 <h4 id="verification">Verification</h4>
@@ -1289,12 +1275,10 @@ Certificate chain
 Verification: OK
 (...)
 </code></pre>
-
 <p>And make sure that curl does not report an issue:</p>
 <pre><code>[root@mirror certificates]# curl -u root:password https://192.0.2.100:5000/v2/_catalog
 {&quot;repositories&quot;:[]}
 </code></pre>
-
 <p>If using a separate installation server, make sure that the same verification works from there.</p>
                 
                   

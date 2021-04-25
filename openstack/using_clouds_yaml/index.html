@@ -901,8 +901,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1129,11 +1129,9 @@ Then, click on "Download OpenStack RC File" and select to download the "clouds.y
 (...)
       password: VrcxVu7RmZAzpzKUaHmcMv22q
 </code></pre>
-
 <p>Test it with:</p>
 <pre><code>openstack --os-cloud &lt;cloud identifier&gt; token issue
 </code></pre>
-
 <h3 id="manually-creating-the-file">Manually creating the file</h3>
 <p>Use the following script:</p>
 <pre><code>#!/bin/bash
@@ -1157,7 +1155,6 @@ clouds:
     identity_api_version: $OS_IDENTITY_API_VERSION
 EOF
 </code></pre>
-
 <h4 id="further-details">Further details</h4>
 <p>Look at <code>overcloudrc</code>:</p>
 <pre><code>[stack@undercloud-0 ~]$ cat overcloudrc 
@@ -1187,11 +1184,9 @@ if [ -z &quot;${CLOUDPROMPT_ENABLED:-}&quot; ]; then
     export CLOUDPROMPT_ENABLED=1
 fi
 </code></pre>
-
 <p>Get the project id with:</p>
 <pre><code>openstack project list | grep $OS_PROJECT_NAME | awk '{print $2}'
 </code></pre>
-
 <p>Generate clouds.yaml with the above credentials. Adjust this to use the actual configuration and credentials as obtained from overcloudrc:</p>
 <pre><code>cat &lt;&lt;'EOF' &gt; clouds.yaml
 clouds:
@@ -1208,7 +1203,6 @@ clouds:
     identity_api_version: 3
 EOF
 </code></pre>
-
 <h2 id="using-cloudsyaml">Using clouds.yaml</h2>
 <p>With the <code>openstack</code> CLI, use clouds.yaml by providing <code>--os-cloud &lt;cloud identifier from YAML file&gt;</code>:</p>
 <pre><code>[stack@undercloud-0 ~]$ openstack --os-cloud openstack token issue

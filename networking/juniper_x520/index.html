@@ -968,8 +968,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1126,25 +1126,20 @@ JUNOS py-base-i386 [17.3R3-S4.2]
 JUNOS py-extensions-i386 [17.3R3-S4.2]
 JUNOS Host Software [17.3R3-S4.2]
 </code></pre>
-
 <h2 id="how-to-label-interfaces-on-a-juniper-switch-with-x520-cards">How to label interfaces on a Juniper switch with X520 cards</h2>
 <p>Enable console logging on the Juniper switch:</p>
 <pre><code>root@-sw02&gt; monitor start messages | match ifOperStatus
 </code></pre>
-
 <p>Disable console logging on the Juniper switch:</p>
 <pre><code>root@-sw02&gt; monitor stop messages
 </code></pre>
-
 <p>Flap server interface:</p>
 <pre><code>[root@02 ~]#  ethtool -r p1p3
 </code></pre>
-
 <p>This will log the following in the switch:</p>
 <pre><code>root@-sw02&gt; Aug  9 05:40:40  -sw02 mib2d[2112]: SNMP_TRAP_LINK_DOWN: ifIndex 521, ifAdminStatus up(1), ifOperStatus down(2), ifName xe-0/0/2
 Aug  9 05:40:40  -sw02 mib2d[2112]: SNMP_TRAP_LINK_UP: ifIndex 521, ifAdminStatus up(1), ifOperStatus up(1), ifName xe-0/0/2
 </code></pre>
-
 <p>Now, one can set an interface description:</p>
 <pre><code>root@-sw02&gt; edit     
 Entering configuration mode
@@ -1167,7 +1162,6 @@ xe-0/0/0        up    up   01 p1p3
 xe-0/0/1        up    up   01 p1p4
 xe-0/0/2        up    up   02 p1p3
 </code></pre>
-
 <h2 id="how-to-configure-interface-vlans">How to configure interface VLANs</h2>
 <h3 id="access-vlans">Access VLANs</h3>
 <pre><code>{master:0}[edit]
@@ -1178,7 +1172,6 @@ root@-sw02# commit
 {master:0}[edit]
 root@-sw02# exit
 </code></pre>
-
 <p>Verify:</p>
 <pre><code>{master:0}
 root@-sw02&gt; show vlans brief
@@ -1211,7 +1204,6 @@ default-switch          vlan259               259
 
 {master:0}
 </code></pre>
-
 <h3 id="trunks">Trunks</h3>
 <pre><code>root@-sw02&gt; edit
 Entering configuration mode
@@ -1270,7 +1262,6 @@ Exiting configuration mode
 
 {master:0}
 </code></pre>
-
 <p>Verification:</p>
 <pre><code>root@-sw02&gt; show vlans brief
 

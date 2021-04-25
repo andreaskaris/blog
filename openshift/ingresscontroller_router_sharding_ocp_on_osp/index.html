@@ -983,8 +983,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1127,7 +1127,6 @@
   endpointPublishingStrategy:
     type: LoadBalancerService
 </code></pre>
-
 <p>But it is also possible to keep the default <code>endpointPublishingStrategy</code>as <code>HostNetwork</code> and configure additional load balancers. This is a similar approach as chosen for vSphere deployments: <a href="https://docs.openshift.com/container-platform/4.3/installing/installing_vsphere/installing-vsphere.html">https://docs.openshift.com/container-platform/4.3/installing/installing_vsphere/installing-vsphere.html</a></p>
 <p>The following examples use 3 namespaces, <code>default</code>, <code>test1</code>, <code>test2</code>. Each namespace will be served by one IngressController. The environment hosts 3 worker nodes. Due to limitations of the <code>HostNetwork</code> strategy, each worker node can host exactly one IngressController's router instance. Meaning that the replica count for each controller needs to be set to 1 in an environment with 3 worker nodes.</p>
 <h2 id="prerequisites">Prerequisites</h2>
@@ -1148,13 +1147,11 @@ oc new-project test2
 oc label namespace test1 &quot;type=test1&quot;
 oc label namespace test2 &quot;type=test2&quot;
 </code></pre>
-
 <p>Create a label on each worker node to pin IngressController routers to a particular node:</p>
 <pre><code>oc label node cluster-7n7w9-worker-zpq85 &quot;ingressoperator=default&quot;
 oc label node cluster-7n7w9-worker-zpq84 &quot;ingressoperator=test1&quot;
 oc label node cluster-7n7w9-worker-zpq83 &quot;ingressoperator=test2&quot;
 </code></pre>
-
 <h2 id="configuring-ingresscontrollers">Configuring IngressControllers</h2>
 <p>Now, patch the default IngressController to force node selection and to make sure that it will not serve namespaces test1 and test2:</p>
 <p><code>operator-default-patch.yaml</code></p>
@@ -1172,11 +1169,9 @@ oc label node cluster-7n7w9-worker-zpq83 &quot;ingressoperator=test2&quot;
       matchLabels:
         ingressoperator: default
 </code></pre>
-
 <pre><code>oc project default
 oc patch -n openshift-ingress-operator ingresscontroller default --type=&quot;merge&quot; -p &quot;$(cat operator-default-patch.yaml)&quot;
 </code></pre>
-
 <p>Now, create IngressOperators for namespaces test1 and test2:</p>
 <p><code>operator-test1.yaml</code></p>
 <pre><code>apiVersion: v1
@@ -1206,7 +1201,6 @@ metadata:
   resourceVersion: &quot;&quot;
   selfLink: &quot;&quot;
 </code></pre>
-
 <p><code>operator-test2.yaml</code></p>
 <pre><code>apiVersion: v1
 items:
@@ -1232,15 +1226,12 @@ metadata:
   resourceVersion: &quot;&quot;
   selfLink: &quot;&quot;
 </code></pre>
-
 <pre><code>oc project test1
 oc apply -f operator-test1.yaml
 </code></pre>
-
 <pre><code>oc project test2
 oc apply -f operator-test2.yaml
 </code></pre>
-
 <p>Note that at this point, the default IngressController routing will be broken. OCP on OSP runs a keepalived service which can be on either of the worker nodes.
 Only one of the 3 IngressControllers will be served at this moment. We will change this in a moment.</p>
 <h2 id="creating-test-builds-and-services">Creating test builds and services</h2>
@@ -1261,7 +1252,6 @@ oc apply -f fh-test2-build.yaml
 oc start-build fh-test2-build --follow
 oc apply -f fh-test2-ingress.yaml
 </code></pre>
-
 <p><code>fh-build.yaml</code></p>
 <pre><code>apiVersion: image.openshift.io/v1
 kind: ImageStream
@@ -1323,7 +1313,6 @@ spec:
       name: fh:latest
 
 </code></pre>
-
 <p><code>fh-ingress.yaml</code></p>
 <pre><code>apiVersion: extensions/v1beta1
 kind: Ingress
@@ -1376,7 +1365,6 @@ spec:
         image: image-registry.openshift-image-registry.svc:5000/default/fh
         imagePullPolicy: Always
 </code></pre>
-
 <p><code>fh-test1-build.yaml</code></p>
 <pre><code>apiVersion: image.openshift.io/v1
 kind: ImageStream
@@ -1438,7 +1426,6 @@ spec:
       name: fh-test1:latest
 
 </code></pre>
-
 <p><code>fh-test1-ingress.yaml</code></p>
 <pre><code>apiVersion: extensions/v1beta1
 kind: Ingress
@@ -1491,7 +1478,6 @@ spec:
         image: image-registry.openshift-image-registry.svc:5000/test1/fh-test1
         imagePullPolicy: Always
 </code></pre>
-
 <p><code>fh-test2-build.yaml</code></p>
 <pre><code>apiVersion: image.openshift.io/v1
 kind: ImageStream
@@ -1553,7 +1539,6 @@ spec:
       name: fh-test2:latest
 
 </code></pre>
-
 <p><code>fh-test2-ingress.yaml</code></p>
 <pre><code>apiVersion: extensions/v1beta1
 kind: Ingress
@@ -1606,7 +1591,6 @@ spec:
         image: image-registry.openshift-image-registry.svc:5000/test2/fh-test2
         imagePullPolicy: Always
 </code></pre>
-
 <h2 id="configuring-octavia-loadbalancers-for-server-ingresscontrollers">Configuring Octavia loadbalancers for server IngressControllers</h2>
 <p>Instead of using the default keepalived VIP, we are going to create one Octavia loadbalancer per IngressController:</p>
 <pre><code>(overcloud) [stack@undercloud-0 ~]$ openstack server list
@@ -2006,7 +1990,6 @@ l(overcloud) [stack@undercloud-0 ~]$ openstack floating ip list
 +--------------------------------------+------+----------------------------------+---------------------+-------------+---------------+------------------+--------+
 (overcloud) [stack@undercloud-0 ~]$ curl ^C
 </code></pre>
-
 <p>Once this is done, update your DNS entries. In this lab case, I'm simply changing <code>/etc/hosts</code>:</p>
 <pre><code>(overcloud) [stack@undercloud-0 ~]$ cat /etc/hosts
 127.0.0.1   undercloud-0.redhat.local undercloud-0
@@ -2024,7 +2007,6 @@ l(overcloud) [stack@undercloud-0 ~]$ openstack floating ip list
 172.16.0.204 fh.test1.cluster.example.com
 172.16.0.217 fh.test2.cluster.example.com
 </code></pre>
-
 <h2 id="testing">Testing</h2>
 <p>This should now work:</p>
 <pre><code>(overcloud) [stack@undercloud-0 ~]$ curl fh.apps.cluster.example.com

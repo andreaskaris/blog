@@ -912,8 +912,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1058,7 +1058,6 @@
 ● No state transitions are allowed from these states to another 
 state.
 </code></pre>
-
 <p>This means that if an ARP entry ends up in <code>NUD_NOARP</code>, it will not time out, update or change in any way. 
 An administrator needs to delete the ARP entry for ARP resolution to work again properly for the IP.</p>
 <p>List NOARP entries:</p>
@@ -1096,7 +1095,6 @@ ff02::1:ffb7:7124 dev vxlan_sys_4789 lladdr 33:33:ff:b7:71:24 NOARP
 ff02::2 dev vlan903 lladdr 33:33:00:00:00:02 NOARP
 ff02::1:ff54:bc0d dev lx-bond0 lladdr 33:33:ff:54:bc:0d NOARP
 </code></pre>
-
 <h2 id="per-interface">Per interface</h2>
 <p>ARP can be disabled globally on a per interface basis. 
 This may be useful e.g. when using some failover / redundancy solution implemented in user space:</p>
@@ -1120,13 +1118,11 @@ PING 192.168.123.11 (192.168.123.11) 56(84) bytes of data.
 --- 192.168.123.11 ping statistics ---
 2 packets transmitted, 0 received, 100% packet loss, time 1001ms
 </code></pre>
-
 <p>The interface will show <code>NOARP</code>:</p>
 <pre><code>[root@overcloud-novacomputeiha-0 ~]# ip link ls dev lx-bond0.905
 31: lx-bond0.905@lx-bond0: &lt;BROADCAST,MULTICAST,NOARP,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
     link/ether fe:b8:03:54:bc:0d brd ff:ff:ff:ff:ff:ff
 </code></pre>
-
 <p>This also means that the opposite side cannot resolve the IP address:</p>
 <pre><code>[root@overcloud-novacomputeiha-0 ~]# ip netns exec test2 ping 192.168.123.10
 PING 192.168.123.10 (192.168.123.10) 56(84) bytes of data.
@@ -1139,7 +1135,6 @@ PING 192.168.123.10 (192.168.123.10) 56(84) bytes of data.
 192.168.123.10                   (incomplete)                              veth2
 [root@overcloud-novacomputeiha-0 ~]# 
 </code></pre>
-
 <h2 id="per-arp-entry">Per ARP entry</h2>
 <p>Let's set NOARP for 192.168.123.11:</p>
 <pre><code>[root@overcloud-novacomputeiha-0 ~]# ip neigh ls | grep 192.168.123
@@ -1156,7 +1151,6 @@ PING 192.168.123.11 (192.168.123.11) 56(84) bytes of data.
 1 packets transmitted, 1 received, 0% packet loss, time 0ms
 rtt min/avg/max/mdev = 0.344/0.344/0.344/0.000 ms
 </code></pre>
-
 <p>Note that flipping the state for the interface resets the NOARP entry for the neighbor:</p>
 <pre><code>[root@overcloud-novacomputeiha-0 ~]# ip link set dev lx-bond0.905 arp off
 [root@overcloud-novacomputeiha-0 ~]# ip neigh ls nud noarp | grep 192.168.123
@@ -1174,7 +1168,6 @@ rtt min/avg/max/mdev = 0.480/0.480/0.480/0.000 ms
 [root@overcloud-novacomputeiha-0 ~]# ip neigh change 192.168.123.11 dev lx-bond0.905 lladdr 22:a6:81:76:8a:78 nud noarp
 [root@overcloud-novacomputeiha-0 ~]# 
 </code></pre>
-
 <p>We can see that ARP learning is disabled with the following test. Note that we have to ping from the neighbor.
 Otherwise, even with correct ARP resolution, this won't work:</p>
 <pre><code>[root@overcloud-novacomputeiha-0 ~]# ping 192.168.123.11
@@ -1197,7 +1190,6 @@ PING 192.168.123.10 (192.168.123.10) 56(84) bytes of data.
 1 packets transmitted, 1 received, 0% packet loss, time 0ms
 rtt min/avg/max/mdev = 0.426/0.426/0.426/0.000 ms
 </code></pre>
-
 <pre><code>[root@overcloud-novacomputeiha-0 ~]# ip netns exec test2 ip a ls dev veth2
 33: veth2@if32: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default qlen 1000
     link/ether 22:a6:81:76:8a:78 brd ff:ff:ff:ff:ff:ff link-netnsid 0
@@ -1230,7 +1222,6 @@ PING 192.168.123.11 (192.168.123.11) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.566/0.566/0.566/0.000 ms
 [root@overcloud-novacomputeiha-0 ~]# 
 </code></pre>
-
 <p>Here's how it looks with NUD NOARP:</p>
 <pre><code>[root@overcloud-novacomputeiha-0 ~]# ip neigh change 192.168.123.11 dev lx-bond0.905 lladdr 22:a6:81:76:8a:78 nud noarp
 [root@overcloud-novacomputeiha-0 ~]# ip netns exec test2 ping 192.168.123.10

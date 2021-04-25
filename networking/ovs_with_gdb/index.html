@@ -976,8 +976,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1124,11 +1124,9 @@ service abrt-ccpp start
 abrt-auto-reporting enabled
 abrt-cli list
 </code></pre>
-
 <p>Kill OVS:</p>
 <pre><code>kill -11 $(pidof ovs-vswitchd)
 </code></pre>
-
 <p>List core dumps:</p>
 <pre><code>[root@overcloud-computedpdk-0 ~]# abrt-cli list
 id 60b0650c5db6225ab1debfba0f80bbdee60cef43
@@ -1140,37 +1138,30 @@ uid:            993 (openvswitch)
 count:          1
 Directory:      /var/spool/abrt/ccpp-2018-12-31-17:09:12-671118
 </code></pre>
-
 <pre><code>[root@overcloud-computedpdk-0 ~]# file !$
 file /var/spool/abrt/ccpp-2018-12-31-17:09:12-671118/coredump
 /var/spool/abrt/ccpp-2018-12-31-17:09:12-671118/coredump: ELF 64-bit LSB core file x86-64, version 1 (SYSV), SVR4-style, from 'ovs-vswitchd unix:/var/run/openvswitch/db.sock -vconsole:emer -vsyslog:err -vfi', real uid: 0, effective uid: 0, real gid: 0, effective gid: 0, execfn: '/sbin/ovs-vswitchd', platform: 'x86_64'
 </code></pre>
-
 <h2 id="install-debuginfo-for-ovs">Install debuginfo for OVS</h2>
 <p>It's important that the right debuginfo be installed. 
 Otherwise, you will get a message like this from the script later down the road:</p>
 <pre><code>(gdb) ovs_dump_bridge ports
 Can't find all_bridges global variable, are you sure your debugging OVS?
 </code></pre>
-
 <pre><code>debuginfo-install $(rpm -qa | egrep '^openvswitch-[0-9]')
 </code></pre>
-
 <h2 id="download-the-script">Download the script</h2>
 <p>It should be better to get the script from a source RPM. However, my version of OVS doesn't have the script yet. 
 Hence I'm directly downloading it:</p>
 <pre><code>curl -o ovs_gdb.py \
   https://raw.githubusercontent.com/openvswitch/ovs/cd5b89a5a99c3ead973b168326eaef47d4e4c077/utilities/gdb/ovs_gdb.py
 </code></pre>
-
 <h2 id="open-core-dump-with-gdb">Open core dump with GDB</h2>
 <pre><code>gdb $(which ovs-vswitchd) /var/spool/abrt/ccpp-2018-12-31-17:09:12-671118/coredump
 </code></pre>
-
 <p>Once at the prompt:</p>
 <pre><code>source ovs_gdb.py
 </code></pre>
-
 <h2 id="using-the-debug-script">Using the debug script</h2>
 <pre><code>(gdb) ovs_dump_bridge
 (struct bridge *) 0x5563a14fd2b0: name = br-link0, type = netdev

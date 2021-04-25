@@ -990,8 +990,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1133,7 +1133,6 @@
 machineset.machine.openshift.io/akaris-osc-6klvk-worker scaled
 [cloud-user@akaris-jump-server cluster-logging]$ 
 </code></pre>
-
 <pre><code>[cloud-user@akaris-jump-server openshift]$ oc get nodes
 NAME                            STATUS   ROLES    AGE     VERSION
 akaris-osc-6klvk-master-0       Ready    master   5h18m   v1.18.3+012b3ec
@@ -1145,7 +1144,6 @@ akaris-osc-6klvk-worker-l726s   Ready    worker   5h1m    v1.18.3+012b3ec
 akaris-osc-6klvk-worker-lp2df   Ready    worker   5h6m    v1.18.3+012b3ec
 akaris-osc-6klvk-worker-zhs67   Ready    worker   2m57s   v1.18.3+012b3ec
 </code></pre>
-
 <h2 id="step-2-add-additional-interface-to-additional-nodes">Step 2: Add additional interface to additional nodes</h2>
 <p>This step will be executed within the underlying infrastructure provider. In this example case, OpenShift is hosted on top of OpenStack.</p>
 <p>Make sure that the subnet runs a DHCP server:</p>
@@ -1178,13 +1176,11 @@ akaris-osc-6klvk-worker-zhs67   Ready    worker   2m57s   v1.18.3+012b3ec
 | updated_at        | 2020-08-11T15:19:17Z                 |
 +-------------------+--------------------------------------+
 </code></pre>
-
 <p>And create a router that can host floating IPs:</p>
 <pre><code>openstack router create akaris-backend
 openstack router set --external-gateway 5cd089f9-8ed2-46bc-8ea7-4e1cdb5262ba akaris-backend
 openstack router add subnet akaris-backend akaris-backend-subnet
 </code></pre>
-
 <pre><code>[cloud-user@akaris-jump-server openshift]$ openstack port create --network aa68c208-b6c9-402e-b508-1b9d82f3baa4 akaris-osc-6klvk-worker-hp2hz-akaris-backend
 +-----------------------+------------------------------------------------------------------------------+
 | Field                 | Value                                                                        |
@@ -1305,14 +1301,12 @@ openstack router add subnet akaris-backend akaris-backend-subnet
 [cloud-user@akaris-jump-server openshift]$ openstack floating ip set --port akaris-osc-6klvk-worker-zhs67-akaris-backend 10.0.92.205
 [cloud-user@akaris-jump-server openshift]$ openstack floating ip set --port vip-akaris-backend 10.0.89.89
 </code></pre>
-
 <p>After this, the floating IPs look like this in OpenStack:</p>
 <pre><code>[cloud-user@akaris-jump-server openshift]$ openstack floating ip list | grep 172.31.254
 | dd055cc4-af00-4dbd-8e4a-94fac680299d | 10.0.89.89          | 172.31.254.118   | 4d0b32f5-203b-4e2b-b92b-b25f349b1d83 | 5cd089f9-8ed2-46bc-8ea7-4e1cdb5262ba | ea78dddee3e240c7af1779b417c64618 |
 | e586c5c8-1cd4-4bd5-adb7-790e895b5af8 | 10.0.92.194         | 172.31.254.48    | 8e737c31-0450-40d0-a5e0-54871a735428 | 5cd089f9-8ed2-46bc-8ea7-4e1cdb5262ba | ea78dddee3e240c7af1779b417c64618 |
 | f7e082f1-7880-4f07-8a05-3fdb0585eb32 | 10.0.92.205         | 172.31.254.207   | c82401f3-fa76-449e-ba16-75fe4b0f5583 | 5cd089f9-8ed2-46bc-8ea7-4e1cdb5262ba | ea78dddee3e240c7af1779b417c64618 |
 </code></pre>
-
 <p>Last but not least, disable port security for these ports so that VRRP can work with these OpenStack ports:</p>
 <pre><code>for port in akaris-osc-6klvk-worker-hp2hz-akaris-backend akaris-osc-6klvk-worker-zhs67-akaris-backend vip-akaris-backend ; do 
     echo === $port ===
@@ -1320,7 +1314,6 @@ openstack router add subnet akaris-backend akaris-backend-subnet
     openstack port set --disable-port-security $port
 done
 </code></pre>
-
 <p>The VRRP floating IP is: 
    IP 172.31.254.118
    MAC address: fa:16:3e:0d:3e:cd
@@ -1366,12 +1359,10 @@ Complete!
 10: ens6: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1450 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
     link/ether fa:16:3e:07:66:12 brd ff:ff:ff:ff:ff:ff
 </code></pre>
-
 <p>Repeat the same on the other node:</p>
 <pre><code>[cloud-user@akaris-jump-server openshift]$ oc debug node/akaris-osc-6klvk-worker-zhs67
 (...)
 </code></pre>
-
 <h2 id="step-3-create-new-role-and-assign-new-nodes-to-the-role">Step 3: create new role and assign new nodes to the role</h2>
 <p>Follow <a href="https://www.redhat.com/en/blog/openshift-container-platform-4-how-does-machine-config-pool-work">https://www.redhat.com/en/blog/openshift-container-platform-4-how-does-machine-config-pool-work with modifications</a>.</p>
 <p>Run this via a script that's triggered by a systemd unit file:</p>
@@ -1458,12 +1449,10 @@ EOF
 
 rm -f network-script.sh
 </code></pre>
-
 <p>Label the nodes as staging:</p>
 <pre><code>oc label node akaris-osc-6klvk-worker-hp2hz node-role.kubernetes.io/worker- node-role.kubernetes.io/staging=
 oc label node akaris-osc-6klvk-worker-zhs67 node-role.kubernetes.io/worker- node-role.kubernetes.io/staging=
 </code></pre>
-
 <p>The nodes will now reboot with the new setting, so wait:</p>
 <pre><code>[cloud-user@akaris-jump-server openshift]$ oc get nodes
 NAME                            STATUS                        ROLES     AGE     VERSION
@@ -1477,7 +1466,6 @@ akaris-osc-6klvk-worker-lp2df   Ready                         worker    5h36m   
 akaris-osc-6klvk-worker-zhs67   NotReady,SchedulingDisabled   staging   32m     v1.18.3+012b3ec
 [cloud-user@akaris-jump-server openshift]$ 
 </code></pre>
-
 <p>Make sure that the interface was created:</p>
 <pre><code>[cloud-user@akaris-jump-server openshift]$ oc debug node/akaris-osc-6klvk-worker-zhs67
 Starting pod/akaris-osc-6klvk-worker-zhs67-debug ...
@@ -1510,7 +1498,6 @@ default via 172.31.254.1 dev ens6
 sh-4.4# ip rule ls | grep 5000
 32765:  from 172.31.254.0/24 lookup 5000
 </code></pre>
-
 <p>Run the same verification on the other worker.</p>
 <p>Ping both floating IPs and make sure that policy routing works:</p>
 <pre><code>[cloud-user@akaris-jump-server openshift]$ ping 10.0.92.194
@@ -1528,7 +1515,6 @@ PING 10.0.92.205 (10.0.92.205) 56(84) bytes of data.
 1 packets transmitted, 1 received, 0% packet loss, time 0ms
 rtt min/avg/max/mdev = 1.242/1.242/1.242/0.000 ms
 </code></pre>
-
 <h2 id="step-4-configure-keepalived-template-for-the-staging-node">Step 4: Configure keepalived template for the staging node</h2>
 <pre><code>cat &lt;&lt;'EOF' &gt; keepalived.conf.tmpl
 # TODO: Improve this check. The port is assumed to be alive.
@@ -1587,7 +1573,6 @@ EOF
 
 rm -f  keepalived.conf.tmpl
 </code></pre>
-
 <p>Verify:</p>
 <pre><code>[root@akaris-osc-6klvk-worker-zhs67 ~]# cat /etc/keepalived/keepalived.conf 
 # TODO: Improve this check. The port is assumed to be alive.
@@ -1625,7 +1610,6 @@ vrrp_instance staging_INGRESS {
     inet6 fe80::f816:3eff:fe66:d228/64 scope link 
        valid_lft forever preferred_lft forever
 </code></pre>
-
 <p>And ping the VIP:</p>
 <pre><code>[cloud-user@akaris-jump-server ~]$ ping 10.0.89.89
 PING 10.0.89.89 (10.0.89.89) 56(84) bytes of data.
@@ -1636,7 +1620,6 @@ PING 10.0.89.89 (10.0.89.89) 56(84) bytes of data.
 rtt min/avg/max/mdev = 15.791/15.791/15.791/0.000 ms
 [cloud-user@akaris-jump-server ~]$ 
 </code></pre>
-
 <p>And SSH into the VIP:</p>
 <pre><code>[cloud-user@akaris-jump-server ~]$ ssh core@10.0.89.89
 The authenticity of host '10.0.89.89 (10.0.89.89)' can't be established.
@@ -1656,14 +1639,12 @@ make configuration changes via `machineconfig` objects:
 Last login: Tue Aug 11 19:14:19 2020 from 10.0.88.55
 [core@akaris-osc-6klvk-worker-zhs67 ~]$ 
 </code></pre>
-
 <h2 id="step-5-configure-an-ingress-use-ingress-controller-sharding">Step 5: Configure an Ingress, use Ingress controller sharding</h2>
 <p>Use:
 <a href="https://docs.openshift.com/container-platform/4.5/networking/ingress-operator.html#nw-ingress-sharding_configuring-ingress">https://docs.openshift.com/container-platform/4.5/networking/ingress-operator.html#nw-ingress-sharding_configuring-ingress</a></p>
 <p>For example, the following Ingress route should work and be served by the 2 <code>staging</code> workers:</p>
 <pre><code>10.0.89.99 test.staging.akaris-osc....
 </code></pre>
-
 <p>Configure the default IngressController and have it run only on <code>worker</code> nodes - you can also exclude namespaces which shall not be served by the default IngressController:</p>
 <pre><code>cat &lt;&lt;'EOF' &gt; patch.yaml
 spec:
@@ -1683,7 +1664,6 @@ EOF
 oc patch -n openshift-ingress-operator ingresscontroller default --type=&quot;merge&quot; -p &quot;$(cat patch.yaml)&quot;
 rm -f patch.yaml
 </code></pre>
-
 <p>Configure the staging IngressController and have it run only on <code>sharded</code> nodes:</p>
 <pre><code>cat &lt;&lt;'EOF' | oc apply -f -
 apiVersion: v1
@@ -1717,7 +1697,6 @@ metadata:
   selfLink: &quot;&quot;
 EOF
 </code></pre>
-
 <p>Verify generation and modification of the IngressController and OpenShift router pods:</p>
 <pre><code>[cloud-user@akaris-jump-server openshift]$ oc get nodes
 NAME                            STATUS   ROLES     AGE   VERSION
@@ -1740,12 +1719,10 @@ router-default-7fd7bdd4fc-mc572   1/1     Running   0          106s   192.168.0.
 router-staging-86c864549c-7stx8   1/1     Running   0          14m    192.168.1.160   akaris-osc-6klvk-worker-hp2hz   &lt;none&gt;           &lt;none&gt;
 router-staging-86c864549c-nkz28   1/1     Running   0          14m    192.168.2.48    akaris-osc-6klvk-worker-zhs67   &lt;none&gt;           &lt;none&gt;
 </code></pre>
-
 <h2 id="step-6-expose-route">Step 6: Expose route</h2>
 <pre><code>oc new-project test
 oc adm policy add-scc-to-user anyuid -z default
 </code></pre>
-
 <pre><code>cat &lt;&lt;'EOF' &gt; httpbin-ingress.yaml
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -1826,7 +1803,6 @@ spec:
 EOF
 oc apply -f httpbin-ingress.yaml
 </code></pre>
-
 <pre><code>[cloud-user@akaris-jump-server ~]$ oc get routes 
 NAME                    HOST/PORT                                                                                 PATH   SERVICES          PORT    TERMINATION   WILDCARD
 httpbin-ingress-z9tgf   httpbin-ingress.staging.akaris-osc.... ... 1 more   /      httpbin-service   &lt;all&gt;                 None
@@ -1844,14 +1820,12 @@ httpbin-ingress-z9tgf   httpbin-ingress.staging.akaris-osc.... ... 1 more   /   
   &quot;url&quot;: &quot;http://httpbin-ingress.staging.akaris-osc..../get&quot;
 }
 </code></pre>
-
 <h2 id="step-7-security-hardening">Step 7: Security hardening</h2>
 <p>This is out of scope of this PoC, but note that at the moment, the default Ingress can still handle all domains and thus if the client configures its resolver appropriately, can reach the application via the default VIP.</p>
 <p>For example, take this mapping:</p>
 <pre><code>10.0.88.28 *.apps.akaris-osc....
 10.0.89.89 *.staging.akaris-osc....
 </code></pre>
-
 <p>Then one can still use the other ingress router by modifying the client resolver:</p>
 <pre><code>[cloud-user@akaris-jump-server ~]$ curl --resolve httpbin-ingress.staging.akaris-osc..../get:80:10.0.88.28 httpbin-ingress.staging.akaris-osc..../get
 {
@@ -1880,14 +1854,12 @@ httpbin-ingress-z9tgf   httpbin-ingress.staging.akaris-osc.... ... 1 more   /   
   &quot;url&quot;: &quot;http://httpbin-ingress.staging.akaris-osc.../get&quot;
 }
 </code></pre>
-
 <p>And the same goes for the other way around:</p>
 <pre><code>[cloud-user@akaris-jump-server ~]$ curl --resolve nginx-deployment-application.apps.akaris-osc....:80:10.0.88.28 nginx-deployment-application.apps.akaris-osc....
 Nginx A
 [cloud-user@akaris-jump-server ~]$ curl --resolve nginx-deployment-application.apps.akaris-osc....:80:10.0.89.89 nginx-deployment-application.apps.akaris-osc....
 Nginx A
 </code></pre>
-
 <p>Read the documentation about IngressController sharding for further details.</p>
 <h2 id="step-8-troubleshooting">Step 8: Troubleshooting</h2>
 <p>Again, a bit outside of the scope of this PoC - the debug pods for my <code>staging</code> nodes stopped working overnight. This would need some further troubleshooting:</p>
@@ -1902,7 +1874,6 @@ akaris-osc-6klvk-worker-l726s   Ready    worker    24h   v1.18.3+012b3ec
 akaris-osc-6klvk-worker-lp2df   Ready    worker    24h   v1.18.3+012b3ec
 akaris-osc-6klvk-worker-zhs67   Ready    staging   19h   v1.18.3+012b3ec
 </code></pre>
-
 <pre><code>[cloud-user@akaris-jump-server ~]$ oc debug node/akaris-osc-6klvk-worker-zhs67
 Starting pod/akaris-osc-6klvk-worker-zhs67-debug ...
 To use host binaries, run `chroot /host`

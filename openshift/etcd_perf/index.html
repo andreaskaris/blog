@@ -964,8 +964,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1112,7 +1112,6 @@
 <a href="https://github.com/etcd-io/etcd/blob/master/etcdctl/ctlv3/command/check.go#L127">https://github.com/etcd-io/etcd/blob/master/etcdctl/ctlv3/command/check.go#L127</a></p>
 <pre><code>The performance check's workload model. Accepted workloads: s(small), m(medium), l(large), xl(xLarge)
 </code></pre>
-
 <p>The tests run by <code>etcdctl check perf</code> will report PASS/FAIL depending on if they are within the following bounds:</p>
 <table>
 <thead>
@@ -1164,7 +1163,6 @@ var checkPerfCfgMap = map[string]checkPerfCfg{
 }
 (...)
 </code></pre>
-
 <p><a href="https://github.com/etcd-io/etcd/blob/6e800b9b0161ef874784fc6c679325acd67e2452/etcdctl/ctlv3/command/check.go#L232">https://github.com/etcd-io/etcd/blob/6e800b9b0161ef874784fc6c679325acd67e2452/etcdctl/ctlv3/command/check.go#L232</a></p>
 <pre><code>(...)
     ok = true
@@ -1203,7 +1201,6 @@ var checkPerfCfgMap = map[string]checkPerfCfg{
     }
 (...)
 </code></pre>
-
 <p>The processing of a run's metrics is done here:
 <a href="https://github.com/etcd-io/etcd/blob/6e800b9b0161ef874784fc6c679325acd67e2452/pkg/report/report.go#L185">https://github.com/etcd-io/etcd/blob/6e800b9b0161ef874784fc6c679325acd67e2452/pkg/report/report.go#L185</a></p>
 <pre><code>(...)
@@ -1229,29 +1226,23 @@ func (r *report) processResults() {
 }
 (...)
 </code></pre>
-
 <h3 id="running-etcdctl-check-perf">Running etcdctl check perf</h3>
 <p>The following illustrated how to test etcd performance in OpenShift 4.5</p>
 <p>Get the name of one of the etcd pods:</p>
 <pre><code>ETCD_POD=$(oc -n openshift-etcd get pods -l app=etcd -o name | head -1)
 </code></pre>
-
 <p>Run a normal test:</p>
 <pre><code>oc exec  -n openshift-etcd -it -c etcd $ETCD_POD -- etcdctl check perf
 </code></pre>
-
 <p>Run a medium test:</p>
 <pre><code>oc exec  -n openshift-etcd -it -c etcd $ETCD_POD -- etcdctl check perf --load='m'
 </code></pre>
-
 <p>Run a large test:</p>
 <pre><code>oc exec  -n openshift-etcd -it -c etcd $ETCD_POD -- etcdctl check perf --load='l'
 </code></pre>
-
 <p>Run an extra large test:</p>
 <pre><code>oc exec  -n openshift-etcd -it -c etcd $ETCD_POD -- etcdctl check perf --load='xl'
 </code></pre>
-
 <p>Here's the output of a failed run:</p>
 <pre><code># oc exec  -n openshift-etcd -it -c etcd $ETCD_POD -- etcdctl check perf --load='m'
  60 / 60 Boooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo! 100.00% 1m0s

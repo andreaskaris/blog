@@ -1287,8 +1287,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1448,7 +1448,6 @@
 A  namespace  wraps a global system resource in an abstraction that makes it appear to the processes within the namespace that they have their own isolated instance of the global resource.  Changes to the global resource are visible to other processes that are members of the namespace, but are invisible to other processes.  One use  of namespaces  is  to implement containers.
 (...)
 </code></pre>
-
 <h2 id="unshare-the-tool-to-create-new-namespaces">unshare - the tool to create new namespaces</h2>
 <p>A child process starts within the same namespaces as its parent. In order to move a process to a new namespace, it needs to be spawned with <code>unshare</code>:</p>
 <pre><code>man unshare
@@ -1523,12 +1522,10 @@ OPTIONS
 
 (...)
 </code></pre>
-
 <p><code>unshare</code> uses the <code>unshare</code> system call:</p>
 <pre><code>[akaris@wks-akaris ~]$ sudo strace -tt -f -s1024 unshare -u /bin/bash 2&gt;&amp;1 | grep -i uts
 15:54:50.016682 unshare(CLONE_NEWUTS)   = 0
 </code></pre>
-
 <pre><code>man unshare
 UNSHARE(2)                         Linux Programmer's Manual                         UNSHARE(2)
 
@@ -1553,7 +1550,6 @@ DESCRIPTION
 
 (...)
 </code></pre>
-
 <p>However, namespaces can also be created by feeding flags to the clone system call:</p>
 <pre><code>[akaris@wks-akaris ~]$ man clone | egrep '^[ ]+CLONE_NEW'
        CLONE_NEWCGROUP (since Linux 4.6)
@@ -1569,7 +1565,6 @@ DESCRIPTION
               CLONE_NEWUSER was specified in flags and the caller is in  a  chroot  environment
               CLONE_NEWUSER  was specified in flags, and the limit on the number of nested user
 </code></pre>
-
 <h2 id="how-to-list-namespaces">How to list namespaces</h2>
 <p>Note that when a namespace is unshared, it will show up with a different namespace ID in <code>/proc/$PID/ns/</code>:</p>
 <pre><code>[root@wks-akaris akaris]# sudo ls /proc/1/ns/ -al
@@ -1597,7 +1592,6 @@ lrwxrwxrwx. 1 root root 0 Dec 20 15:45 pid_for_children -&gt; 'pid:[4026531836]'
 lrwxrwxrwx. 1 root root 0 Dec 20 15:45 user -&gt; 'user:[4026531837]'
 lrwxrwxrwx. 1 root root 0 Dec 20 15:45 uts -&gt; 'uts:[4026532828]'
 </code></pre>
-
 <p>Or, a more compact example of the above:</p>
 <pre><code>[akaris@wks-akaris ~]$ sudo unshare -m uts /bin/bash
 [sudo] password for akaris: 
@@ -1608,7 +1602,6 @@ uts:[4026531838]
 [root@wks-akaris akaris]# readlink /proc/$$/ns/uts
 uts:[4026532828]
 </code></pre>
-
 <p>The easiest and most detailed way to show the namespace hierarchy, though, is <code>lsns</code>:</p>
 <pre><code>man lsns
 LSNS(8)                                                                                 System Administration                                                                                 LSNS(8)
@@ -1632,7 +1625,6 @@ DESCRIPTION
        /proc/pid/ns/type.
 (...)
 </code></pre>
-
 <p>Example:</p>
 <pre><code>[akaris@wks-akaris ~]$ sudo lsns -t uts
         NS TYPE NPROCS PID USER COMMAND
@@ -1659,7 +1651,6 @@ exit
 [akaris@wks-akaris ~]$ readlink /proc/$$/ns/uts
 uts:[4026531838]
 </code></pre>
-
 <h2 id="namespace-types">namespace types</h2>
 <h3 id="uts-namespace">UTS namespace</h3>
 <ul>
@@ -1681,14 +1672,12 @@ utsnamespace
 [root@wks-akaris akaris]# uname -a
 Linux utsnamespace 4.18.12-200.fc28.x86_64 #1 SMP Thu Oct 4 15:46:35 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
 </code></pre>
-
 <p>Open another CLI on the same system and verify the hostname:</p>
 <pre><code>[akaris@wks-akaris ~]$ hostname
 wks-akaris
 [akaris@wks-akaris ~]$ uname -a
 Linux wks-akaris 4.18.12-200.fc28.x86_64 #1 SMP Thu Oct 4 15:46:35 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
 </code></pre>
-
 <h3 id="network-namespaces">network namespaces</h3>
 <ul>
 <li>
@@ -1712,7 +1701,6 @@ Linux wks-akaris 4.18.12-200.fc28.x86_64 #1 SMP Thu Oct 4 15:46:35 UTC 2018 x86_
        namespace associated with a task.
 (...)
 </code></pre>
-
 <p>Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems:</p>
 <pre><code>Network namespaces provide isolation of network controllers, system resources associated
 with networking, firewall and routing tables. This allows container to use separate virtual
@@ -1721,7 +1709,6 @@ container, assign them their own IP Addresses and even full iptables rules. You 
 different network settings by executing the ip addr command on the host and inside the
 container.
 </code></pre>
-
 <h4 id="example_1">Example</h4>
 <p>There are 2 ways to generate persistent network namespaces. Either use <code>ip netns add</code>, or use the more inconvenient <code>unshare</code> command:</p>
 <pre><code>[akaris@wks-akaris ~]$ sudo ip netns add netns1
@@ -1746,7 +1733,6 @@ nsfs on /run/netns/netns1 type nsfs (rw,seclabel)
 nsfs on /run/netns/netns2 type nsfs (rw,seclabel)
 nsfs on /run/netns/netns2 type nsfs (rw,seclabel)
 </code></pre>
-
 <p>In both cases, you will be able to enter the namespace and create interfaces therein:</p>
 <pre><code>[akaris@wks-akaris ~]$ sudo ip netns exec netns2 /bin/bash
 [root@wks-akaris akaris]# ip link ls
@@ -1769,7 +1755,6 @@ exit
 [root@wks-akaris akaris]# exit
 exit
 </code></pre>
-
 <h3 id="mount-namespaces">mount namespaces</h3>
 <ul>
 <li>
@@ -1791,7 +1776,6 @@ exit
               vate is the kernel default.
 (...)
 </code></pre>
-
 <pre><code>man mount_namespaces
 (...)
        Mount  namespaces  provide  isolation  of the list of mount points seen by the processes in each namespace instance.  Thus, the processes in each of the mount namespace instances
@@ -1805,7 +1789,6 @@ exit
        other namespace (but see the following discussion of shared subtrees).
 (...)
 </code></pre>
-
 <p>Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems:</p>
 <pre><code>Mount namespaces isolate the set of file system mount points seen by a group of processes so
 that processes in different mount namespaces can have different views of the file system
@@ -1815,7 +1798,6 @@ affect just the mount namespace associated with the container process. For examp
 container can have its own /tmp or /var directory or even have an entirely different
 userspace.
 </code></pre>
-
 <h4 id="example_2">Example</h4>
 <pre><code>[akaris@wks-akaris ~]$ sudo unshare -m /bin/bash
 [root@wks-akaris akaris]# lsns -t mnt
@@ -1840,7 +1822,6 @@ exit
 autofs
 block
 </code></pre>
-
 <h3 id="pid-namespaces">PID namespaces</h3>
 <ul>
 <li>
@@ -1878,7 +1859,6 @@ block
        ble  to  create  a new processes in a PID namespace whose &quot;init&quot; process has terminated. 
 (...)
 </code></pre>
-
 <p>Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems:</p>
 <pre><code>PID namespaces allow processes in different containers to have the same PID, so each
 container can have its own init (PID1) process that manages various system initialization tasks
@@ -1890,7 +1870,6 @@ system is aware of processes running inside of the container, but assigns them d
 numbers. For example, run the ps -eZ | grep systemd$ command on host to see all
 instances of systemd including those running inside of containers.
 </code></pre>
-
 <h4 id="example_3">Example</h4>
 <p>Note that PID namespaces need to be unshared with <code>--fork</code>. Also note that this will reset the PID space, however this will not show in <code>ps</code> as the information comes from the /proc file system:</p>
 <pre><code>[akaris@wks-akaris ~]$ sudo unshare -p --fork /bin/bash
@@ -1903,7 +1882,6 @@ instances of systemd including those running inside of containers.
 17368 pts/5    00:00:00 bash
 17399 pts/5    00:00:00 ps
 </code></pre>
-
 <p>We need a more complex series of commands to display the actual process IDs in <code>ps</code> - we need to create both a new PID and a new mount namespace and then unmount and remount proc:</p>
 <pre><code>[akaris@wks-akaris ~]$ sudo unshare -p --fork -m /bin/bash
 [root@wks-akaris akaris]# umount -l /proc
@@ -1914,7 +1892,6 @@ root         1  0.1  0.0 123344  5916 pts/5    S    19:01   0:00 /bin/bash
 root        31  0.0  0.0 153224  3700 pts/5    R+   19:01   0:00 ps aux
 [root@wks-akaris akaris]# 
 </code></pre>
-
 <h3 id="user-namespaces">user namespaces</h3>
 <ul>
 <li>
@@ -1932,7 +1909,6 @@ root        31  0.0  0.0 153224  3700 pts/5    R+   19:01   0:00 ps aux
        namespace, but is unprivileged for operations outside the namespace.
 (...)
 </code></pre>
-
 <p>Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems:</p>
 <pre><code>User namespaces are similar to PID
 namespaces, they allow you to specify a range of host UIDs dedicated to the container. Consequently, a
@@ -1940,7 +1916,6 @@ process can have full root privileges for operations inside the container, and a
 unprivileged for operations outside the container. For compatibility reasons, user namespaces are
 turned off in the current version of Red Hat Enterprise Linux 7, but will be enabled in the near future.
 </code></pre>
-
 <h4 id="example_4">Example</h4>
 <pre><code>[akaris@wks-akaris ~]$ sudo unshare -U /bin/bash
 [nfsnobody@wks-akaris akaris]$ id
@@ -1948,18 +1923,15 @@ uid=65534(nfsnobody) gid=65534(nfsnobody) groups=65534(nfsnobody) context=unconf
 [nfsnobody@wks-akaris akaris]$ echo $$
 10086
 </code></pre>
-
 <p>Open another CLI and run:</p>
 <pre><code>[akaris@wks-akaris ~]$ sudo newuidmap 10086 0 0 1
 [akaris@wks-akaris ~]$ 
 </code></pre>
-
 <p>Now, within the namespace, verify what happened:</p>
 <pre><code>[nfsnobody@wks-akaris akaris]$ id
 uid=0(root) gid=65534(nfsnobody) groups=65534(nfsnobody) context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
 [nfsnobody@wks-akaris akaris]$ 
 </code></pre>
-
 <h3 id="ipc-namespaces">IPC namespaces</h3>
 <ul>
 <li>
@@ -1975,7 +1947,6 @@ V IPC objects and POSIX message queues. This means that two containers can creat
 memory segments and semaphores with the same name, but are not able to interact with other
 containers memory segments or shared memory.
 </code></pre>
-
 <h3 id="cgroup-namespaces-and-their-purpose">cgroup namespaces and their purpose</h3>
 <pre><code>man cgroup_namespaces
 (...)
@@ -2003,7 +1974,6 @@ containers memory segments or shared memory.
          from escaping the limits imposed by ancestor cgroups.
 (...)
 </code></pre>
-
 <h2 id="building-containers-the-namespace-part-of-it">Building containers - the namespace part of it</h2>
 <p>A nice walkthrough can be found in this youtube video:
 <a href="https://youtu.be/sK5i-N34im8?t=2476">https://youtu.be/sK5i-N34im8?t=2476</a></p>
@@ -2019,7 +1989,6 @@ pid_namespaces (7)   - overview of Linux PID namespaces
 user_namespaces (7)  - overview of Linux user namespaces
 [akaris@wks-akaris blog]$ man 7 namespaces
 </code></pre>
-
 <ul>
 <li><a href="https://www.youtube.com/watch?v=sK5i-N34im8">https://www.youtube.com/watch?v=sK5i-N34im8</a></li>
 </ul>

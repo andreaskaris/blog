@@ -948,8 +948,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1112,12 +1112,10 @@ EOF
 chmod +x /etc/profile.d/go.sh
 source  /etc/profile.d/go.sh
 </code></pre>
-
 <p>Download kind:</p>
 <pre><code>curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-linux-amd64
 chmod +x ./kind
 </code></pre>
-
 <blockquote>
 <p>For further details, see https://kind.sigs.k8s.io/docs/user/quick-start/</p>
 </blockquote>
@@ -1125,17 +1123,14 @@ chmod +x ./kind
 <pre><code>git clone https://github.com/ovn-org/ovn-kubernetes
 cd ovn-kubernetes/contrib/
 </code></pre>
-
 <p>Now, run:</p>
 <pre><code>./kind.sh -ho
 </code></pre>
-
 <p>Wait until it finishes.</p>
 <p>Now, go to the home folder and generate kubeconfig:</p>
 <pre><code>cd ~
 kind get kubeconfig --name ovn &gt; .kube/config
 </code></pre>
-
 <p>Verify:</p>
 <pre><code> kubectl  get nodes
 NAME                STATUS   ROLES    AGE   VERSION
@@ -1143,7 +1138,6 @@ ovn-control-plane   Ready    master   15m   v1.18.2
 ovn-worker          Ready    &lt;none&gt;   14m   v1.18.2
 ovn-worker2         Ready    &lt;none&gt;   14m   v1.18.2
 </code></pre>
-
 <p>Get your Worker node IPs:</p>
 <pre><code># kubectl  get nodes -o wide
 NAME                STATUS   ROLES    AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE           KERNEL-VERSION                 CONTAINER-RUNTIME
@@ -1151,7 +1145,6 @@ ovn-control-plane   Ready    master   15m   v1.18.2   172.18.0.4    &lt;none&gt;
 ovn-worker          Ready    &lt;none&gt;   15m   v1.18.2   172.18.0.3    &lt;none&gt;        Ubuntu 20.04 LTS   4.18.0-193.13.2.el8_2.x86_64   containerd://1.3.3-14-g449e9269
 ovn-worker2         Ready    &lt;none&gt;   15m   v1.18.2   172.18.0.2    &lt;none&gt;        Ubuntu 20.04 LTS   4.18.0-193.13.2.el8_2.x86_64   containerd://1.3.3-14-g449e9269
 </code></pre>
-
 <p>Get the worker pod subnets:</p>
 <pre><code>[root@kind ~]# kubectl get nodes | tail -n +2 | awk '{print $1}' | while read node; do echo === $node === ; kubectl describe node $node | grep PodCIDR ; done
 === ovn-control-plane ===
@@ -1164,15 +1157,12 @@ PodCIDRs:                     10.244.1.0/24
 PodCIDR:                      10.244.2.0/24
 PodCIDRs:                     10.244.2.0/24
 </code></pre>
-
 <p>Create CentOS to act as GW:</p>
 <pre><code>docker run --name gw -d --privileged --network kind -it centos /bin/bash
 </code></pre>
-
 <p>Now connecto to the GW node:</p>
 <pre><code>docker exec -it gw /bin/bash
 </code></pre>
-
 <p>If your worker node IPs and pod subnets are different from what was listed above, make sure to adjust the following.
 It's important to route traffic for the node's pod subnet via the node's internal IP.</p>
 <pre><code>cat &lt;&lt;'EOF' | tee vxlan.sh
@@ -1191,7 +1181,6 @@ EOF
 chmod +x vxlan.sh
 ./vxlan.sh
 </code></pre>
-
 <p>Now create a namespace with annotations like:</p>
 <pre><code>apiVersion: v1
 kind: Namespace
@@ -1201,11 +1190,9 @@ metadata:
     k8s.ovn.org/hybrid-overlay-external-gw: 9.0.0.1
     k8s.ovn.org/hybrid-overlay-vtep: 172.18.0.5 #replace this with your simulated  ip
 </code></pre>
-
 <p>Execute:</p>
 <pre><code>kubectl apply -f file.yaml
 </code></pre>
-
 <p>Now create pods on each worker node in the namespace:</p>
 <pre><code>cat &lt;&lt;'EOF' | oc apply -f -
 apiVersion: v1
@@ -1241,14 +1228,12 @@ spec:
   nodeName: ovn-worker2
 EOF
 </code></pre>
-
 <p>Execute:</p>
 <pre><code>[root@kind ~]# kubectl  get pods -n exgw2 -o wide
 NAME         READY   STATUS    RESTARTS   AGE   IP           NODE          NOMINATED NODE   READINESS GATES
 dnsutils     1/1     Running   0          20m   10.244.0.7   ovn-worker    &lt;none&gt;           &lt;none&gt;
 dnsutils02   1/1     Running   0          20m   10.244.2.6   ovn-worker2   &lt;none&gt;           &lt;none&gt;
 </code></pre>
-
 <p>Verify from the pods:</p>
 <pre><code>[root@kind ~]# kubectl exec -it dnsutils02 /bin/sh
 kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl kubectl exec [POD] -- [COMMAND] instead.
@@ -1261,7 +1246,6 @@ PING 9.0.0.1 (9.0.0.1): 56 data bytes
 round-trip min/avg/max = 0.998/0.998/0.998 ms
 / # 
 </code></pre>
-
 <pre><code>[root@kind ~]# kubectl exec -it dnsutils /bin/sh
 kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl kubectl exec [POD] -- [COMMAND] instead.
 / # ping 9.0.0.1
@@ -1274,7 +1258,6 @@ PING 9.0.0.1 (9.0.0.1): 56 data bytes
 round-trip min/avg/max = 0.667/1.176/1.686 ms
 / # 
 </code></pre>
-
 <p>Verify the HybridOverlay is enabled in NS:</p>
 <pre><code># kubectl get ns exgw2 -o yaml
 apiVersion: v1

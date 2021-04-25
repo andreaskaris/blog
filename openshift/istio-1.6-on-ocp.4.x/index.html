@@ -948,8 +948,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1103,7 +1103,6 @@
 NAME      VERSION   AVAILABLE   PROGRESSING   SINCE   STATUS
 version   4.4.16    True        False         2d1h    Cluster version is 4.4.16
 </code></pre>
-
 <pre><code>[akaris@linux upi]$ oc new-project istio-system
 Now using project &quot;istio-system&quot; on server &quot;https://api.akaris-upi.focused-solutions.support:6443&quot;.
 
@@ -1115,11 +1114,9 @@ to build a new example application in Python. Or use kubectl to deploy a simple 
 
     kubectl create deployment hello-node --image=gcr.io/hello-minikube-zero-install/hello-node
 </code></pre>
-
 <pre><code>[akaris@linux upi]$ oc adm policy add-scc-to-group anyuid system:serviceaccounts:istio-system
 securitycontextconstraints.security.openshift.io/anyuid added to groups: [&quot;system:serviceaccounts:istio-system&quot;]
 </code></pre>
-
 <p>Install istiocli:</p>
 <pre><code>[akaris@linux upi]$  curl -sL https://istio.io/downloadIstioctl | sh -
 Downloading istioctl-1.6.8 from https://github.com/istio/istio/releases/download/1.6.8/istioctl-1.6.8-linux.tar.gz ... 
@@ -1140,7 +1137,6 @@ Need more information? Visit https://istio.io/docs/reference/commands/istioctl/
 [akaris@linux upi]$ istioctl verify-install
 Error: could not load IstioOperator from cluster: the server could not find the requested resource.  Use --filename 
 </code></pre>
-
 <p>The above error is normal. Nothing was installed yet.</p>
 <p>Follow <a href="https://istio.io/latest/docs/setup/additional-setup/cni/">https://istio.io/latest/docs/setup/additional-setup/cni/</a>:</p>
 <pre><code>$ cat &lt;&lt;EOF &gt; istio-cni.yaml
@@ -1158,7 +1154,6 @@ spec:
       logLevel: info
 EOF
 </code></pre>
-
 <p>For OpenShift, then follow: <a href="https://istio.io/latest/docs/setup/additional-setup/cni/#hosted-kubernetes-settings">https://istio.io/latest/docs/setup/additional-setup/cni/#hosted-kubernetes-settings</a>:</p>
 <p>Therefore, run:</p>
 <pre><code>[akaris@linux upi]$ istioctl install -f istio-cni.yaml --set components.cni.namespace=kube-system --set values.cni.cniBinDir=/var/lib/cni/bin --set values.cni.cniConfDir=/etc/cni/multus/net.d --set values.cni.chained=false --set values.cni.cniConfFileName=&quot;istio-cni.conf&quot; --set values.sidecarInjectorWebhook.injectedAnnotations.&quot;k8s\.v1\.cni\.cncf\.io/networks&quot;=istio-cni
@@ -1172,7 +1167,6 @@ EOF
   Pruned object ServiceAccount:istio-system:istio-cni.
 ✔ Installation complete  
 </code></pre>
-
 <p>Verify the installation:</p>
 <pre><code>[akaris@linux upi]$ istioctl verify-install 
 ClusterRole: istio-cni.default checked successfully
@@ -1249,7 +1243,6 @@ Checked 1 Istio Deployments
 Istio is installed successfully
 [akaris@linux upi]$ 
 </code></pre>
-
 <p>That will create the istio pods that are needed for the CNI plugin:</p>
 <pre><code>[akaris@linux upi]$ oc get pods -A | grep istio
 istio-system                                            istio-ingressgateway-6c77d7f498-d58gx                                1/1     Running     0          33m
@@ -1262,7 +1255,6 @@ kube-system                                             istio-cni-node-nd72d    
 kube-system                                             istio-cni-node-p2w5f                                                 2/2     Running     0          56s
 kube-system                                             istio-cni-node-vqjkb                                                 2/2     Running     0          56s
 </code></pre>
-
 <p>Create the bookinfo app according to <a href="https://istio.io/latest/docs/examples/bookinfo/">https://istio.io/latest/docs/examples/bookinfo/</a>:</p>
 <pre><code>[akaris@linux upi]$ oc new-project bookinfo
 Now using project &quot;bookinfo&quot; on server &quot;https://api.akaris-upi.focused-solutions.support:6443&quot;.
@@ -1275,20 +1267,17 @@ to build a new example application in Python. Or use kubectl to deploy a simple 
 
     kubectl create deployment hello-node --image=gcr.io/hello-minikube-zero-install/hello-node
 </code></pre>
-
 <p>Adjust SCCs according to <a href="https://istio.io/latest/docs/setup/platform-setup/openshift/#privileged-security-context-constraints-for-application-sidecars">https://istio.io/latest/docs/setup/platform-setup/openshift/#privileged-security-context-constraints-for-application-sidecars</a>:</p>
 <pre><code>The Istio sidecar injected into each application pod runs with user ID 1337, 
 which is not allowed by default in OpenShift. To allow this user ID to be used, 
 execute the following commands. Replace &lt;target-namespace&gt; with the appropriate namespace.
 </code></pre>
-
 <p>So execute:</p>
 <pre><code>[akaris@linux upi]$ oc adm policy add-scc-to-group privileged system:serviceaccounts:bookinfo
 securitycontextconstraints.security.openshift.io/privileged added to groups: [&quot;system:serviceaccounts:bookinfo&quot;]
 [akaris@linux upi]$ oc adm policy add-scc-to-group anyuid system:serviceaccounts:bookinfo
 securitycontextconstraints.security.openshift.io/anyuid added to groups: [&quot;system:serviceaccounts:bookinfo&quot;]
 </code></pre>
-
 <p>Verify SCC configuration - in SCC 4.5, check <code>oc get clusterrolebindings | grep scc</code> instead.</p>
 <pre><code>[akaris@linux upi]$ oc get scc anyuid -o yaml | grep serv -C3
   type: RunAsAny
@@ -1299,11 +1288,9 @@ kind: SecurityContextConstraints
 metadata:
   annotations:
 </code></pre>
-
 <p>Now, create the application:</p>
 <pre><code>oc apply -f https://raw.githubusercontent.com/istio/istio/release-1.6/samples/bookinfo/platform/kube/bookinfo.yaml
 </code></pre>
-
 <pre><code>[akaris@linux upi]$ oc get pods
 NAME                              READY   STATUS    RESTARTS   AGE
 details-v1-5974b67c8-nd7kl        2/2     Running   0          83s
@@ -1313,17 +1300,14 @@ reviews-v1-7f6558b974-6z84q       2/2     Running   0          83s
 reviews-v2-6cb6ccd848-l8s56       2/2     Running   0          83s
 reviews-v3-cc56b578-9vvqv         2/2     Running   0          83s
 </code></pre>
-
 <p>Now, create the gateway:</p>
 <pre><code>[akaris@linux upi]$ oc apply -f https://raw.githubusercontent.com/istio/istio/release-1.6/samples/bookinfo/networking/bookinfo-gateway.yaml
 gateway.networking.istio.io/bookinfo-gateway created
 </code></pre>
-
 <pre><code>[akaris@linux upi]$ oc  get svc istio-ingressgateway -n istio-system
 NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP                                                               PORT(S)                                                      AGE
 istio-ingressgateway   LoadBalancer   172.30.44.45   af0e3e39e3f544f55a59da6578212ff5-1911792852.eu-west-3.elb.amazonaws.com   15021:31538/TCP,80:31367/TCP,443:31276/TCP,15443:30398/TCP   47m
 </code></pre>
-
 <p>Get variables to connect to the gateway:
 <a href="https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/#determining-the-ingress-ip-and-ports">https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/#determining-the-ingress-ip-and-ports</a></p>
 <p>There's an issue in the instructions for the <code>INGRESS_HOST</code>. With AWS, it needs to be <code>.status.loadBalancer.ingress[0].hostname</code> and not <code>.status.loadBalancer.ingress[0].ip</code>:</p>
@@ -1333,7 +1317,6 @@ istio-ingressgateway   LoadBalancer   172.30.44.45   af0e3e39e3f544f55a59da65782
 [akaris@linux upi]$ export TCP_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name==&quot;tcp&quot;)].port}')
 [akaris@linux upi]$ export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
 </code></pre>
-
 <p>Now, connect to the application with curl:</p>
 <pre><code>[akaris@linux upi]$ curl -s &quot;http://${GATEWAY_URL}/productpage&quot; | grep -o &quot;&lt;title&gt;.*&lt;/title&gt;&quot;
 &lt;title&gt;Simple Bookstore App&lt;/title&gt;

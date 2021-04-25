@@ -962,8 +962,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1117,30 +1117,24 @@ chroot /sysroot
 setfiles /etc/selinux/targeted/contexts/files/file_contexts /
 setfiles /etc/selinux/targeted/contexts/files/file_contexts /*
 </code></pre>
-
 <p>Mileage may vary with this command.</p>
 <h2 id="option-2">Option 2</h2>
 <p>Did not work for me: Restorecon from selinux permissive mode</p>
 <p>Edit the grub kernel cmdline. Change the kernel cmdline and append:</p>
 <pre><code>selinux=0
 </code></pre>
-
 <p>Then, edit /etc/selinux/config and set the system to "permissive"</p>
 <pre><code>vi /etc/selinux/config
 </code></pre>
-
 <p>Then, reboot the system.</p>
 <pre><code>reboot
 </code></pre>
-
 <p>Then, run the following to fix the labels again:</p>
 <pre><code>restorecon -RF / 2&gt;/dev/null
 </code></pre>
-
 <p>Then, change /etc/selinux/config again to <code>enforcing</code>:</p>
 <pre><code>vi /etc/selinux/config
 </code></pre>
-
 <h2 id="option-3">Option 3</h2>
 <p>coreos-relabel from rd.break </p>
 <p>Remove the console=&lt;...&gt; parameters (there are 2 of them) from the CLI and append rd.break</p>
@@ -1149,7 +1143,6 @@ setfiles /etc/selinux/targeted/contexts/files/file_contexts /*
 mount -o remount,rw /sysroot/usr
 coreos-relabel /sysroot/*
 </code></pre>
-
 <h2 id="resources">Resources</h2>
 <p><a href="https://github.com/coreos/ignition-dracut/pull/138">https://github.com/coreos/ignition-dracut/pull/138</a>
 <a href="https://github.com/coreos/fedora-coreos-config/search?q">https://github.com/coreos/fedora-coreos-config/search?q=coreos-relabel</a>

@@ -903,8 +903,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1121,7 +1121,6 @@ NAME               DESIRED   CURRENT   READY   AVAILABLE   AGE
 osc-c5r5c-worker   3         3                             4h54m
 (overcloud) [stack@undercloud-0 clouds]$ 
 </code></pre>
-
 <pre><code>(overcloud) [stack@undercloud-0 clouds]$ kubectl get machineset -n openshift-machine-api osc-c5r5c-worker -o yaml
 apiVersion: machine.openshift.io/v1beta1
 kind: MachineSet
@@ -1188,7 +1187,6 @@ status:
   observedGeneration: 1
   replicas: 3
 </code></pre>
-
 <pre><code>/var/log/pods/openshift-machine-api_machine-api-controllers-f64b7f7b8-tm7qc_b1f05af2-2312-11ea-9b6c-fa163e431263/machine-controller/0.log
 (...)
 2019-12-20T10:23:14.635223358+00:00 stderr F E1220 10:23:14.635191       1 controller.go:239] Failed to check if machine &quot;osc-c5r5c-worker-bgt9b&quot; exists: Error checking if instance exists (machine/actuator.go 346): 
@@ -1207,7 +1205,6 @@ status:
 2019-12-20T10:23:17.652613228+00:00 stderr F Error getting a new instance service from the machine (machine/actuator.go 467): Create providerClient err: You must provide exactly one of DomainID or DomainName in a Scope with ProjectName
 2019-12-20T10:23:18.652945792+00:00 stderr F I1220 10:23:18.652884       1 controller.go:133] Reconciling Machine &quot;osc-c5r5c-worker-qphk7&quot;
 </code></pre>
-
 <p>Looking at the secret:</p>
 <pre><code>(overcloud) [stack@undercloud-0 clouds]$ kubectl get secrets -n openshift-machine-api openstack-cloud-credentials -o yaml
 apiVersion: v1
@@ -1225,7 +1222,6 @@ metadata:
   uid: b2bded52-2312-11ea-9b6c-fa163e431263
 type: Opaque
 </code></pre>
-
 <pre><code>(overcloud) [stack@undercloud-0 clouds]$ base64 -d &lt;(echo 'Y2xvdWRzOgogIG9wZW5zdGFjazoKICAgIGF1dGg6CiAgICAgIGFwcGxpY2F0aW9uX2NyZWRlbnRpYWxfaWQ6ICIiCiAgICAgIGFwcGxpY2F0aW9uX2NyZWRlbnRpYWxfbmFtZTogIiIKICAgICAgYXBwbGljYXRpb25fY3JlZGVudGlhbF9zZWNyZXQ6ICIiCiAgICAgIGF1dGhfdXJsOiBodHRwOi8vMTcyLjE2LjAuMTMwOjUwMDAvL3YzCiAgICAgIGRlZmF1bHRfZG9tYWluOiAiIgogICAgICBkb21haW5faWQ6ICIiCiAgICAgIGRvbWFpbl9uYW1lOiAiIgogICAgICBwYXNzd29yZDogelA0YmUydWtocENrajR6cVJmVWs4WGpRYgogICAgICBwcm9qZWN0X2RvbWFpbl9pZDogIiIKICAgICAgcHJvamVjdF9kb21haW5fbmFtZTogIiIKICAgICAgcHJvamVjdF9pZDogIiIKICAgICAgcHJvamVjdF9uYW1lOiBhZG1pbgogICAgICB0b2tlbjogIiIKICAgICAgdXNlcl9kb21haW5faWQ6ICIiCiAgICAgIHVzZXJfZG9tYWluX25hbWU6IERlZmF1bHQKICAgICAgdXNlcl9pZDogIiIKICAgICAgdXNlcm5hbWU6IGFkbWluCiAgICBhdXRoX3R5cGU6ICIiCiAgICBjYWNlcnQ6ICIiCiAgICBjZXJ0OiAiIgogICAgY2xvdWQ6ICIiCiAgICBpZGVudGl0eV9hcGlfdmVyc2lvbjogIjMiCiAgICBrZXk6ICIiCiAgICBwcm9maWxlOiAiIgogICAgcmVnaW9uX25hbWU6IHJlZ2lvbk9uZQogICAgcmVnaW9uczogbnVsbAogICAgdmVyaWZ5OiB0cnVlCiAgICB2b2x1bWVfYXBpX3ZlcnNpb246ICIiCg==')
 clouds:
   openstack:
@@ -1259,7 +1255,6 @@ clouds:
     verify: true
     volume_api_version: &quot;&quot;
 </code></pre>
-
 <pre><code>(overcloud) [stack@undercloud-0 clouds]$ cat clouds.yaml 
 clouds:
   overcloud:
@@ -1273,11 +1268,9 @@ clouds:
     interface: &quot;public&quot;
     identity_api_version: 3
 </code></pre>
-
 <p>The problem is in the generated secret:</p>
 <pre><code>Error getting a new instance service from the machine (machine/actuator.go 467): Create providerClient err: You must provide exactly one of DomainID or DomainName in a Scope with ProjectName
 </code></pre>
-
 <p><a href="https://github.com/terraform-providers/terraform-provider-openstack/issues/267">https://github.com/terraform-providers/terraform-provider-openstack/issues/267</a></p>
 <p>Whereas when I check here: <a href="https://egallen.com/openshift-42-on-openstack-13-gpu/">https://egallen.com/openshift-42-on-openstack-13-gpu/</a>  This blog article uses project_id, too.</p>
 <pre><code>
@@ -1294,7 +1287,6 @@ clouds:
     interface: &quot;public&quot;
     identity_api_version: 3
 </code></pre>
-
 <p>However, my clouds.yaml file is actually completely correct:</p>
 <pre><code>[stack@undercloud-0 clouds]$ openstack --os-cloud overcloud token issue
 +------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -1306,7 +1298,6 @@ clouds:
 | user_id    | 0d3f5ab158c64c11b57d58c76d9675f0                                                                                                                                                        |
 +------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 </code></pre>
-
 <p>I then tried with:</p>
 <pre><code>clouds:
   openstack:
@@ -1321,7 +1312,6 @@ clouds:
     interface: &quot;public&quot;
     identity_api_version: 3
 </code></pre>
-
 <blockquote>
 <p>Note that I made 2 changes: project_id which I got from <code>openstack project list | grep admin</code> ; and I renamed the cloud credential to name <code>openstack</code>.</p>
 </blockquote>
@@ -1337,7 +1327,6 @@ clouds:
 | 53e2da7f-1398-45d3-94e3-0008d8e209d9 | rhel-test1             | ACTIVE | private1=2000:192:168:0:f816:3eff:fe13:275, 192.168.0.113, 172.16.0.110 | rhel  | m1.small     |
 +--------------------------------------+------------------------+--------+-------------------------------------------------------------------------+-------+--------------+
 </code></pre>
-
 <p>The cluster deployed:</p>
 <pre><code>(overcloud) [stack@undercloud-0 clouds]$ ./openshift-install create cluster --dir=install-config/ --log-level=info
 INFO Consuming &quot;Install Config&quot; from target directory 
@@ -1353,7 +1342,6 @@ INFO To access the cluster as the system:admin user when using 'oc', run 'export
 INFO Access the OpenShift web-console here: https://console-openshift-console.apps.osc.redhat.local 
 INFO Login to the console with user: kubeadmin, password: vFKnm-d43eY-aMMBB-52xcU 
 </code></pre>
-
 <p>Now, there was an issue with 2 of the machines:</p>
 <pre><code>(overcloud) [stack@undercloud-0 clouds]$ oc get machineset -A
 NAMESPACE               NAME               DESIRED   CURRENT   READY   AVAILABLE   AGE
@@ -1381,7 +1369,6 @@ NAME                                                        GENERATEDBYCONTROLLE
 rendered-master-8e766b361a127ddfebde5802f36b90ce            d780d197a9c5848ba786982c0c4aaa7487297046   2.2.0             96m
 rendered-worker-74267811bebab086ede643b9c9b2ba66            d780d197a9c5848ba786982c0c4aaa7487297046   2.2.0             96m
 </code></pre>
-
 <p>And it fails with:</p>
 <pre><code>(overcloud) [stack@undercloud-0 clouds]$ oc describe machine -n openshift-machine-api osc-6gzh2-worker-5d627 | tail
         Openshift Cluster ID:  osc-6gzh2
@@ -1396,7 +1383,6 @@ Events:
   Warning  FailedCreate  2m30s (x23 over 95m)  openstack_controller  CreateError
 (overcloud) [stack@undercloud-0 clouds]$ 
 </code></pre>
-
 <pre><code>vercloud) [stack@undercloud-0 clouds]$ oc get events -n openshift-machine-api
 LAST SEEN   TYPE      REASON              OBJECT                                              MESSAGE
 95m         Normal    Scheduled           pod/cluster-autoscaler-operator-65dfcc75bb-gv8mg    Successfully assigned openshift-machine-api/cluster-autoscaler-operator-65dfcc75bb-gv8mg to osc-6gzh2-master-1
@@ -1436,7 +1422,6 @@ LAST SEEN   TYPE      REASON              OBJECT                                
 98m         Warning   FailedCreate        machine/osc-6gzh2-worker-shw2w                      CreateError
 97m         Normal    Created             machine/osc-6gzh2-worker-shw2w                      Created Machine osc-6gzh2-worker-shw2w
 </code></pre>
-
 <p>I connected to master 2 via master 1:</p>
 <pre><code>[stack@undercloud-0 ~]$ eval $(ssh-agent)
 [stack@undercloud-0 ~]$ ssh-add  ~/.ssh/id_rsa
@@ -1457,7 +1442,6 @@ Last login: Fri Dec 20 17:27:13 2019 from 172.31.0.16
 sud[core@osc-6gzh2-master-0 ~]$ sudo -i
 [root@osc-6gzh2-master-0 ~]# 
 </code></pre>
-
 <p>And then got:</p>
 <pre><code>[root@osc-6gzh2-master-2 ~]# grep osc-6gzh2-worker-5d627 /var/log -R
 /var/log/pods/openshift-machine-api_machine-api-controllers-f64b7f7b8-xb7qn_4d35a879-2340-11ea-baab-fa163e272495/machine-controller/0.log:2019-12-20T15:49:41.304368389+00:00 stderr F I1220 15:49:41.304339       1 controller.go:133] Reconciling Machine &quot;osc-6gzh2-worker-5d627&quot;
@@ -1503,7 +1487,7 @@ sud[core@osc-6gzh2-master-0 ~]$ sudo -i
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        <a href="../useful-ocp-curl/" class="md-footer__link md-footer__link--prev" rel="prev">
+        <a href="../useful-ocp-commands/" class="md-footer__link md-footer__link--prev" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -1512,7 +1496,7 @@ sud[core@osc-6gzh2-master-0 ~]$ sudo -i
               <span class="md-footer__direction">
                 Previous
               </span>
-              Querying the OCP 4.x upgrades info API
+              Useful commands for OpenShift
             </div>
           </div>
         </a>

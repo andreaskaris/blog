@@ -1037,8 +1037,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1180,7 +1180,6 @@
             openshift.io/sa.scc.supplemental-groups=1000090000/10000
             openshift.io/sa.scc.uid-range=1000090000/10000
 </code></pre>
-
 <p>Storage class is a local provisioner with 4 100MB local mounts, set up with <a href="https://github.com/andreaskaris/kubernetes/tree/master/localvolume">https://github.com/andreaskaris/kubernetes/tree/master/localvolume</a>:</p>
 <pre><code>$ oc get storageclass
 NAME              PROVISIONER                    AGE
@@ -1192,7 +1191,6 @@ local-pv-89b778f1   92Mi       RWO            Delete           Available        
 local-pv-9e67e7d6   92Mi       RWO            Delete           Available             local-loopbacks             28m
 local-pv-b6a7cd37   92Mi       RWO            Delete           Available             local-loopbacks             3d
 </code></pre>
-
 <p><code>statefulset.yaml</code>:</p>
 <pre><code>kind: Service
 apiVersion: v1
@@ -1245,10 +1243,8 @@ spec:
           requests:
             storage: 90Mi
 </code></pre>
-
 <pre><code>$ oc apply -f statefulset.yaml
 </code></pre>
-
 <p>OpenShift's admission controller will complain that the range is not correct:</p>
 <pre><code>$ oc get pods
 No resources found.
@@ -1264,7 +1260,6 @@ Events:
   Normal   SuccessfulCreate  40s                 statefulset-controller  create Claim vol-test-0 Pod test-0 in StatefulSet test success
   Warning  FailedCreate      19s (x14 over 40s)  statefulset-controller  create Pod test-0 in StatefulSet test failed error: pods &quot;test-0&quot; is forbidden: unable to validate against any security context constraint: [spec.containers[0].securityContext.securityContext.runAsUser: Invalid value: 65000: must be in the ranges: [1000090000, 1000099999]]
 </code></pre>
-
 <h2 id="fixing-failed-validation-of-security-context-constraints">Fixing failed validation of security context constraints</h2>
 <p>There are 3 solutions to this. Either:</p>
 <ul>
@@ -1281,7 +1276,6 @@ No resources found.
 $ oc get pvc
 No resources found.
 </code></pre>
-
 <h3 id="changing-the-namespaces-openshiftiosasccuid-range">Changing the namespace's openshift.io/sa.scc.uid-range</h3>
 <p>Let's change the namespace's <code>uid-range</code>:</p>
 <pre><code>$ oc edit namespace test
@@ -1291,12 +1285,10 @@ $ oc describe project test  | grep scc
             openshift.io/sa.scc.supplemental-groups=1000090000/10000
             openshift.io/sa.scc.uid-range=65000/1000
 </code></pre>
-
 <pre><code>$ oc apply -f statefulset.yaml
 service/test created
 statefulset.apps/test created
 </code></pre>
-
 <pre><code>$ oc get statefulset
 NAME      DESIRED   CURRENT   AGE
 test      1         1         24s
@@ -1307,12 +1299,10 @@ $ oc get pvc
 NAME         STATUS    VOLUME              CAPACITY   ACCESS MODES   STORAGECLASS      AGE
 vol-test-0   Bound     local-pv-9e67e7d6   92Mi       RWO            local-loopbacks   30s
 </code></pre>
-
 <p>The pod was assigned to the restricted SCC:</p>
 <pre><code>$ oc get pod test-0 -o yaml | grep scc
     openshift.io/scc: restricted
 </code></pre>
-
 <p>This is because the restricted SCC is the default. If other SCCs were assigned to the default serviceaccount of the project, then SCC priorization would come into play. </p>
 <p>For more about SCC priorization, see: <a href="https://docs.openshift.com/container-platform/3.11/architecture/additional_concepts/authorization.html#scc-prioritization">https://docs.openshift.com/container-platform/3.11/architecture/additional_concepts/authorization.html#scc-prioritization</a></p>
 <p>On the worker that the pod runs at, verify the container's and processes' UID:</p>
@@ -1326,7 +1316,6 @@ vol-test-0   Bound     local-pv-9e67e7d6   92Mi       RWO            local-loopb
 65000      5172  0.0  0.0   3164   352 ?        Ss   11:53   0:00 /bin/sh -c while true; do date; sleep 1; done
 root       6616  0.0  0.0 112808   972 pts/0    R+   11:55   0:00 grep --color=auto date; sleep 1
 </code></pre>
-
 <p>Also note that the FsGroupID was set automatically for the filesystem:</p>
 <pre><code>[root@node-0 ~]# ls /mnt/local-storage/loopbacks/ -al
 total 8
@@ -1337,13 +1326,11 @@ drwxrwsr-x. 2 root root       1024 Aug  3 09:55 b
 drwxrwsr-x. 2 root 1000090000 1024 Aug  3 09:55 c
 drwxr-xr-x. 3 root root       1024 Jul 30 13:30 d
 </code></pre>
-
 <p>And it was assigned as GID to the user inside the pod:</p>
 <pre><code>$ oc rsh test-0
 / $ id
 uid=65000 gid=0(root) groups=1000090000
 </code></pre>
-
 <h3 id="resetting-the-lab_1">Resetting the lab</h3>
 <p>Delete the statefulSet, PVC, etc again. Continue once all is deleted:</p>
 <pre><code>$ oc get statefulset
@@ -1353,7 +1340,6 @@ No resources found.
 $ oc get pvc
 No resources found.
 </code></pre>
-
 <h3 id="creating-a-custom-scc">Creating a custom SCC</h3>
 <p>Let's now modify <code>pod.spec.securityContext</code> and set fsGroup:</p>
 <pre><code>kind: Service
@@ -1408,7 +1394,6 @@ spec:
           requests:
             storage: 90Mi
 </code></pre>
-
 <p>This of course must fail:</p>
 <pre><code> oc apply -f statefulset.yaml 
 service/test created
@@ -1425,7 +1410,6 @@ Events:
   Normal   SuccessfulCreate  7s                statefulset-controller  create Claim vol-test-0 Pod test-0 in StatefulSet test success
   Warning  FailedCreate      2s (x11 over 7s)  statefulset-controller  create Pod test-0 in StatefulSet test failed error: pods &quot;test-0&quot; is forbidden: unable to validate against any security context constraint: [fsGroup: Invalid value: []int64{65000}: 65000 is not an allowed group]
 </code></pre>
-
 <p>Let's create a custom SCC to change this. The following group was created by inspecting the <code>restricted</code> SCC with <code>oc get scc restricted -o yaml</code> and then by changing the name, the fsGroup ranges and by removing some of the metadata.</p>
 <p><code>restricted-fsgroup.yaml</code>:</p>
 <pre><code>allowHostDirVolumePlugin: false
@@ -1468,7 +1452,6 @@ volumes:
 - projected
 - secret
 </code></pre>
-
 <pre><code>$ oc apply -f restricted-fsgroup.yaml 
 securitycontextconstraints.security.openshift.io/restricted-fsgroup created
 $ oc get scc
@@ -1484,7 +1467,6 @@ privileged           true      [*]       RunAsAny    RunAsAny           RunAsAny
 restricted           false     []        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    &lt;none&gt;     false            [configMap downwardAPI emptyDir persistentVolumeClaim projected secret]
 restricted-fsgroup   false     []        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    &lt;none&gt;     false            [configMap downwardAPI emptyDir persistentVolumeClaim projected secret]
 </code></pre>
-
 <p>Add this restricted-fsgroup to the default service account's SCCs:</p>
 <pre><code>$ oc adm policy add-scc-to-user restricted-fsgroup -z default
 scc &quot;restricted-fsgroup&quot; added to: [&quot;system:serviceaccount:test:default&quot;]
@@ -1494,7 +1476,6 @@ users:
 - system:serviceaccount:test:default
 (...)
 </code></pre>
-
 <p>Delete the statefulSet, PVC, etc again. Continue once all is deleted:</p>
 <pre><code>$ oc get statefulset
 No resources found.
@@ -1503,7 +1484,6 @@ No resources found.
 $ oc get pvc
 No resources found.
 </code></pre>
-
 <p>The statefulSet can now spawn the pod and the pod is assigned to SCC <code>restricted-fsgroup</code>:</p>
 <pre><code>$ oc apply -f statefulset.yaml
 $ oc get pods
@@ -1523,13 +1503,11 @@ Events:
 $ oc get pod test-0 -o yaml | grep scc
     openshift.io/scc: restricted-fsgroup
 </code></pre>
-
 <p>The pod now runs with group ID 65000:</p>
 <pre><code>$ oc rsh test-0
 / $ id
 uid=65000 gid=0(root) groups=65000
 </code></pre>
-
 <p>And that matches the group ID of the mount's directory:</p>
 <pre><code>[root@node-0 ~]# ls /mnt/local-storage/loopbacks/ -al
 total 8
@@ -1540,7 +1518,6 @@ drwxrwsr-x. 2 root 65000 1024 Aug  3 09:55 b
 drwxrwsr-x. 2 root root  1024 Aug  3 09:55 c
 drwxr-xr-x. 3 root root  1024 Jul 30 13:30 d
 </code></pre>
-
 <h2 id="scc-matching-and-priority">SCC matching and priority</h2>
 <p>Keep in mind that both SCCs are active at the same time - and will be selected depending on which SCC is matched by the requested pod.</p>
 <h3 id="matching-based-on-allowed-security-context">Matching based on allowed security context</h3>
@@ -1597,7 +1574,6 @@ spec:
           requests:
             storage: 90Mi
 </code></pre>
-
 <p>Reset the lab again, then deploy the modified deployment.</p>
 <p>Now, the pod's SCC is <code>restricted</code> because the requested GID only matches the restricted but not the restricted-fsgroup SCC:</p>
 <pre><code>$ oc apply -f statefulset.yaml
@@ -1605,7 +1581,6 @@ service/test created
 $ oc get pod test-0 -o yaml | grep scc
     openshift.io/scc: restricted
 </code></pre>
-
 <h3 id="name-as-tiebreaker">Name as tiebreaker</h3>
 <p>Now, what happens if we remove the request for a specific fsGroup from the pod?</p>
 <pre><code>kind: Service
@@ -1659,7 +1634,6 @@ spec:
           requests:
             storage: 90Mi
 </code></pre>
-
 <p>Reset the lab again, then apply the statefulset.</p>
 <pre><code>$ oc apply -f statefulset.yaml 
 service/test created
@@ -1667,12 +1641,10 @@ statefulset.apps/test created
 $ oc get pod test-0 -o yaml | grep scc
     openshift.io/scc: restricted
 </code></pre>
-
 <pre><code>$ oc rsh test-0
 / $ id
 uid=65000 gid=0(root) groups=1000090000
 </code></pre>
-
 <pre><code>[root@node-0 ~]# ls /mnt/local-storage/loopbacks/ -al
 total 8
 drwxr-xr-x. 6 root root         42 Jul 30 13:30 .
@@ -1682,7 +1654,6 @@ drwxrwsr-x. 2 root root       1024 Aug  3 09:55 b
 drwxrwsr-x. 2 root root       1024 Aug  3 09:55 c
 drwxr-xr-x. 3 root root       1024 Jul 30 13:30 d
 </code></pre>
-
 <p>Both SCCs have the same priority, are equally restrictive. So the tiebreaker is the name:</p>
 <ul>
 <li><a href="https://docs.openshift.com/container-platform/3.11/architecture/additional_concepts/authorization.html#scc-prioritization">https://docs.openshift.com/container-platform/3.11/architecture/additional_concepts/authorization.html#scc-prioritization</a></li>
@@ -1693,7 +1664,6 @@ drwxr-xr-x. 3 root root       1024 Jul 30 13:30 d
 
     If both priorities and restrictions are equal the SCCs will be sorted by name
 </code></pre>
-
 <p>Let's suppose this had a different name:</p>
 <pre><code>$ oc delete -f restricted-fsgroup.yaml
 securitycontextconstraints.security.openshift.io &quot;restricted-fsgroup&quot; deleted
@@ -1714,7 +1684,6 @@ nonroot              false     []        MustRunAs   MustRunAsNonRoot   RunAsAny
 privileged           true      [*]       RunAsAny    RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     false            [*]
 restricted           false     []        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    &lt;none&gt;     false            [configMap downwardAPI emptyDir persistentVolumeClaim projected secret]
 </code></pre>
-
 <p>Then we'd use the <code>fsgroup</code> SCC:</p>
 <pre><code>$ oc apply -f statefulset.yaml 
 service/test created
@@ -1722,13 +1691,11 @@ statefulset.apps/test created
 $ oc get pod test-0 -o yaml | grep scc
     openshift.io/scc: fsgroup
 </code></pre>
-
 <pre><code>$ oc rsh test-0
 id
 / $ id
 uid=65000 gid=0(root) groups=65000
 </code></pre>
-
 <pre><code>[root@node-0 ~]# ls /mnt/local-storage/loopbacks/ -al
 total 8
 drwxr-xr-x. 6 root root         42 Jul 30 13:30 .
@@ -1738,7 +1705,6 @@ drwxrwsr-x. 2 root root       1024 Aug  3 09:55 b
 drwxrwsr-x. 2 root root       1024 Aug  3 09:55 c
 drwxr-xr-x. 3 root root       1024 Jul 30 13:30 d
 </code></pre>
-
 <h3 id="using-the-priority-field-as-a-tiebreaker">Using the priority field as a tiebreaker</h3>
 <p>And is there a way to prioritize our policy without changing the name? Yes, with the priority field. Change the SCC's name again to <code>restricted-fsgroup</code>. So based on the name, it would lose against <code>restricted</code>. But also set the priority to <code>1</code> which is higher than <code>restricted</code>s priority of <code>0</code>:</p>
 <pre><code>$ cat restricted-fsgroup.yaml 
@@ -1782,7 +1748,6 @@ volumes:
 - secret
 priority: 1
 </code></pre>
-
 <p>After applying this, we see:</p>
 <pre><code>$ oc get scc
 NAME                 PRIV      CAPS      SELINUX     RUNASUSER          FSGROUP     SUPGROUP    PRIORITY   READONLYROOTFS   VOLUMES
@@ -1797,11 +1762,9 @@ privileged           true      [*]       RunAsAny    RunAsAny           RunAsAny
 restricted           false     []        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    &lt;none&gt;     false            [configMap downwardAPI emptyDir persistentVolumeClaim projected secret]
 restricted-fsgroup   false     []        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    1          false            [configMap downwardAPI emptyDir persistentVolumeClaim projected secret]
 </code></pre>
-
 <pre><code>$ oc get pod test-0 -o yaml | grep scc
     openshift.io/scc: restricted-fsgroup
 </code></pre>
-
 <h3 id="demonstrating-that-priority-only-comes-into-play-if-sccs-overlap">Demonstrating that priority only comes into play if SCCs overlap</h3>
 <p>But should we decide that we not like  a fsGroup within 65000-65999, we can request the namespace's default and still use <code>restricted</code>, even though we changed the priority:</p>
 <pre><code>kind: Service
@@ -1856,7 +1819,6 @@ spec:
           requests:
             storage: 90Mi
 </code></pre>
-
 <p>See this:</p>
 <pre><code>$ oc apply -f statefulset.yaml 
 service/test created
@@ -1864,7 +1826,6 @@ statefulset.apps/test created
 $ oc get pod test-0 -o yaml | grep scc
     openshift.io/scc: restricted
 </code></pre>
-
 <h2 id="summary">Summary</h2>
 <p>Lessons learned: we can apply multiple SCCs to a ServiceAccount. The default SCC is always <code>restricted</code>. The matching goes by priority first, then most restrictive policy, then by name. And if a policy does not match a specific request, another one might "jump in" and "help out". </p>
 <h2 id="resources">Resources</h2>

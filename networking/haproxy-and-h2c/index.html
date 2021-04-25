@@ -1073,8 +1073,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1320,7 +1320,6 @@ RFC 7540                         HTTP/2                         May 2015
    completed as an HTTP/1.1 request.  After commencing the HTTP/2
    connection, stream 1 is used for the response.
 </code></pre>
-
 <h3 id="upgrade-h2c-with-haproxy">Upgrade h2c with haproxy</h3>
 <p>Haproxy - protocol upgrades from HTTP/1.1 to HTTP/2 via <code>Upgrade: h2c</code> is not possible with haproxy. For negotiation of the protocol, haproxy only supports ALPN. </p>
 <p>Otherwise the protocol must be forced to either HTTP/1.1 or HTTP/2. For example, on the frontend, it is possible to not select a protocol. A client can then either initiate an HTTP/1.1 connection or an HTTP/2 connection, but it cannot upgrade from HTTP/1.1 to HTTP/2. (see <code>POC</code> for further details)</p>
@@ -1331,7 +1330,6 @@ RFC 7540                         HTTP/2                         May 2015
              for instance: &quot;http/1.1,http/1.0&quot; (without quotes).
              If it is not set, the server ALPN is used.
 </code></pre>
-
 <pre><code>alpn &lt;protocols&gt;
 
 This enables the TLS ALPN extension and advertises the specified protocol
@@ -1349,7 +1347,6 @@ preference, like below :
 
      bind :443 ssl crt pub.pem alpn h2,http/1.1
 </code></pre>
-
 <pre><code>proto &lt;name&gt;
 
 Forces the multiplexer's protocol to use for the incoming connections. It
@@ -1361,7 +1358,6 @@ protocol for all connections instantiated from this listening socket. For
 instance, it is possible to force the http/2 on clear TCP by specifying &quot;proto
 h2&quot; on the bind line.
 </code></pre>
-
 <pre><code>[root@26b317c91a20 /]# haproxy -vv | grep proto -A5
 Available multiplexer protocols :
 (protocols marked as &lt;default&gt; cannot be specified using 'proto' keyword)
@@ -1370,7 +1366,6 @@ Available multiplexer protocols :
               h2 : mode=HTTP       side=FE|BE     mux=H2
        &lt;default&gt; : mode=TCP        side=FE|BE     mux=PASS
 </code></pre>
-
 <p>Version for tests in POC:</p>
 <pre><code>[root@ef82916a0181 /]# haproxy -v
 HA-Proxy version 2.2.9-a947cc2 2021/02/06 - https://haproxy.org/
@@ -1378,7 +1373,6 @@ Status: long-term supported branch - will stop receiving fixes around Q2 2025.
 Known bugs: http://www.haproxy.org/bugs/bugs-2.2.9.html
 Running on: Linux 4.18.0-240.1.1.el8_3.x86_64 #1 SMP Fri Oct 16 13:36:46 EDT 2020 x86_64
 </code></pre>
-
 <p>The tested haproxy version [0] can only negotiate the HTTP version via ALPN and this requires the use of TLS and thus of encrypted connections. This applies to both frontend and backend connections. 
 Thus, if haproxy uses ALPN on both the frontend and the backend, any higher level tool that configures haproxy (such as the <code>openshift-router</code> binary inside the OpenShift router pods) does not have to worry and can simply rely on ALPN protocol negotiation to find the correct protocol for the client and for the backend server.
 The <code>Upgrade: h2c</code> statement does not seem to be supported with haproxy. I could not find official sources for this, but my tests and research on the web point towards this.
@@ -1395,7 +1389,6 @@ ServerName www.h2c.example.org
 Protocols h2c
 &lt;/VirtualHost&gt;
 </code></pre>
-
 <p>In that case, either of the 3 following tests works with httpd:</p>
 <pre><code>[root@kind haproxy]# curl http://localhost:8081 -v
 * Rebuilt URL to: http://localhost:8081/
@@ -1494,7 +1487,6 @@ HTTP/2 insecure (h2c)
 HTTP/2 insecure (h2c)
 * Connection #0 to host localhost left intact
 </code></pre>
-
 <h4 id="testing-the-haproxy-frontend-side">Testing the haproxy frontend side</h4>
 <p>The problem with haproxy is that it cannot upgrade an unencrypted frontend HTTP/1.1 connection to HTTP/2 --- the Upgrade: h2c statement does not work.</p>
 <p>According to https://discourse.haproxy.org/t/converting-http-2-h2c-without-tls-to-http-1-1/2176/10 , upgrading from HTTP/1.1 to HTTP/2 on the frontend is only possible in haproxy with ALPN.</p>
@@ -1510,10 +1502,8 @@ backend be_h2c
     mode http
     server server1 10.88.0.123:8081 proto h2
 </code></pre>
-
 <pre><code>kill -USR2 8
 </code></pre>
-
 <pre><code>[WARNING] 066/191543 (8) : Reexecuting Master process
 [NOTICE] 066/191543 (8) : haproxy version is 2.2.9-a947cc2
 [NOTICE] 066/191543 (8) : path to executable is /usr/sbin/haproxy
@@ -1523,7 +1513,6 @@ backend be_h2c
 [WARNING] 066/191543 (8) : Reexecuting Master process in waitpid mode
 [WARNING] 066/191543 (8) : Reexecuting Master process
 </code></pre>
-
 <p>The documentation also clarifies this in the <code>proto</code> section:</p>
 <pre><code>[root@26b317c91a20 /]# haproxy -vv | grep proto -A5
 Available multiplexer protocols :
@@ -1533,7 +1522,6 @@ Available multiplexer protocols :
               h2 : mode=HTTP       side=FE|BE     mux=H2
        &lt;default&gt; : mode=TCP        side=FE|BE     mux=PASS
 </code></pre>
-
 <h5 id="forcing-only-http2">Forcing only HTTP/2</h5>
 <p>Whereas the following works but will only allow HTTP/2:</p>
 <pre><code>frontend fe_h2c
@@ -1545,7 +1533,6 @@ backend be_h2c
     mode http
     server server1 10.88.0.123:8081 proto h2
 </code></pre>
-
 <p>But a connection upgrade is not possible as HTTP/1.1 is disabled:</p>
 <pre><code>[root@kind haproxy]# curl http://localhost:8084 -v
 * Rebuilt URL to: http://localhost:8084/
@@ -1618,7 +1605,6 @@ curl: (52) Empty reply from server
 HTTP/2 insecure (h2c)
 * Connection #0 to host localhost left intact
 </code></pre>
-
 <h5 id="permitting-either-http11-or-http2-on-the-frontend-no-upgrade">Permitting either HTTP/1.1 or HTTP/2 on the frontend, no upgrade</h5>
 <p>On the other hand, the following works for HTTP/1.1 and HTTP/2, but not for upgrades from 1.1 to HTTP/2 via upgrade h2c:</p>
 <pre><code>frontend fe_h2c 
@@ -1630,10 +1616,8 @@ backend be_h2c
     mode http 
     server server1 10.88.0.123:8081 proto h2 
 </code></pre>
-
 <pre><code>kill -USR2 8
 </code></pre>
-
 <pre><code>[WARNING] 066/192956 (8) : Reexecuting Master process
 [WARNING] 066/192956 (138) : Stopping frontend GLOBAL in 0 ms.
 [WARNING] 066/192956 (138) : Stopping frontend fe_http1 in 0 ms.
@@ -1652,7 +1636,6 @@ backend be_h2c
 [WARNING] 066/192956 (138) : Proxy be_h2 stopped (cumulated conns: FE: 0, BE: 0).
 [WARNING] 066/192956 (8) : Former worker #1 (138) exited with code 0 (Exit)
 </code></pre>
-
 <pre><code>[root@kind http2-haproxy]# curl  http://localhost:8084 -v
 * Rebuilt URL to: http://localhost:8084/
 *   Trying ::1...
@@ -1740,7 +1723,6 @@ HTTP/2 insecure (h2c)
 HTTP/2 insecure (h2c)
 * Connection #0 to host localhost left intact
 </code></pre>
-
 <h4 id="testing-the-haproxy-backend-side">Testing the haproxy backend side</h4>
 <p>On the backend side, it is the same. You can either force the backend proto via <code>proto h2</code> to be HTTP/2. Or you can use HTTP/1.1. For negotiation of the protocol, you must use ALPN on the backend.</p>
 <p>haproxy cannot upgrade an unencrypted backend HTTP/1.1 connection to HTTP/2 --- the Upgrade: h2c statement is not a functionality that haproxy provides.</p>
@@ -1749,7 +1731,6 @@ HTTP/2 insecure (h2c)
 <p>In order to verify this, I installed wireshark inside the haproxy pod, ran a live capture of the backend traffic with:</p>
 <pre><code> tshark -i eth0 host 10.88.0.123 -O http
 </code></pre>
-
 <p>And then, I ran curl against the frontend.</p>
 <h4 id="baseline-http-only-virtual-server">Baseline, HTTP only virtual server</h4>
 <p>This is the frontend and backend configuration:</p>
@@ -1762,10 +1743,8 @@ backend be_http1
     mode http 
     server server1 10.88.0.123:8080
 </code></pre>
-
 <pre><code>curl http://localhost:8083 -v
 </code></pre>
-
 <pre><code>(...)
 Hypertext Transfer Protocol
     GET / HTTP/1.1\r\n
@@ -1813,13 +1792,11 @@ Hypertext Transfer Protocol
 Line-based text data: text/html (1 lines)
 (...)
 </code></pre>
-
 <h4 id="baseline-http2-virtual-server-unencrypted">Baseline, HTTP/2 virtual server, unencrypted</h4>
 <p>We have 2 scenarios here. Both force clear text HTTP/2 on the backend.</p>
 <p>In order to capture traffic, we need to change the tshark command to:</p>
 <pre><code>tshark -i eth0 -d tcp.port==8081,http -O http -O http2 host 10.88.0.123
 </code></pre>
-
 <blockquote>
 <p>It's important to tell Wireshark that we expect to see http over port 8081 (<code>-d tcp.port==8081,http</code>). This will tell tshark to interpret everything via port 8081 as HTTP(2).</p>
 </blockquote>
@@ -1833,19 +1810,15 @@ backend be_h2c
     mode http 
     server server1 10.88.0.123:8081 proto h2
 </code></pre>
-
 <p>In this case, no backend connection is initiatied if one runs:</p>
 <pre><code>curl http://localhost:8084 -v
 </code></pre>
-
 <p>Neither with:</p>
 <pre><code>curl --http2 http://localhost:8084 -v
 </code></pre>
-
 <p>However, when one forces http2 from the start with ...</p>
 <pre><code>curl --http2-prior-knowledge http://localhost:8084 -v
 </code></pre>
-
 <p>... then one can see HTTP/2 on the backend:</p>
 <pre><code>(...)
 Transmission Control Protocol, Src Port: 47652, Dst Port: 8081, Seq: 1, Ack: 1, Len: 45
@@ -2121,7 +2094,6 @@ HyperText Transfer Protocol 2
         Additional Debug Data: 74696d656f7574
 (...)
 </code></pre>
-
 <h5 id="not-forcing-http2-on-the-frontend">Not forcing HTTP/2 on the frontend</h5>
 <pre><code>frontend fe_h2c
     mode http
@@ -2132,11 +2104,9 @@ backend be_h2c
     mode http
     server server1 10.88.0.123:8081 proto h2
 </code></pre>
-
 <p>In that case, the following will yield an HTTP/1.1 answer on the frontend:</p>
 <pre><code>curl http://localhost:8084 -v
 </code></pre>
-
 <p>On the backend, however, we see the same HTTP/2 traffic as before:</p>
 <pre><code>[root@ef82916a0181 /]# tshark -i eth0 -d tcp.port==8081,http  host 10.88.0.123
 Running as user &quot;root&quot; and group &quot;root&quot;. This could be dangerous.
@@ -2157,11 +2127,9 @@ Capturing on 'eth0'
    14 0.000794674  10.88.0.128 → 10.88.0.123  HTTP2 92 WINDOW_UPDATE[1], WINDOW_UPDATE[0]
    15 0.041548863  10.88.0.123 → 10.88.0.128  TCP 66 8081 → 47690 [ACK] Seq=206 Ack=154 Win=29056 Len=0 TSval=3828088655 TSecr=281077416
 </code></pre>
-
 <p>And the following yields HTTP/2 on the frontend:</p>
 <pre><code>curl --http2-prior-knowledge http://localhost:8084 -v
 </code></pre>
-
 <p>And HTTP/2 on the backend:</p>
 <pre><code>[root@ef82916a0181 /]# tshark -i eth0 -d tcp.port==8081,http  host 10.88.0.123
 Running as user &quot;root&quot; and group &quot;root&quot;. This could be dangerous.
@@ -2182,7 +2150,6 @@ Capturing on 'eth0'
    14 0.002485282  10.88.0.128 → 10.88.0.123  HTTP2 92 WINDOW_UPDATE[1], WINDOW_UPDATE[0]
    15 0.043436470  10.88.0.123 → 10.88.0.128  TCP 66 8081 → 47742 [ACK] Seq=206 Ack=154 Win=29056 Len=0 TSval=3828152613 TSecr=281141374
 </code></pre>
-
 <h5 id="forcing-http2-on-the-frontend-http11-on-the-backend">Forcing HTTP/2 on the frontend, HTTP/1.1 on the backend</h5>
 <p>It's also possible to force HTTP/2 on the frontend and then terminate the connection with HTTP/1.1 on the backend.</p>
 <p>The following is also possible:</p>
@@ -2195,7 +2162,6 @@ backend be_h2c
     mode http
     server server1 10.88.0.123:8081 # proto h2
 </code></pre>
-
 <pre><code>[root@kind ~]# curl --http2-prior-knowledge http://localhost:8084 -v
 * Rebuilt URL to: http://localhost:8084/
 *   Trying ::1...
@@ -2227,7 +2193,6 @@ HTTP/2 insecure (h2c)
 * Connection #0 to host localhost left intact
 [root@kind ~]# 
 </code></pre>
-
 <pre><code>[root@ef82916a0181 /]# tshark -i eth0 -d tcp.port==8081,http  host 10.88.0.123
 Running as user &quot;root&quot; and group &quot;root&quot;. This could be dangerous.
 Capturing on 'eth0'
@@ -2241,7 +2206,6 @@ Capturing on 'eth0'
     8 0.000611168  10.88.0.123 → 10.88.0.128  TCP 66 8081 → 48014 [FIN, ACK] Seq=322 Ack=126 Win=29056 Len=0 TSval=3829142493 TSecr=282131295
     9 0.000697672  10.88.0.128 → 10.88.0.123  TCP 66 48014 → 8081 [RST, ACK] Seq=126 Ack=323 Win=30336 Len=0 TSval=282131295 TSecr=3829142493
 </code></pre>
-
 <h5 id="tlsalpn-protocol-detection-for-http2">TLS/ALPN protocol detection for HTTP/2</h5>
 <p>Looking at the h2 virtual servers with TLS/ALPN in place:</p>
 <pre><code>frontend fe_h2 
@@ -2253,7 +2217,6 @@ backend be_h2
     mode http 
     server server1 10.88.0.123:8082 ssl verify none alpn h2 
 </code></pre>
-
 <p>On the frontend, we can force the protocol to use, just as an example, to be HTTP/1.1</p>
 <pre><code>[root@kind ~]# curl --http1.1 https://localhost:8085 -v -k
 * Rebuilt URL to: https://localhost:8085/
@@ -2311,7 +2274,6 @@ backend be_h2
 HTTP/2 secure (h2)
 * Connection #0 to host localhost left intact
 </code></pre>
-
 <p>On the backend, we see that haproxy will negotiate and offer HTTP/2 to the server via ALPN:</p>
 <pre><code>[root@ef82916a0181 /]# tshark -i eth0 -O tls  host 10.88.0.123  | egrep -i 'application_layer_protocol_negotiation|alpn|Transmission Control Protocol'
 Running as user &quot;root&quot; and group &quot;root&quot;. This could be dangerous.
@@ -2345,7 +2307,6 @@ Transmission Control Protocol, Src Port: 8082, Dst Port: 34156, Seq: 830, Ack: 9
 Transmission Control Protocol, Src Port: 8082, Dst Port: 34156, Seq: 854, Ack: 923, Len: 0
 Transmission Control Protocol, Src Port: 34156, Dst Port: 8082, Seq: 923, Ack: 855, Len: 0
 </code></pre>
-
 <p>When changing to the following:</p>
 <pre><code>frontend fe_h2 
     mode http 
@@ -2356,7 +2317,6 @@ backend be_h2
     mode http 
     server server1 10.88.0.123:8082 ssl verify none alpn h2,http/1.1
 </code></pre>
-
 <p>We can see that haproxy will send both options to the server in its offer:</p>
 <pre><code>[root@ef82916a0181 /]# tshark -i eth0 -O tls  host 10.88.0.123  | egrep -i 'application_layer_protocol_negotiation|alpn|Transmission Control Protocol'
 Running as user &quot;root&quot; and group &quot;root&quot;. This could be dangerous.

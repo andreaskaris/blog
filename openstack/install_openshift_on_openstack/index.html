@@ -957,8 +957,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1101,7 +1101,6 @@
 <pre><code>mkdir clouds
 cd clouds
 </code></pre>
-
 <p>Generate clouds.yaml:
 * <a href="https://andreaskaris.github.io/blog/openstack/using_clouds_yaml/">https://andreaskaris.github.io/blog/openstack/using_clouds_yaml/</a></p>
 <p>Update quotas:</p>
@@ -1111,43 +1110,35 @@ openstack --os-cloud openstack quota set \
   --ram 307200 --cores 100 --gigabytes 500 \
   $project
 </code></pre>
-
 <p>Or consider disabling quotas altogether:</p>
 <pre><code>openstack quota set --secgroups -1 --secgroup-rules -1 --cores -1 --ram -1 --gigabytes -1 $project
 </code></pre>
-
 <p>Also if it's necessary to spawn a higher number of workers:</p>
 <pre><code>nova quota-class-update default --instances -1 --ram -1 --cores -1
 </code></pre>
-
 <p>Create flavor:</p>
 <pre><code>openstack --os-cloud openstack flavor create --disk 25 --ram 32768 --vcpus 8 m1.openshift
 # If using hugepages for instances:
 # openstack flavor set --property hw:cpu_policy=dedicated  --property hw:mem_page_size=large m1.openshift
 </code></pre>
-
 <p>Download the installer and client, for example:</p>
 <pre><code>curl -O https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.5/openshift-install-linux.tar.gz
 curl -O https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.5/openshift-client-linux.tar.gz
 sudo tar -xf openshift-install-linux.tar.gz -C /usr/local/bin
 sudo tar -xf openshift-client-linux.tar.gz -C /usr/local/bin
 </code></pre>
-
 <p>Create the pull-secret in <code>pull-secret.txt</code>:</p>
 <pre><code>cat &lt;&lt;'EOF' &gt; pull-secret.txt
 (... pull-secret here ...)
 EOF
 </code></pre>
-
 <p>Create the install-config:</p>
 <pre><code>openshift-install create install-config --dir=install-config
 </code></pre>
-
 <p>Make sure to update <code>/etc/hosts</code> with the API endpoint (<code>api.&lt;cluster name&gt;.&lt;domain&gt;</code>):</p>
 <pre><code>(overcloud) [stack@undercloud-0 clouds]$ grep api /etc/hosts
 172.16.0.231 api.cluster.example.com
 </code></pre>
-
 <h4 id="deleting-and-recreating-a-cluster-when-something-went-wrong">Deleting and recreating a cluster when something went wrong</h4>
 <pre><code>openshift-install destroy cluster  --dir install-config/  --log-level=info
 rm -Rf install-config

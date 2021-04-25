@@ -912,8 +912,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1060,30 +1060,24 @@
 
     Save the custom.conf file.
 </code></pre>
-
 <p>Build container with buildah:</p>
 <pre><code>buildah from --name java-container fedora:26
 buildah run java-container -- yum install xclock icedtea-web -y
 buildah commit java-container java-image
 </code></pre>
-
 <p>Disable selinux:</p>
 <pre><code>sudo setenforce 0
 </code></pre>
-
 <p>Test container:</p>
 <pre><code>podman run -ti -e DISPLAY --rm -v /run/user/1000/gdm/Xauthority:/run/user/0/gdm/Xauthority:Z --net=host localhost/java-image xclock
 </code></pre>
-
 <p>If this does not work, check <code>journalctl -f</code>. I got:</p>
 <pre><code>May 19 13:48:48 linux audit[104503]: AVC avc:  denied  { connectto } for  pid=104503 comm=&quot;xclock&quot; path=002F746D702F2E5831312D756E69782F5831 scontext=system_u:system_r:container_t:s0:c616,c783 tcontext=unconfined_u:unconfined_r:xserver_t:s0-s0:c0.c1023 tclass=unix_stream_socket permissive=
 </code></pre>
-
 <p>In order to work around this:</p>
 <pre><code>echo &quot;(allow container_t xserver_t (unix_stream_socket (connectto)))&quot; &gt; mycontainer.cil
 sudo semodule -i mycontainer.ci
 </code></pre>
-
 <p>Once xclock works, save viewer.jnlp (from the iDrac) to /tmp/viewer.jnlp</p>
 <p>Exit container and run jviewer:</p>
 <pre><code>podman run -ti -e DISPLAY --rm -v /run/user/1000/gdm/Xauthority:/run/user/0/gdm/Xauthority:Z --net=host -v /tmp/viewer.jnlp:/root/viewer.jnlp localhost/java-image javaws /root/viewer.jnlp

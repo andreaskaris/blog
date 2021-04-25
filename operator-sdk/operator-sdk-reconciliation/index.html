@@ -901,8 +901,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1186,7 +1186,6 @@
 <pre><code>Typically, reconcile is triggered by a Controller in response to cluster Events (e.g. Creating, Updating,
 Deleting Kubernetes objects) or external Events (GitHub Webhooks, polling external sources, etc).`
 </code></pre>
-
 <blockquote>
 <p><a href="https://github.com/kubernetes-sigs/controller-runtime/blob/43331a6c8f823b497660b368deb4311ae2030206/pkg/reconcile/reconcile.go#L59">https://github.com/kubernetes-sigs/controller-runtime/blob/43331a6c8f823b497660b368deb4311ae2030206/pkg/reconcile/reconcile.go#L59</a></p>
 </blockquote>
@@ -1219,7 +1218,6 @@ go fmt ./...
 go vet ./...
 go build -o bin/manager main.go
 </code></pre>
-
 <p>The Example controller will be rendered with:</p>
 <pre><code>[root@kind example-operator]# cat controllers/example_controller.go 
 /*
@@ -1276,7 +1274,6 @@ func (r *ExampleReconciler) SetupWithManager(mgr ctrl.Manager) error {
         Complete(r)
 }
 </code></pre>
-
 <p>Reconciliation logic goes into <code>Reconcile</code>. The <code>Reconcile</code> method is handed both a <code>context.Context</code> and a <code>reconcile.Request</code>:</p>
 <pre><code>// Request contains the information necessary to reconcile a Kubernetes object.  This includes the
 // information to uniquely identify the object - its Name and Namespace.  It does NOT contain information about
@@ -1286,7 +1283,6 @@ type Request struct {
     types.NamespacedName
 }
 </code></pre>
-
 <blockquote>
 <p><a href="https://github.com/kubernetes-sigs/controller-runtime/blob/43331a6c8f823b497660b368deb4311ae2030206/pkg/reconcile/reconcile.go#L44">https://github.com/kubernetes-sigs/controller-runtime/blob/43331a6c8f823b497660b368deb4311ae2030206/pkg/reconcile/reconcile.go#L44</a></p>
 </blockquote>
@@ -1301,10 +1297,8 @@ type Request struct {
                 return ctrl.Result{}, err
         }
 </code></pre>
-
 <pre><code>Package context defines the Context type, which carries deadlines, cancellation signals, and other request-scoped values across API boundaries and between processes. 
 </code></pre>
-
 <blockquote>
 <p><a href="https://golang.org/pkg/context">https://golang.org/pkg/context</a></p>
 </blockquote>
@@ -1316,7 +1310,6 @@ type ExampleReconciler struct {
         Scheme *runtime.Scheme
 }
 </code></pre>
-
 <pre><code>type Client interface {
     Reader
     Writer
@@ -1328,7 +1321,6 @@ type ExampleReconciler struct {
     RESTMapper() meta.RESTMapper
 }
 </code></pre>
-
 <blockquote>
 <p><a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#Client">https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#Client</a></p>
 </blockquote>
@@ -1345,7 +1337,6 @@ type ExampleReconciler struct {
     List(ctx context.Context, list ObjectList, opts ...ListOption) error
 }
 </code></pre>
-
 <blockquote>
 <p><a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#Reader">https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#Reader</a></p>
 </blockquote>
@@ -1361,7 +1352,6 @@ type ExampleReconciler struct {
     }
 }
 </code></pre>
-
 <blockquote>
 <p><a href="https://github.com/kubernetes-sigs/controller-runtime/blob/43331a6c8f823b497660b368deb4311ae2030206/pkg/client/client.go#L204">https://github.com/kubernetes-sigs/controller-runtime/blob/43331a6c8f823b497660b368deb4311ae2030206/pkg/client/client.go#L204</a></p>
 </blockquote>
@@ -1378,7 +1368,6 @@ func (c *typedClient) Get(ctx context.Context, key ObjectKey, obj Object) error 
         Name(key.Name).Do(ctx).Into(obj)
 }
 </code></pre>
-
 <blockquote>
 <p><a href="https://github.com/kubernetes-sigs/controller-runtime/blob/4462fd4ebb88171af826622c1d6b73383aaf2cdf/pkg/client/typed_client.go#L135">https://github.com/kubernetes-sigs/controller-runtime/blob/4462fd4ebb88171af826622c1d6b73383aaf2cdf/pkg/client/typed_client.go#L135</a></p>
 </blockquote>
@@ -1387,7 +1376,6 @@ func (c *typedClient) Get(ctx context.Context, key ObjectKey, obj Object) error 
 // If the object is a list, the resource represents the item's type instead.
 func (c *clientCache) getResource(obj runtime.Object) (*resourceMeta, error) {
 </code></pre>
-
 <blockquote>
 <p><a href="https://github.com/kubernetes-sigs/controller-runtime/blob/e2261d96d733bbd8b26e1c61b138c12a2408026c/pkg/client/client_cache.go#L73">https://github.com/kubernetes-sigs/controller-runtime/blob/e2261d96d733bbd8b26e1c61b138c12a2408026c/pkg/client/client_cache.go#L73</a></p>
 </blockquote>
@@ -1402,7 +1390,6 @@ type resourceMeta struct {
     mapping *meta.RESTMapping
 }
 </code></pre>
-
 <blockquote>
 <p><a href="https://github.com/kubernetes-sigs/controller-runtime/blob/e2261d96d733bbd8b26e1c61b138c12a2408026c/pkg/client/client_cache.go#L123">https://github.com/kubernetes-sigs/controller-runtime/blob/e2261d96d733bbd8b26e1c61b138c12a2408026c/pkg/client/client_cache.go#L123</a></p>
 </blockquote>
@@ -1435,7 +1422,6 @@ func (r *ExampleReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
         return ctrl.Result{}, nil
 }
 </code></pre>
-
 <p>Compile, install:</p>
 <pre><code>[root@kind example-operator]# make generate
 /root/go/bin/controller-gen object:headerFile=&quot;hack/boilerplate.go.txt&quot; paths=&quot;./...&quot;
@@ -1449,7 +1435,6 @@ func (r *ExampleReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 Warning: apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
 customresourcedefinition.apiextensions.k8s.io/examples.example.example.com created
 </code></pre>
-
 <p>And run locally:</p>
 <pre><code>[root@kind example-operator]# make run ENABLE_WEBHOOKS=false
 /root/go/bin/controller-gen object:headerFile=&quot;hack/boilerplate.go.txt&quot; paths=&quot;./...&quot;
@@ -1464,7 +1449,6 @@ go run ./main.go
 2020-11-30T14:52:01.625-0500    INFO    controller  Starting Controller {&quot;reconcilerGroup&quot;: &quot;example.example.com&quot;, &quot;reconcilerKind&quot;: &quot;Example&quot;, &quot;controller&quot;: &quot;example&quot;}
 2020-11-30T14:52:01.625-0500    INFO    controller  Starting workers    {&quot;reconcilerGroup&quot;: &quot;example.example.com&quot;, &quot;reconcilerKind&quot;: &quot;Example&quot;, &quot;controller&quot;: &quot;example&quot;, &quot;worker count&quot;: 1}
 </code></pre>
-
 <p>So far, the reconciler has not been triggered. So how can we trigger it? In comes the <code>SetupWithManager</code> method:</p>
 <pre><code>func (r *ExampleReconciler) SetupWithManager(mgr ctrl.Manager) error {
         return ctrl.NewControllerManagedBy(mgr).
@@ -1472,7 +1456,6 @@ go run ./main.go
                 Complete(r)
 }
 </code></pre>
-
 <p>We'll go into more details a bit later, but this triggers execution of <code>Reconcile</code> of this controller whenever a Create, Update, Delete happens to an <code>Example</code> Custom Resource:</p>
 <pre><code>[root@kind example-operator]# cat config/samples/example_v1alpha1_example_namespace_test1.yaml
 apiVersion: example.example.com/v1alpha1
@@ -1493,23 +1476,18 @@ spec:
   # Add fields here
   foo: bar
 </code></pre>
-
 <pre><code>[root@kind example-operator]# oc apply -f config/samples/example_v1alpha1_example_namespace_test1.yaml
 example.example.example.com/example-sample created
 </code></pre>
-
 <pre><code>2020-11-30T15:07:29.201-0500    INFO    controllers.Example Reconciler triggered with req:  {&quot;example&quot;: &quot;test1/example-sample&quot;}
 2020-11-30T15:07:29.201-0500    DEBUG   controller  Successfully Reconciled {&quot;reconcilerGroup&quot;: &quot;example.example.com&quot;, &quot;reconcilerKind&quot;: &quot;Example&quot;, &quot;controller&quot;: &quot;example&quot;, &quot;name&quot;: &quot;example-sample&quot;, &quot;namespace&quot;: &quot;test1&quot;}
 </code></pre>
-
 <pre><code>[root@kind example-operator]# oc apply -f config/samples/example_v1alpha1_example_namespace_test2.yaml
 example.example.example.com/example-sample created
 </code></pre>
-
 <pre><code>2020-11-30T15:08:36.354-0500    INFO    controllers.Example Reconciler triggered with req:  {&quot;example&quot;: &quot;test2/example-sample2&quot;}
 2020-11-30T15:08:36.354-0500    DEBUG   controller  Successfully Reconciled {&quot;reconcilerGroup&quot;: &quot;example.example.com&quot;, &quot;reconcilerKind&quot;: &quot;Example&quot;, &quot;controller&quot;: &quot;example&quot;, &quot;name&quot;: &quot;example-sample2&quot;, &quot;namespace&quot;: &quot;test2&quot;}
 </code></pre>
-
 <p>Whenever something happens to an object of type <code>&amp;examplev1alpha1.Example{}</code>, this controller's <code>Reconcile</code> will be triggered. The only information that it will be passed is a <code>controllerruntime.Request</code> which is an alias to <code>reconcile.Request</code> and inherits from <code>types.NamespacedName</code>: <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/reconcile#Request">https://godoc.org/sigs.k8s.io/controller-runtime/pkg/reconcile#Request</a> and <a href="https://github.com/kubernetes-sigs/controller-runtime/blob/43331a6c8f823b497660b368deb4311ae2030206/alias.go#L39">https://github.com/kubernetes-sigs/controller-runtime/blob/43331a6c8f823b497660b368deb4311ae2030206/alias.go#L39</a> and <a href="https://github.com/kubernetes/apimachinery/blob/master/pkg/types/namespacedname.go#L37">https://github.com/kubernetes/apimachinery/blob/master/pkg/types/namespacedname.go#L37</a></p>
 <h4 id="triggering-the-reconciler">Triggering the reconciler</h4>
 <p>The <code>SetupWithManager</code> method determines when the reconciler is triggered:</p>
@@ -1526,7 +1504,6 @@ func (r *ExampleReconciler) SetupWithManager(mgr ctrl.Manager) error {
 }
 (...)
 </code></pre>
-
 <p><code>NewControllerManagedBy</code> is an alias to <code>builder.ControllerManagedBy</code>: <a href="https://godoc.org/sigs.k8s.io/controller-runtime">https://godoc.org/sigs.k8s.io/controller-runtime</a> and <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/builder#ControllerManagedBy">https://godoc.org/sigs.k8s.io/controller-runtime/pkg/builder#ControllerManagedBy</a></p>
 <h5 id="for">For</h5>
 <p>The <code>Builder</code>'s <code>For</code> method tells the controller to watch all objects of this specifi custom resourse. It will then pass a <code>NamespacedName</code> via a <code>Request</code> to the reconciler. The <code>For</code> method is documented in: <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/builder#Builder.For">https://godoc.org/sigs.k8s.io/controller-runtime/pkg/builder#Builder.For</a></p>
@@ -1536,7 +1513,6 @@ func (blder *Builder) For(object client.Object, opts ...ForOption) *Builder
 
 For defines the type of Object being *reconciled*, and configures the ControllerManagedBy to respond to create / delete / update events by *reconciling the object*. This is the equivalent of calling Watches(&amp;source.Kind{Type: apiType}, &amp;handler.EnqueueRequestForObject{}) 
 </code></pre>
-
 <p>This means that one could rewrite the <code>SetupWithManager</code> method as:</p>
 <pre><code>func (r *ExampleReconciler) SetupWithManager(mgr ctrl.Manager) error {
         return ctrl.NewControllerManagedBy(mgr).
@@ -1544,7 +1520,6 @@ For defines the type of Object being *reconciled*, and configures the Controller
                 Complete(r)
 }
 </code></pre>
-
 <p>This doesn't quite work. something is missing here [TBD]</p>
 <h5 id="owns">Owns</h5>
 <p>If we want to watch objects of other types that were created by an instance of our CRD, then we use <code>Owns()</code>.</p>
@@ -1552,7 +1527,6 @@ For defines the type of Object being *reconciled*, and configures the Controller
 <pre><code>        appsv1 &quot;k8s.io/api/apps/v1&quot;
         batchv1 &quot;k8s.io/api/batch/v1&quot;
 </code></pre>
-
 <p>Then, change the <code>SetupWithManager</code> method to:</p>
 <pre><code>func (r *ExampleReconciler) SetupWithManager(mgr ctrl.Manager) error {
         return ctrl.NewControllerManagedBy(mgr).
@@ -1562,7 +1536,6 @@ For defines the type of Object being *reconciled*, and configures the Controller
                 Complete(r)
 }
 </code></pre>
-
 <p>Now, spawn a new <code>Example</code> object:</p>
 <pre><code>[root@kind example-operator]# cat config/samples/example_v1alpha1_example_namespace_test1.yaml
 apiVersion: example.example.com/v1alpha1
@@ -1575,7 +1548,6 @@ spec:
   foo: bar
 oc apply -f config/samples/example_v1alpha1_example_namespace_test1.yaml
 </code></pre>
-
 <p>As expected, the reconcile loop gets triggered for this object.</p>
 <pre><code>uid=$(oc get example -n test1 -o json example-sample | jq -r '.metadata.uid')
 apiversion=$(oc get example -n test1 -o json example-sample | jq -r '.apiVersion')
@@ -1583,7 +1555,6 @@ kind=$(oc get example -n test1 -o json example-sample | jq -r '.kind')
 namespace=$(oc get example -n test1 -o json example-sample | jq -r '.metadata.namespace')
 name=$(oc get example -n test1 -o json example-sample | jq -r '.metadata.name')
 </code></pre>
-
 <p>Then, spawn a deployment and set the test1/example-sample CR as the owner:</p>
 <pre><code>cat &lt;&lt; EOF | oc apply -f -
 apiVersion: apps/v1
@@ -1618,7 +1589,6 @@ spec:
         imagePullPolicy: IfNotPresent
 EOF
 </code></pre>
-
 <p>This will trigger a run of the Reconciler:</p>
 <pre><code>2020-12-03T03:23:14.431-0500    INFO    controllers.Example Reconciler triggered with req:  {&quot;example&quot;: &quot;test1/example-sample&quot;}
 2020-12-03T03:23:14.431-0500    DEBUG   controller  Successfully Reconciled {&quot;reconcilerGroup&quot;: &quot;example.example.com&quot;, &quot;reconcilerKind&quot;: &quot;Example&quot;, &quot;controller&quot;: &quot;example&quot;, &quot;name&quot;: &quot;example-sample&quot;, &quot;namespace&quot;: &quot;test1&quot;}
@@ -1631,12 +1601,10 @@ EOF
 2020-12-03T03:23:15.621-0500    INFO    controllers.Example Reconciler triggered with req:  {&quot;example&quot;: &quot;test1/example-sample&quot;}
 2020-12-03T03:23:15.621-0500    DEBUG   controller  Successfully Reconciled {&quot;reconcilerGroup&quot;: &quot;example.example.com&quot;, &quot;reconcilerKind&quot;: &quot;Example&quot;, &quot;controller&quot;: &quot;example&quot;, &quot;name&quot;: &quot;example-sample&quot;, &quot;namespace&quot;: &quot;test1&quot;}
 </code></pre>
-
 <p>And if we scale the deployment, for example:</p>
 <pre><code>[root@kind example-operator]# oc scale --replicas=2 deployment fedora-deployment -n test1
 deployment.apps/fedora-deployment scaled
 </code></pre>
-
 <pre><code>2020-12-03T03:26:47.860-0500    INFO    controllers.Example Reconciler triggered with req:  {&quot;example&quot;: &quot;test1/example-sample&quot;}
 2020-12-03T03:26:47.860-0500    DEBUG   controller  Successfully Reconciled {&quot;reconcilerGroup&quot;: &quot;example.example.com&quot;, &quot;reconcilerKind&quot;: &quot;Example&quot;, &quot;controller&quot;: &quot;example&quot;, &quot;name&quot;: &quot;example-sample&quot;, &quot;namespace&quot;: &quot;test1&quot;}
 2020-12-03T03:26:47.876-0500    INFO    controllers.Example Reconciler triggered with req:  {&quot;example&quot;: &quot;test1/example-sample&quot;}
@@ -1648,7 +1616,6 @@ deployment.apps/fedora-deployment scaled
 2020-12-03T03:26:49.645-0500    INFO    controllers.Example Reconciler triggered with req:  {&quot;example&quot;: &quot;test1/example-sample&quot;}
 2020-12-03T03:26:49.646-0500    DEBUG   controller  Successfully Reconciled {&quot;reconcilerGroup&quot;: &quot;example.example.com&quot;, &quot;reconcilerKind&quot;: &quot;Example&quot;, &quot;controller&quot;: &quot;example&quot;, &quot;name&quot;: &quot;example-sample&quot;, &quot;namespace&quot;: &quot;test1&quot;}
 </code></pre>
-
 <p>The <code>Owns</code> method can be rewritten with the <code>Watches</code> method (see the next section for further details). The following example behaves exactly the same as the earlier code:</p>
 <pre><code>import (
         (...)
@@ -1675,7 +1642,6 @@ func (r *ExampleReconciler) SetupWithManager(mgr ctrl.Manager) error {
                 Complete(r)
 }
 </code></pre>
-
 <h5 id="watches-for-independent-resources">Watches for independent resources</h5>
 <p>If you want to monitor other custom resources which are not owned by this Controller, that's also possible. For some theory on this, see <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/handler">https://godoc.org/sigs.k8s.io/controller-runtime/pkg/handler</a>.</p>
 <h6 id="watching-for-changes-to-nodes">Watching for changes to Nodes</h6>
@@ -1729,12 +1695,10 @@ func (r *ExampleReconciler) SetupWithManager(mgr ctrl.Manager) error {
                 Complete(r)
 }
 </code></pre>
-
 <pre><code>[root@kind example-operator]# oc annotate  node kind-control-plane foo=bar
 node/kind-control-plane annotated
 [root@kind example-operator]# 
 </code></pre>
-
 <pre><code>2020-12-03T04:11:37.062-0500    INFO    Detected update to resource {&quot;Kind&quot;: &quot;&amp;TypeMeta{Kind:,APIVersion:,}&quot;, &quot;NameSpace&quot;: &quot;&quot;, &quot;Name&quot;: &quot;kind-control-plane&quot;}
 2020-12-03T04:11:37.062-0500    INFO    Retrieving all Example CRs
 2020-12-03T04:11:37.062-0500    INFO    Sending reconcile request to example custom resource    {&quot;Name&quot;: &quot;example-sample&quot;}
@@ -1744,7 +1708,6 @@ node/kind-control-plane annotated
 2020-12-03T04:11:37.062-0500    INFO    controllers.Example Reconciler triggered with req:  {&quot;example&quot;: &quot;test1/example-sample&quot;}
 2020-12-03T04:11:37.062-0500    DEBUG   controller  Successfully Reconciled {&quot;reconcilerGroup&quot;: &quot;example.example.com&quot;, &quot;reconcilerKind&quot;: &quot;Example&quot;, &quot;controller&quot;: &quot;example&quot;, &quot;name&quot;: &quot;example-sample&quot;, &quot;namespace&quot;: &quot;test1&quot;}
 </code></pre>
-
 <h6 id="watching-for-changes-to-other-custom-resources">Watching for changes to other Custom Resources</h6>
 <p>Let's create a new custom resource, <code>ExampleInstance</code>:</p>
 <pre><code>operator-sdk create api --group example --version v1alpha1 --kind ExampleInstance --resource=true --controller=false
@@ -1752,7 +1715,6 @@ make generate
 make manifests
 make install
 </code></pre>
-
 <p>We need to make an important change to <code>mapFn</code>. Given that we are working with a namespaced Custom Resource, we need to make sure that we only trigger the reconciler when the namespace of the <code>Example</code> and <code>ExampleInstance</code> resources are the same:</p>
 <pre><code>(...)
                         for _, example := range exampleList.Items {
@@ -1761,7 +1723,6 @@ make install
                                 }
 (...)
 </code></pre>
-
 <p>Our method would look like this:</p>
 <pre><code>func (r *ExampleReconciler) SetupWithManager(mgr ctrl.Manager) error {
         mapFn := handler.ToRequestsFunc(
@@ -1805,7 +1766,6 @@ make install
                 Complete(r)
 }
 </code></pre>
-
 <p>Now, if we test this, we can see that the reconciler is only triggered if the Namespace is correct:</p>
 <pre><code>[root@kind example-operator]# cat config/samples/example_v1alpha1_exampleinstance2.yaml
 apiVersion: example.example.com/v1alpha1
@@ -1819,11 +1779,9 @@ spec:
 [root@kind example-operator]# oc apply -f config/samples/example_v1alpha1_exampleinstance2.yaml
 exampleinstance.example.example.com/exampleinstance-sample created
 </code></pre>
-
 <pre><code>2020-12-03T04:25:59.924-0500    INFO    Detected update to resource {&quot;Kind&quot;: &quot;&amp;TypeMeta{Kind:,APIVersion:,}&quot;, &quot;NameSpace&quot;: &quot;test2&quot;, &quot;Name&quot;: &quot;exampleinstance-sample&quot;}
 2020-12-03T04:25:59.924-0500    INFO    Retrieving all Example CRs
 </code></pre>
-
 <pre><code>[root@kind example-operator]# cat config/samples/example_v1alpha1_exampleinstance.yaml
 apiVersion: example.example.com/v1alpha1
 kind: ExampleInstance
@@ -1836,7 +1794,6 @@ spec:
 [root@kind example-operator]# oc apply -f config/samples/example_v1alpha1_exampleinstance.yaml
 exampleinstance.example.example.com/exampleinstance-sample created
 </code></pre>
-
 <pre><code>2020-12-03T04:27:01.639-0500    INFO    Detected update to resource {&quot;Kind&quot;: &quot;&amp;TypeMeta{Kind:,APIVersion:,}&quot;, &quot;NameSpace&quot;: &quot;test1&quot;, &quot;Name&quot;: &quot;exampleinstance-sample&quot;}
 2020-12-03T04:27:01.639-0500    INFO    Retrieving all Example CRs
 2020-12-03T04:27:01.639-0500    INFO    Sending reconcile request to example custom resource    {&quot;Name&quot;: &quot;example-sample&quot;}

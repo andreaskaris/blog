@@ -975,8 +975,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1128,11 +1128,9 @@ spec:
       node-role.kubernetes.io/worker-cpu-manager: &quot;&quot;
   paused: false
 </code></pre>
-
 <p>Apply the pool:</p>
 <pre><code>oc apply -f worker-cpu-manager.yaml
 </code></pre>
-
 <p>Create the <code>cpumanager-kubelet.yaml</code>:</p>
 <pre><code>apiVersion: machineconfiguration.openshift.io/v1
 kind: KubeletConfig
@@ -1146,14 +1144,11 @@ spec:
      cpuManagerPolicy: static
      cpuManagerReconcilePeriod: 5s
 </code></pre>
-
 <pre><code>oc apply -f cpumanager-kubelet.yaml
 </code></pre>
-
 <p>Change worker node to <code>worker-cpu-manager</code> role:</p>
 <pre><code>oc label node &lt;node&gt; node-role.kubernetes.io/worker-cpu-manager=
 </code></pre>
-
 <p>Verify:</p>
 <pre><code># oc get nodes
 NAME                             STATUS   ROLES                       AGE     VERSION
@@ -1163,13 +1158,11 @@ openshift-master-2.example.com   Ready    master                      3h56m   v1
 openshift-worker-0.example.com   Ready    worker                      18m     v1.17.1+1aa1c48
 openshift-worker-1.example.com   Ready    worker,worker-cpu-manager   18m     v1.17.1+1aa1c48
 </code></pre>
-
 <pre><code>oc get machineconfig
 (...)
 rendered-worker-cpu-manager-bc48d7bf24df726f468b357482032845         8af4f709c4ba9c0afff3408ecc99c8fce61dd314   2.2.0             87s
 rendered-worker-cpu-manager-ca0a09ddea41402490e1c39a138cd44e         8af4f709c4ba9c0afff3408ecc99c8fce61dd314   2.2.0             18m
 </code></pre>
-
 <pre><code>[root@openshift-jumpserver-0 cpuman]# diff &lt;(oc get machineconfig rendered-worker-cpu-manager-bc48d7bf24df726f468b357482032845 -o yaml)  &lt;(oc get machineconfig rendered-worker-cpu-manager-ca0a09ddea41402490e1c39a138cd44e -o yaml)
 6c6
 &lt;   creationTimestamp: &quot;2020-06-26T16:40:44Z&quot;
@@ -1195,7 +1188,6 @@ rendered-worker-cpu-manager-ca0a09ddea41402490e1c39a138cd44e         8af4f709c4b
 &lt;       - contents:
 &lt;           source: data:text/plain,%7B%odcy%2(...)
 </code></pre>
-
 <p>Compare unmodified node to node with CPU manager:</p>
 <pre><code>[root@openshift-jumpserver-0 cpuman]# oc debug node/openshift-worker-0.example.com
 Starting pod/openshift-worker-0examplecom-debug ...
@@ -1208,7 +1200,6 @@ exit
 
 Removing debug pod ...
 </code></pre>
-
 <pre><code>[root@openshift-jumpserver-0 cpuman]# oc debug node/openshift-worker-1.example.com
 Starting pod/openshift-worker-1examplecom-debug ...
 To use host binaries, run `chroot /host`
@@ -1221,7 +1212,6 @@ exit
 
 Removing debug pod ...
 </code></pre>
-
 <p>Spawn 2 pods on the same worker, one with and one without CPU manager enabled:</p>
 <pre><code>[root@openshift-jumpserver-0 cpuman]# cat cpumanager-pod.yaml 
 apiVersion: v1
@@ -1255,7 +1245,6 @@ NAME            READY   STATUS    RESTARTS   AGE     IP           NODE          
 cpumanager      1/1     Running   0          11m     172.24.2.4   openshift-worker-1.example.com   &lt;none&gt;           &lt;none&gt;
 noncpumanager   1/1     Running   0          8m10s   172.24.2.5   openshift-worker-1.example.com   &lt;none&gt;           &lt;none&gt;
 </code></pre>
-
 <p>Verify CPU pinning for the pods' CPUs:</p>
 <pre><code>[root@openshift-jumpserver-0 cpuman]# oc debug node/openshift-worker-1.example.com
 Starting pod/openshift-worker-1examplecom-debug ...
@@ -1274,7 +1263,6 @@ sh-4.4# cat /proc/47750/status | grep -i cpu
 Cpus_allowed:   ff,ffefffff
 Cpus_allowed_list:  0-19,21-39
 </code></pre>
-
 <p>Alternatively:</p>
 <pre><code>sh-4.4# systemctl status 39072
 ● crio-ff43bfb551a274eb9e9040510753db6271ef27c13c203fe69e87aad5f7d49f17.scope - libcontainer container ff43bfb551a274eb9e9040510753db6271ef27c13c203fe69e87aad5f7d49f17
@@ -1308,7 +1296,6 @@ sh-4.4# cat /sys/fs/cgroup/cpuset//kubepods.slice/kubepods-podc405f7cf_b2d1_49c4
 sh-4.4# cat /sys/fs/cgroup/cpuset//kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod3b4059d0_8030_461a_b192_b5820f6c1119.slice/crio-473fd6bdac78596e0dbcf0d33dc11e11285725b4cf4e55410ce70dbdf088d260.scope/cpuset.pus
 0-19,21-39
 </code></pre>
-
 <h3 id="exploring-resource-limits">Exploring resource limits</h3>
 <p>Let's spawn more pods than the hypervisor has CPUs:</p>
 <pre><code>[root@openshift-jumpserver-0 cpuman]# cat cpumanager-pod-generated-name.yaml 
@@ -1330,10 +1317,8 @@ spec:
   nodeSelector:
     cpumanager: &quot;true&quot;
 </code></pre>
-
 <pre><code>for i in {0..45}; do oc create -f cpumanager-pod-generated-name.yaml ; done
 </code></pre>
-
 <pre><code>[root@openshift-jumpserver-0 cpuman]# oc get pods | grep Pending
 cpumanager-8rtpt   0/1     Pending   0          4m23s
 cpumanager-bw848   0/1     Pending   0          4m24s
@@ -1488,7 +1473,6 @@ Events:
   Normal   NodeReady                90m                  kubelet, openshift-worker-1.example.com  Node openshift-worker-1.example.com status is now: NodeReady
   Normal   NodeSchedulable          85m                  kubelet, openshift-worker-1.example.com  Node openshift-worker-1.example.com status is now: NodeSchedulable
 </code></pre>
-
 <p>Verify processes and cgroup limits on the worker node:</p>
 <pre><code>[root@openshift-jumpserver-0 cpuman]# oc debug node/openshift-worker-1.example.com
 Starting pod/openshift-worker-1examplecom-debug ...
@@ -1559,7 +1543,6 @@ exit
 
 Removing debug pod ...
 </code></pre>
-
 <p>Default host limits:</p>
 <pre><code>sh-4.4# cat /etc/kubernetes/kubelet.conf | jq '.systemReserved'
 {
@@ -1568,7 +1551,6 @@ Removing debug pod ...
   &quot;memory&quot;: &quot;1Gi&quot;
 }
 </code></pre>
-
 <h3 id="applying-custom-limits">Applying custom limits</h3>
 <p>Let's now reserve 10 CPUs for the host.</p>
 <p><code>cpumanager-kubeletconfig.yaml</code>:</p>
@@ -1588,7 +1570,6 @@ spec:
        memory: &quot;1Gi&quot;
        ephemeral-storage: &quot;10Gi&quot;
 </code></pre>
-
 <pre><code>[root@openshift-jumpserver-0 cpuman]# oc apply -f cpumanager-kubeletconfig.yaml 
 kubeletconfig.machineconfiguration.openshift.io/cpumanager-enabled configured
 [root@openshift-jumpserver-0 cpuman]# oc get -o yaml -f cpumanager-kubeletconfig.yaml 
@@ -1641,7 +1622,6 @@ rendered-worker-cpu-manager-171f3675f101028b058ffe27d6344bb2         8af4f709c4b
 rendered-worker-cpu-manager-bc48d7bf24df726f468b357482032845         8af4f709c4ba9c0afff3408ecc99c8fce61dd314   2.2.0             113m
 rendered-worker-cpu-manager-ca0a09ddea41402490e1c39a138cd44e         8af4f709c4ba9c0afff3408ecc99c8fce61dd314   2.2.0             129m
 </code></pre>
-
 <pre><code>[root@openshift-jumpserver-0 cpuman]# for i in {0..35}; do oc create -f cpumanager-pod-generated-name.yaml ; done
 pod/cpumanager-msf8c created
 pod/cpumanager-2kwws created
@@ -1712,7 +1692,6 @@ cpumanager-zxbj2   1/1     Running   0          14s
 [root@openshift-jumpserver-0 cpuman]# oc get pods | grep Runn | wc -l
 29
 </code></pre>
-
 <p>Verify host limits:</p>
 <pre><code>sh-4.4# cat /etc/kubernetes/kubelet.conf | jq '.systemReserved'
 {
@@ -1721,7 +1700,6 @@ cpumanager-zxbj2   1/1     Running   0          14s
   &quot;memory&quot;: &quot;1Gi&quot;
 }
 </code></pre>
-
 <h2 id="reserving-0-cpus-for-the-host">Reserving 0 CPUs for the host</h2>
 <p>This will not work - <code>cpumanager-kubeletconfig.yaml</code>:</p>
 <pre><code>apiVersion: machineconfiguration.openshift.io/v1
@@ -1740,7 +1718,6 @@ spec:
        memory: &quot;1Gi&quot;
        ephemeral-storage: &quot;10Gi&quot;
 </code></pre>
-
 <p>Upon worker restart, the kubelet will not be able to start, reporting:</p>
 <pre><code>[root@openshift-worker-1 ~]# Jun 26 19:05:10 openshift-worker-1.example.com systemd[1]: Stopped Kubernetes Kubelet.
 Jun 26 19:05:10 openshift-worker-1.example.com systemd[1]: kubelet.service: Consumed 115ms CPU time
@@ -1962,7 +1939,6 @@ Jun 26 19:05:10 openshift-worker-1.example.com systemd[1]: kubelet.service: Fail
 Jun 26 19:05:10 openshift-worker-1.example.com systemd[1]: Failed to start Kubernetes Kubelet.
 Jun 26 19:05:10 openshift-worker-1.example.com systemd[1]: kubelet.service: Consumed 117ms CPU time
 </code></pre>
-
 <p>And the node will never become <code>Ready</code> in the node list.</p>
 <h2 id="references">References</h2>
 <ul>

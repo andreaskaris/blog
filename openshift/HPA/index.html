@@ -999,8 +999,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1150,7 +1150,6 @@
 <pre><code>git clone https://github.com/andreaskaris/kubernetes.git
 cd kubernetes/hpa-test
 </code></pre>
-
 <p>You will find all required resources for the following steps. See <code>REAME.md</code> in case you want to build your own <code>hpa-tester</code> image.</p>
 <h4 id="deploying-an-hpa-tester-deployment">Deploying an HPA tester deployment</h4>
 <p>First, deploy the HPA-Tester deployment. The deployment runs 2 applications which simulate a cumulative load.  Meaning that <code>COMBINED_CPU_MS</code> and <code>COMBINED_MEMORY_MB</code> will be divided by the number of replicas for the deployment and each pod will then individually run that fraction of memory and CPU load. This check happens every <code>SLEEP_TIME</code> seconds.</p>
@@ -1160,7 +1159,6 @@ oc apply -f role-list-deployments-pods.yaml
 oc apply -f role-binding-list-deployments-pods.yaml
 oc apply -f deployment-hpa-tester.yaml
 </code></pre>
-
 <p>If you change the replica count, the <code>entrypoint.sh</code> will make sure to distribute the memory MB and CPU ms between the number of replicas.</p>
 <h4 id="scaling-basics-based-on-the-average-cpu-scaler-metric">Scaling basics based on the average CPU scaler metric</h4>
 <p>For the most basic example, <code>.spec.template.spec.containers[0].resources</code> is:</p>
@@ -1169,14 +1167,12 @@ oc apply -f deployment-hpa-tester.yaml
             cpu: &quot;1000m&quot;
             memory: &quot;1024Mi&quot;
 </code></pre>
-
 <p>The Horizontal Pod Autoscaler will by default compare a pod's actual CPU usage to the pod's requested values:
 <a href="https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/">https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/</a></p>
 <pre><code>For per-pod resource metrics (like CPU), the controller fetches the metrics from the resource metrics API for each Pod targeted by the HorizontalPodAutoscaler. Then, if a target utilization value is set, the controller calculates the utilization value as a percentage of the equivalent resource request on the containers in each Pod. If a target raw value is set, the raw metric values are used directly. The controller then takes the mean of the utilization or the raw value (depending on the type of target specified) across all targeted Pods, and produces a ratio used to scale the number of desired replicas.
 
 Please note that if some of the Pod's containers do not have the relevant resource request set, CPU utilization for the Pod will not be defined and the autoscaler will not take any action for that metric. See the algorithm details section below for more information about how the autoscaling algorithm works.
 </code></pre>
-
 <p>That also means that it is required to set resource requests for the containers.</p>
 <pre><code>[root@openshift-jumpserver-0 hpa-test]# oc get pods
 NAME                          READY   STATUS    RESTARTS   AGE
@@ -1185,13 +1181,11 @@ hpa-tester-7bff6856bd-wgmct   1/1     Running   0          3m2s
 NAME                          CPU     MEMORY      WINDOW
 hpa-tester-7bff6856bd-wgmct   1611m   4218724Ki   5m0s
 </code></pre>
-
 <pre><code>[root@openshift-jumpserver-0 hpa-test]# oc describe pod hpa-tester-7bff6856bd-wgmct | grep Requests -A2
     Requests:
       cpu:     1
       memory:  1Gi
 </code></pre>
-
 <p>When starting with the above configuration, the current CPU utilization for the pod is 1600ms / 1000ms (a request of one full CPU unit, and a cumulative load of 1600 ms), meaning the load is 160%</p>
 <p>Now, deploy the following HPA resource:</p>
 <pre><code>apiVersion: autoscaling/v2beta2
@@ -1215,12 +1209,10 @@ spec:
         type: Utilization
         averageUtilization: 60
 </code></pre>
-
 <p>The target load is 60%.</p>
 <p>Looking at the algorithm data for this simple example:</p>
 <pre><code>desiredReplicas = ceil[currentReplicas * ( currentMetricValue / desiredMetricValue )]
 </code></pre>
-
 <p>That means <code>ceil[1 * ( 160% / 60 % )] = 3</code></p>
 <p>Let's test this:</p>
 <pre><code>[root@openshift-jumpserver-0 hpa-test]# oc apply -f hpa.yaml 
@@ -1229,7 +1221,6 @@ horizontalpodautoscaler.autoscaling/hpa-tester created
 NAME         REFERENCE               TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
 hpa-tester   Deployment/hpa-tester   &lt;unknown&gt;/60%   1         20        0          3s
 </code></pre>
-
 <p>After a while, we will see that the HPA scaled the deployment to 3 pods:</p>
 <pre><code>[root@openshift-jumpserver-0 hpa-test]# oc get hpa
 NAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
@@ -1245,7 +1236,6 @@ hpa-tester-7bff6856bd-c5hfj   543m   1413984Ki   5m0s
 hpa-tester-7bff6856bd-lk2pv   533m   1439692Ki   5m0s
 hpa-tester-7bff6856bd-wgmct   547m   1447412Ki   5m0s
 </code></pre>
-
 <h4 id="scaling-based-on-absolute-cpu-values">Scaling based on absolute CPU values</h4>
 <p>It is also possible to scale for a specific CPU value. First, scale back the deployment to 1 replica or delete and recreate it. Then, apply the following <code>HorizontalPodAutoscaler</code>:</p>
 <pre><code>apiVersion: autoscaling/v2beta2
@@ -1269,7 +1259,6 @@ spec:
         type: AverageValue
         averageValue: 200m
 </code></pre>
-
 <p>And wait for 5 minutes. The result will be 9 pods - ceil [(1600ms + overhead) / 800ms]:</p>
 <pre><code>[root@openshift-jumpserver-0 hpa-test]# oc get hpa
 NAME         REFERENCE               TARGETS     MINPODS   MAXPODS   REPLICAS   AGE
@@ -1297,7 +1286,6 @@ hpa-tester-7bff6856bd-n48nj   202m   506848Ki   5m0s
 hpa-tester-7bff6856bd-qhjtl   197m   477332Ki   5m0s
 hpa-tester-7bff6856bd-wx8r8   194m   479528Ki   5m0s
 </code></pre>
-
 <h4 id="scaling-based-on-memory-utiliation">Scaling based on memory utiliation</h4>
 <p>It is also possible to scale for a specific memory utiliation. First, scale back the deployment to 1 replica or delete and recreate i
 t. Then, apply the following <code>HorizontalPodAutoscaler</code>:</p>
@@ -1322,7 +1310,6 @@ spec:
         type: Utilization
         averageUtilization: 100
 </code></pre>
-
 <p>Apply the HPA and verify:</p>
 <pre><code>[root@openshift-jumpserver-0 hpa-test]# oc apply -f hpa.yaml 
 oc ghorizontalpodautoscaler.autoscaling/hpa-tester created
@@ -1343,7 +1330,6 @@ Max replicas:                                             20
 Deployment pods:                                          0 current / 0 desired
 Events:                                                   &lt;none&gt;
 </code></pre>
-
 <p>And wait for 5 minutes. With 0 overhead inside the pods, the result be 4 pods - 4096 MB (cumulative Memory) / 1024 MB (request container spec) = 400%, then 400% / 100% = 4). Given that the cumulative memory utilization will be a bit higher than 4096 MB, HPA will scale out to 5 pods:</p>
 <pre><code>[root@openshift-jumpserver-0 hpa-test]# oc get hpa
 NAME         REFERENCE               TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
@@ -1363,7 +1349,6 @@ hpa-tester-7bff6856bd-h45s7   338m   854892Ki   5m0s
 hpa-tester-7bff6856bd-nxp29   337m   880600Ki   5m0s
 hpa-tester-7bff6856bd-trqv9   342m   878492Ki   5m0s
 </code></pre>
-
 <h4 id="scaling-based-on-absolute-memory-values">Scaling based on absolute memory values</h4>
 <p>It is also possible to scale for a specific CPU value. First, scale back the deployment to 1 replica or delete and recreate i
 t. Then, apply the following <code>HorizontalPodAutoscaler</code>:</p>
@@ -1388,7 +1373,6 @@ spec:
         type: AverageValue
         averageValue: &quot;2048Mi&quot;
 </code></pre>
-
 <p>Verify after deploying this HPA:</p>
 <pre><code>[root@openshift-jumpserver-0 hpa-test]# oc get hpa
 NAME         REFERENCE               TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
@@ -1407,7 +1391,6 @@ Max replicas:               20
 Deployment pods:            0 current / 0 desired
 Events:                     &lt;none&gt;
 </code></pre>
-
 <p>And wait for 5 minutes. The result will be 3 pods ceil[(4096+overhead MB / 2048 MB)]:</p>
 <pre><code>[root@openshift-jumpserver-0 hpa-test]# oc get hpa
 NAME         REFERENCE               TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
@@ -1423,7 +1406,6 @@ hpa-tester-7bff6856bd-6mvbv   552m   1446040Ki   5m0s
 hpa-tester-7bff6856bd-mpjvb   542m   1425156Ki   5m0s
 hpa-tester-7bff6856bd-t5xc4   557m   1449152Ki   5m0s
 </code></pre>
-
 <h3 id="combining-cpu-and-memory-metrics">Combining CPU and memory metrics</h3>
 <p>It is also possible to combine CPU and memory targets. For example:</p>
 <pre><code>apiVersion: autoscaling/v2beta2
@@ -1453,13 +1435,11 @@ spec:
         type: AverageValue
         averageValue: &quot;200m&quot;
 </code></pre>
-
 <p>Verification:</p>
 <pre><code>[root@openshift-jumpserver-0 hpa-test]# oc get hpa
 NAME         REFERENCE               TARGETS                         MINPODS   MAXPODS   REPLICAS   AGE
 hpa-tester   Deployment/hpa-tester   &lt;unknown&gt;/2Gi, &lt;unknown&gt;/200m   1         20        0          7s
 </code></pre>
-
 <p>Wait for a short while and the memory metrics will already lead to a scale-out to 3 pods:</p>
 <pre><code>[root@openshift-jumpserver-0 hpa-test]# oc get hpa
 NAME         REFERENCE               TARGETS                          MINPODS   MAXPODS   REPLICAS   AGE
@@ -1494,7 +1474,6 @@ hpa-tester-7bff6856bd-4mlh6   1/1     Running   0          57s
 hpa-tester-7bff6856bd-c7862   1/1     Running   0          2m8s
 hpa-tester-7bff6856bd-vm27z   1/1     Running   0          57s
 </code></pre>
-
 <p>It will take a bit longer for the environment to calculate the CPU averages but eventually a second scale-out step will follow to 9 pods:</p>
 <pre><code>[root@openshift-jumpserver-0 hpa-test]# oc get hpa
 NAME         REFERENCE               TARGETS                        MINPODS   MAXPODS   REPLICAS   AGE
@@ -1522,7 +1501,6 @@ hpa-tester-7bff6856bd-tg6vb   191m   478620Ki   5m0s
 hpa-tester-7bff6856bd-vm27z   181m   484528Ki   5m0s
 hpa-tester-7bff6856bd-xfptr   209m   505692Ki   5m0s
 </code></pre>
-
 <h3 id="custom-application-metrics-for-auto-scaling-in-openshift">Custom application metrics for auto-scaling in OpenShift</h3>
 <ul>
 <li><a href="https://docs.openshift.com/container-platform/4.6/monitoring/exposing-custom-application-metrics-for-autoscaling.html">https://docs.openshift.com/container-platform/4.6/monitoring/exposing-custom-application-metrics-for-autoscaling.html</a></li>

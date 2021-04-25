@@ -989,8 +989,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1131,42 +1131,35 @@ Linux wireguard01 5.6.6-300.fc32.x86_64 #1 SMP Tue Apr 21 13:44:19 UTC 2020 x86_
 [root@wireguard01 ~]# ip a | grep 192.168.122
     inet 192.168.122.250/24 brd 192.168.122.255 scope global dynamic noprefixroute eth0
 </code></pre>
-
 <pre><code>[root@wireguard02 wireguard]# uname -a
 Linux wireguard02 5.6.6-300.fc32.x86_64 #1 SMP Tue Apr 21 13:44:19 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
 [root@wireguard02 wireguard]# ip a | grep 192.168.122
     inet 192.168.122.81/24 brd 192.168.122.255 scope global dynamic noprefixroute eth0
 </code></pre>
-
 <p>Install wireguard-tools, wireshark and tcpdump (the latter tools for monitoring):</p>
 <pre><code>yum install -y wireguard-tools wireshark tcpdump
 </code></pre>
-
 <h2 id="create-keys">Create keys</h2>
 <p>wireguard01:</p>
 <pre><code>wg genkey &gt; /etc/wireguard/private
 chmod 600 /etc/wireguard/private
 wg pubkey &lt; /etc/wireguard/private &gt; /etc/wireguard/publickey
 </code></pre>
-
 <pre><code>[root@wireguard01 ~]# cat /etc/wireguard/private
 0JYD7daZL+Bh7u77vFnwXHs5Rdi7iFfpk8NC1pg542Q=
 [root@wireguard01 ~]# cat /etc/wireguard/publickey 
 pkyJK9ePlOTW9+GK73UnCZ4/b7/3xOthdfdbF7OQUzw=
 </code></pre>
-
 <p>wireguard02:</p>
 <pre><code>wg genkey &gt; /etc/wireguard/private
 chmod 600 /etc/wireguard/private
 wg pubkey &lt; /etc/wireguard/private &gt; /etc/wireguard/publickey
 </code></pre>
-
 <pre><code>[root@wireguard02 wireguard]# cat /etc/wireguard/private
 wHpqAYwqSp6F4lO09uFj8BQGVJ6OjZIkvVWUQdy+GGk=
 [root@wireguard02 wireguard]# cat /etc/wireguard/publickey 
 uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc=
 </code></pre>
-
 <h2 id="write-down-ip-addresses-and-keys-for-later">Write down IP addresses and keys for later</h2>
 <p>wireguard01:</p>
 <pre><code>/etc/wireguard/private: 0JYD7daZL+Bh7u77vFnwXHs5Rdi7iFfpk8NC1pg542Q=
@@ -1174,14 +1167,12 @@ uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc=
 Outer IP: 192.168.122.250/24
 Inner IP: 192.168.123.1/24
 </code></pre>
-
 <p>wireguard02:</p>
 <pre><code>/etc/wireguard/private: wHpqAYwqSp6F4lO09uFj8BQGVJ6OjZIkvVWUQdy+GGk=
 /etc/wireguard/publickey: uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc=
 Outer IP: 192.168.122.81/24
 Inner IP: 192.168.123.2/32
 </code></pre>
-
 <h2 id="manual-tunnel-setup">Manual tunnel setup</h2>
 <p>Follow these steps to create tunnels manually.</p>
 <p>wireguard01:</p>
@@ -1192,7 +1183,6 @@ wg set wg0 listen-port 51820
 wg set wg0 peer uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc= allowed-ips 192.168.123.2/32 endpoint 192.168.122.81:51820 persistent-keepalive 30
 ip link set dev wg0 up
 </code></pre>
-
 <p>wireguard02:</p>
 <pre><code>ip link add wg0 type wireguard
 ip a a 192.168.123.2/24 dev wg0
@@ -1201,7 +1191,6 @@ wg set wg0 listen-port 51820
 wg set wg0 peer pkyJK9ePlOTW9+GK73UnCZ4/b7/3xOthdfdbF7OQUzw= allowed-ips 192.168.123.1/32 endpoint 192.168.122.250:51820 persistent-keepalive 30
 ip link set dev wg0 up
 </code></pre>
-
 <p>Verify wireguard:</p>
 <pre><code>[root@wireguard01 ~]# wg
 interface: wg0
@@ -1216,7 +1205,6 @@ peer: uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc=
   transfer: 180 B received, 568 B sent
   persistent keepalive: every 30 seconds
 </code></pre>
-
 <pre><code>[root@wireguard02 wireguard]# wg
 interface: wg0
   public key: uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc=
@@ -1230,7 +1218,6 @@ peer: pkyJK9ePlOTW9+GK73UnCZ4/b7/3xOthdfdbF7OQUzw=
   transfer: 156 B received, 180 B sent
   persistent keepalive: every 30 seconds
 </code></pre>
-
 <pre><code>[root@wireguard01 ~]# ping -c1 -W1 192.168.123.2
 PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
 64 bytes from 192.168.123.2: icmp_seq=1 ttl=64 time=0.383 ms
@@ -1239,11 +1226,9 @@ PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
 1 packets transmitted, 1 received, 0% packet loss, time 0ms
 rtt min/avg/max/mdev = 0.383/0.383/0.383/0.000 ms
 </code></pre>
-
 <p>Delete interfaces again, run on both hosts:</p>
 <pre><code>ip link del dev wg0
 </code></pre>
-
 <h2 id="tunnel-setup-with-config-files">Tunnel setup with config files</h2>
 <p>Follow these steps to set up tunnels with systemd:</p>
 <pre><code>[root@wireguard01 ~]# cat &lt;&lt;'EOF' &gt; /etc/wireguard/wg0.conf
@@ -1259,7 +1244,6 @@ Endpoint     = 192.168.122.81:51820
 PersistentKeepalive = 30
 EOF
 </code></pre>
-
 <pre><code>[root@wireguard02 wireguard]# cat &lt;&lt;'EOF' &gt; /etc/wireguard/wg0.conf
 [Interface]
 Address    = 192.168.123.2/32
@@ -1272,7 +1256,6 @@ Endpoint     = 192.168.122.250:51820
 PersistentKeepalive = 30
 EOF
 </code></pre>
-
 <pre><code>[root@wireguard01 ~]# journalctl -u wg-quick@wg0 -f -n0 &amp;
 [1] 11296
 [root@wireguard01 ~]# -- Logs begin at Wed 2020-08-05 15:44:13 UTC. --
@@ -1301,7 +1284,6 @@ peer: uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc=
   transfer: 180 B received, 484 B sent
   persistent keepalive: every 30 seconds
 </code></pre>
-
 <pre><code>[root@wireguard02 wireguard]# -- Logs begin at Wed 2020-08-05 15:44:47 UTC. --
 
 [root@wireguard02 wireguard]# systemctl start wg-quick@wg0
@@ -1329,7 +1311,6 @@ peer: pkyJK9ePlOTW9+GK73UnCZ4/b7/3xOthdfdbF7OQUzw=
   transfer: 188 B received, 180 B sent
   persistent keepalive: every 30 seconds
 </code></pre>
-
 <p>And test ping:</p>
 <pre><code>[root@wireguard01 ~]# ping -c1 -W1 192.168.123.2
 PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
@@ -1340,12 +1321,10 @@ PING 192.168.123.2 (192.168.123.2) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.356/0.356/0.356/0.000 ms
 [root@wireguard01 ~]# 
 </code></pre>
-
 <h3 id="starting-tunnels-on-system-boot">Starting tunnels on system boot</h3>
 <p>Simply run:</p>
 <pre><code>systemctl enable wg-quick@wg0
 </code></pre>
-
 <h2 id="resources">Resources</h2>
 <ul>
 <li><a href="https://www.wireguard.com/quickstart/">https://www.wireguard.com/quickstart/</a></li>

@@ -1037,8 +1037,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1179,12 +1179,10 @@
 <p>Switch to the <code>openshift-machine-api</code> project:</p>
 <pre><code>oc project openshift-machine-api
 </code></pre>
-
 <h3 id="step-1-create-kubelet-configuration-drop-in-for-infra-node">Step 1: Create kubelet configuration drop-in for infra-node</h3>
 <p>To change booting node-labels a MachineConfig needs to be created as the labels are defined when the Kubelet is started with:</p>
 <pre><code>                --node-labels=node-role.kubernetes.io/worker,node.openshift.io/os_id=${ID} \
 </code></pre>
-
 <p>In order to create a new kubelet, create 03-infar-kubelet.yaml:</p>
 <pre><code>cat &lt;&lt;'EOF' &gt; 03-infra-kubelet.yaml
 apiVersion: machineconfiguration.openshift.io/v1
@@ -1226,15 +1224,12 @@ spec:
                       --v=${KUBELET_LOG_LEVEL}
 EOF
 </code></pre>
-
 <pre><code>$ oc apply -f 03-infra-kubelet.yaml
 </code></pre>
-
 <h3 id="step-2-create-infra-secret">Step 2: Create infra secret</h3>
 <p>Create new user data for infra worker. The following takes the userdata from worker nodes (from the worker-user-data secret) and replaces any occurrence of 'worker' with 'infra':</p>
 <pre><code>oc get secret -n openshift-machine-api worker-user-data -o yaml | awk '/userData:/ {print $2}' | base64 -d | sed 's/worker/infra/g' | base64 -w0 &gt; userdata.base64 
 </code></pre>
-
 <p>Then, create a new secret:</p>
 <pre><code>cat &lt;&lt; EOF &gt; infra-user-data.yaml
 apiVersion: v1
@@ -1249,12 +1244,10 @@ type: Opaque
 EOF
 oc apply -f infra-user-data.yaml
 </code></pre>
-
 <p>Verify:</p>
 <pre><code>$ oc get secret -n openshift-machine-api infra-user-data -o yaml | awk '/userData:/ {print $2}' | base64 -d | jq '.ignition.config.append[0].source'
 &quot;https://&lt;cluster URL&gt;:22623/config/infra&quot;
 </code></pre>
-
 <h3 id="step-3-create-machine-configuration-for-infra">Step 3: Create machine configuration for infra</h3>
 <p>Create a machine configuration pool. This machine configuration, for simplicity, will include all machine configurations for worker nodes, as well as for infra nodes. This is why it is important to name the machine configuration for the kubelet <code>03-infra-kubelet</code> (see above):</p>
 <pre><code>cat &lt;&lt;'EOF' &gt; infra-mcp.yaml
@@ -1277,11 +1270,9 @@ spec:
   paused: false
 EOF
 </code></pre>
-
 <p>Apply:</p>
 <pre><code>oc apply -f infra-mcp.yaml
 </code></pre>
-
 <h3 id="step-4-create-a-machineset-for-the-new-infra-node">Step 4: Create a machineset for the new infra node</h3>
 <p>First, create a new machineset:
 https://docs.openshift.com/container-platform/4.5/machine_management/creating-infrastructure-machinesets.html#machineset-yaml-aws_creating-infrastructure-machinesets</p>
@@ -1292,32 +1283,26 @@ openshift-machine-api   akaris2-4kpk4-worker-eu-west-3a   1         1         1 
 openshift-machine-api   akaris2-4kpk4-worker-eu-west-3b   1         1         1       1           112m
 openshift-machine-api   akaris2-4kpk4-worker-eu-west-3c   1         1         1       1           112m
 </code></pre>
-
 <pre><code>$ oc get machineset -n openshift-machine-api akaris2-4kpk4-worker-eu-west-3a -o yaml &gt; akaris2-4kpk4-infra-eu-west-3a.yaml
 </code></pre>
-
 <p>Clean up the file and modify as instructed in https://docs.openshift.com/container-platform/4.5/machine_management/creating-infrastructure-machinesets.html#machineset-yaml-aws_creating-infrastructure-machinesets</p>
 <p>The example from the documentation will contain 'worker' in:</p>
 <pre><code>          iamInstanceProfile:
             id: &lt;infrastructureID&gt;-worker-profile 
 </code></pre>
-
 <pre><code>          securityGroups:
             - filters:
                 - name: tag:Name
                   values:
                     - &lt;infrastructureID&gt;-worker-sg 
 </code></pre>
-
 <pre><code>          userDataSecret:
             name: worker-user-data
 </code></pre>
-
 <p>Make sure to change the userDataSecret to <code>infra-user-data</code>, contrary to what the documentation says:</p>
 <pre><code>          userDataSecret:
             name: infra-user-data
 </code></pre>
-
 <p>The MachineSet, after modification - in this case, 3 replicas are requested, right away:</p>
 <pre><code>$ cat akaris2-4kpk4-infra-eu-west-3a.yaml
 apiVersion: machine.openshift.io/v1beta1
@@ -1383,11 +1368,9 @@ spec:
           userDataSecret:
             name: infra-user-data
 </code></pre>
-
 <p>Apply the MachineSet:</p>
 <pre><code>$ oc apply -f akaris2-4kpk4-infra-eu-west-3a.yaml
 </code></pre>
-
 <h3 id="step-5-verify-machine-creation">Step 5: Verify Machine creation</h3>
 <p>Monitor machine configuration - right after creation of the MachineSet:</p>
 <pre><code>[akaris@linux infra-nodes]$ oc get machineconfigpool
@@ -1421,7 +1404,6 @@ ip-10-0-191-238.eu-west-3.compute.internal   Ready    worker   105m   v1.17.1+b8
 ip-10-0-208-80.eu-west-3.compute.internal    Ready    master   117m   v1.17.1+b83bc57
 ip-10-0-220-32.eu-west-3.compute.internal    Ready    worker   105m   v1.17.1+b83bc57
 </code></pre>
-
 <p>Wait:</p>
 <pre><code>[akaris@linux infra-nodes]$ oc get machineconfigpool
 NAME     CONFIG                                             UPDATED   UPDATING   DEGRADED   MACHINECOUNT   READYMACHINECOUNT   UPDATEDMACHINECOUNT   DEGRADEDMACHINECOUNT   AGE
@@ -1457,7 +1439,6 @@ ip-10-0-191-238.eu-west-3.compute.internal   Ready    worker   111m    v1.17.1+b
 ip-10-0-208-80.eu-west-3.compute.internal    Ready    master   124m    v1.17.1+b83bc57
 ip-10-0-220-32.eu-west-3.compute.internal    Ready    worker   111m    v1.17.1+b83bc57
 </code></pre>
-
 <h3 id="step-7-moving-resources-to-the-infra-nodes">Step 7: Moving resources to the infra nodes</h3>
 <p>The following steps are from:
 https://github.com/lbohnsac/OCP4/tree/master/infrastructure-node-setup</p>
@@ -1468,39 +1449,32 @@ https://docs.openshift.com/container-platform/4.5/machine_management/creating-in
 <pre><code>oc patch ingresscontrollers.operator.openshift.io default -n openshift-ingress-operator --type=merge \
   --patch '{&quot;spec&quot;:{&quot;nodePlacement&quot;:{&quot;nodeSelector&quot;:{&quot;matchLabels&quot;:{&quot;node-role.kubernetes.io/infra&quot;:&quot;&quot;}}}}}'
 </code></pre>
-
 <p>Define 3 routers (default are 2!)</p>
 <pre><code>oc patch ingresscontrollers.operator.openshift.io default -n openshift-ingress-operator --type=merge \
   --patch '{&quot;spec&quot;:{&quot;replicas&quot;: 3}}'
 </code></pre>
-
 <h4 id="move-the-registry-bits">Move the registry bits</h4>
 <p>Move the internal image registry to the infra nodes</p>
 <pre><code>oc patch configs.imageregistry.operator.openshift.io cluster --type=merge \
   --patch '{&quot;spec&quot;:{&quot;nodeSelector&quot;:{&quot;node-role.kubernetes.io/infra&quot;: &quot;&quot;}}}'
 </code></pre>
-
 <p>Move the registry image pruner (from 4.4) to the infra nodes</p>
 <pre><code>oc patch imagepruners.imageregistry.operator.openshift.io cluster --type=merge \
   --patch '{&quot;spec&quot;:{&quot;nodeSelector&quot;: {&quot;node-role.kubernetes.io/infra&quot;: &quot;&quot;}}}'
 </code></pre>
-
 <h4 id="move-the-logging-bits">Move the logging bits</h4>
 <p>Move the Kibana pod to the infras</p>
 <pre><code>oc patch clusterloggings.logging.openshift.io instance -n openshift-logging --type=merge \
   --patch '{&quot;spec&quot;:{&quot;visualization&quot;:{&quot;kibana&quot;:{&quot;nodeSelector&quot;:{&quot;node-role.kubernetes.io/infra&quot;:&quot;&quot;}}}}}'
 </code></pre>
-
 <p>Move the curator pod to the infras</p>
 <pre><code>oc patch clusterloggings.logging.openshift.io instance -n openshift-logging --type=merge \
   --patch '{&quot;spec&quot;:{&quot;curation&quot;:{&quot;curator&quot;:{&quot;nodeSelector&quot;:{&quot;node-role.kubernetes.io/infra&quot;:&quot;&quot;}}}}}'
 </code></pre>
-
 <p>Move the elasticsearch pods to the infras</p>
 <pre><code>oc patch clusterloggings.logging.openshift.io instance -n openshift-logging --type=merge \
   --patch '{&quot;spec&quot;:{&quot;logStore&quot;:{&quot;elasticsearch&quot;:{&quot;nodeSelector&quot;:{&quot;node-role.kubernetes.io/infra&quot;:&quot;&quot;}}}}}'
 </code></pre>
-
 <h3 id="issues">Issues</h3>
 <p>The inconvenience with this is that the ExecStart of the dropin is now "hardcoded" and will not be updated / changed by the installer upon upgrade.</p>
 <h3 id="step-6-testing-upgrades">Step 6: Testing upgrades</h3>
@@ -1529,7 +1503,6 @@ VERSION IMAGE
 [akaris@linux infra-nodes]$ oc adm upgrade --to-latest
 Updating to latest version 4.5.5
 </code></pre>
-
 <p>The upgrade succeeds:</p>
 <pre><code>[akaris@linux ipi]$ export KUBECONFIG=/home/akaris/cases/02729138/ipi/install-config/auth/kubeconfig
 [akaris@linux ipi]$ oc get nodes
@@ -1589,7 +1562,6 @@ rendered-worker-9d6647aa43752e0eb71a221dd8b7e32e            601c2285f497bf7c73d8
 rendered-worker-d65740ba72e305c96782a27b8255dd89            807abb900cf9976a1baad66eab17c6d76016e7b7   2.2.0             16h
 [akaris@linux ipi]$ 
 </code></pre>
-
 <p>The one problem is the pod version on the infra nodes:</p>
 <pre><code>[akaris@linux ipi]$ oc get nodes
 NAME                                         STATUS   ROLES    AGE   VERSION
@@ -1621,7 +1593,6 @@ sh-4.4# grep pause /etc/crio/ -R
 /etc/crio/crio.conf.d/00-default:pause_command = &quot;/usr/bin/pod&quot;
 sh-4.4# 
 </code></pre>
-
 <p>Compare that to the version on the worker nodes:</p>
 <pre><code>[akaris@linux ipi]$ oc get nodes
 NAME                                         STATUS   ROLES    AGE   VERSION
@@ -1651,30 +1622,25 @@ sh-4.4# grep pause /etc/crio/ -R
 /etc/crio/crio.conf.d/00-default:pause_image_auth_file = &quot;/var/lib/kubelet/config.json&quot;
 /etc/crio/crio.conf.d/00-default:pause_command = &quot;/usr/bin/pod&quot;
 </code></pre>
-
 <p>That <code>--pod-infra-container-image=</code> pod version is for the pause container; although as you can see above, the pause_image in crio.conf.d is always updated: 
 <a href="https://stackoverflow.com/questions/46630377/what-is-pod-infra-container-image-meant-for">https://stackoverflow.com/questions/46630377/what-is-pod-infra-container-image-meant-for</a></p>
 <pre><code>The pause container, which image the --pod-infra-container flag selects, is used so that multiple containers can be launched in a pod, while sharing resources. It mostly does nothing, and unless you have a very good reason to replace it with something custom, you shouldn't. It mostly invokes the pause system call (hence its name) but it also performs the important function of having PID 1 and making sure no zombie processes are kept around.
 
 An extremely complete article on the subject can be found here, from where I also shamelessly stole the following picture which illustrates where the pause container lives:
 </code></pre>
-
 <p>According to <a href="https://github.com/kubernetes/kubernetes/pull/70603">https://github.com/kubernetes/kubernetes/pull/70603</a> (although that comment is from 2018):</p>
 <pre><code>The kubelet allows you to set --pod-infra-container-image
 (also called PodSandboxImage in the kubelet config),
 which can be a custom location to the &quot;pause&quot; image in the case
 of Docker. Other CRIs are not supported.
 </code></pre>
-
 <p>And according to <a href="https://github.com/kubernetes/kubernetes/issues/86081">https://github.com/kubernetes/kubernetes/issues/86081</a> (from November 2019):</p>
 <pre><code>Kubelet flag &quot;pod-infra-container-image&quot; is invalid when using CRI-O
 </code></pre>
-
 <p>And according to the kubelet help, this only affects docker and doesn't affect us:</p>
 <pre><code>sh-4.4# kubelet --help | grep infra
       --pod-infra-container-image string                                                                          The image whose network/ipc namespaces containers in each pod will use. This docker-specific flag only works when container-runtime is set to docker. (default &quot;k8s.gcr.io/pause:3.2&quot;)
 </code></pre>
-
 <p>As an additional step just to bring the infra nodes in line with the workers and the rest of the cluster, we could update that by inspecting the current worker kubelet configuration and then modify this post-upgrade:</p>
 <pre><code>[akaris@linux ipi]$ oc get machineconfig 01-worker-kubelet -o yaml | grep pod-infra-container-image
                 --pod-infra-container-image=quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:6e8bcc9c91267283f8b0edf1af0cb0d310c54d4f73905d9bcfb2a103a664fcb0 \
@@ -1685,7 +1651,6 @@ machineconfig.machineconfiguration.openshift.io/03-infra-kubelet edited
 [akaris@linux ipi]$ oc get machineconfig 03-infra-kubelet -o yaml | grep pod-infra-container-image | grep -v apiVersion
                   --pod-infra-container-image=quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:6e8bcc9c91267283f8b0edf1af0cb0d310c54d4f73905d9bcfb2a103a664fcb0 \
 </code></pre>
-
 <p>Which will then trigger a restart of the infra nodes:</p>
 <pre><code>[akaris@linux ipi]$ oc get machineconfigpool
 NAME     CONFIG                                             UPDATED   UPDATING   DEGRADED   MACHINECOUNT   READYMACHINECOUNT   UPDATEDMACHINECOUNT   DEGRADEDMACHINECOUNT   AGE
@@ -1699,7 +1664,6 @@ rendered-infra-d63625ee2cdc4637cc156a1ebf25e926             601c2285f497bf7c73d8
 rendered-infra-f3df01ebf7429a29582f3c46132fcf88             807abb900cf9976a1baad66eab17c6d76016e7b7   2.2.0             44s
 [akaris@linux ipi]$ 
 </code></pre>
-
 <p>And then eventually:</p>
 <pre><code>[akaris@linux ipi]$ oc get nodes
 NAME                                         STATUS   ROLES    AGE   VERSION

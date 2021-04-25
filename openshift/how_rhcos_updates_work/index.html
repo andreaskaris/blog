@@ -971,8 +971,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1121,7 +1121,6 @@ MachineConfigDaemon only supports updating Red Hat CoreOS, which uses rpm-ostree
 
 Once an update is prepared (in terms of a new bootloader entry which points to a new OSTree &quot;deployment&quot; or filesystem tree), then the MachineConfigDaemon will reboot.
 </code></pre>
-
 <h2 id="force-pivoting-a-nodes-os-via-the-machineconfigoperator-or-pivot">Force pivoting a node's OS via the MachineConfigOperator or pivot</h2>
 <h3 id="obtaining-the-image-url">Obtaining the image URL</h3>
 <p>Select a release that you would like to pivot to from:</p>
@@ -1131,7 +1130,6 @@ Once an update is prepared (in terms of a new bootloader entry which points to a
 <p>Select a release image and get the docker/podman pull for that release image:</p>
 <pre><code>docker pull quay.io/openshift-release-dev/ocp-release@sha256:8a9e40df2a19db4cc51dc8624d54163bef6e88b7d88cc0f577652ba25466e338
 </code></pre>
-
 <p>Follow https://andreaskaris.github.io/blog/openshift/mounting-container-image/ to inspect the image on an external host:</p>
 <pre><code># yum install buildah -y
 # buildah from quay.io/openshift-release-dev/ocp-release@sha256:8a9e40df2a19db4cc51dc8624d54163bef6e88b7d88cc0f577652ba25466e338
@@ -1141,12 +1139,10 @@ CONTAINER ID  BUILDER  IMAGE ID     IMAGE NAME                       CONTAINER N
 # buildah mount ocp-release-working-container
 /var/lib/containers/storage/overlay/d9682dba5a0b1291805c6b430124f6d7a2bab23d22c28c3f023932d17a29cc5b/merged
 </code></pre>
-
 <p>Now, inspect the image catalog:</p>
 <pre><code># DIR=/var/lib/containers/storage/overlay/d9682dba5a0b1291805c6b430124f6d7a2bab23d22c28c3f023932d17a29cc5b/merged
 # less $DIR/release-manifests/image-references
 </code></pre>
-
 <p>And get the machine-os image:</p>
 <pre><code># cat $DIR/release-manifests/image-references | jq '.spec.tags[] | select(.name == &quot;machine-os-content&quot;) .from.name'
 {
@@ -1170,11 +1166,9 @@ CONTAINER ID  BUILDER  IMAGE ID     IMAGE NAME                       CONTAINER N
   }
 }
 </code></pre>
-
 <pre><code># cat $DIR/release-manifests/image-references | jq '.spec.tags[] | select(.name == &quot;machine-os-content&quot;) .from.name'
 &quot;quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:8869972a7f3cf7be7c936ef5b3277f20da7f5b577d66e37a5b9db25889c2a515&quot;
 </code></pre>
-
 <h3 id="using-pivot-command-to-force-pivot-on-a-node">Using pivot command to force pivot on a node</h3>
 <p>Using <code>/run/bin/machine-config-daemon pivot</code>, it is possible to pivot to another os image. As this can easily run into issues, one should have IPMI access to the node:</p>
 <pre><code># ssh core@openshift-worker-0.example.com
@@ -1215,7 +1209,6 @@ Deployments:
 Connection to openshift-worker-0.example.com closed by remote host.
 Connection to openshift-worker-0.example.com closed.
 </code></pre>
-
 <p>After the reboot, verify:</p>
 <pre><code>[root@openshift-worker-0 ~]# rpm-ostree status
 State: idle
@@ -1228,18 +1221,15 @@ Deployments:
               CustomOrigin: Managed by machine-config-operator
                    Version: 46.82.202012051820-0 (2020-12-05T18:24:10Z)
 </code></pre>
-
 <p>Note that the MachineConfigPool for the role will now report a mismatch:</p>
 <pre><code># oc describe mcp worker
 (...)
     Message:               Node openshift-worker-0 is reporting: &quot;unexpected on-disk state validating against rendered-worker-0820700c2d496a3cacc73c82b7cd5c5f: expected target osImageURL \&quot;quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:4c5b83a192734ad6aa33da798f51b4b7ebe0f633ed63d53867a0c3fb73993024\&quot;, have \&quot;quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:8869972a7f3cf7be7c936ef5b3277f20da7f5b577d66e37a5b9db25889c2a515\&quot;&quot;
 (...)
 </code></pre>
-
 <p>To roll back, simply pivot back to the original image on the same worker node:</p>
 <pre><code># /run/bin/machine-config-daemon pivot quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:4c5b83a192734ad6aa33da798f51b4b7ebe0f633ed63d53867a0c3fb73993024
 </code></pre>
-
 <pre><code>[root@openshift-worker-0 ~]# /run/bin/machine-config-daemon pivot quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:4c5b83a192734ad6aa33da798f51b4b7ebe0f633ed63d53867a0c3fb73993024
 I0122 10:28:54.824754  701236 run.go:18] Running: nice -- ionice -c 3 oc image extract --path /:/run/mco-machine-os-content/os-content-026372431 --registry-config /var/lib/kubelet/config.json quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:4c5b83a192734ad6aa33da798f51b4b7ebe0f633ed63d53867a0c3fb73993024
 I0122 10:29:25.677174  701236 rpm-ostree.go:261] Running captured: rpm-ostree status --json
@@ -1264,7 +1254,6 @@ Deployments:
                    Version: 46.82.202012051820-0 (2020-12-05T18:24:10Z)
 [root@openshift-worker-0 ~]# reboot
 </code></pre>
-
 <h3 id="using-the-machine-config-osimageurl-configmap-to-pivot-all-nodes">Using the  machine-config-osimageurl ConfigMap to pivot all nodes</h3>
 <blockquote>
 <p>For more details, see: https://github.com/openshift/machine-config-operator/blob/master/docs/HACKING.md#applying-a-custom-oscontainer</p>
@@ -1273,7 +1262,6 @@ Deployments:
 <pre><code>$ oc -n openshift-cluster-version scale --replicas=0 deploy/cluster-version-operator
 deployment.apps/cluster-version-operator scaled
 </code></pre>
-
 <p>Then, update the <code>machine-config-osimageurl</code> configmap:</p>
 <pre><code>[root@openshift-jumpserver-0 ~]# oc patch cm -n openshift-machine-config-operator machine-config-osimageurl --type=merge -p '{&quot;data&quot;: {&quot;osImageURL&quot;:&quot;quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:8869972a7f3cf7be7c936ef5b3277f20da7f5b577d66e37a5b9db25889c2a515&quot;}'
 configmap/machine-config-osimageurl patched
@@ -1308,7 +1296,6 @@ metadata:
   selfLink: /api/v1/namespaces/openshift-machine-config-operator/configmaps/machine-config-osimageurl
   uid: b26e3885-15e8-4ccc-8e84-d03bed956ea9
 </code></pre>
-
 <blockquote>
 <p>Note: Do not patch <code>releaseVersion</code>, or the MachineConfigOperator will complain if it detects a version mismatch:</p>
 </blockquote>
@@ -1317,7 +1304,6 @@ metadata:
 E0122 10:30:34.398824       1 operator.go:314] refusing to read osImageURL version &quot;4.6.13&quot;, operator version &quot;4.6.8&quot;
 (...)
 </code></pre>
-
 <p>Now, the MachineConfigOperator will create new <code>rendered-&lt;role&gt;</code> MachineConfigurations:</p>
 <pre><code># oc get mc
 NAME                                               GENERATEDBYCONTROLLER                      IGNITIONVERSION   AGE
@@ -1343,14 +1329,12 @@ rendered-worker-98a743e40098703869e9a8e0083f4f4a   c470febe19e3b004fb99baa6679e7
         f:osImageURL: {}
   osImageURL: quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:8869972a7f3cf7be7c936ef5b3277f20da7f5b577d66e37a5b9db25889c2a515
 </code></pre>
-
 <p>And the MachineConfigPools will be updated, node by node:</p>
 <pre><code># oc get mcp
 NAME     CONFIG                                             UPDATED   UPDATING   DEGRADED   MACHINECOUNT   READYMACHINECOUNT   UPDATEDMACHINECOUNT   DEGRADEDMACHINECOUNT   AGE
 master   rendered-master-ddd54a7e3be109e549ff25b0250472cd   False     True       False      3              1                   1                     0                      30d
 worker   rendered-worker-0820700c2d496a3cacc73c82b7cd5c5f   False     True       False      2              0                   0                     0                      30d
 </code></pre>
-
 <p>Wait until this completes and then verify on the nodes:</p>
 <pre><code>[root@openshift-master-0 ~]# rpm-ostree status
 State: idle

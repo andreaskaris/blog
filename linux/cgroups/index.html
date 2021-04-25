@@ -1451,8 +1451,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1628,7 +1628,6 @@ you to associate a set of CPUs and a set of memory nodes with the
 tasks in each cgroup.
 (...)
 </code></pre>
-
 <p><code>man 7 cgroups</code>:</p>
 <pre><code>(...)
 Control  cgroups,  usually  referred to as cgroups, are a Linux kernel feature which
@@ -1650,13 +1649,11 @@ example,  the limits placed on a cgroup at a higher level in the hierarchy canno
 exceeded by descendant cgroups.
 (...)
 </code></pre>
-
 <p><a href="https://lwn.net/Articles/679786/">https://lwn.net/Articles/679786/</a>:</p>
 <pre><code>The cgroup subsystem and associated controllers handle management and accounting of various system resources like CPU, memory, I/O, and more. Together with the Linux namespace subsystem, which is a bit older (having started around 2002) and is considered a bit more mature (apart, perhaps, from user namespaces, which still raise discussions), these subsystems form the basis of Linux containers. Currently, most projects involving Linux containers, like Docker, LXC, OpenVZ, Kubernetes, and others, are based on both of them. The development of the Linux cgroup subsystem started in 2006 at Google, led primarily by Rohit Seth and Paul Menage. Initially the project was called &quot;Process Containers&quot;, but later on the name was changed to &quot;Control Groups&quot;, to avoid confusion with Linux containers, and nowadays everybody calls them &quot;cgroups&quot; for short. There are currently 12 cgroup controllers in cgroups v1; all—except one—have existed for several years. The new addition is the PIDs controller, developed by Aditya Kali and merged in kernel 4.3. It allows restricting the number of processes created inside a control group, and it can be used as an anti-fork-bomb solution. The PID space in Linux consists of, at a maximum, about four million PIDs (PID_MAX_LIMIT). Given today's RAM capacities, this limit could easily and quite quickly be exhausted by a fork bomb from within a single container. The PIDs controller is supported by both cgroups v1 and cgroups v2.
 Over the years, there was a lot of criticism about the implementation of cgroups, which seems to present a number of inconsistencies and a lot of chaos. For example, when creating subgroups (cgroups within cgroups), several cgroup controllers propagate parameters to their immediate subgroups, while other controllers do not. Or, for a different example, some controllers use interface files (such as the cpuset controller's clone_children) that appear in all controllers even though they only affect one.
 As maintainer Tejun Heo himself has admitted [YouTube], &quot;design followed implementation&quot;, &quot;different decisions were taken for different controllers&quot;, and &quot;sometimes too much flexibility causes a hindrance&quot;. In an LWN article from 2012, it was said that &quot;control groups are one of those features that kernel developers love to hate.&quot; 
 </code></pre>
-
 <h2 id="the-relationship-of-containers-and-cgroups">The relationship of containers and cgroups</h2>
 <p>Containers are basically just a bunch of cgroups plus namespace isolation (plus some extra features):</p>
 <p><a href="https://en.wikipedia.org/wiki/LXC">https://en.wikipedia.org/wiki/LXC</a>:</p>
@@ -1664,11 +1661,9 @@ As maintainer Tejun Heo himself has admitted [YouTube], &quot;design followed im
 
 LXC combines the kernel's cgroups and support for isolated namespaces to provide an isolated environment for applications. Early versions of Docker used LXC as the container execution driver, though LXC was made optional in v0.9 and support was dropped in Docker v1.10. [4] 
 </code></pre>
-
 <p><a href="https://en.wikipedia.org/wiki/Docker_(software)">https://en.wikipedia.org/wiki/Docker_(software)</a>:</p>
 <pre><code>Docker is developed primarily for Linux, where it uses the resource isolation features of the Linux kernel such as cgroups and kernel namespaces, and a union-capable file system such as OverlayFS and others[28] to allow independent &quot;containers&quot; to run within a single Linux instance, avoiding the overhead of starting and maintaining virtual machines (VMs).[29] The Linux kernel's support for namespaces mostly[30] isolates an application's view of the operating environment, including process trees, network, user IDs and mounted file systems, while the kernel's cgroups provide resource limiting for memory and CPU.[31] Since version 0.9, Docker includes the libcontainer library as its own way to directly use virtualization facilities provided by the Linux kernel, in addition to using abstracted virtualization interfaces via libvirt, LXC and systemd-nspawn.[13][32][27]
 </code></pre>
-
 <h2 id="cgroups-versions">cgroups versions</h2>
 <p>cgroup comes in 2 versions. cgroups v2 are to replace cgroups v1 eventually. However, for reasons of backwards compatibility, both will probably be around for a very long time.</p>
 <p>cgroups v1 have several issues ...</p>
@@ -1688,7 +1683,6 @@ agement of the cgroup hierarchies became rather complex.  (A longer  description
 these problems can be found in the kernel source file Documentation/cgroup-v2.txt.)
 (...)
 </code></pre>
-
 <h3 id="backwards-compatibility">Backwards compatibility</h3>
 <ul>
 <li>cgroups v1 is unlikely to be removed</li>
@@ -1709,7 +1703,6 @@ tion here is that a controller can't be simultaneously employed in both a cgroup
 hierarchy and in the cgroups v2 hierarchy.
 (...)
 </code></pre>
-
 <h3 id="which-version-of-cgroups-are-you-running">Which version of cgroups are you running?</h3>
 <p>cgroups are mounted as a virtual filesystem. Hence, verify with the mount command which version is currently in use.</p>
 <h4 id="default-in-rhel-7">Default in RHEL 7</h4>
@@ -1730,7 +1723,6 @@ cgroup on /sys/fs/cgroup/pids type cgroup (rw,nosuid,nodev,noexec,relatime,pids)
 [root@rhospbl-1 ~]# uname -a
 Linux rhospbl-1.openstack.gsslab.rdu2.redhat.com 3.10.0-693.el7.x86_64 #1 SMP Thu Jul 6 19:56:57 EDT 2017 x86_64 x86_64 x86_64 GNU/Linux
 </code></pre>
-
 <h4 id="default-in-fedora-28">Default in Fedora 28</h4>
 <pre><code>[akaris@wks-akaris blog]$ cat /etc/redhat-release 
 Fedora release 28 (Twenty Eight)
@@ -1749,7 +1741,6 @@ cgroup on /sys/fs/cgroup/blkio type cgroup (rw,nosuid,nodev,noexec,relatime,secl
 cgroup on /sys/fs/cgroup/devices type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,devices)
 cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpuset)
 </code></pre>
-
 <h4 id="default-in-rhel-8">Default in RHEL 8</h4>
 <pre><code>[root@rhel8 ~]# cat /etc/redhat-release 
 Red Hat Enterprise Linux release 8.0 Beta (Ootpa)
@@ -1768,14 +1759,12 @@ cgroup on /sys/fs/cgroup/devices type cgroup (rw,nosuid,nodev,noexec,relatime,se
 cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpuset)
 cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,perf_event)
 </code></pre>
-
 <h3 id="support-for-cgroupv2">Support for cgroupv2?</h3>
 <h4 id="in-rhel-7">In RHEL 7</h4>
 <p>No, cgroups v2 is not in the kernel in RHEL 7:</p>
 <pre><code>[root@rhospbl-1 ~]# mount -t cgroup2 none /mnt/test
 mount: unknown filesystem type 'cgroup2'
 </code></pre>
-
 <h4 id="in-rhel-8">In RHEL 8</h4>
 <p>Yes:</p>
 <pre><code>[root@rhel8 ~]# mount cgroup2 -t cgroup2 /mnt/cgroupv2
@@ -1783,7 +1772,6 @@ mount: unknown filesystem type 'cgroup2'
 cgroup2 on /mnt/cgroupv2 type cgroup2 (rw,relatime,seclabel)
 [root@rhel8 ~]# 
 </code></pre>
-
 <h2 id="types-of-cgroups-v1-resource-controllers">Types of cgroups v1 resource controllers</h2>
 <h3 id="cpu-resource-controller">cpu resource controller</h3>
 <ul>
@@ -1804,7 +1792,6 @@ pid 931866's current affinity list: 0-3
 [root@overcloud-controller-0 test]# taskset -p -c 931866 
 pid 931866's current affinity list: 2,3
 </code></pre>
-
 <h4 id="hugetlb-resource-controller">hugetlb resource controller</h4>
 <ul>
 <li>controls amount of hugepages usable by a process</li>
@@ -1821,7 +1808,6 @@ Node 1 HugePages_Total:    16
 Node 1 HugePages_Free:     16
 Node 1 HugePages_Surp:      0
 </code></pre>
-
 <p>One way to find out which processes are using hugepages, is to check the hugetlb cgroups:</p>
 <pre><code>[root@overcloud-computesriov-0 ~]# cd /sys/fs/cgroup/hugetlb
 [root@overcloud-computesriov-0 hugetlb]# ll
@@ -1942,7 +1928,6 @@ Nov 27 06:46:11 overcloud-computesriov-0 systemd[1]: Started libcontainer contai
 Nov 27 06:46:11 overcloud-computesriov-0 sudo[33325]:     root : TTY=unknown ; PWD=/ ; USER=root ; COMMAND=/usr/local/bin/kolla_set_configs
 [root@overcloud-computesriov-0 system.slice]# 
 </code></pre>
-
 <h3 id="memory-cgroup">memory cgroup</h3>
 <ul>
 <li>keep track of pages used by each group</li>
@@ -1987,7 +1972,6 @@ It is possible to comount all v1 controllers against the same hierarchy:
 controllers are explicitly specified.)
 (...)
 </code></pre>
-
 <pre><code>[akaris@wks-akaris blog]$ mount | grep cgroup
 tmpfs on /sys/fs/cgroup type tmpfs (ro,nosuid,nodev,noexec,seclabel,mode=755)
 cgroup2 on /sys/fs/cgroup/unified type cgroup2 (rw,nosuid,nodev,noexec,relatime,seclabel,nsdelegate)
@@ -2006,7 +1990,6 @@ cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,nosuid,nodev,noexec,relatime,sec
 blkio  cpu  cpuacct  cpu,cpuacct  cpuset  devices  freezer  hugetlb  memory  net_cls  net_cls,net_prio  net_prio  perf_event  pids  systemd  unified
 [akaris@wks-akaris blog]$ 
 </code></pre>
-
 <p><code>man 7 cgroup</code></p>
 <pre><code>(...)
 It is not possible to mount the same controller against multiple cgroup hierarchies.
@@ -2017,7 +2000,6 @@ comounted  controllers.   However,  in  this case all that results is multiple m
 points providing a view of the same hierarchy.
 (...)
 </code></pre>
-
 <pre><code>[root@rhel8 ~]# mount | grep cgroup
 tmpfs on /sys/fs/cgroup type tmpfs (ro,nosuid,nodev,noexec,seclabel,mode=755)
 cgroup on /sys/fs/cgroup/systemd type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,xattr,release_agent=/usr/lib/systemd/systemd-cgroups-agent,name=systemd)
@@ -2042,7 +2024,6 @@ mount: /mnt: group already mounted or mount point busy.
 [root@rhel8 ~]# mount group -t cgroup -o net_cls,net_prio /mnt
 [root@rhel8 ~]# umount /mnt
 </code></pre>
-
 <p><code>man 7 cgroups</code></p>
 <pre><code>&gt; (...)
 Unmounting v1 controllers
@@ -2057,20 +2038,17 @@ only after all member processes have been moved  from  those  cgroups  to  the  
 cgroup.
 (...)
 </code></pre>
-
 <h2 id="processes-in-cgroups">Processes in cgroups</h2>
 <p>Processes start in the same cgroups as their parent</p>
 <p>A process can be moved by:</p>
 <pre><code>echo $id &gt; /sys/fs/cgroup/.../tasks
 </code></pre>
-
 <h3 id="listing-the-cgroups-that-a-process-is-in">Listing the cgroups that a process is in</h3>
 <p><a href="https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt">https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt</a>:</p>
 <pre><code>Each task under /proc has an added file named 'cgroup' displaying,
 for each active hierarchy, the subsystem names and the cgroup name
 as the path relative to the root of the cgroup file system.
 </code></pre>
-
 <p>Example:</p>
 <pre><code>[root@rhospbl-1 ~]# cat /proc/$(pidof libvirtd)/cgroup
 11:pids:/
@@ -2085,7 +2063,6 @@ as the path relative to the root of the cgroup file system.
 2:net_prio,net_cls:/
 1:name=systemd:/system.slice/libvirtd.service
 </code></pre>
-
 <h2 id="notify_on_release">notify_on_release</h2>
 <pre><code>If the notify_on_release flag is enabled (1) in a cgroup, then
 whenever the last task in the cgroup leaves (exits or attaches to
@@ -2100,7 +2077,6 @@ notify_on_release in the root cgroup at system boot is disabled
 value of their parents' notify_on_release settings. The default value of
 a cgroup hierarchy's release_agent path is empty.
 </code></pre>
-
 <p>Example:</p>
 <pre><code>[root@overcloud-controller-0 ~]# systemctl status session-c2.scope
 ● session-c2.scope - Session c2 of user rabbitmq
@@ -2135,7 +2111,6 @@ cgroup.clone_children  cgroup.event_control   cgroup.procs           notify_on_r
 [root@overcloud-controller-0 ~]# cat /sys/fs/cgroup/systemd/user.slice/user-975.slice/session-c2.scope/notify_on_release 
 1
 </code></pre>
-
 <h3 id="resources">Resources</h3>
 <p><a href="https://en.wikipedia.org/wiki/Cgroups">https://en.wikipedia.org/wiki/Cgroups</a></p>
 <p><a href="https://www.kernel.org/doc/Documentation/cgroup-v1/">https://www.kernel.org/doc/Documentation/cgroup-v1/</a></p>

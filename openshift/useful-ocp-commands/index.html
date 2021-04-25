@@ -14,7 +14,7 @@
     
     
       
-        <title>List container images in registry - Andreas Karis Blog</title>
+        <title>Useful commands for OpenShift - Andreas Karis Blog</title>
       
     
     
@@ -62,7 +62,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#list-all-images-in-a-registry" class="md-skip">
+        <a href="#querying-the-ocp-4x-upgrades-info-api" class="md-skip">
           Skip to content
         </a>
       
@@ -92,7 +92,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              List container images in registry
+              Useful commands for OpenShift
             
           </span>
         </div>
@@ -200,14 +200,12 @@
 
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
       
       <label class="md-nav__link" for="__nav_3">
         Containers
@@ -247,20 +245,11 @@
             
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../list_docker_registry_containers/" class="md-nav__link">
         List container images in registry
       </a>
-      
     </li>
   
 
@@ -613,12 +602,14 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" checked>
       
       <label class="md-nav__link" for="__nav_6">
         OpenShift
@@ -910,11 +901,63 @@
             
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../useful-ocp-commands/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Useful commands for OpenShift
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Useful commands for OpenShift
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#function-definitions" class="md-nav__link">
+    Function definitions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#upgrading-to-a-specific-out-of-graph-image" class="md-nav__link">
+    Upgrading to a specific out of graph image
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1046,16 +1089,262 @@
               
                 
                 
-                <h1 id="list-all-images-in-a-registry">List all images in a registry</h1>
-<p>How to list all container images in a registry:</p>
-<pre><code>]# curl -X GET https://local-registry:4443/v2/_catalog | jq .&quot;repositories&quot; | jq .[] | sed 's/&quot;//g' | while read c ; do echo &quot;curl -X GET https://local-registry:4443/v2/$c/tags/list&quot; ;  curl -X GET https://local-registry:4443/v2/$c/tags/list; done
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100    54  100    54    0     0    580      0 --:--:-- --:--:-- --:--:--   580
-curl -X GET https://local-registry:4443/v2/fedora-infrared/tags/list
-{&quot;name&quot;:&quot;fedora1&quot;,&quot;tags&quot;:[&quot;latest&quot;]}
-curl -X GET https://local-registry:4443/v2/fedora-rundeck/tags/list
-{&quot;name&quot;:&quot;fedora2&quot;,&quot;tags&quot;:[&quot;latest&quot;]}
+                <h1 id="querying-the-ocp-4x-upgrades-info-api">Querying the OCP 4.x upgrades info API</h1>
+<h2 id="function-definitions">Function definitions</h2>
+<p>The following bash functions are useful when needing information about possible upgrade paths and OCP versions:</p>
+<pre><code>function ocp-upgrade-paths() {
+  version=$1
+  for channel in stable fast candidate ; do
+      echo &quot;=== $channel-$version ===&quot;
+      curl -sH 'Accept: application/json' &quot;https://api.openshift.com/api/upgrades_info/v1/graph?channel=$channel-$version&quot; | jq -r '[.nodes[].version] | sort | unique[]'
+  done
+}
+
+function ocp-version-info() {
+  channel=$1
+  version=$2
+  major=$(echo $version | awk -F '.' '{print $1 &quot;.&quot; $2}')
+  minor=$(echo $version | awk -F '.' '{print $NF}')
+  echo &quot;Checking for $channel and major $major and minor $minor&quot;
+  url=&quot;https://api.openshift.com/api/upgrades_info/v1/graph?channel=$channel-$major&amp;x86_64'&quot;
+  echo $url
+  curl -sH &quot;Accept:application/json&quot; $url | jq &quot;.nodes[] | select(.version == \&quot;$version\&quot;)&quot;
+}
+</code></pre>
+<h2 id="usage">Usage</h2>
+<p>Upgrade paths:</p>
+<pre><code>$ ocp-upgrade-paths 4.4
+=== stable-4.4 ===
+4.3.12
+4.3.13
+4.3.18
+4.3.19
+4.3.21
+4.3.22
+4.3.23
+4.3.25
+4.3.26
+4.3.27
+4.3.28
+4.3.29
+4.3.31
+4.3.33
+4.3.35
+4.4.10
+4.4.11
+4.4.12
+4.4.13
+4.4.14
+4.4.15
+4.4.16
+4.4.17
+4.4.18
+4.4.19
+4.4.20
+4.4.3
+4.4.4
+4.4.5
+4.4.6
+4.4.8
+4.4.9
+=== fast-4.4 ===
+4.3.12
+4.3.13
+4.3.18
+4.3.19
+4.3.21
+4.3.22
+4.3.23
+4.3.25
+4.3.26
+4.3.27
+4.3.28
+4.3.29
+4.3.31
+4.3.33
+4.3.35
+4.4.10
+4.4.11
+4.4.12
+4.4.13
+4.4.14
+4.4.15
+4.4.16
+4.4.17
+4.4.18
+4.4.19
+4.4.20
+4.4.3
+4.4.4
+4.4.5
+4.4.6
+4.4.8
+4.4.9
+=== candidate-4.4 ===
+4.3.10
+4.3.11
+4.3.12
+4.3.13
+4.3.14
+4.3.15
+4.3.17
+4.3.18
+4.3.19
+4.3.21
+4.3.22
+4.3.23
+4.3.24
+4.3.25
+4.3.26
+4.3.27
+4.3.28
+4.3.29
+4.3.31
+4.3.33
+4.3.35
+4.3.5
+4.3.8
+4.3.9
+4.4.0
+4.4.0-rc.0
+4.4.0-rc.1
+4.4.0-rc.10
+4.4.0-rc.11
+4.4.0-rc.12
+4.4.0-rc.13
+4.4.0-rc.2
+4.4.0-rc.4
+4.4.0-rc.6
+4.4.0-rc.7
+4.4.0-rc.8
+4.4.0-rc.9
+4.4.10
+4.4.11
+4.4.12
+4.4.13
+4.4.14
+4.4.15
+4.4.16
+4.4.17
+4.4.18
+4.4.19
+4.4.2
+4.4.20
+4.4.21
+4.4.3
+4.4.4
+4.4.5
+4.4.6
+4.4.7
+4.4.8
+4.4.9
+</code></pre>
+<p>Version info:</p>
+<pre><code>$ ocp-version-info stable 4.5.7
+Checking for stable and major 4.5 and minor 7
+https://api.openshift.com/api/upgrades_info/v1/graph?channel=stable-4.5&amp;x86_64'
+{
+  &quot;version&quot;: &quot;4.5.7&quot;,
+  &quot;payload&quot;: &quot;quay.io/openshift-release-dev/ocp-release@sha256:776b7e8158edf64c82f18f5ec4d6ef378ac3de81ba0dc2700b885ceb62e71279&quot;,
+  &quot;metadata&quot;: {
+    &quot;description&quot;: &quot;&quot;,
+    &quot;io.openshift.upgrades.graph.previous.remove_regex&quot;: &quot;4.4.12&quot;,
+    &quot;io.openshift.upgrades.graph.release.channels&quot;: &quot;candidate-4.5,fast-4.5,stable-4.5,candidate-4.6&quot;,
+    &quot;io.openshift.upgrades.graph.release.manifestref&quot;: &quot;sha256:776b7e8158edf64c82f18f5ec4d6ef378ac3de81ba0dc2700b885ceb62e71279&quot;,
+    &quot;url&quot;: &quot;https://access.redhat.com/errata/RHBA-2020:3436&quot;
+  }
+}
+</code></pre>
+<h2 id="upgrading-to-a-specific-out-of-graph-image">Upgrading to a specific out of graph image</h2>
+<pre><code>[akaris@linux ~]$ ocp-upgrade-paths 4.5
+=== stable-4.5 ===
+4.5.1
+4.5.2
+4.5.3
+4.5.4
+=== fast-4.5 ===
+4.4.10
+4.4.11
+4.4.12
+4.4.13
+4.4.14
+4.4.15
+4.4.16
+4.5.1
+4.5.2
+4.5.3
+4.5.4
+=== candidate-4.5 ===
+4.4.10
+4.4.11
+4.4.12
+4.4.13
+4.4.14
+4.4.15
+4.4.16
+4.4.6
+4.4.8
+4.4.9
+4.5.0
+4.5.0-rc.1
+4.5.0-rc.2
+4.5.0-rc.4
+4.5.0-rc.5
+4.5.0-rc.6
+4.5.0-rc.7
+4.5.1
+4.5.1-rc.0
+4.5.2
+4.5.3
+4.5.4
+4.5.5
+</code></pre>
+<pre><code>[akaris@linux ~]$ ocp-version-info stable 4.5.7
+Checking for stable and major 4.5 and minor 7
+https://api.openshift.com/api/upgrades_info/v1/graph?channel=stable-4.5&amp;x86_64'
+{
+  &quot;version&quot;: &quot;4.5.7&quot;,
+  &quot;payload&quot;: &quot;quay.io/openshift-release-dev/ocp-release@sha256:776b7e8158edf64c82f18f5ec4d6ef378ac3de81ba0dc2700b885ceb62e71279&quot;,
+  &quot;metadata&quot;: {
+    &quot;description&quot;: &quot;&quot;,
+    &quot;io.openshift.upgrades.graph.previous.remove_regex&quot;: &quot;4.4.12&quot;,
+    &quot;io.openshift.upgrades.graph.release.channels&quot;: &quot;candidate-4.5,fast-4.5,stable-4.5,candidate-4.6&quot;,
+    &quot;io.openshift.upgrades.graph.release.manifestref&quot;: &quot;sha256:776b7e8158edf64c82f18f5ec4d6ef378ac3de81ba0dc2700b885ceb62e71279&quot;,
+    &quot;url&quot;: &quot;https://access.redhat.com/errata/RHBA-2020:3436&quot;
+  }
+}
+[akaris@linux ~]$ ocp-version-info stable 4.5.8
+Checking for stable and major 4.5 and minor 8
+https://api.openshift.com/api/upgrades_info/v1/graph?channel=stable-4.5&amp;x86_64'
+[akaris@linux ~]$ ocp-version-info candidate 4.5.8
+Checking for candidate and major 4.5 and minor 8
+https://api.openshift.com/api/upgrades_info/v1/graph?channel=candidate-4.5&amp;x86_64'
+{
+  &quot;version&quot;: &quot;4.5.8&quot;,
+  &quot;payload&quot;: &quot;quay.io/openshift-release-dev/ocp-release@sha256:ae61753ad8c8a26ed67fa233eea578194600d6c72622edab2516879cfbf019fd&quot;,
+  &quot;metadata&quot;: {
+    &quot;description&quot;: &quot;&quot;,
+    &quot;io.openshift.upgrades.graph.release.channels&quot;: &quot;candidate-4.5,candidate-4.6&quot;,
+    &quot;io.openshift.upgrades.graph.release.manifestref&quot;: &quot;sha256:ae61753ad8c8a26ed67fa233eea578194600d6c72622edab2516879cfbf019fd&quot;,
+    &quot;url&quot;: &quot;https://access.redhat.com/errata/RHBA-2020:3510&quot;
+  }
+}
+</code></pre>
+<p>How to uprgade to an image that's not on the graph (not supported). Look at <code>payload</code> from ocp-version-info and use that image:</p>
+<pre><code>oc adm upgrade --allow-explicit-upgrade --to-image quay.io/openshift-release-dev/ocp-release@sha256:776b7e8158edf64c82f18f5ec4d6ef378ac3de81ba0dc2700b885ceb62e71279
+</code></pre>
+<h1 id="gathering-all-resources-from-a-namespace-with-oc-adm-inspect">Gathering all resources from a namespace with oc adm inspect</h1>
+<p>Use the following command to gather all resources from a namespace. </p>
+<blockquote>
+<p><strong>Warning:</strong> This will include secrets!!</p>
+</blockquote>
+<pre><code>namespace=pipelines-tutorial
+oc adm inspect -n $namespace $(oc api-resources --verbs=get,list --namespaced=true | tail -n+2 | awk '{print $1}' | tr '\n' ',' | sed 's/,$//')
+</code></pre>
+<p>Exclude critical resources with:</p>
+<pre><code>namespace=pipelines-tutorial
+exclude_list=&quot;secrets&quot;
+oc adm inspect -n $namespace $(oc api-resources --verbs=get,list --namespaced=true | tail -n+2 | egrep -v &quot;$exclude_list&quot; | awk '{print $1}' | tr '\n' ',' | sed 's/,$//')
 </code></pre>
                 
                   
@@ -1065,7 +1354,7 @@ curl -X GET https://local-registry:4443/v2/fedora-rundeck/tags/list
 <div class="md-source-date">
   <small>
     
-      Last update: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">September 23, 2020</span>
+      Last update: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">April 25, 2021</span>
     
   </small>
 </div>
@@ -1087,7 +1376,7 @@ curl -X GET https://local-registry:4443/v2/fedora-rundeck/tags/list
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        <a href="../../linux/containers/" class="md-footer__link md-footer__link--prev" rel="prev">
+        <a href="../openshift_troubleshooting_etcd_state/" class="md-footer__link md-footer__link--prev" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -1096,19 +1385,19 @@ curl -X GET https://local-registry:4443/v2/fedora-rundeck/tags/list
               <span class="md-footer__direction">
                 Previous
               </span>
-              Containers in Linux
+              Troubleshooting etcd state
             </div>
           </div>
         </a>
       
       
-        <a href="../../linux/namespaces/" class="md-footer__link md-footer__link--next" rel="next">
+        <a href="../troubleshooting_openshift_on_openstack_worker_creation/" class="md-footer__link md-footer__link--next" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              namespaces
+              Troubleshooting OpenShift on OpenStack worker creation
             </div>
           </div>
           <div class="md-footer__button md-icon">

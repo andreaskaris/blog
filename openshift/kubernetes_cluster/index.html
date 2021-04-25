@@ -982,8 +982,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1131,7 +1131,6 @@
 192.168.122.117 vm5
 EOF
 </code></pre>
-
 <h2 id="keepalived-configuration-for-master-nodes">Keepalived configuration for master nodes</h2>
 <p>Master nodes can be set up with the following keepalived configuration for HA:</p>
 <pre><code>cat&lt;&lt;'EOF'&gt;/etc/keepalived/keepalived.conf 
@@ -1148,7 +1147,6 @@ vrrp_instance vip {
 }
 EOF
 </code></pre>
-
 <pre><code>cat&lt;&lt;'EOF'&gt;/usr/local/sbin/notify-keepalived.sh
 #!/bin/bash
 TYPE=$1
@@ -1171,10 +1169,8 @@ case $STATE in
 esac
 EOF
 </code></pre>
-
 <pre><code>chmod +x /usr/local/sbin/notify-keepalived.sh
 </code></pre>
-
 <h2 id="haproxy-setup-on-master-nodes">haproxy setup on master nodes</h2>
 <p>This goes hand in hand with the keepalived coniguration mentioned earlier - run this on all of the masters:</p>
 <pre><code>cat&lt;&lt;EOF&gt;/etc/haproxy/haproxy.cfg
@@ -1220,7 +1216,6 @@ backend app
     server  app3 vm3:6443 check
 EOF
 </code></pre>
-
 <h3 id="install-more-recent-version-of-containerd">Install more recent version of containerd</h3>
 <p>In Fedora 31, it's required to install a more recent version of containerd than what is provided by the package manager:</p>
 <pre><code>yum install containerd -y
@@ -1246,7 +1241,6 @@ systemctl restart containerd
 systemctl enable containerd
 crictl --runtime-endpoint=/var/run/containerd/containerd.sock info
 </code></pre>
-
 <h2 id="revert-fedora-to-use-cgroupv1">Revert Fedora to use cgroupv1</h2>
 <p>Revert Fedora 31 to cgroupv1 as this will not work with cgroupv2
 <a href="https://medium.com/nttlabs/cgroup-v2-596d035be4d7">https://medium.com/nttlabs/cgroup-v2-596d035be4d7</a></p>
@@ -1255,7 +1249,6 @@ sudo grubby \
   --update-kernel=ALL \
   --args=&quot;systemd.unified_cgroup_hierarchy=0&quot;
 </code></pre>
-
 <h2 id="work-around-issues-with-flannel-in-k8s-116">Work around issues with Flannel in k8s 1.16</h2>
 <p>Problems with flannel in k8s 1.16:
 <a href="https://stackoverflow.com/questions/58024643/kubernetes-master-node-not-ready-state">https://stackoverflow.com/questions/58024643/kubernetes-master-node-not-ready-state</a>
@@ -1266,10 +1259,8 @@ sudo grubby \
 cf8371b51a17571b, started, vm2, https://192.168.122.140:2380, https://192.168.122.140:2379
 ec403cb4ca539d7b, started, vm1, https://192.168.122.248:2380, https://192.168.122.248:2379
 </code></pre>
-
 <pre><code>ETCDCTL_API=3 etcdctl --endpoints $ADVERTISE_URL --cacert /etc/kubernetes/pki/etcd/ca.crt --key /etc/kubernetes/pki/etcd/server.key --cert /etc/kubernetes/pki/etcd/server.crt get --prefix /registry -w json | python -m json.tool
 </code></pre>
-
 <pre><code>[root@vm1 ~]# ETCDCTL_API=3 etcdctl --endpoints $ADVERTISE_URL --cacert /etc/kubernetes/pki/etcd/ca.crt --key /etc/kubernetes/pki/etcd/server.key --cert /etc/kubernetes/pki/etcd/server.crt get --prefix /registry --keys-only | grep flann
 /registry/clusterrolebindings/flannel
 /registry/clusterroles/flannel
@@ -1293,7 +1284,6 @@ ec403cb4ca539d7b, started, vm1, https://192.168.122.248:2380, https://192.168.12
 /registry/secrets/kube-system/flannel-token-ff78q
 /registry/serviceaccounts/kube-system/flannel
 </code></pre>
-
 <pre><code>[root@vm1 ~]# kubectl exec -it kube-flannel-ds-amd64-7gd69 -n kube-system /bin/bash
 bash-4.4# ps
 PID   USER     TIME  COMMAND
@@ -1309,7 +1299,6 @@ bash-4.4# cat /etc/kube-flannel/net-conf.json
 }
 bash-4.4# 
 </code></pre>
-
 <p><a href="https://github.com/coreos/flannel/blob/master/Documentation/configuration.md">https://github.com/coreos/flannel/blob/master/Documentation/configuration.md</a></p>
 <p>Issue with systemd and flannel:
 <a href="https://github.com/coreos/flannel/issues/1155">https://github.com/coreos/flannel/issues/1155</a></p>
@@ -1321,11 +1310,9 @@ OriginalName=flannel*
 MACAddressPolicy=none
 EOF
 </code></pre>
-
 <pre><code>[root@vm4 ~]# cat /etc/default/grub  | grep CMDLINE
 GRUB_CMDLINE_LINUX=&quot;no_timer_check net.ifnames=0 console=tty1 console=ttyS0,115200n8 systemd.unified_cgroup_hierarchy=0&quot;
 </code></pre>
-
 <pre><code>[root@vm4 ~]# cat /etc/yum.repos.d/kubernetes.repo 
 [kubernetes]
 name=Kubernetes
@@ -1335,7 +1322,6 @@ gpgcheck=1
 repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 </code></pre>
-
 <pre><code>[root@vm4 ~]# rpm -qa | egrep 'kube|docker'
 docker-ce-19.03.4-3.fc31.x86_64
 kubectl-1.16.2-0.x86_64
@@ -1344,7 +1330,6 @@ kubeadm-1.16.2-0.x86_64
 kubernetes-cni-0.7.5-0.x86_64
 docker-ce-cli-19.03.4-3.fc31.x86_64
 </code></pre>
-
 <pre><code>root@vm4 ~]# cat /etc/yum.repos.d/docker-ce.repo
 [docker-ce-stable]
 name=Docker CE Stable - $basearch
@@ -1430,7 +1415,6 @@ enabled=0
 gpgcheck=1
 gpgkey=https://download.docker.com/linux/fedora/gpg
 </code></pre>
-
 <pre><code>yum install kubeadm kubectl kubelet kubernetes-cni docker-ce -y
 </code></pre>
                 

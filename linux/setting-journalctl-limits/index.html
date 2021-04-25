@@ -950,8 +950,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1092,11 +1092,9 @@
 <pre><code>SystemMaxUse=40G 
 SystemKeepFree=100G
 </code></pre>
-
 <p>After changing the settings, restart the journal service:</p>
 <pre><code>systemctl restart systemd-journald.service
 </code></pre>
-
 <p>That means that logs will grow to 40G in size, but only if at least 100GB of disk space are free on the target file system.</p>
 <pre><code>man journald.conf
 (...)
@@ -1128,7 +1126,6 @@ SystemKeepFree=100G
            limit after a vacuuming operation is complete.
 (...)
 </code></pre>
-
 <h3 id="test-case">Test case</h3>
 <p>In order to test these settings, one can disable the journal's rate limiting feature with <code>RateLimitIntervalSec</code> and <code>RateLimitBurst</code> and set a low <code>SystemMaxUse</code>:</p>
 <pre><code># egrep -v '^#' /etc/systemd/journald.conf 
@@ -1139,22 +1136,18 @@ RateLimitBurst=0
 SystemMaxUse=2G
 SystemKeepFree=100G
 </code></pre>
-
 <p>Restart the service:</p>
 <pre><code>systemctl restart systemd-journald.service
 </code></pre>
-
 <p>Generate lots of logging quickly, for example with:</p>
 <pre><code>while true; do dd if=/dev/urandom bs=3 count=10000 | base64 | logger; done
 </code></pre>
-
 <p>Now, verify while running the above command. You will see that the start of the log moves, so earlier data will be list:</p>
 <pre><code># journalctl | head -n 3
 -- Logs begin at Sat 2021-04-10 13:00:43 UTC, end at Thu 2021-04-22 15:14:54 UTC. --
 Apr 10 13:00:43 node-0 NetworkManager[1962]: &lt;info&gt;  [1618059643.6773] dhcp4 (enp4s0f1): canceled DHCP transaction
 Apr 10 13:00:43 node-0 NetworkManager[1962]: &lt;info&gt;  [1618059643.6774] dhcp4 (enp4s0f1): state changed timeout -&gt; done
 </code></pre>
-
 <p>And the size of <code>/var/log/journal</code> will fluctuate as new data is written to the logs and old data is erased:</p>
 <pre><code>[root@node-0 ~]# while true; do du -s /var/log/journal/ ; sleep 5 ;done
 2064492 /var/log/journal/

@@ -1058,8 +1058,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1201,7 +1201,6 @@
 <pre><code>[root@openshift-worker-2 ~]# ps aux | grep qemu-kvm
 root       28450  0.1  0.2 2599904 351472 ?      Sl   Jul26   1:08 /usr/libexec/qemu-kvm -name sandbox-dc7a95dc3219fa58f6b87ac10cb2f5b0a562d8434c2cdc8d4d940d8e763e5103 -uuid 6f03e56e-efa1-4f0f-9b8f-492cf1824c83 -machine q35,accel=kvm,kernel_irqchip -cpu host -qmp unix:/run/vc/vm/dc7a95dc3219fa58f6b87ac10cb2f5b0a562d8434c2cdc8d4d940d8e763e5103/qmp.sock,server,nowait -m 2048M,slots=10,maxmem=129853M -device pci-bridge,bus=pcie.0,id=pci-bridge-0,chassis_nr=1,shpc=on,addr=2,romfile= -device virtio-serial-pci,disable-modern=false,id=serial0,romfile= -device virtconsole,chardev=charconsole0,id=console0 -chardev socket,id=charconsole0,path=/run/vc/vm/dc7a95dc3219fa58f6b87ac10cb2f5b0a562d8434c2cdc8d4d940d8e763e5103/console.sock,server,nowait -device virtio-scsi-pci,id=scsi0,disable-modern=false,romfile= -object rng-random,id=rng0,filename=/dev/urandom -device virtio-rng-pci,rng=rng0,romfile= -device vhost-vsock-pci,disable-modern=false,vhostfd=3,id=vsock-555233078,guest-cid=555233078,romfile= -chardev socket,id=char-1082a328d9d79959,path=/run/vc/vm/dc7a95dc3219fa58f6b87ac10cb2f5b0a562d8434c2cdc8d4d940d8e763e5103/vhost-fs.sock -device vhost-user-fs-pci,chardev=char-1082a328d9d79959,tag=kataShared,romfile= -netdev tap,id=network-0,vhost=on,vhostfds=4,fds=5 -device driver=virtio-net-pci,netdev=network-0,mac=d6:96:23:1b:02:05,disable-modern=false,mq=on,vectors=4,romfile= -global kvm-pit.lost_tick_policy=discard -vga none -no-user-config -nodefaults -nographic -daemonize -object memory-backend-file,id=dimm1,size=2048M,mem-path=/dev/shm,share=on -numa node,memdev=dimm1 -kernel /usr/lib/modules/4.18.0-193.13.2.el8_2.x86_64/vmlinuz -initrd /var/cache/kata-containers/osbuilder-images/4.18.0-193.13.2.el8_2.x86_64/&quot;rhcos&quot;-kata-4.18.0-193.13.2.el8_2.x86_64.initrd -append tsc=reliable no_timer_check rcupdate.rcu_expedited=1 i8042.direct=1 i8042.dumbkbd=1 i8042.nopnp=1 i8042.noaux=1 noreplace-smp reboot=k console=hvc0 console=hvc1 iommu=off cryptomgr.notests net.ifnames=0 pci=lastbus=0 quiet panic=1 nr_cpus=40 agent.use_vsock=true scsi_mod.scan=none -pidfile /run/vc/vm/dc7a95dc3219fa58f6b87ac10cb2f5b0a562d8434c2cdc8d4d940d8e763e5103/pid -smp 1,cores=1,threads=1,sockets=40,maxcpus=40
 </code></pre>
-
 <h3 id="initrd-build-process">Initrd build process</h3>
 <p>kata-operator builds an initrd image with <code>/usr/libexec/kata-containers/osbuilder/kata-osbuilder.sh</code>. This script is executed by service kata-osbuilder-generate.service upon start and restart. For further details, also see: <a href="https://github.com/kata-containers/osbuilder">https://github.com/kata-containers/osbuilder</a>:</p>
 <pre><code>[root@openshift-worker-2 ~]# systemctl list-unit-files | grep kata
@@ -1236,7 +1235,6 @@ ExecRestart=/usr/libexec/kata-containers/osbuilder/kata-osbuilder.sh
 [Install]
 WantedBy=multi-user.target
 </code></pre>
-
 <pre><code>[root@openshift-worker-2 ~]# journalctl -u kata-osbuilder-generate.service | cat
 -- Logs begin at Thu 2020-07-23 14:27:02 UTC, end at Mon 2020-07-27 10:12:56 UTC. --
 Jul 26 15:46:48 openshift-worker-2.example.com systemd[1]: Starting Hacky service to enable kata-osbuilder-generate.service...
@@ -1725,7 +1723,6 @@ Jul 26 15:54:05 openshift-worker-2.example.com systemd[1]: Started Hacky service
 Jul 26 15:54:05 openshift-worker-2.example.com systemd[1]: kata-osbuilder-generate.service: Consumed 23.046s CPU time
 [root@openshift-worker-2 ~]# 
 </code></pre>
-
 <pre><code>[root@openshift-worker-2 ~]# grep IMAGE_TOPDIR /usr/libexec/kata-containers/osbuilder/kata-osbuilder.sh
 readonly IMAGE_TOPDIR=&quot;/var/cache/kata-containers&quot;
 readonly KERNEL_SYMLINK=&quot;${IMAGE_TOPDIR}/vmlinuz.container&quot;
@@ -1764,7 +1761,6 @@ readonly GENERATED_IMAGE=&quot;${DRACUT_IMAGES}/kata-containers.img&quot;
         mv -Z ${GENERATED_IMAGE} ${image_dest_path}
             -o ${GENERATED_IMAGE} ${DRACUT_ROOTFS}
 </code></pre>
-
 <pre><code>[root@openshift-worker-2 ~]# find /var/cache/kata-containers
 /var/cache/kata-containers
 /var/cache/kata-containers/osbuilder-images
@@ -1773,12 +1769,10 @@ readonly GENERATED_IMAGE=&quot;${DRACUT_IMAGES}/kata-containers.img&quot;
 /var/cache/kata-containers/vmlinuz.container
 /var/cache/kata-containers/kata-containers-initrd.img
 </code></pre>
-
 <h3 id="kata-configuration-which-kernel-and-initrd-does-the-vm-use">kata configuration - which kernel and initrd does the VM use?</h3>
 <p>Looking at the VM, it uses:</p>
 <pre><code>-kernel /usr/lib/modules/4.18.0-193.13.2.el8_2.x86_64/vmlinuz -initrd /var/cache/kata-containers/osbuilder-images/4.18.0-193.13.2.el8_2.x86_64/&quot;rhcos&quot;-kata-4.18.0-193.13.2.el8_2.x86_64.initrd
 </code></pre>
-
 <p>And following the configuration for kata (and the symlinks):</p>
 <pre><code>[root@openshift-worker-2 ~]# egrep '^kernel' /usr/share/kata-containers/defaults/configuration.toml
 kernel = &quot;/var/cache/kata-containers/vmlinuz.container&quot;
@@ -1792,7 +1786,6 @@ lrwxrwxrwx. 1 root root 50 Jul 26 15:54 /var/cache/kata-containers/vmlinuz.conta
 lrwxrwxrwx. 1 root root 121 Jul 26 15:54 /var/cache/kata-containers/kata-containers-initrd.img -&gt; '/var/cache/kata-containers/osbuilder-images/4.18.0-193.13.2.el8_2.x86_64/&quot;rhcos&quot;-kata-4.18.0-193.13.2.el8_2.x86_64.initrd'
 [root@openshift-worker-2 ~]# 
 </code></pre>
-
 <h3 id="kata-runtime">kata-runtime</h3>
 <p>For further details, see: <a href="https://github.com/kata-containers/runtime">https://github.com/kata-containers/runtime</a></p>
 <p>Opened files:</p>
@@ -1835,7 +1828,6 @@ openat(AT_FDCWD, &quot;/run/vc/sbs/dc7a95dc3219fa58f6b87ac10cb2f5b0a562d8434c2cd
 openat(AT_FDCWD, &quot;/run/vc/sbs/dc7a95dc3219fa58f6b87ac10cb2f5b0a562d8434c2cdc8d4d940d8e763e5103/6b41cdf410d12e75f99c37c7cadc4c968b1061d388db379aecacf381f46af56a/persist.json&quot;, O_RDONLY|O_CLOEXEC) = 9
 openat(AT_FDCWD, &quot;/run/vc/sbs/dc7a95dc3219fa58f6b87ac10cb2f5b0a562d8434c2cdc8d4d940d8e763e5103/dc7a95dc3219fa58f6b87ac10cb2f5b0a562d8434c2cdc8d4d940d8e763e5103/persist.json&quot;, O_RDONLY|O_CLOEXEC) = 10
 </code></pre>
-
 <p>Listing VMs / containers and verifying runtime state:</p>
 <pre><code>[root@openshift-worker-2 ~]# kata-runtime kata-check
 System is capable of running Kata Containers
@@ -1852,7 +1844,6 @@ root       28454  0.0  0.0 4215264 17304 ?       Sl   Jul26   0:00 /usr/libexec/
 root     1366797  0.0  0.0  12920  2360 pts/0    S+   10:41   0:00 grep --color=auto dc7a95dc3219fa58f6b87ac10cb2f5b0a562d8434c2cdc8d4d940d8e763e5103
 [root@openshift-worker-2 ~]# 
 </code></pre>
-
 <p>And to verify the kata-runtime configuration:</p>
 <pre><code>[root@openshift-worker-2 ~]# kata-runtime --kata-show-default-config-paths
 /etc/kata-containers/configuration.toml
@@ -1958,7 +1949,6 @@ ls: cannot access '/etc/kata-containers': No such file or directory
     Patch = 1
     Commit = &quot;&lt;&lt;unknown&gt;&gt;&quot;
 </code></pre>
-
 <p>And for logging:</p>
 <pre><code>[root@openshift-worker-2 ~]# journalctl -t kata-runtime
 -- Logs begin at Thu 2020-07-23 14:27:02 UTC, end at Mon 2020-07-27 10:47:03 UTC. --
@@ -2031,7 +2021,6 @@ Jul 27 09:22:48 openshift-worker-2.example.com kata[28433]: time=&quot;2020-07-2
 Jul 27 09:23:05 openshift-worker-2.example.com kata[28433]: time=&quot;2020-07-27T09:23:05.940817814Z&quot; level=error msg=&quot;post event&quot; error=&quot;failed to publish event: exit status 1&quot;
 [root@openshift-worker-2 ~]# 
 </code></pre>
-
 <h3 id="how-does-kata-containers-plug-the-vm-networking">How does kata containers plug the VM networking</h3>
 <p>The namespace looks like this:</p>
 <pre><code>sh-4.4# ip netns exec 317575d4-1143-4aab-b896-5767221326ec ip a
@@ -2052,11 +2041,9 @@ Jul 27 09:23:05 openshift-worker-2.example.com kata[28433]: time=&quot;2020-07-2
     inet6 fe80::98b6:22ff:fef7:1c26/64 scope link 
        valid_lft forever preferred_lft forever
 </code></pre>
-
 <p>And the VM's tap configuration looks like this, using ifindex 4 within the namespace:</p>
 <pre><code>-netdev tap,id=network-0,vhost=on,vhostfds=4,fds=5
 </code></pre>
-
 <p>All traffic that arrives on tap0_kata will be mirrored to eth0 and vise versa. In the below case, the VM sends TCP SYNs. These SYNs enter on tap0_kata and are mirrored to eth0:</p>
 <pre><code>sh-4.4# ip netns exec 317575d4-1143-4aab-b896-5767221326ec tcpdump -nne -i tap0_kata 
 tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
@@ -2078,7 +2065,6 @@ listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
 0 packets dropped by kernel
 sh-4.4# 
 </code></pre>
-
 <p>The kata documentation explains how this works: <a href="https://github.com/kata-containers/documentation/blob/master/design/architecture.md#networking">https://github.com/kata-containers/documentation/blob/master/design/architecture.md#networking</a></p>
 <pre><code>Containers will typically live in their own, possibly shared, networking namespace. At some point in a container lifecycle, container engines will set up that namespace to add the container to a network which is isolated from the host network, but which is shared between containers
 
@@ -2088,7 +2074,6 @@ This is a very namespace-centric approach as many hypervisors (in particular QEM
 
 To overcome incompatibility between typical container engines expectations and virtual machines, kata-runtime networking transparently connects veth interfaces with TAP ones using MACVTAP:
 </code></pre>
-
 <p>See the picture in the documentation for further details. eth0 and tap_kata0 are transparently connected via tc rules:</p>
 <pre><code># ingress qdisc configured for both interfaces
 
@@ -2117,7 +2102,6 @@ filter protocol all pref 49152 u32 chain 0 fh 800::800 order 2048 key ht 800 bkt
     action order 1: mirred (Egress Redirect to device eth0) stolen
     index 2 ref 1 bind 1
 </code></pre>
-
 <p>Further details about this in: 
 * <a href="https://gist.github.com/mcastelino/7d85f4164ffdaf48242f9281bb1d0f9b">https://gist.github.com/mcastelino/7d85f4164ffdaf48242f9281bb1d0f9b</a>
 * <a href="https://man7.org/linux/man-pages/man8/tc-mirred.8.html">https://man7.org/linux/man-pages/man8/tc-mirred.8.html</a></p>
@@ -2176,7 +2160,6 @@ FIELDS:
      scheduling is nil, this RuntimeClass is assumed to be supported by all
      nodes.
 </code></pre>
-
 <p>The runtime class definition looks like this:</p>
 <pre><code>[root@openshift-jumpserver-0 ~]# oc get runtimeclass kata-oc -o yaml
 apiVersion: node.k8s.io/v1beta1
@@ -2223,13 +2206,11 @@ scheduling:
   nodeSelector:
     kata-containers: &quot;&quot;
 </code></pre>
-
 <p>And the scheduling nodeSelector makes sure that kata pods will only be spawned on correctly configured workers:</p>
 <pre><code>[root@openshift-jumpserver-0 ~]# oc get nodes -l kata-containers=
 NAME                             STATUS   ROLES    AGE     VERSION
 openshift-worker-2.example.com   Ready    worker   4d19h   v1.18.3+b74c5ed
 </code></pre>
-
 <p>On these worker nodes, the kata operator configures the <code>kata-oc</code> handler in crio with:</p>
 <pre><code>[root@openshift-worker-2 ~]# cat /etc/crio/crio.conf.d/kata-50.conf 
 
@@ -2246,14 +2227,12 @@ openshift-worker-2.example.com   Ready    worker   4d19h   v1.18.3+b74c5ed
   runtime_type = &quot;oci&quot;
   runtime_root = &quot;/run/runc&quot;
 </code></pre>
-
 <p>And default runtime:</p>
 <pre><code>[root@openshift-worker-2 ~]# grep default_runtime /etc/crio/ -R
 /etc/crio/crio.conf:# default_runtime is the _name_ of the OCI runtime to be used as the default.
 /etc/crio/crio.conf:default_runtime = &quot;runc&quot;
 [root@openshift-worker-2 ~]# 
 </code></pre>
-
 <p>Check the crio implementation for further details, e.g.:
 <a href="https://github.com/cri-o/cri-o/blob/d23a830d170ae177c922fe63611f8d1d3772ef8a/server/sandbox_run_linux.go#L494">https://github.com/cri-o/cri-o/blob/d23a830d170ae177c922fe63611f8d1d3772ef8a/server/sandbox_run_linux.go#L494</a></p>
 <pre><code>    // If using kata runtime, the process label should be set to container_kvm_t
@@ -2268,7 +2247,6 @@ openshift-worker-2.example.com   Ready    worker   4d19h   v1.18.3+b74c5ed
         g.SetProcessSelinuxLabel(processLabel)
     }
 </code></pre>
-
 <p>For an explanation of the fields, see: <a href="https://github.com/cri-o/cri-o/blob/master/docs/crio.conf.5.md#crioruntime-table">https://github.com/cri-o/cri-o/blob/master/docs/crio.conf.5.md#crioruntime-table</a></p>
 <pre><code>CRIO.RUNTIME.RUNTIMES TABLE
 
@@ -2280,7 +2258,6 @@ runtime_root=&quot;&quot; Root directory used to store runtime data
 
 runtime_type=&quot;oci&quot; Type of the runtime used for this runtime handler. &quot;oci&quot;, &quot;vm&quot;
 </code></pre>
-
 <p>The runtime class in a pod is then selected with <code>runtimeClassName</code>:</p>
 <pre><code>[root@openshift-jumpserver-0 ~]# cat katapod.yaml 
 apiVersion: v1
@@ -2295,7 +2272,6 @@ spec:
     command: [&quot;sleep&quot;, &quot;infinity&quot;]
   runtimeClassName: kata-oc
 </code></pre>
-
 <h3 id="crio-debugging-kata-container-launch">crio - debugging kata container launch</h3>
 <p>Change log level to debug:</p>
 <pre><code>[root@openshift-worker-2 ~]# grep log_level /etc/crio/ -R
@@ -2303,7 +2279,6 @@ spec:
 /etc/crio/crio.conf.d/00-default:log_level = &quot;debug&quot;   &lt;----------------------- here
 [root@openshift-worker-2 ~]# systemctl restart crio
 </code></pre>
-
 <p>Then, spawn a new pod, named katapod. The logs will look like this:</p>
 <pre><code>[root@openshift-worker-2 ~]# journalctl -u crio --since &quot;7 minutes ago&quot; | grep kata | cut -b 1-250
 Jul 28 10:09:11 openshift-worker-2.example.com crio[2156]: time=&quot;2020-07-28T10:09:11.335500711Z&quot; level=warning msg=&quot;Could not remove container share dir&quot; ID=dc7a95dc3219fa58f6b87ac10cb2f5b0a562d8434c2cdc8d4d940d8e763e5103 error=&quot;no such file or direc
@@ -2489,7 +2464,6 @@ Jul 28 10:11:00 openshift-worker-2.example.com crio[3069288]: time=&quot;2020-07
 Jul 28 10:11:01 openshift-worker-2.example.com crio[3069288]: time=&quot;2020-07-28 10:11:01.091184087Z&quot; level=info msg=&quot;Created container ed470742207b8df91b5b194d07c0f0db2746470accdeeba28d90d37cfc3a8447: katatest/katapod/sample-container&quot; id=25867b9e-a54
 Jul 28 10:11:01 openshift-worker-2.example.com crio[3069288]: time=&quot;2020-07-28 10:11:01.096407977Z&quot; level=info msg=&quot;Started container ed470742207b8df91b5b194d07c0f0db2746470accdeeba28d90d37cfc3a8447: katatest/katapod/sample-container&quot; id=5ec1b483-d18
 </code></pre>
-
 <p>Disable debugging after the test as crio logs quite a lot in debug mode.</p>
 <h3 id="finding-the-kata-containers-socket">Finding the kata-containers socket</h3>
 <p>WIP</p>
@@ -2519,7 +2493,6 @@ container 28433 root    8u     unix 0xffff92a9cbf08480      0t0   3131447 @/cont
 container 28433 root   17u     unix 0xffff9299e58c5a00      0t0   3535834 @/containerd-shim/default/dc7a95dc3219fa58f6b87ac10cb2f5b0a562d8434c2cdc8d4d940d8e763e5103/shim.sock@ type=STREAM
 [root@openshift-worker-2 /]# 
 </code></pre>
-
 <h3 id="connecting-a-debug-console-to-the-kata-vm">Connecting a debug console to the kata VM</h3>
 <ul>
 <li><a href="https://github.com/kata-containers/documentation/blob/master/Developer-Guide.md#set-up-a-debug-console">https://github.com/kata-containers/documentation/blob/master/Developer-Guide.md#set-up-a-debug-console</a></li>

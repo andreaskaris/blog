@@ -1076,8 +1076,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1227,7 +1227,6 @@ IPADDR=192.168.122.201
 GATEWAY=192.168.122.1
 DNS1=192.168.122.1
 </code></pre>
-
 <pre><code>[root@ovn2 ~]# cat /etc/sysconfig/network-scripts/ifcfg-eth0 
 DEVICE=&quot;eth0&quot;
 BOOTPROTO=&quot;static&quot;
@@ -1238,7 +1237,6 @@ IPADDR=192.168.122.202
 GATEWAY=192.168.122.1
 DNS1=192.168.122.1
 </code></pre>
-
 <pre><code>[root@ovn3 ~]# cat /etc/sysconfig/network-scripts/ifcfg-eth0 
 DEVICE=&quot;eth0&quot;
 BOOTPROTO=&quot;static&quot;
@@ -1249,7 +1247,6 @@ IPADDR=192.168.122.203
 GATEWAY=192.168.122.1
 DNS1=192.168.122.1
 </code></pre>
-
 <p>Hostname to IP address mapping:</p>
 <pre><code># cat /etc/hosts
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
@@ -1259,27 +1256,22 @@ DNS1=192.168.122.1
 192.168.122.202  ovn2  # eth0
 192.168.122.203  ovn3  # eth0
 </code></pre>
-
 <p>Disable NM control over eth1 on all hosts:</p>
 <pre><code>echo &quot;NM_CONTROLLED=no&quot; &gt; /etc/sysconfig/network-scripts/ifcfg-eth1
 </code></pre>
-
 <p>Install Open vSwitch and OVN on all nodes:</p>
 <pre><code>yum install ovn -y
 yum install ovn-central -y
 yum install ovn-host -y
 </code></pre>
-
 <p>Enable Open vSwitch and ovn-controller on all hosts and start right away:</p>
 <pre><code>systemctl enable --now openvswitch
 systemctl enable --now ovn-controller
 </code></pre>
-
 <p>On the master nodes that are to hold the ovn-northd "control plane", execute:</p>
 <pre><code>echo 'OVN_NORTHD_OPTS=&quot;--db-nb-addr=ovn1 --db-nb-create-insecure-remote=yes --db-sb-addr=ovn1  --db-sb-create-insecure-remote=yes  --db-nb-cluster-local-addr=ovn1 --db-sb-cluster-local-addr=ovn1 --ovn-northd-nb-db=tcp:ovn1:6641 --ovn-northd-sb-db=tcp:ovn1:6642&quot;' &gt;&gt; /etc/sysconfig/ovn
 systemctl enable --now ovn-northd
 </code></pre>
-
 <p>Note that the above will start a single node cluster. The OVN man page contains an example for a full 3 node clustered DB: <a href="http://www.openvswitch.org/support/dist-docs/ovn-ctl.8.txt">http://www.openvswitch.org/support/dist-docs/ovn-ctl.8.txt</a></p>
 <p>Now, configure OVS to connect to the OVN DBs. Note that geneve / vxlan tunnel needs IP addresses, DNS entries do not work:</p>
 <p>On master node ovn1:</p>
@@ -1290,7 +1282,6 @@ ovs-vsctl set open . external-ids:ovn-encap-type=geneve
 ovs-vsctl set open . external-ids:ovn-encap-ip=192.168.122.201
 ovs-vsctl set open . external-ids:ovn-bridge=br-int
 </code></pre>
-
 <p>On slave node ovn2:</p>
 <pre><code># [root@ovn2 ~]# 
 ovs-vsctl set open . external-ids:ovn-remote=tcp:ovn1:6642
@@ -1299,7 +1290,6 @@ ovs-vsctl set open . external-ids:ovn-encap-type=geneve
 # could also be: ovs-vsctl set open . external-ids:ovn-encap-type=geneve,vxlan
 ovs-vsctl set open . external-ids:ovn-bridge=br-int
 </code></pre>
-
 <p>On slave node ovn3:</p>
 <pre><code># [root@ovn3 ~]# 
 ovs-vsctl set open . external-ids:ovn-remote=tcp:ovn1:6642
@@ -1308,25 +1298,21 @@ ovs-vsctl set open . external-ids:ovn-encap-type=geneve
 # could also be: ovs-vsctl set open . external-ids:ovn-encap-type=geneve,vxlan
 ovs-vsctl set open . external-ids:ovn-bridge=br-int
 </code></pre>
-
 <h4 id="verification">Verification</h4>
 <p>Verify on ovn1:</p>
 <pre><code>ovs-vsctl show
 ovn-sbctl show
 </code></pre>
-
 <p>ovn2:</p>
 <pre><code>ovs-vsctl show
 timeout 2 ovn-sbctl show
 timeout 2 ovn-nbctl show
 </code></pre>
-
 <p>ovn3:</p>
 <pre><code>ovs-vsctl show
 timeout 2 ovn-sbctl show
 timeout 2 ovn-nbctl show
 </code></pre>
-
 <pre><code>[root@ovn1 ~]# ovs-vsctl show
 64003a9a-1f2a-403c-8d21-cd187d2f717c
     Bridge br-int
@@ -1360,7 +1346,6 @@ Chassis &quot;8b9ad2e3-c1bc-4ea2-973e-a8bd1d38e502&quot;
         ip: &quot;192.168.122.202&quot;
         options: {csum=&quot;true&quot;}
 </code></pre>
-
 <pre><code>[root@ovn2 ~]# ovs-vsctl show
 33e3d97e-ee6a-4eeb-ac2a-188744895be7
     Bridge br-int
@@ -1384,7 +1369,6 @@ Chassis &quot;8b9ad2e3-c1bc-4ea2-973e-a8bd1d38e502&quot;
 ovn-nbctl: unix:/var/run/ovn/ovnnb_db.sock: database connection failed (No such file or directory)
 [root@ovn2 ~]# 
 </code></pre>
-
 <pre><code>[root@ovn3 ~]# ovs-vsctl show
 a03dc1d7-a6f7-4400-b696-59ccda197a19
     Bridge br-int
@@ -1408,7 +1392,6 @@ a03dc1d7-a6f7-4400-b696-59ccda197a19
 ovn-nbctl: unix:/var/run/ovn/ovnnb_db.sock: database connection failed (No such file or directory)
 [root@ovn3 ~]# 
 </code></pre>
-
 <h2 id="adding-virtual-network-with-one-virtual-switch-s0">Adding virtual network with one virtual switch s0</h2>
 <p>On ovn1, configure a logical switch and port:</p>
 <pre><code>ovn-nbctl ls-add s0
@@ -1417,7 +1400,6 @@ ovn-nbctl lsp-set-addresses port01 00:00:00:00:00:01
 ovn-nbctl lsp-add s0 port02
 ovn-nbctl lsp-set-addresses port02 00:00:00:00:00:02
 </code></pre>
-
 <p>Now, "real" ports need to be wired to the above ports. Note that the logical port name has to match the <code>external_ids:iface-id</code> identifier. If we added  <code>ovn-nbctl lsp-add s0 foo</code> instead of <code>port0</code>, then we would have to set <code>ovs-vsctl set Interface port0 external_ids:iface-id=foo</code> on ovn2. Note that we need to know the MAC address of that port. Therefore, when creating the veth, we are making sure to create it with the correct MAC address.</p>
 <p>On ovn2, execute:</p>
 <pre><code>ip link add name veth01 type veth peer name port01
@@ -1431,7 +1413,6 @@ ip link set dev port01 up
 ovs-vsctl add-port br-int port01
 ovs-vsctl set Interface port01 external_ids:iface-id=port01
 </code></pre>
-
 <p>On ovn3, execute:</p>
 <pre><code>ip link add name veth02 type veth peer name port02
 ip netns add ns0
@@ -1444,12 +1425,10 @@ ip link set dev port02 up
 ovs-vsctl add-port br-int port02 external_ids:iface-id=port02
 ovs-vsctl set Interface port02 external_ids:iface-id=port02
 </code></pre>
-
 <p>Verify the new configuration on ovn1:</p>
 <pre><code>ovn-nbctl show
 ovn-sbctl show
 </code></pre>
-
 <pre><code>[root@ovn1 ~]# ovn-nbctl show
 switch 40f56f4d-db18-4d77-bb8b-c93e5179d346 (s0)
     port port02
@@ -1475,14 +1454,12 @@ Chassis &quot;8b9ad2e3-c1bc-4ea2-973e-a8bd1d38e502&quot;
         options: {csum=&quot;true&quot;}
     Port_Binding port01
 </code></pre>
-
 <blockquote>
 <p><strong>Note:</strong> The southbound database now shows port bindings.</p>
 </blockquote>
 <p>Verify logical flows:</p>
 <pre><code>ovn-sbctl lflow-list]# 
 </code></pre>
-
 <pre><code>[root@ovn1 ~]# ovn-sbctl lflow-list
 Datapath: &quot;s0&quot; (63c97e9f-194e-49b1-b075-661cd2132895)  Pipeline: ingress
   table=0 (ls_in_port_sec_l2  ), priority=100  , match=(eth.src[40]), action=(drop;)
@@ -1540,7 +1517,6 @@ Datapath: &quot;s0&quot; (63c97e9f-194e-49b1-b075-661cd2132895)  Pipeline: egres
   table=9 (ls_out_port_sec_l2 ), priority=50   , match=(outport == &quot;port01&quot;), action=(output;)
   table=9 (ls_out_port_sec_l2 ), priority=50   , match=(outport == &quot;port02&quot;), action=(output;)
 </code></pre>
-
 <p>Last but not least, run a test ping between the namespaces on both hosts:</p>
 <pre><code>[root@ovn2 ~]# ip netns exec ns0 ip a
 1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
@@ -1564,7 +1540,6 @@ PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.
 rtt min/avg/max/mdev = 1.413/1.413/1.413/0.000 ms
 [root@ovn2 ~]# 
 </code></pre>
-
 <pre><code>[root@ovn3 ~]# ip netns exec ns0 ip a
 1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
@@ -1587,7 +1562,6 @@ PING 10.0.0.1 (10.0.0.1) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.886/0.886/0.886/0.000 ms
 [root@ovn3 ~]# 
 </code></pre>
-
 <h2 id="adding-virtual-network-with-one-virtual-switch-s1">Adding virtual network with one virtual switch s1</h2>
 <p>On ovn1, configure a logical switch and port:</p>
 <pre><code>ovn-nbctl ls-add s1
@@ -1596,7 +1570,6 @@ ovn-nbctl lsp-set-addresses port11 00:00:00:00:01:01
 ovn-nbctl lsp-add s1 port12
 ovn-nbctl lsp-set-addresses port12 00:00:00:00:01:02
 </code></pre>
-
 <p>Now, "real" ports need to be wired to the above ports. Note that the logical port name has to match the <code>external_ids:iface-id</code> identifier. If we added  <code>ovn-nbctl lsp-add s1 foo</code> instead of <code>port0</code>, then we would have to set <code>ovs-vsctl set Interface port0 external_ids:iface-id=foo</code> on ovn2. Note that we need to know the MAC address of that port. Therefore, when creating the veth, we are making sure to create it with the correct MAC address.</p>
 <p>On ovn2, execute:</p>
 <pre><code>ip link add name veth11 type veth peer name port11
@@ -1610,7 +1583,6 @@ ip link set dev port11 up
 ovs-vsctl add-port br-int port11
 ovs-vsctl set Interface port11 external_ids:iface-id=port11
 </code></pre>
-
 <p>On ovn3, execute:</p>
 <pre><code>ip link add name veth12 type veth peer name port12
 ip netns add ns1
@@ -1623,12 +1595,10 @@ ip link set dev port12 up
 ovs-vsctl add-port br-int port12 external_ids:iface-id=port12
 ovs-vsctl set Interface port12 external_ids:iface-id=port12
 </code></pre>
-
 <p>Verify the new configuration on ovn1:</p>
 <pre><code>ovn-nbctl show
 ovn-sbctl show
 </code></pre>
-
 <pre><code>[root@ovn1 ~]# ovn-nbctl show
 switch 722300a5-73e1-42de-ae19-b7997f1f9a86 (s1)
     port port12
@@ -1661,14 +1631,12 @@ Chassis &quot;8b9ad2e3-c1bc-4ea2-973e-a8bd1d38e502&quot;
     Port_Binding port01
     Port_Binding port11
 </code></pre>
-
 <blockquote>
 <p><strong>Note:</strong> The southbound database now shows port bindings.</p>
 </blockquote>
 <p>Verify logical flows:</p>
 <pre><code>ovn-sbctl lflow-list
 </code></pre>
-
 <pre><code>[root@ovn1 ~]# ovn-sbctl lflow-list
 Datapath: &quot;s0&quot; (63c97e9f-194e-49b1-b075-661cd2132895)  Pipeline: ingress
   table=0 (ls_in_port_sec_l2  ), priority=100  , match=(eth.src[40]), action=(drop;)
@@ -1781,7 +1749,6 @@ Datapath: &quot;s1&quot; (7ba84139-1ab7-47fe-874c-6956be31ab0a)  Pipeline: egres
   table=9 (ls_out_port_sec_l2 ), priority=50   , match=(outport == &quot;port11&quot;), action=(output;)
   table=9 (ls_out_port_sec_l2 ), priority=50   , match=(outport == &quot;port12&quot;), action=(output;)
 </code></pre>
-
 <p>Last but not least, run a test ping between the namespaces on both hosts:</p>
 <pre><code>[root@ovn2 ~]# ip netns exec ns1 ip a
 1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
@@ -1805,7 +1772,6 @@ PING 10.0.1.2 (10.0.1.2) 56(84) bytes of data.
 rtt min/avg/max/mdev = 1.833/1.833/1.833/0.000 ms
 [root@ovn2 ~]# 
 </code></pre>
-
 <pre><code>[root@ovn3 ~]# ip netns exec ns1 ip a
 1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
@@ -1828,7 +1794,6 @@ PING 10.0.1.1 (10.0.1.1) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.916/0.916/0.916/0.000 ms
 [root@ovn3 ~]# 
 </code></pre>
-
 <h2 id="adding-virtual-router-r1">Adding virtual router r1 ##</h2>
 <h3 id="introduction">Introduction</h3>
 <p><a href="http://www.openvswitch.org/support/dist-docs/ovn-architecture.7.html">http://www.openvswitch.org/support/dist-docs/ovn-architecture.7.html</a></p>
@@ -1884,13 +1849,11 @@ rtt min/avg/max/mdev = 0.916/0.916/0.916/0.000 ms
        The  following  sections describe two exceptions, where logical routers
        and/or logical patch ports are associated with a physical location.
 </code></pre>
-
 <h3 id="setup">Setup</h3>
 <p>Configure namespace routes for virtual routing - on both hosts, run:</p>
 <pre><code>ip netns exec ns0 ip r add default via 10.0.0.254
 ip netns exec ns1 ip r add default via 10.0.1.254
 </code></pre>
-
 <p>Now, set up the OVN northbound db - router and router ports:</p>
 <pre><code>ovn-nbctl lr-add r1
 
@@ -1906,12 +1869,10 @@ ovn-nbctl lsp-set-addresses s1r1 00:00:00:00:01:ff
 ovn-nbctl lsp-set-options s1r1 router-port=r1s1
 ovn-nbctl lsp-set-type s1r1 router
 </code></pre>
-
 <p>Verify the new configuration:</p>
 <pre><code>ovn-nbctl show
 ovn-sbctl show
 </code></pre>
-
 <pre><code>[root@ovn1 ~]#  ovn-nbctl show
 switch 722300a5-73e1-42de-ae19-b7997f1f9a86 (s1)
     port port12
@@ -1959,11 +1920,9 @@ Chassis &quot;8b9ad2e3-c1bc-4ea2-973e-a8bd1d38e502&quot;
     Port_Binding port01
     Port_Binding port11
 </code></pre>
-
 <p>Verify logical flows:</p>
 <pre><code>ovn-sbctl lflow-list
 </code></pre>
-
 <pre><code>[root@ovn1 ~]# ovn-sbctl lflow-list
 Datapath: &quot;s0&quot; (63c97e9f-194e-49b1-b075-661cd2132895)  Pipeline: ingress
   table=0 (ls_in_port_sec_l2  ), priority=100  , match=(eth.src[40]), action=(drop;)
@@ -2168,12 +2127,10 @@ Datapath: &quot;r1&quot; (df1fbb81-4fde-4585-a7bd-5e03b7961947)  Pipeline: egres
   table=3 (lr_out_delivery    ), priority=100  , match=(outport == &quot;r1s0&quot;), action=(output;)
   table=3 (lr_out_delivery    ), priority=100  , match=(outport == &quot;r1s1&quot;), action=(output;)
 </code></pre>
-
 <p>Last but not least, run a test ping between the namespaces on both hosts:</p>
 <pre><code>[root@ovn2 ~]# ip netns exec ns0 ping 10.0.1.1 -c1 -W1
 [root@ovn2 ~]# ip netns exec ns0 ping 10.0.1.2 -c1 -W1
 </code></pre>
-
 <pre><code>[root@ovn2 ~]# ip netns exec ns0 ping 10.0.1.1 -c1 -W1
 PING 10.0.1.1 (10.0.1.1) 56(84) bytes of data.
 64 bytes from 10.0.1.1: icmp_seq=1 ttl=63 time=78.8 ms
@@ -2190,7 +2147,6 @@ PING 10.0.1.2 (10.0.1.2) 56(84) bytes of data.
 rtt min/avg/max/mdev = 21.413/21.413/21.413/0.000 ms
 [root@ovn2 ~]# 
 </code></pre>
-
 <h2 id="adding-external-gateway-router-non-distributed">Adding external gateway  router, non-distributed</h2>
 <h3 id="introduction_1">Introduction</h3>
 <p><a href="http://www.openvswitch.org/support/dist-docs/ovn-architecture.7.html">http://www.openvswitch.org/support/dist-docs/ovn-architecture.7.html</a></p>
@@ -2224,7 +2180,6 @@ rtt min/avg/max/mdev = 21.413/21.413/21.413/0.000 ms
        gateway  router, which provides a central location that can handle one-
        to-many SNAT (aka IP masquerading).
 </code></pre>
-
 <h3 id="setup_1">Setup</h3>
 <p>Add provider bridge mapping on ovn1:</p>
 <pre><code># ovn1
@@ -2232,13 +2187,11 @@ ovs-vsctl set open . external-ids:ovn-bridge-mappings=provider:br-provider
 ovs-vsctl --may-exist add-br br-provider
 ovs-vsctl --may-exist add-port br-provider eth1
 </code></pre>
-
 <p>Bind logical router rg (router gateway) to chassis ovn1 and assign an internal IP pointing towards the VMs: </p>
 <pre><code>chassis=$(ovn-sbctl find chassis hostname=ovn1 | awk '/^name/ {print $NF}' | sed 's/&quot;//g')
 ovn-nbctl create Logical_Router name=rg options:chassis=$chassis
 ovn-nbctl lrp-add rg rgsj 00:00:00:01:00:01 10.1.0.1/30
 </code></pre>
-
 <p>Create switch sj (switch join) and add the router port of rg to it:</p>
 <pre><code>ovn-nbctl ls-add sj
 ovn-nbctl lsp-add sj sjrg
@@ -2246,23 +2199,19 @@ ovn-nbctl lsp-set-type sjrg router
 ovn-nbctl lsp-set-addresses sjrg 00:00:00:01:00:01
 ovn-nbctl lsp-set-options sjrg router-port=rgsj
 </code></pre>
-
 <p>Add r1 port to the join switch:</p>
 <pre><code>ovn-nbctl lrp-add r1 r1sj 00:00:00:01:00:02 10.1.0.2/30
 </code></pre>
-
 <pre><code>ovn-nbctl lsp-add sj sjr1
 ovn-nbctl lsp-set-type sjr1 router
 ovn-nbctl lsp-set-addresses sjr1 00:00:00:01:00:02
 ovn-nbctl lsp-set-options sjr1 router-port=r1sj
 </code></pre>
-
 <p>Add routes - router gateway towards our 2 private subnets via r1 and r1 default route towards rg:</p>
 <pre><code>ovn-nbctl lr-route-add rg &quot;10.0.0.0/24&quot; 10.1.0.2
 ovn-nbctl lr-route-add rg &quot;10.0.1.0/24&quot; 10.1.0.2
 ovn-nbctl lr-route-add r1 &quot;0.0.0.0/0&quot; 10.1.0.1
 </code></pre>
-
 <p>Verify routes:</p>
 <pre><code>[root@ovn1 ~]# ovn-nbctl lr-route-list rg
 IPv4 Routes
@@ -2293,11 +2242,9 @@ nexthop             : &quot;10.1.0.2&quot;
 output_port         : []
 policy              : []
 </code></pre>
-
 <p>Add an external port to rg:</p>
 <pre><code>ovn-nbctl lrp-add rg rgsp 00:00:00:02:00:ff 10.2.0.254/24
 </code></pre>
-
 <p>Add provider network switch (sp):</p>
 <pre><code>ovn-nbctl ls-add sp
 ovn-nbctl lsp-add sp sprg
@@ -2305,20 +2252,17 @@ ovn-nbctl lsp-set-type sprg router
 ovn-nbctl lsp-set-addresses sprg 00:00:00:02:00:ff
 ovn-nbctl lsp-set-options sprg router-port=rgsp
 </code></pre>
-
 <p>Add localnet port (eth1) to provider switch (sp):</p>
 <pre><code>ovn-nbctl lsp-add sp sp-localnet
 ovn-nbctl lsp-set-addresses sp-localnet unknown
 ovn-nbctl lsp-set-type sp-localnet localnet
 ovn-nbctl lsp-set-options sp-localnet network_name=provider
 </code></pre>
-
 <p>Verify on ovn1:</p>
 <pre><code>ovs-vsctl show
 ovn-nbctl show
 ovn-sbctl show
 </code></pre>
-
 <pre><code>[root@ovn1 ~]# ovs-vsctl show
 64003a9a-1f2a-403c-8d21-cd187d2f717c
     Bridge br-int
@@ -2427,7 +2371,6 @@ Chassis &quot;8b9ad2e3-c1bc-4ea2-973e-a8bd1d38e502&quot;
     Port_Binding port11
     Port_Binding port01
 </code></pre>
-
 <p>Connect to ovn2 and simulate an external node:</p>
 <pre><code>nmcli connection delete 76505bbf-7aef-32f0-bae6-9497dcf93d2e
 ip a a dev eth1 10.2.0.10/24
@@ -2436,7 +2379,6 @@ ip route add 10.0.1.0/24 via 10.2.0.254
 ip route add 10.1.0.0/24 via 10.2.0.254
 ip route add 10.0.0.0/24 via 10.2.0.254
 </code></pre>
-
 <p>Verfify:</p>
 <pre><code>[root@ovn2 ~]# ping 10.0.0.1
 PING 10.0.0.1 (10.0.0.1) 56(84) bytes of data.
@@ -2479,7 +2421,6 @@ PING 10.0.1.2 (10.0.1.2) 56(84) bytes of data.
 rtt min/avg/max/mdev = 1.815/3.360/4.906/1.545 ms
 [root@ovn2 ~]# 
 </code></pre>
-
 <h2 id="inspecting-tunnel-encapsulations">Inspecting tunnel encapsulations</h2>
 <h3 id="introduction_2">Introduction</h3>
 <p><a href="http://www.openvswitch.org/support/dist-docs/ovn-architecture.7.html">http://www.openvswitch.org/support/dist-docs/ovn-architecture.7.html</a></p>
@@ -2550,7 +2491,6 @@ rtt min/avg/max/mdev = 1.815/3.360/4.906/1.545 ms
        with large amounts of metadata may continue to have a  reduced  feature
        set.
 </code></pre>
-
 <h2 id="distributed-gateway-router">Distributed gateway router</h2>
 <p><a href="https://developers.redhat.com/blog/2018/11/08/how-to-create-an-open-virtual-network-distributed-gateway-router/">https://developers.redhat.com/blog/2018/11/08/how-to-create-an-open-virtual-network-distributed-gateway-router/</a></p>
 <h2 id="resources">Resources</h2>

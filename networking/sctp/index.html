@@ -1011,8 +1011,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1175,10 +1175,8 @@ spec:
           mode: 420
           path: /etc/modules-load.d/sctp-load.conf
 </code></pre>
-
 <pre><code>oc apply -f load-sctp-module.yaml
 </code></pre>
-
 <p><code>sctp-pods.yaml</code>:</p>
 <pre><code>#!/bin/bash
 
@@ -1267,10 +1265,8 @@ echo &quot;iperf3 -c $sctpserverip -t 60 --sctp&quot;
 echo &quot;You can access the packet capture with:&quot;
 echo &quot;oc logs -f -c tcpdump sctpserver&quot;
 </code></pre>
-
 <pre><code>oc apply -f sctp-pods.yaml
 </code></pre>
-
 <h2 id="analysis">Analysis</h2>
 <p>Server:</p>
 <pre><code>sh-5.0# ip a
@@ -1290,7 +1286,6 @@ echo &quot;oc logs -f -c tcpdump sctpserver&quot;
 sh-5.0#  nc -l -p 30102 --sctp -k
 hello world!
 </code></pre>
-
 <p>Client:</p>
 <pre><code>sh-5.0# ip a
 1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
@@ -1309,7 +1304,6 @@ hello world!
 sh-5.0# nc --sctp 172.27.2.4 30102
 hello world!
 </code></pre>
-
 <hr />
 <pre><code>[root@openshift-jumpserver-0 ~]# oc logs -f sctpserver tshark --tail=0
 ### connection setup ###
@@ -2071,7 +2065,6 @@ Stream Control Transmission Protocol, Src Port: 30102 (30102), Dst Port: 57630 (
 ^C
 [root@openshift-jumpserver-0 ~]# 
 </code></pre>
-
 <h2 id="resources">Resources</h2>
 <ul>
 <li><a href="https://docs.openshift.com/container-platform/4.4/networking/using-sctp.html">https://docs.openshift.com/container-platform/4.4/networking/using-sctp.html</a></li>

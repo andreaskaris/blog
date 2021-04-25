@@ -989,8 +989,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1133,28 +1133,23 @@
 <pre><code>ceph osd pool create rbd-pool 128
 rbd pool init rbd-pool
 </code></pre>
-
 <h2 id="downloading-and-customizing-rhel-qcow2">Downloading and customizing RHEL qcow2</h2>
 <p>Download the RHEL qcow2 from <a href="https://access.redhat.com">https://access.redhat.com</a>, e.g.: <a href="https://access.redhat.com/downloads/content/69/ver=/rhel---7/7.7/x86_64/product-software">https://access.redhat.com/downloads/content/69/ver=/rhel---7/7.7/x86_64/product-software</a></p>
 <p>Install libguestfs-tools:</p>
 <pre><code>yum install libguestfs-tools -y
 </code></pre>
-
 <p>Change the root password of the image:</p>
 <pre><code>virt-customize -a rhel-server-7.8-beta-1-x86_64-kvm.qcow2 --password root:password
 # or, if needed:
 # export LIBGUESTFS_BACKEND=direct ; virt-customize -a rhel-server-7.8-beta-1-x86_64-kvm.qcow2 --password root:password
 </code></pre>
-
 <h2 id="converting-and-uploading-image-into-ceph-pool">Converting and uploading image into Ceph pool</h2>
 <pre><code>qemu-img convert -f qcow2 -O raw rhel-server-7.8-beta-1-x86_64-kvm.qcow2 rbd:rbd-pool/rhel-server
 </code></pre>
-
 <h4 id="booting-a-vm-from-the-raw-ceph-image-with-qemu-kvm">Booting a VM from the raw Ceph image with QEMU-KVM</h4>
 <p>Start a VM that directly uses the uploaded image from the Ceph pool:</p>
 <pre><code>/usr/libexec/qemu-kvm -drive file=rbd:rbd-pool/rhel-server -nographic -m 1024
 </code></pre>
-
 <p>To get out of qemu-kvm, type <code>CTRL-a x</code></p>
 <p>You should be able to log into the image with credentials: <code>root</code> / <code>password</code></p>
 <blockquote>

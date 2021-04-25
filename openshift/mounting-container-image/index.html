@@ -937,8 +937,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../useful-ocp-curl/" class="md-nav__link">
-        Querying the OCP 4.x upgrades info API
+      <a href="../useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
       </a>
     </li>
   
@@ -1077,15 +1077,12 @@
 <p>This is an easy task with <code>buildah</code>.</p>
 <pre><code>buildah from &lt;image name&gt;:&lt;tag&gt;
 </code></pre>
-
 <p>Identify the container name of the container that was generated from the image:</p>
 <pre><code>buildah ps
 </code></pre>
-
 <p>Mount the container locally:</p>
 <pre><code>buildah mount &lt;container name&gt;
 </code></pre>
-
 <p>Full example:</p>
 <pre><code># buildah from quay.io/akaris/sosreport-operator-bundle
 sosreport-operator-bundle-working-container

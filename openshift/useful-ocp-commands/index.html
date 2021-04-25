@@ -62,7 +62,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#querying-the-ocp-4x-upgrades-info-api" class="md-skip">
+        <a href="#useful-commands-for-openshift" class="md-skip">
           Skip to content
         </a>
       
@@ -934,22 +934,42 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#querying-the-ocp-4x-upgrades-info-api" class="md-nav__link">
+    Querying the OCP 4.x upgrades info API
+  </a>
+  
+    <nav class="md-nav" aria-label="Querying the OCP 4.x upgrades info API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#function-definitions" class="md-nav__link">
     Function definitions
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#usage" class="md-nav__link">
     Usage
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#upgrading-to-a-specific-out-of-graph-image" class="md-nav__link">
     Upgrading to a specific out of graph image
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gathering-all-resources-from-a-namespace-with-oc-adm-inspect" class="md-nav__link">
+    Gathering all resources from a namespace with oc adm inspect
   </a>
   
 </li>
@@ -1089,8 +1109,9 @@
               
                 
                 
-                <h1 id="querying-the-ocp-4x-upgrades-info-api">Querying the OCP 4.x upgrades info API</h1>
-<h2 id="function-definitions">Function definitions</h2>
+                <h1 id="useful-commands-for-openshift">Useful commands for OpenShift</h1>
+<h2 id="querying-the-ocp-4x-upgrades-info-api">Querying the OCP 4.x upgrades info API</h2>
+<h3 id="function-definitions">Function definitions</h3>
 <p>The following bash functions are useful when needing information about possible upgrade paths and OCP versions:</p>
 <pre><code>function ocp-upgrade-paths() {
   version=$1
@@ -1111,7 +1132,7 @@ function ocp-version-info() {
   curl -sH &quot;Accept:application/json&quot; $url | jq &quot;.nodes[] | select(.version == \&quot;$version\&quot;)&quot;
 }
 </code></pre>
-<h2 id="usage">Usage</h2>
+<h3 id="usage">Usage</h3>
 <p>Upgrade paths:</p>
 <pre><code>$ ocp-upgrade-paths 4.4
 === stable-4.4 ===
@@ -1255,7 +1276,7 @@ https://api.openshift.com/api/upgrades_info/v1/graph?channel=stable-4.5&amp;x86_
   }
 }
 </code></pre>
-<h2 id="upgrading-to-a-specific-out-of-graph-image">Upgrading to a specific out of graph image</h2>
+<h3 id="upgrading-to-a-specific-out-of-graph-image">Upgrading to a specific out of graph image</h3>
 <pre><code>[akaris@linux ~]$ ocp-upgrade-paths 4.5
 === stable-4.5 ===
 4.5.1
@@ -1333,7 +1354,7 @@ https://api.openshift.com/api/upgrades_info/v1/graph?channel=candidate-4.5&amp;x
 <p>How to uprgade to an image that's not on the graph (not supported). Look at <code>payload</code> from ocp-version-info and use that image:</p>
 <pre><code>oc adm upgrade --allow-explicit-upgrade --to-image quay.io/openshift-release-dev/ocp-release@sha256:776b7e8158edf64c82f18f5ec4d6ef378ac3de81ba0dc2700b885ceb62e71279
 </code></pre>
-<h1 id="gathering-all-resources-from-a-namespace-with-oc-adm-inspect">Gathering all resources from a namespace with oc adm inspect</h1>
+<h2 id="gathering-all-resources-from-a-namespace-with-oc-adm-inspect">Gathering all resources from a namespace with oc adm inspect</h2>
 <p>Use the following command to gather all resources from a namespace. </p>
 <blockquote>
 <p><strong>Warning:</strong> This will include secrets!!</p>

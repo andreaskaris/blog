@@ -259,3 +259,19 @@ How to uprgade to an image that's not on the graph (not supported). Look at `pay
 oc adm upgrade --allow-explicit-upgrade --to-image quay.io/openshift-release-dev/ocp-release@sha256:776b7e8158edf64c82f18f5ec4d6ef378ac3de81ba0dc2700b885ceb62e71279
 ~~~
 
+# Gathering all resources from a namespace with oc adm inspect
+
+Use the following command to gather all resources from a namespace. 
+
+> **Warning:** This will include secrets!!
+~~~
+namespace=pipelines-tutorial
+oc adm inspect -n $namespace $(oc api-resources --verbs=get,list --namespaced=true | tail -n+2 | awk '{print $1}' | tr '\n' ',' | sed 's/,$//')
+~~~
+
+Exclude critical resources with:
+~~~
+namespace=pipelines-tutorial
+exclude_list="secrets"
+oc adm inspect -n $namespace $(oc api-resources --verbs=get,list --namespaced=true | tail -n+2 | egrep -v "$exclude_list" | awk '{print $1}' | tr '\n' ',' | sed 's/,$//')
+~~~

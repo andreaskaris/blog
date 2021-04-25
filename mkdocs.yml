@@ -67,7 +67,7 @@ nav:
   - SElinux labels fix: openshift/fix-selinux-labels-coreos.md
   - SCTP: networking/sctp.md
   - Troubleshooting etcd state: openshift/openshift_troubleshooting_etcd_state.md
-  - Querying the OCP 4.x upgrades info API: openshift/useful-ocp-curl.md
+  - Useful commands for OpenShift: openshift/useful-ocp-commands.md
   - Troubleshooting OpenShift on OpenStack worker creation: openshift/troubleshooting_openshift_on_openstack_worker_creation.md
 - OpenStack:
   - Reattach to running deployment: openstack/reattach_to_running_deployment.md

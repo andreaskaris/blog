@@ -1,6 +1,8 @@
-# Querying the OCP 4.x upgrades info API #
+# Useful commands for OpenShift
 
-## Function definitions ##
+## Querying the OCP 4.x upgrades info API #
+
+### Function definitions
 
 The following bash functions are useful when needing information about possible upgrade paths and OCP versions:
 
@@ -25,7 +27,7 @@ function ocp-version-info() {
 }
 ~~~
 
-## Usage ##
+### Usage
 
 Upgrade paths:
 ~~~
@@ -174,7 +176,7 @@ https://api.openshift.com/api/upgrades_info/v1/graph?channel=stable-4.5&x86_64'
 }
 ~~~
 
-## Upgrading to a specific out of graph image ##
+### Upgrading to a specific out of graph image
 
 ~~~
 [akaris@linux ~]$ ocp-upgrade-paths 4.5
@@ -259,7 +261,7 @@ How to uprgade to an image that's not on the graph (not supported). Look at `pay
 oc adm upgrade --allow-explicit-upgrade --to-image quay.io/openshift-release-dev/ocp-release@sha256:776b7e8158edf64c82f18f5ec4d6ef378ac3de81ba0dc2700b885ceb62e71279
 ~~~
 
-# Gathering all resources from a namespace with oc adm inspect
+## Gathering all resources from a namespace with oc adm inspect
 
 Use the following command to gather all resources from a namespace. 
 

@@ -974,6 +974,33 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#listing-specific-pod-columns" class="md-nav__link">
+    Listing specific pod columns
+  </a>
+  
+    <nav class="md-nav" aria-label="Listing specific pod columns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#qos-class" class="md-nav__link">
+    QOS class
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scc" class="md-nav__link">
+    SCC
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1367,6 +1394,25 @@ oc adm inspect -n $namespace $(oc api-resources --verbs=get,list --namespaced=tr
 exclude_list=&quot;secrets&quot;
 oc adm inspect -n $namespace $(oc api-resources --verbs=get,list --namespaced=true | tail -n+2 | egrep -v &quot;$exclude_list&quot; | awk '{print $1}' | tr '\n' ',' | sed 's/,$//')
 </code></pre>
+<h2 id="listing-specific-pod-columns">Listing specific pod columns</h2>
+<h3 id="qos-class">QOS class</h3>
+<pre><code>oc get pods --output=custom-columns=&quot;NAME:.metadata.name,STATUS:.status.qosClass&quot;
+</code></pre>
+<p>Example:</p>
+<pre><code># oc get pods --output=custom-columns=&quot;NAME:.metadata.name,STATUS:.status.qosClass&quot;
+NAME                                    STATUS
+poda                                    Burstable
+podb                                    Guaranteed
+</code></pre>
+<h3 id="scc">SCC</h3>
+<pre><code>oc get pods --output=custom-columns='NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc'
+</code></pre>
+<p>Example:</p>
+<pre><code># oc get pods --output=custom-columns='NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc'
+NAME                                    SCC
+poda                                    privileged
+podb                                    privileged
+</code></pre>
                 
                   
                     
@@ -1375,7 +1421,7 @@ oc adm inspect -n $namespace $(oc api-resources --verbs=get,list --namespaced=tr
 <div class="md-source-date">
   <small>
     
-      Last update: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">April 25, 2021</span>
+      Last update: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">June 15, 2021</span>
     
   </small>
 </div>

@@ -277,3 +277,33 @@ namespace=pipelines-tutorial
 exclude_list="secrets"
 oc adm inspect -n $namespace $(oc api-resources --verbs=get,list --namespaced=true | tail -n+2 | egrep -v "$exclude_list" | awk '{print $1}' | tr '\n' ',' | sed 's/,$//')
 ~~~
+
+## Listing specific pod columns
+
+### QOS class
+
+~~~
+oc get pods --output=custom-columns="NAME:.metadata.name,STATUS:.status.qosClass"
+~~~
+
+Example:
+~~~
+# oc get pods --output=custom-columns="NAME:.metadata.name,STATUS:.status.qosClass"
+NAME                                    STATUS
+poda                                    Burstable
+podb                                    Guaranteed
+~~~
+
+### SCC
+
+~~~
+oc get pods --output=custom-columns='NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc'
+~~~
+
+Example:
+~~~
+# oc get pods --output=custom-columns='NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc'
+NAME                                    SCC
+poda                                    privileged
+podb                                    privileged
+~~~

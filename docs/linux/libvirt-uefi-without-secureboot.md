@@ -5,6 +5,7 @@
 * [https://github.com/tianocore/tianocore.github.io/wiki/OVMF](https://github.com/tianocore/tianocore.github.io/wiki/OVMF)
 * [https://www.kraxel.org/repos/](https://www.kraxel.org/repos/)
 * [https://fedoraproject.org/wiki/Using_UEFI_with_QEMU#Install_a_Fedora_VM_with_UEFI](https://fedoraproject.org/wiki/Using_UEFI_with_QEMU#Install_a_Fedora_VM_with_UEFI)
+* [https://that.guru/blog/uefi-secure-boot-in-libvirt/](https://that.guru/blog/uefi-secure-boot-in-libvirt/)
 
 ## How to
 

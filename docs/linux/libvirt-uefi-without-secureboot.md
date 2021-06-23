@@ -6,6 +6,7 @@
 * [https://www.kraxel.org/repos/](https://www.kraxel.org/repos/)
 * [https://fedoraproject.org/wiki/Using_UEFI_with_QEMU#Install_a_Fedora_VM_with_UEFI](https://fedoraproject.org/wiki/Using_UEFI_with_QEMU#Install_a_Fedora_VM_with_UEFI)
 * [https://that.guru/blog/uefi-secure-boot-in-libvirt/](https://that.guru/blog/uefi-secure-boot-in-libvirt/)
+* [https://bugzilla.redhat.com/show_bug.cgi?id=1906500#c23](https://bugzilla.redhat.com/show_bug.cgi?id=1906500#c23)
 
 ## How to
 

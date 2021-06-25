@@ -1114,14 +1114,14 @@
                 
                 
                 <h1 id="setting-up-an-ipxe-boot-environment-under-fedora">Setting up an iPXE boot environment under Fedora</h1>
-<p>In order to get a working iPXE boot environment, you need to set up dnsmasq/tftp and httpd. dnsmasq is used as the DHCP server, if needed as the DNS server (although disabled in the following example) and as the tftp server. httpd will server the actual image to boot from.</p>
+<p>In order to get a working iPXE boot environment, you need to set up dnsmasq/tftp and httpd. dnsmasq is used as the DHCP server, if needed as the DNS server (although disabled in the following example) and as the tftp server. httpd will serve the actual images to boot from.</p>
 <p>The following steps are a manual walkthrough of the steps taken in <a href="https://github.com/andreaskaris/fedora-ipxe-container">https://github.com/andreaskaris/fedora-ipxe-container</a>.</p>
 <h2 id="install-dependencies">Install dependencies</h2>
 <p>Install required dependencies:</p>
 <pre><code>yum install ipxe-bootimgs dnsmasq httpd -y
 </code></pre>
 <h2 id="setting-up-dnsmasq-and-tftp">Setting up dnsmasq and tftp</h2>
-<p>Create requried directories:</p>
+<p>Create required directories:</p>
 <pre><code>mkdir /tftpboot
 mkdir /dhcphosts
 </code></pre>
@@ -1185,8 +1185,25 @@ EOF
 52:54:00:00:00:01,192.168.123.201,node-1
 EOF
 </code></pre>
-<p>Run dnsmasq - obviously, this should be run as a service:</p>
+<p>Run dnsmasq in the foreground for testing:</p>
 <pre><code>/usr/sbin/dnsmasq -k --dhcp-hostsdir=/dhcphosts --bind-interfaces --log-facility=/dev/stdout
+</code></pre>
+<p>Obviously, this should better be run as a service:</p>
+<pre><code>cat &lt;&lt;'EOF' &gt; /etc/systemd/system/dnsmasq-custom.service 
+[Unit]
+Description=DNS caching server.
+After=network.target
+
+[Service]
+ExecStart=/usr/sbin/dnsmasq -k --dhcp-hostsdir=/dhcphosts --bind-interfaces
+Type=forking
+PIDFile=/run/dnsmasq.pid
+
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl daemon-reload
+systemctl enable --now dnsmasq-custom
 </code></pre>
 <p>Create files <code>/tftpboot/ipxe.efi</code>, <code>/tftpboot/undionly.kpxe</code>:</p>
 <pre><code>RUN cp /usr/share/ipxe/undionly.kpxe /tftpboot

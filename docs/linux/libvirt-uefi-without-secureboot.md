@@ -1,14 +1,5 @@
 # RHEL: Booting a virtual machine with UEFI but without secure boot
 
-## Sources
-
-* [https://github.com/tianocore/tianocore.github.io/wiki/OVMF](https://github.com/tianocore/tianocore.github.io/wiki/OVMF)
-* [https://www.kraxel.org/repos/](https://www.kraxel.org/repos/)
-* [https://fedoraproject.org/wiki/Using_UEFI_with_QEMU#Install_a_Fedora_VM_with_UEFI](https://fedoraproject.org/wiki/Using_UEFI_with_QEMU#Install_a_Fedora_VM_with_UEFI)
-* [https://that.guru/blog/uefi-secure-boot-in-libvirt/](https://that.guru/blog/uefi-secure-boot-in-libvirt/)
-* [https://bugzilla.redhat.com/show_bug.cgi?id=1906500#c23](https://bugzilla.redhat.com/show_bug.cgi?id=1906500#c23)
-* [https://bugzilla.redhat.com/show_bug.cgi?id=1929357](https://bugzilla.redhat.com/show_bug.cgi?id=1929357)
-
 ## About Secure Boot with libvirt on RHEL type distributions
 
 The default RHEL/CentOS/Fedora RPMs provide a UEFI firmware file named `/usr/share/edk2/ovmf/OVMF_CODE.secboot.fd`. The actual firmware can be configured to enforce Secure Boot or to ignore it. More on this later.
@@ -172,3 +163,13 @@ And make sure to copy the matching `*_VARS.fd` file:
 ~~~
 cp /usr/share/edk2.git/ovmf-x64/OVMF_VARS-pure-efi.fd /var/lib/libvirt/qemu/nvram/f34-uefi_VARS.fd
 ~~~
+
+## Sources
+
+* [https://github.com/tianocore/tianocore.github.io/wiki/OVMF](https://github.com/tianocore/tianocore.github.io/wiki/OVMF)
+* [https://www.kraxel.org/repos/](https://www.kraxel.org/repos/)
+* [https://fedoraproject.org/wiki/Using_UEFI_with_QEMU#Install_a_Fedora_VM_with_UEFI](https://fedoraproject.org/wiki/Using_UEFI_with_QEMU#Install_a_Fedora_VM_with_UEFI)
+* [https://that.guru/blog/uefi-secure-boot-in-libvirt/](https://that.guru/blog/uefi-secure-boot-in-libvirt/)
+* [https://bugzilla.redhat.com/show_bug.cgi?id=1906500#c23](https://bugzilla.redhat.com/show_bug.cgi?id=1906500#c23)
+* [https://bugzilla.redhat.com/show_bug.cgi?id=1929357](https://bugzilla.redhat.com/show_bug.cgi?id=1929357)
+

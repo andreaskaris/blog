@@ -14,7 +14,7 @@
     
     
       
-        <title>Setting up an iPXE boot environment under RHEL - Andreas Karis Blog</title>
+        <title>iPXE boot environment on Fedora - Andreas Karis Blog</title>
       
     
     
@@ -62,7 +62,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#setting-up-an-ipxe-boot-environment-under-rhel" class="md-skip">
+        <a href="#setting-up-an-ipxe-boot-environment-under-fedora" class="md-skip">
           Skip to content
         </a>
       
@@ -92,7 +92,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Setting up an iPXE boot environment under RHEL
+              iPXE boot environment on Fedora
             
           </span>
         </div>
@@ -278,12 +278,14 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
       
       <label class="md-nav__link" for="__nav_4">
         Linux
@@ -328,6 +330,70 @@
       <a href="../java-idrac-issues/" class="md-nav__link">
         Java Idrac Issues
       </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          iPXE boot environment on Fedora
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        iPXE boot environment on Fedora
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#install-dependencies" class="md-nav__link">
+    Install dependencies
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setting-up-dnsmasq-and-tftp" class="md-nav__link">
+    Setting up dnsmasq and tftp
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-httpd-and-images" class="md-nav__link">
+    Configure httpd and images
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1047,7 +1113,7 @@
               
                 
                 
-                <h1 id="setting-up-an-ipxe-boot-environment-under-rhel">Setting up an iPXE boot environment under RHEL</h1>
+                <h1 id="setting-up-an-ipxe-boot-environment-under-fedora">Setting up an iPXE boot environment under Fedora</h1>
 <p>In order to get a working iPXE boot environment, you need to set up dnsmasq/tftp and httpd. dnsmasq is used as the DHCP server, if needed as the DNS server (although disabled in the following example) and as the tftp server. httpd will server the actual image to boot from.</p>
 <p>The following steps are a manual walkthrough of the steps taken in <a href="https://github.com/andreaskaris/fedora-ipxe-container">https://github.com/andreaskaris/fedora-ipxe-container</a>.</p>
 <h2 id="install-dependencies">Install dependencies</h2>
@@ -1216,6 +1282,39 @@ bash example_netinstall.sh
       
         
 <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        <a href="../java-idrac-issues/" class="md-footer__link md-footer__link--prev" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Java Idrac Issues
+            </div>
+          </div>
+        </a>
+      
+      
+        <a href="../hugepages/" class="md-footer__link md-footer__link--next" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Hugepages
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">

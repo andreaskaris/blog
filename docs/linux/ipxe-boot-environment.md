@@ -182,3 +182,4 @@ autopart --type lvm
 EOF
 bash example_netinstall.sh
 ~~~
+

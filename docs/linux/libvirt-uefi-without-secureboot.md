@@ -51,7 +51,7 @@ The XML will contain the following:
   </os>
 ~~~
 
-According to [https://libvirt.org/formatdomain.html#elementsOSBIOS](https://libvirt.org/formatdomain.html#elementsOSBIOS), this cannot be disabled by setting `secure='no'`.
+According to [https://libvirt.org/formatdomain.html#elementsOSBIOS](https://libvirt.org/formatdomain.html#elementsOSBIOS), Secure Boot cannot be disabled simply by setting `secure='no'`.
 
 ## Creating a virtual machine with UEFI
 

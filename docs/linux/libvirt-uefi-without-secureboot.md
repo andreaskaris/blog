@@ -172,4 +172,3 @@ cp /usr/share/edk2.git/ovmf-x64/OVMF_VARS-pure-efi.fd /var/lib/libvirt/qemu/nvra
 * [https://that.guru/blog/uefi-secure-boot-in-libvirt/](https://that.guru/blog/uefi-secure-boot-in-libvirt/)
 * [https://bugzilla.redhat.com/show_bug.cgi?id=1906500#c23](https://bugzilla.redhat.com/show_bug.cgi?id=1906500#c23)
 * [https://bugzilla.redhat.com/show_bug.cgi?id=1929357](https://bugzilla.redhat.com/show_bug.cgi?id=1929357)
-

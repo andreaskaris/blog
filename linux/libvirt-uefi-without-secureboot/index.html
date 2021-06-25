@@ -418,13 +418,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#sources" class="md-nav__link">
-    Sources
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#about-secure-boot-with-libvirt-on-rhel-type-distributions" class="md-nav__link">
     About Secure Boot with libvirt on RHEL type distributions
   </a>
@@ -455,6 +448,13 @@
         <li class="md-nav__item">
   <a href="#using-custom-uefi-firmware-from-upstream" class="md-nav__link">
     Using custom UEFI firmware from upstream
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sources" class="md-nav__link">
+    Sources
   </a>
   
 </li>
@@ -1123,15 +1123,6 @@
                 
                 
                 <h1 id="rhel-booting-a-virtual-machine-with-uefi-but-without-secure-boot">RHEL: Booting a virtual machine with UEFI but without secure boot</h1>
-<h2 id="sources">Sources</h2>
-<ul>
-<li><a href="https://github.com/tianocore/tianocore.github.io/wiki/OVMF">https://github.com/tianocore/tianocore.github.io/wiki/OVMF</a></li>
-<li><a href="https://www.kraxel.org/repos/">https://www.kraxel.org/repos/</a></li>
-<li><a href="https://fedoraproject.org/wiki/Using_UEFI_with_QEMU#Install_a_Fedora_VM_with_UEFI">https://fedoraproject.org/wiki/Using_UEFI_with_QEMU#Install_a_Fedora_VM_with_UEFI</a></li>
-<li><a href="https://that.guru/blog/uefi-secure-boot-in-libvirt/">https://that.guru/blog/uefi-secure-boot-in-libvirt/</a></li>
-<li><a href="https://bugzilla.redhat.com/show_bug.cgi?id=1906500#c23">https://bugzilla.redhat.com/show_bug.cgi?id=1906500#c23</a></li>
-<li><a href="https://bugzilla.redhat.com/show_bug.cgi?id=1929357">https://bugzilla.redhat.com/show_bug.cgi?id=1929357</a></li>
-</ul>
 <h2 id="about-secure-boot-with-libvirt-on-rhel-type-distributions">About Secure Boot with libvirt on RHEL type distributions</h2>
 <p>The default RHEL/CentOS/Fedora RPMs provide a UEFI firmware file named <code>/usr/share/edk2/ovmf/OVMF_CODE.secboot.fd</code>. The actual firmware can be configured to enforce Secure Boot or to ignore it. More on this later.</p>
 <p>The firmware is bundled in RPM <code>edk2-ovmf-...</code>:</p>
@@ -1257,6 +1248,15 @@ yum install edk2.git-ovmf-x64 -y
 <p>And make sure to copy the matching <code>*_VARS.fd</code> file:</p>
 <pre><code>cp /usr/share/edk2.git/ovmf-x64/OVMF_VARS-pure-efi.fd /var/lib/libvirt/qemu/nvram/f34-uefi_VARS.fd
 </code></pre>
+<h2 id="sources">Sources</h2>
+<ul>
+<li><a href="https://github.com/tianocore/tianocore.github.io/wiki/OVMF">https://github.com/tianocore/tianocore.github.io/wiki/OVMF</a></li>
+<li><a href="https://www.kraxel.org/repos/">https://www.kraxel.org/repos/</a></li>
+<li><a href="https://fedoraproject.org/wiki/Using_UEFI_with_QEMU#Install_a_Fedora_VM_with_UEFI">https://fedoraproject.org/wiki/Using_UEFI_with_QEMU#Install_a_Fedora_VM_with_UEFI</a></li>
+<li><a href="https://that.guru/blog/uefi-secure-boot-in-libvirt/">https://that.guru/blog/uefi-secure-boot-in-libvirt/</a></li>
+<li><a href="https://bugzilla.redhat.com/show_bug.cgi?id=1906500#c23">https://bugzilla.redhat.com/show_bug.cgi?id=1906500#c23</a></li>
+<li><a href="https://bugzilla.redhat.com/show_bug.cgi?id=1929357">https://bugzilla.redhat.com/show_bug.cgi?id=1929357</a></li>
+</ul>
                 
                   
                     

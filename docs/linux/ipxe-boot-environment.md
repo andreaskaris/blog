@@ -1,6 +1,6 @@
 # Setting up an iPXE boot environment under Fedora
 
-In order to get a working iPXE boot environment, you need to set up dnsmasq/tftp and httpd. dnsmasq is used as the DHCP server, if needed as the DNS server (although disabled in the following example) and as the tftp server. httpd will server the actual image to boot from.
+In order to get a working iPXE boot environment, you need to set up dnsmasq/tftp and httpd. dnsmasq is used as the DHCP server, if needed as the DNS server (although disabled in the following example) and as the tftp server. httpd will serve the actual images to boot from.
 
 The following steps are a manual walkthrough of the steps taken in [https://github.com/andreaskaris/fedora-ipxe-container](https://github.com/andreaskaris/fedora-ipxe-container).
 
@@ -13,7 +13,7 @@ yum install ipxe-bootimgs dnsmasq httpd -y
 
 ## Setting up dnsmasq and tftp
 
-Create requried directories:
+Create required directories:
 ~~~
 mkdir /tftpboot
 mkdir /dhcphosts
@@ -83,9 +83,28 @@ cat <<'EOF' > /dhcphosts/hosts
 EOF
 ~~~
 
-Run dnsmasq - obviously, this should be run as a service:
+Run dnsmasq in the foreground for testing:
 ~~~
 /usr/sbin/dnsmasq -k --dhcp-hostsdir=/dhcphosts --bind-interfaces --log-facility=/dev/stdout
+~~~
+
+Obviously, this should better be run as a service:
+~~~
+cat <<'EOF' > /etc/systemd/system/dnsmasq-custom.service 
+[Unit]
+Description=DNS caching server.
+After=network.target
+
+[Service]
+ExecStart=/usr/sbin/dnsmasq -k --dhcp-hostsdir=/dhcphosts --bind-interfaces
+Type=forking
+PIDFile=/run/dnsmasq.pid
+
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl daemon-reload
+systemctl enable --now dnsmasq-custom
 ~~~
 
 Create files `/tftpboot/ipxe.efi`, `/tftpboot/undionly.kpxe`:

@@ -1,4 +1,4 @@
-# Setting up an iPXE boot environment under RHEL
+# Setting up an iPXE boot environment under Fedora
 
 In order to get a working iPXE boot environment, you need to set up dnsmasq/tftp and httpd. dnsmasq is used as the DHCP server, if needed as the DNS server (although disabled in the following example) and as the tftp server. httpd will server the actual image to boot from.
 

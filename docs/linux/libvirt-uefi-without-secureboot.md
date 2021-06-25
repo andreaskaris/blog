@@ -139,7 +139,7 @@ Use the non Secure Boot nvram:
 
 The VM will now boot without issues.
 
-### Using custom UEFI firmware from upstream
+## Using custom UEFI firmware from upstream
 
 If you are feeling adventurous, you can download upstream UEFI firmware from the OVMF project without secure boot:
 ~~~

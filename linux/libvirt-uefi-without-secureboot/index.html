@@ -450,18 +450,12 @@
     Disabling Secure Boot
   </a>
   
-    <nav class="md-nav" aria-label="Disabling Secure Boot">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#using-custom-uefi-firmware-from-upstream" class="md-nav__link">
     Using custom UEFI firmware from upstream
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1238,7 +1232,7 @@ BdsDxe: failed to load Boot0001 &quot;UEFI QEMU DVD-ROM QM00001 &quot; from PciR
 <pre><code>\cp /usr/share/edk2/ovmf/OVMF_VARS.fd /var/lib/libvirt/qemu/nvram/f34-uefi_VARS.fd
 </code></pre>
 <p>The VM will now boot without issues.</p>
-<h3 id="using-custom-uefi-firmware-from-upstream">Using custom UEFI firmware from upstream</h3>
+<h2 id="using-custom-uefi-firmware-from-upstream">Using custom UEFI firmware from upstream</h2>
 <p>If you are feeling adventurous, you can download upstream UEFI firmware from the OVMF project without secure boot:</p>
 <pre><code>cd /etc/yum.repos.d/
 curl -O https://www.kraxel.org/repos/firmware.repo

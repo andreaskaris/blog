@@ -425,9 +425,43 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#how-to" class="md-nav__link">
-    How to
+  <a href="#about-secure-boot-with-libvirt-on-rhel-type-distributions" class="md-nav__link">
+    About Secure Boot with libvirt on RHEL type distributions
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-virtual-machine-with-uefi" class="md-nav__link">
+    Creating a virtual machine with UEFI
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-uefi-and-secure-boot-in-action" class="md-nav__link">
+    Testing UEFI and Secure Boot in action
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disabling-secure-boot" class="md-nav__link">
+    Disabling Secure Boot
+  </a>
+  
+    <nav class="md-nav" aria-label="Disabling Secure Boot">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-custom-uefi-firmware-from-upstream" class="md-nav__link">
+    Using custom UEFI firmware from upstream
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1104,8 +1138,9 @@
 <li><a href="https://bugzilla.redhat.com/show_bug.cgi?id=1906500#c23">https://bugzilla.redhat.com/show_bug.cgi?id=1906500#c23</a></li>
 <li><a href="https://bugzilla.redhat.com/show_bug.cgi?id=1929357">https://bugzilla.redhat.com/show_bug.cgi?id=1929357</a></li>
 </ul>
-<h2 id="how-to">How to</h2>
-<p>The default RHEL/CentOS/Fedora RPMs only provide UEFI firmware with Secure Boot enforced.</p>
+<h2 id="about-secure-boot-with-libvirt-on-rhel-type-distributions">About Secure Boot with libvirt on RHEL type distributions</h2>
+<p>The default RHEL/CentOS/Fedora RPMs provide a UEFI firmware file named <code>/usr/share/edk2/ovmf/OVMF_CODE.secboot.fd</code>. The actual firmware can be configured to enforce Secure Boot or to ignore it. More on this later.</p>
+<p>The firmware is bundled in RPM <code>edk2-ovmf-...</code>:</p>
 <pre><code># rpm -qa | grep ovmf
 edk2-ovmf-20200602gitca407c7246bf-4.el8.noarch
 # rpm -ql edk2-ovmf-20200602gitca407c7246bf-4.el8.noarch
@@ -1135,16 +1170,9 @@ edk2-ovmf-20200602gitca407c7246bf-4.el8.noarch
 /usr/share/qemu/firmware/40-edk2-ovmf-sb.json
 /usr/share/qemu/firmware/50-edk2-ovmf.json
 </code></pre>
-<p>According to <a href="https://libvirt.org/formatdomain.html#elementsOSBIOS">https://libvirt.org/formatdomain.html#elementsOSBIOS</a>, this cannot be disabled. </p>
-<p>Instead, download upstream UEFI firmware from the OVMF project without secure boot:</p>
-<pre><code>cd /etc/yum.repos.d/
-curl -O https://www.kraxel.org/repos/firmware.repo
-yum install edk2.git-ovmf-x64 -y
-</code></pre>
-<p>Use virt-install to generate the XML for your virtual machine, e.g.:</p>
+<p>When creating a domain with <code>virt-install</code>, the configuration will default do secure boot enabled:</p>
 <pre><code>virt-install --name f34-uefi --network network=management    --ram 2048 --disk size=20    --boot uefi    --location https://dl.fedoraproject.org/pub/fedora/linux/releases/34/Server/x86_64/os/ --dry-run --print-xml
 </code></pre>
-<p>You will have to add disks and NICs to that VM and then you can define it. Or, you define it first and then use virt-manager to conveniently add the relevant components. The above is just a rudimentary example.</p>
 <p>The XML will contain the following:</p>
 <pre><code>  &lt;os&gt;
     &lt;type arch='x86_64' machine='pc-q35-rhel8.2.0'&gt;hvm&lt;/type&gt;
@@ -1153,7 +1181,52 @@ yum install edk2.git-ovmf-x64 -y
     &lt;bootmenu enable='yes'/&gt;
   &lt;/os&gt;
 </code></pre>
-<p>Change that to:</p>
+<p>According to <a href="https://libvirt.org/formatdomain.html#elementsOSBIOS">https://libvirt.org/formatdomain.html#elementsOSBIOS</a>, this cannot be disabled by setting <code>secure='no'</code>.</p>
+<h2 id="creating-a-virtual-machine-with-uefi">Creating a virtual machine with UEFI</h2>
+<p>For all of the following tests, we will need a virtual machine with UEFI enabled.</p>
+<p>Use virt-install to generate the XML for your virtual machine, e.g.:</p>
+<pre><code>virt-install --name f34-uefi --network network=management    --ram 2048 --disk size=20    --boot uefi    --location https://dl.fedoraproject.org/pub/fedora/linux/releases/34/Server/x86_64/os/ --dry-run --print-xml &gt; vm.xml
+</code></pre>
+<p>You will have to add disks and NICs to that VM and then you can create the actual domain. Or, you define it first and then use virt-manager to conveniently add the relevant components. The above is just a rudimentary example.</p>
+<p>The XML will contain the following configuration which will enable UEFI with secboot by default:</p>
+<pre><code>  &lt;os&gt;
+    &lt;type arch='x86_64' machine='pc-q35-rhel8.2.0'&gt;hvm&lt;/type&gt;
+    &lt;loader readonly='yes' secure='yes' type='pflash'&gt;/usr/share/edk2/ovmf/OVMF_CODE.secboot.fd&lt;/loader&gt;
+    &lt;nvram&gt;/var/lib/libvirt/qemu/nvram/f34-uefi_VARS.fd&lt;/nvram&gt;
+    &lt;bootmenu enable='yes'/&gt;
+  &lt;/os&gt;
+</code></pre>
+<p>Define the VM with <code>virsh define ...</code> once the XML looks good to you.</p>
+<h2 id="testing-uefi-and-secure-boot-in-action">Testing UEFI and Secure Boot in action</h2>
+<p>Download Alpine Linux from <a href="https://alpinelinux.org/downloads/">https://alpinelinux.org/downloads/</a></p>
+<pre><code>curl -O https://dl-cdn.alpinelinux.org/alpine/v3.14/releases/x86_64/alpine-extended-3.14.0-x86_64.iso
+</code></pre>
+<p>Now, start the VM with the Alpine ISO as the first entry in the boot order:</p>
+<pre><code>  &lt;devices&gt;
+(...)
+    &lt;disk type='file' device='cdrom'&gt;
+      &lt;driver name='qemu' type='raw'/&gt;
+      &lt;source file='/var/lib/libvirt/images/alpine-extended-3.14.0-x86_64.iso'/&gt;
+      &lt;target dev='sda' bus='sata'/&gt;
+      &lt;readonly/&gt;
+      &lt;boot order='1'/&gt;
+      &lt;address type='drive' controller='0' bus='0' target='0' unit='0'/&gt;
+    &lt;/disk&gt;
+(...)
+  &lt;/devices&gt;
+</code></pre>
+<p>When the VM starts and tries to boot from the ISO, you will see:</p>
+<pre><code># virsh start vm1 ; virsh console vm1
+Domain vm1 started
+
+Connected to domain openshift-master-1-uefi
+Escape character is ^]
+
+BdsDxe: loading Boot0001 &quot;UEFI QEMU DVD-ROM QM00001 &quot; from PciRoot(0x0)/Pci(0x1F,0x2)/Sata(0x0,0xFFFF,0x0)
+BdsDxe: failed to load Boot0001 &quot;UEFI QEMU DVD-ROM QM00001 &quot; from PciRoot(0x0)/Pci(0x1F,0x2)/Sata(0x0,0xFFFF,0x0): Access Denied
+</code></pre>
+<h2 id="disabling-secure-boot">Disabling Secure Boot</h2>
+<p>Keep everything as is, but make sure to overwrite the VM's nvram which is in <code>/var/lib/libvirt/qemu/nvram/f34-uefi_VARS.fd</code> with the non Secure Boot variables to disable the feature. As a reminder, from the VM's XML:</p>
 <pre><code>  &lt;os&gt;
     &lt;type arch='x86_64' machine='pc-q35-rhel8.2.0'&gt;hvm&lt;/type&gt;
     &lt;loader readonly='yes' secure='no' type='pflash'&gt;/usr/share/edk2.git/ovmf-x64/OVMF_CODE-pure-efi.fd&lt;/loader&gt;
@@ -1161,7 +1234,33 @@ yum install edk2.git-ovmf-x64 -y
     &lt;bootmenu enable='yes'/&gt;
   &lt;/os&gt;
 </code></pre>
-<p>And make sure to copy the <code>*_VARS.fd</code> file:</p>
+<p>Use the non Secure Boot nvram:</p>
+<pre><code>\cp /usr/share/edk2/ovmf/OVMF_VARS.fd /var/lib/libvirt/qemu/nvram/f34-uefi_VARS.fd
+</code></pre>
+<p>The VM will now boot without issues.</p>
+<h3 id="using-custom-uefi-firmware-from-upstream">Using custom UEFI firmware from upstream</h3>
+<p>If you are feeling adventurous, you can download upstream UEFI firmware from the OVMF project without secure boot:</p>
+<pre><code>cd /etc/yum.repos.d/
+curl -O https://www.kraxel.org/repos/firmware.repo
+yum install edk2.git-ovmf-x64 -y
+</code></pre>
+<p>The default XML will contain the following:</p>
+<pre><code>  &lt;os&gt;
+    &lt;type arch='x86_64' machine='pc-q35-rhel8.2.0'&gt;hvm&lt;/type&gt;
+    &lt;loader readonly='yes' secure='yes' type='pflash'&gt;/usr/share/edk2/ovmf/OVMF_CODE.secboot.fd&lt;/loader&gt;
+    &lt;nvram&gt;/var/lib/libvirt/qemu/nvram/f34-uefi_VARS.fd&lt;/nvram&gt;
+    &lt;bootmenu enable='yes'/&gt;
+  &lt;/os&gt;
+</code></pre>
+<p>Change that to refer to the upstream firmware:</p>
+<pre><code>  &lt;os&gt;
+    &lt;type arch='x86_64' machine='pc-q35-rhel8.2.0'&gt;hvm&lt;/type&gt;
+    &lt;loader readonly='yes' secure='no' type='pflash'&gt;/usr/share/edk2.git/ovmf-x64/OVMF_CODE-pure-efi.fd&lt;/loader&gt;
+    &lt;nvram&gt;/var/lib/libvirt/qemu/nvram/f34-uefi_VARS.fd&lt;/nvram&gt;
+    &lt;bootmenu enable='yes'/&gt;
+  &lt;/os&gt;
+</code></pre>
+<p>And make sure to copy the matching <code>*_VARS.fd</code> file:</p>
 <pre><code>cp /usr/share/edk2.git/ovmf-x64/OVMF_VARS-pure-efi.fd /var/lib/libvirt/qemu/nvram/f34-uefi_VARS.fd
 </code></pre>
                 
@@ -1172,7 +1271,7 @@ yum install edk2.git-ovmf-x64 -y
 <div class="md-source-date">
   <small>
     
-      Last update: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">June 23, 2021</span>
+      Last update: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">June 25, 2021</span>
     
   </small>
 </div>

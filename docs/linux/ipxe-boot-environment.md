@@ -183,3 +183,4 @@ EOF
 bash example_netinstall.sh
 ~~~
 
+You should not be able to iPXE boot your server.

@@ -1166,7 +1166,7 @@ edk2-ovmf-20200602gitca407c7246bf-4.el8.noarch
     &lt;bootmenu enable='yes'/&gt;
   &lt;/os&gt;
 </code></pre>
-<p>According to <a href="https://libvirt.org/formatdomain.html#elementsOSBIOS">https://libvirt.org/formatdomain.html#elementsOSBIOS</a>, this cannot be disabled by setting <code>secure='no'</code>.</p>
+<p>According to <a href="https://libvirt.org/formatdomain.html#elementsOSBIOS">https://libvirt.org/formatdomain.html#elementsOSBIOS</a>, Secure Boot cannot be disabled simply by setting <code>secure='no'</code>.</p>
 <h2 id="creating-a-virtual-machine-with-uefi">Creating a virtual machine with UEFI</h2>
 <p>For all of the following tests, we will need a virtual machine with UEFI enabled.</p>
 <p>Use virt-install to generate the XML for your virtual machine, e.g.:</p>

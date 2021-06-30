@@ -24,6 +24,7 @@ nav:
   - Containers in Linux: linux/containers.md
   - Java Idrac Issues: linux/java-idrac-issues.md
   - iPXE boot environment on Fedora: linux/ipxe-boot-environment.md
+  - Retrieving process cgroup resource usage and limit info: docs/linux/get-process-cgroup-info-and-limits.md
   - Hugepages: linux/hugepages.md
   - meson: linux/meson.md
   - namespaces: linux/namespaces.md

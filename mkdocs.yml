@@ -28,7 +28,7 @@ nav:
   - meson: linux/meson.md
   - namespaces: linux/namespaces.md
   - Old Java inside a container with xorgs: linux/old_java_version_with_xorgs_in_container.md
-  - Retrieving process cgroup resource usage and limit info: docs/linux/get-process-cgroup-info-and-limits.md
+  - Retrieving process cgroup resource usage and limit info: linux/get-process-cgroup-info-and-limits.md
   - RHEL Booting a virtual machine with UEFI but without secure boot: linux/libvirt-uefi-without-secureboot.md
   - Setting journalctl limits: linux/setting-journalctl-limits.md
 - Networking:

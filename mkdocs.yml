@@ -22,13 +22,13 @@ nav:
 - Linux:
   - cgroups: linux/cgroups.md
   - Containers in Linux: linux/containers.md
-  - Java Idrac Issues: linux/java-idrac-issues.md
-  - iPXE boot environment on Fedora: linux/ipxe-boot-environment.md
-  - Retrieving process cgroup resource usage and limit info: docs/linux/get-process-cgroup-info-and-limits.md
   - Hugepages: linux/hugepages.md
+  - iPXE boot environment on Fedora: linux/ipxe-boot-environment.md
+  - Java Idrac Issues: linux/java-idrac-issues.md
   - meson: linux/meson.md
   - namespaces: linux/namespaces.md
   - Old Java inside a container with xorgs: linux/old_java_version_with_xorgs_in_container.md
+  - Retrieving process cgroup resource usage and limit info: docs/linux/get-process-cgroup-info-and-limits.md
   - RHEL Booting a virtual machine with UEFI but without secure boot: linux/libvirt-uefi-without-secureboot.md
   - Setting journalctl limits: linux/setting-journalctl-limits.md
 - Networking:

@@ -307,3 +307,20 @@ NAME                                    SCC
 poda                                    privileged
 podb                                    privileged
 ~~~
+
+### OVNKubernetes
+
+Find the active OVN northbound database node:
+~~~
+for pod in $(oc -n openshift-ovn-kubernetes get pod -l app=ovnkube-master -o name | awk -F '/' '{print $NF}'); do
+  status=$(oc -n openshift-ovn-kubernetes logs $pod -c northd | egrep -o 'active|standby' | tail -1)
+  if [ "$status" == "active" ]; then
+        export POD="$pod"
+  fi
+done
+~~~
+
+Then, you can use this to query the database, e.g.:
+~~~
+oc -n openshift-ovn-kubernetes exec -it $POD -- ovn-nbctl show
+~~~

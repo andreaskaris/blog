@@ -1044,6 +1044,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#ovnkubernetes" class="md-nav__link">
+    OVNKubernetes
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1461,6 +1468,18 @@ NAME                                    SCC
 poda                                    privileged
 podb                                    privileged
 </code></pre>
+<h3 id="ovnkubernetes">OVNKubernetes</h3>
+<p>Find the active OVN northbound database node:</p>
+<pre><code>for pod in $(oc -n openshift-ovn-kubernetes get pod -l app=ovnkube-master -o name | awk -F '/' '{print $NF}'); do
+  status=$(oc -n openshift-ovn-kubernetes logs $pod -c northd | egrep -o 'active|standby' | tail -1)
+  if [ &quot;$status&quot; == &quot;active&quot; ]; then
+        export POD=&quot;$pod&quot;
+  fi
+done
+</code></pre>
+<p>Then, you can use this to query the database, e.g.:</p>
+<pre><code>oc -n openshift-ovn-kubernetes exec -it $POD -- ovn-nbctl show
+</code></pre>
                 
                   
                     
@@ -1469,7 +1488,7 @@ podb                                    privileged
 <div class="md-source-date">
   <small>
     
-      Last update: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">June 15, 2021</span>
+      Last update: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">July 3, 2021</span>
     
   </small>
 </div>

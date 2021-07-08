@@ -1,4 +1,4 @@
-# OVN kind and the 
+# Kind with OVN Kubernetes Hybrid Overlay
 
 If you are interested in playing around with OVN Kubernetes' Hybrid Overlay feature, then one of the easiest ways to test this is by creating a kind setup and by installing the OVN Kubernetes parts.
 

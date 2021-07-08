@@ -39,7 +39,6 @@ nav:
   - haproxy and HTTP/2: networking/haproxy-and-h2c.md
   - Geneve tunneling: networking/geneve_tunneling.md
   - Netlink: networking/netlink.md  
-  - OVN kind: networking/ovn-kind.md
   - OVN standalone on Fedora 31: networking/ovn_standalone_on_fedora31.md
   - OVS packet recirculation: networking/ovs_recirculation.md
   - OVS VXLAN tunnels and DSCP: networking/ovs-vxlan-tunnels-and-dscp.md
@@ -62,6 +61,7 @@ nav:
   - Installing a cluster with a mirror registry: openshift/openshift_mirror_registry.md
   - Istio 1.6 on OpenShift 4.x: openshift/istio-1.6-on-ocp.4.x.md
   - kata containers and the kata operatora: openshift/kata.md  
+  - Kind with OVN Kubernetes Hybrid Overlay: openshift/ovn-kind-hybrid-overlay.md
   - Kind with private registry: openshift/kind-with-private-registry.md
   - Mount a container image: openshift/mounting-container-image.md
   - OpenShift on OpenStack: openstack/install_openshift_on_openstack.md

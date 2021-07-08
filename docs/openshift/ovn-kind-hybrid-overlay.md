@@ -1,14 +1,6 @@
 # OVN kind and the 
 
-## Sources
-
-Based on:
-
-* [https://github.com/ovn-org/ovn-kubernetes/blob/master/docs/kind.md](https://github.com/ovn-org/ovn-kubernetes/blob/master/docs/kind.md)
-
-* [https://github.com/ovn-org/ovn-kubernetes](https://github.com/ovn-org/ovn-kubernetes)
-
-And most instructions are from my colleagues Tim Rozet and Robin Cernin.
+If you are interested in playing around with OVN Kubernetes' Hybrid Overlay feature, then one of the easiest ways to test this is by creating a kind setup and by installing the OVN Kubernetes parts.
 
 ## Prerequisites
 
@@ -88,7 +80,6 @@ PodCIDRs:                     10.244.1.0/24
 PodCIDR:                      10.244.2.0/24
 PodCIDRs:                     10.244.2.0/24
 ~~~
-
 
 Create CentOS to act as GW:
 ~~~
@@ -219,3 +210,13 @@ metadata:
     k8s.ovn.org/hybrid-overlay-external-gw: 9.0.0.1
     k8s.ovn.org/hybrid-overlay-vtep: 172.18.0.5
 ~~~
+
+## Sources
+
+Based on:
+
+* [https://github.com/ovn-org/ovn-kubernetes/blob/master/docs/kind.md](https://github.com/ovn-org/ovn-kubernetes/blob/master/docs/kind.md)
+
+* [https://github.com/ovn-org/ovn-kubernetes](https://github.com/ovn-org/ovn-kubernetes)
+
+Most instructions are from my colleagues Tim Rozet and Robin Cernin.

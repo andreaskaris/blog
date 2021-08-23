@@ -533,9 +533,38 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Install Open vSwitch on Rocky Linux 8
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         Install Open vSwitch on Rocky Linux 8
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#sources" class="md-nav__link">
+    Sources
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1139,6 +1168,9 @@ nmcli conn m ovs-if-${BRIDGE_NAME} ipv4.method static
 
 systemctl restart NetworkManager
 </code></pre>
+<h3 id="sources">Sources</h3>
+<p>Partially adapted from:
+* <a href="https://blog.oddbit.com/post/2020-02-15-configuring-open-vswitch-with/">https://blog.oddbit.com/post/2020-02-15-configuring-open-vswitch-with/</a></p>
                 
                   
                     

@@ -36,3 +36,8 @@ nmcli conn m ovs-if-${BRIDGE_NAME} ipv4.method static
 
 systemctl restart NetworkManager
 ~~~
+
+### Sources
+
+Partially adapted from:
+* [https://blog.oddbit.com/post/2020-02-15-configuring-open-vswitch-with/](https://blog.oddbit.com/post/2020-02-15-configuring-open-vswitch-with/)

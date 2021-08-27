@@ -1237,59 +1237,6 @@ CNI_PATH=/opt/cni/bin/  cnitool add crio /var/run/netns/testing
 <p>Alternatively, simply delete a running pod and have it recreated.</p>
 <pre><code>kubectl delete pod -n &lt;...&gt; &lt;...&gt;
 </code></pre>
-<p>In file <code>/tmp/log/host-local</code>, we can see the following during an <code>ADD</code> command:</p>
-<pre><code>Fri Aug 27 07:55:52 EDT 2021
-=================================================================
-CNI params:
-CNI_PATH=/opt/cni/bin:/usr/libexec/cni
-CNI_ARGS=IgnoreUnknown=1;K8S_POD_NAMESPACE=kube-system;K8S_POD_NAME=coredns-78fcd69978-n5khq;K8S_POD_INFRA_CONTAINER_ID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8;K8S_POD_UID=94f2364f-4fd6-4b74-9f5a-c68e2c6f97dd
-CNI_CONTAINERID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8
-CNI_IFNAME=eth0
-CNI_COMMAND=ADD
-CNI_NETNS=/var/run/netns/3526ea0f-6dd9-4985-8f98-0db6d817abd4
-env:
-CNI_PATH=/opt/cni/bin:/usr/libexec/cni
-LANG=en_US.UTF-8
-INVOCATION_ID=77a9194a9cd04940a5fe1bdbca0e218b
-CNI_ARGS=IgnoreUnknown=1;K8S_POD_NAMESPACE=kube-system;K8S_POD_NAME=coredns-78fcd69978-n5khq;K8S_POD_INFRA_CONTAINER_ID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8;K8S_POD_UID=94f2364f-4fd6-4b74-9f5a-c68e2c6f97dd
-CNI_CONTAINERID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8
-GOTRACEBACK=crash
-PWD=/
-JOURNAL_STREAM=9:163692
-CNI_IFNAME=eth0
-CNI_COMMAND=ADD
-CNI_NETNS=/var/run/netns/3526ea0f-6dd9-4985-8f98-0db6d817abd4
-SHLVL=2
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
-_=/usr/bin/env
-INPUT:
-{&quot;bridge&quot;:&quot;cni0&quot;,&quot;cniVersion&quot;:&quot;0.3.1&quot;,&quot;hairpinMode&quot;:true,&quot;ipMasq&quot;:true,&quot;ipam&quot;:{&quot;ranges&quot;:[[{&quot;subnet&quot;:&quot;10.85.0.0/16&quot;}],[{&quot;subnet&quot;:&quot;1100:200::/24&quot;}]],&quot;routes&quot;:[{&quot;dst&quot;:&quot;0.0.0.0/0&quot;},{&quot;dst&quot;:&quot;1100:200::1/24&quot;}],&quot;type&quot;:&quot;host-local&quot;},&quot;isGateway&quot;:true,&quot;name&quot;:&quot;crio&quot;,&quot;type&quot;:&quot;bridge&quot;}
-OUTPUT:
-{
-    &quot;cniVersion&quot;: &quot;0.3.1&quot;,
-    &quot;ips&quot;: [
-        {
-            &quot;version&quot;: &quot;4&quot;,
-            &quot;address&quot;: &quot;10.85.0.17/16&quot;,
-            &quot;gateway&quot;: &quot;10.85.0.1&quot;
-        },
-        {
-            &quot;version&quot;: &quot;6&quot;,
-            &quot;address&quot;: &quot;1100:200::f/24&quot;,
-            &quot;gateway&quot;: &quot;1100:200::1&quot;
-        }
-    ],
-    &quot;routes&quot;: [
-        {
-            &quot;dst&quot;: &quot;0.0.0.0/0&quot;
-        },
-        {
-            &quot;dst&quot;: &quot;1100:200::1/24&quot;
-        }
-    ],
-    &quot;dns&quot;: {}
-}
-</code></pre>
 <p>In file <code>/tmp/log/bridge</code> you can see that the <code>bridge</code> plugin uses data from the <code>host-local</code> to create the final output:</p>
 <pre><code>Fri Aug 27 07:55:52 EDT 2021
 =================================================================
@@ -1345,6 +1292,64 @@ OUTPUT:
         {
             &quot;version&quot;: &quot;6&quot;,
             &quot;interface&quot;: 2,
+            &quot;address&quot;: &quot;1100:200::f/24&quot;,
+            &quot;gateway&quot;: &quot;1100:200::1&quot;
+        }
+    ],
+    &quot;routes&quot;: [
+        {
+            &quot;dst&quot;: &quot;0.0.0.0/0&quot;
+        },
+        {
+            &quot;dst&quot;: &quot;1100:200::1/24&quot;
+        }
+    ],
+    &quot;dns&quot;: {}
+}
+</code></pre>
+<p>When we look at <a href="https://github.com/containernetworking/cni/blob/master/SPEC.md#section-4-plugin-delegation">https://github.com/containernetworking/cni/blob/master/SPEC.md#section-4-plugin-delegation</a>, we can see the following:</p>
+<pre><code>It is however the responsibility of the CNI plugin, rather than the runtime, to invoke the IPAM plugin at the proper moment in its execution. The IPAM plugin must determine the interface IP/subnet, Gateway and Routes and return this information to the &quot;main&quot; plugin to apply. The IPAM plugin may obtain the information via a protocol (e.g. dhcp), data stored on a local filesystem, the &quot;ipam&quot; section of the Network Configuration file, etc.
+</code></pre>
+<p>The <code>bridge</code> plugin delegates IP address allocation to an <code>ipam</code> plugin here:
+<a href="https://github.com/containernetworking/plugins/blob/8632ace977f4126c8ded601975f564571c66b922/plugins/main/bridge/bridge.go#L465">https://github.com/containernetworking/plugins/blob/8632ace977f4126c8ded601975f564571c66b922/plugins/main/bridge/bridge.go#L465</a></p>
+<p>In file <code>/tmp/log/host-local</code>, we can see the following during an <code>ADD</code> command. This is the result of the delegation:</p>
+<pre><code>Fri Aug 27 07:55:52 EDT 2021
+=================================================================
+CNI params:
+CNI_PATH=/opt/cni/bin:/usr/libexec/cni
+CNI_ARGS=IgnoreUnknown=1;K8S_POD_NAMESPACE=kube-system;K8S_POD_NAME=coredns-78fcd69978-n5khq;K8S_POD_INFRA_CONTAINER_ID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8;K8S_POD_UID=94f2364f-4fd6-4b74-9f5a-c68e2c6f97dd
+CNI_CONTAINERID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8
+CNI_IFNAME=eth0
+CNI_COMMAND=ADD
+CNI_NETNS=/var/run/netns/3526ea0f-6dd9-4985-8f98-0db6d817abd4
+env:
+CNI_PATH=/opt/cni/bin:/usr/libexec/cni
+LANG=en_US.UTF-8
+INVOCATION_ID=77a9194a9cd04940a5fe1bdbca0e218b
+CNI_ARGS=IgnoreUnknown=1;K8S_POD_NAMESPACE=kube-system;K8S_POD_NAME=coredns-78fcd69978-n5khq;K8S_POD_INFRA_CONTAINER_ID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8;K8S_POD_UID=94f2364f-4fd6-4b74-9f5a-c68e2c6f97dd
+CNI_CONTAINERID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8
+GOTRACEBACK=crash
+PWD=/
+JOURNAL_STREAM=9:163692
+CNI_IFNAME=eth0
+CNI_COMMAND=ADD
+CNI_NETNS=/var/run/netns/3526ea0f-6dd9-4985-8f98-0db6d817abd4
+SHLVL=2
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+_=/usr/bin/env
+INPUT:
+{&quot;bridge&quot;:&quot;cni0&quot;,&quot;cniVersion&quot;:&quot;0.3.1&quot;,&quot;hairpinMode&quot;:true,&quot;ipMasq&quot;:true,&quot;ipam&quot;:{&quot;ranges&quot;:[[{&quot;subnet&quot;:&quot;10.85.0.0/16&quot;}],[{&quot;subnet&quot;:&quot;1100:200::/24&quot;}]],&quot;routes&quot;:[{&quot;dst&quot;:&quot;0.0.0.0/0&quot;},{&quot;dst&quot;:&quot;1100:200::1/24&quot;}],&quot;type&quot;:&quot;host-local&quot;},&quot;isGateway&quot;:true,&quot;name&quot;:&quot;crio&quot;,&quot;type&quot;:&quot;bridge&quot;}
+OUTPUT:
+{
+    &quot;cniVersion&quot;: &quot;0.3.1&quot;,
+    &quot;ips&quot;: [
+        {
+            &quot;version&quot;: &quot;4&quot;,
+            &quot;address&quot;: &quot;10.85.0.17/16&quot;,
+            &quot;gateway&quot;: &quot;10.85.0.1&quot;
+        },
+        {
+            &quot;version&quot;: &quot;6&quot;,
             &quot;address&quot;: &quot;1100:200::f/24&quot;,
             &quot;gateway&quot;: &quot;1100:200::1&quot;
         }

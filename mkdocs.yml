@@ -15,6 +15,7 @@ nav:
 - Ceph:
   - Ceph manual test with qemu: ceph/ceph-manual-test.md
 - Containers:
+  - Analyzing CNI calls: openshift/analyzing-cni.md
   - cgroups: linux/cgroups.md
   - Containers in Linux: linux/containers.md
   - List container images in registry: openshift/list_docker_registry_containers.md

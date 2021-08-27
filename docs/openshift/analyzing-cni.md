@@ -1,8 +1,12 @@
 # Analyzing CNI calls
 
-### Creating a wrapper script
+Let's analyze how CNI actually works. First, you should read through the actual specification: [https://github.com/containernetworking/cni/blob/master/SPEC.md](https://github.com/containernetworking/cni/blob/master/SPEC.md)
 
-This can be done by writing wrapper scripts. Let's say your current CNI configuration is:
+Once you have done that, the next best thing to writing your own plugin is surely to write a wrapper script around existing plugins and to observe what is being passed to/from the plugins.
+
+### Setup
+
+All examples are run on a signle-node Kubernetes cluster with CRI-O. I did not install a CNI plugin, instead I am relying on CRI-O's `bridge` plugin. The `bridge` plugin uses the `host-local` plugin for IPAM. The configuration file can be found under `/etc/cni/net.d/100-crio-bridge.conf` and its contents look as follows:
 ~~~
 [root@node1 ~]# cat /etc/cni/net.d/100-crio-bridge.conf 
 {
@@ -27,9 +31,11 @@ This can be done by writing wrapper scripts. Let's say your current CNI configur
 }
 ~~~
 
-Hence, this will use the plugins `bridge` and `host-local` from `/opt/bin/cni/`.
+The actual plugin binaries are `/opt/bin/cni/bridge` and `/opt/bin/cni/host-local`.
 
-Create a script in a temporary location:
+### Creating a wrapper script
+
+Create the wrapper script in a temporary location:
 ~~~
 f=$(mktemp)
 cat <<'EOF' > $f
@@ -69,13 +75,15 @@ EOF
 chmod +x $f
 ~~~
 
-Then, replace the plugins with this wrapper script and move the plugins to a backup location:
+Then, rename the original plugins to `<name>-original` and copy the wrapper script into the former location of the binary files:
 ~~~
 for plugin in bridge host-local; do
   \cp /opt/cni/bin/${plugin} /opt/cni/bin/${plugin}-original
   \cp $f /opt/cni/bin/${plugin}
 done
 ~~~
+
+### Rollback
 
 To revert this back to defaults, after testing, run:
 ~~~
@@ -84,18 +92,26 @@ for plugin in bridge host-local; do
 done
 ~~~
 
-## Examining CNI calls
+### Triggering CNI calls
 
 Now, create a test invocation. For example, use [https://github.com/containernetworking/cni/tree/master/cnitool](https://github.com/containernetworking/cni/tree/master/cnitool)
 ~~~
+git clone  https://github.com/containernetworking/cni
+pushd cni/cnitool
+go build
+mv cnitool /usr/local/bin
+popd
 ip netns add testing
-CNI_PATH=/opt/cni/bin/  cnitool add crio /var/run/netns/testing
+CNI_PATH=/opt/cni/bin/ cnitool add crio /var/run/netns/testing
+CNI_PATH=/opt/cni/bin/ cnitool del crio /var/run/netns/testing
 ~~~
 
-Alternatively, simply delete a running pod and have it recreated.
+Alternatively, simply delete a running pod and have it recreated by kubernetes:
 ~~~
 kubectl delete pod -n <...> <...>
 ~~~
+
+### Examining CNI calls
 
 In file `/tmp/log/bridge` you can see that the `bridge` plugin uses data from the `host-local` to create the final output:
 ~~~

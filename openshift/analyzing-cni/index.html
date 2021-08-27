@@ -1290,7 +1290,7 @@ OUTPUT:
     &quot;dns&quot;: {}
 }
 </code></pre>
-<p>Then, in file <code>/tmp/log/bridge</code> you can see that the output from the <code>host-local</code> plugin is actually used as input to the <code>bridge</code> plugin:</p>
+<p>In file <code>/tmp/log/bridge</code> you can see that the <code>bridge</code> plugin uses data from the <code>host-local</code> to create the final output:</p>
 <pre><code>Fri Aug 27 07:55:52 EDT 2021
 =================================================================
 CNI params:

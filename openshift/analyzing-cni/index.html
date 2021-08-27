@@ -256,8 +256,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#setup" class="md-nav__link">
+    Setup
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#creating-a-wrapper-script" class="md-nav__link">
     Creating a wrapper script
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rollback" class="md-nav__link">
+    Rollback
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#triggering-cni-calls" class="md-nav__link">
+    Triggering CNI calls
   </a>
   
 </li>
@@ -1155,8 +1176,10 @@
                 
                 
                 <h1 id="analyzing-cni-calls">Analyzing CNI calls</h1>
-<h3 id="creating-a-wrapper-script">Creating a wrapper script</h3>
-<p>This can be done by writing wrapper scripts. Let's say your current CNI configuration is:</p>
+<p>Let's analyze how CNI actually works. First, you should read through the actual specification: <a href="https://github.com/containernetworking/cni/blob/master/SPEC.md">https://github.com/containernetworking/cni/blob/master/SPEC.md</a></p>
+<p>Once you have done that, the next best thing to writing your own plugin is surely to write a wrapper script around existing plugins and to observe what is being passed to/from the plugins.</p>
+<h3 id="setup">Setup</h3>
+<p>All examples are run on a signle-node Kubernetes cluster with CRI-O. I did not install a CNI plugin, instead I am relying on CRI-O's <code>bridge</code> plugin. The <code>bridge</code> plugin uses the <code>host-local</code> plugin for IPAM. The configuration file can be found under <code>/etc/cni/net.d/100-crio-bridge.conf</code> and its contents look as follows:</p>
 <pre><code>[root@node1 ~]# cat /etc/cni/net.d/100-crio-bridge.conf 
 {
     &quot;cniVersion&quot;: &quot;0.3.1&quot;,
@@ -1179,8 +1202,9 @@
     }
 }
 </code></pre>
-<p>Hence, this will use the plugins <code>bridge</code> and <code>host-local</code> from <code>/opt/bin/cni/</code>.</p>
-<p>Create a script in a temporary location:</p>
+<p>The actual plugin binaries are <code>/opt/bin/cni/bridge</code> and <code>/opt/bin/cni/host-local</code>.</p>
+<h3 id="creating-a-wrapper-script">Creating a wrapper script</h3>
+<p>Create the wrapper script in a temporary location:</p>
 <pre><code>f=$(mktemp)
 cat &lt;&lt;'EOF' &gt; $f
 #!/bin/bash
@@ -1218,25 +1242,33 @@ echo &quot;&quot; &gt;&gt; $LOG
 EOF
 chmod +x $f
 </code></pre>
-<p>Then, replace the plugins with this wrapper script and move the plugins to a backup location:</p>
+<p>Then, rename the original plugins to <code>&lt;name&gt;-original</code> and copy the wrapper script into the former location of the binary files:</p>
 <pre><code>for plugin in bridge host-local; do
   \cp /opt/cni/bin/${plugin} /opt/cni/bin/${plugin}-original
   \cp $f /opt/cni/bin/${plugin}
 done
 </code></pre>
+<h3 id="rollback">Rollback</h3>
 <p>To revert this back to defaults, after testing, run:</p>
 <pre><code>for plugin in bridge host-local; do
   \mv /opt/cni/bin/${plugin}-original /opt/cni/bin/${plugin}
 done
 </code></pre>
-<h2 id="examining-cni-calls">Examining CNI calls</h2>
+<h3 id="triggering-cni-calls">Triggering CNI calls</h3>
 <p>Now, create a test invocation. For example, use <a href="https://github.com/containernetworking/cni/tree/master/cnitool">https://github.com/containernetworking/cni/tree/master/cnitool</a></p>
-<pre><code>ip netns add testing
-CNI_PATH=/opt/cni/bin/  cnitool add crio /var/run/netns/testing
+<pre><code>git clone  https://github.com/containernetworking/cni
+pushd cni/cnitool
+go build
+mv cnitool /usr/local/bin
+popd
+ip netns add testing
+CNI_PATH=/opt/cni/bin/ cnitool add crio /var/run/netns/testing
+CNI_PATH=/opt/cni/bin/ cnitool del crio /var/run/netns/testing
 </code></pre>
-<p>Alternatively, simply delete a running pod and have it recreated.</p>
+<p>Alternatively, simply delete a running pod and have it recreated by kubernetes:</p>
 <pre><code>kubectl delete pod -n &lt;...&gt; &lt;...&gt;
 </code></pre>
+<h3 id="examining-cni-calls">Examining CNI calls</h3>
 <p>In file <code>/tmp/log/bridge</code> you can see that the <code>bridge</code> plugin uses data from the <code>host-local</code> to create the final output:</p>
 <pre><code>Fri Aug 27 07:55:52 EDT 2021
 =================================================================

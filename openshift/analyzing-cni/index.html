@@ -14,7 +14,7 @@
     
     
       
-        <title>Install Open vSwitch on Rocky Linux 8 - Andreas Karis Blog</title>
+        <title>Analyzing CNI calls - Andreas Karis Blog</title>
       
     
     
@@ -62,7 +62,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#install-open-vswitch-on-rocky-linux-8" class="md-skip">
+        <a href="#analyzing-cni-calls" class="md-skip">
           Skip to content
         </a>
       
@@ -92,7 +92,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Install Open vSwitch on Rocky Linux 8
+              Analyzing CNI calls
             
           </span>
         </div>
@@ -200,12 +200,14 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
       
       <label class="md-nav__link" for="__nav_3">
         Containers
@@ -221,11 +223,56 @@
             
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../../openshift/analyzing-cni/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Analyzing CNI calls
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Analyzing CNI calls
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-wrapper-script" class="md-nav__link">
+    Creating a wrapper script
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examining-cni-calls" class="md-nav__link">
+    Examining CNI calls
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -259,7 +306,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/list_docker_registry_containers/" class="md-nav__link">
+      <a href="../list_docker_registry_containers/" class="md-nav__link">
         List container images in registry
       </a>
     </li>
@@ -452,14 +499,12 @@
 
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
       
       <label class="md-nav__link" for="__nav_5">
         Networking
@@ -477,7 +522,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../arp_and_the_neighbor_table/" class="md-nav__link">
+      <a href="../../networking/arp_and_the_neighbor_table/" class="md-nav__link">
         ARP and the Neighbor table
       </a>
     </li>
@@ -489,7 +534,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../bpf-and-tcpdump/" class="md-nav__link">
+      <a href="../../networking/bpf-and-tcpdump/" class="md-nav__link">
         BPF and tcpdump
       </a>
     </li>
@@ -501,7 +546,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../bonding_in_linux/" class="md-nav__link">
+      <a href="../../networking/bonding_in_linux/" class="md-nav__link">
         Bonding in Linux
       </a>
     </li>
@@ -513,7 +558,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../juniper_x520/" class="md-nav__link">
+      <a href="../../networking/juniper_x520/" class="md-nav__link">
         Configure Juniper switch
       </a>
     </li>
@@ -525,7 +570,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../haproxy-and-h2c/" class="md-nav__link">
+      <a href="../../networking/haproxy-and-h2c/" class="md-nav__link">
         haproxy and HTTP/2
       </a>
     </li>
@@ -535,49 +580,11 @@
             
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Install Open vSwitch on Rocky Linux 8
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../networking/install-openvswitch-on-rocky/" class="md-nav__link">
         Install Open vSwitch on Rocky Linux 8
       </a>
-      
-        
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#sources" class="md-nav__link">
-    Sources
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -587,7 +594,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../geneve_tunneling/" class="md-nav__link">
+      <a href="../../networking/geneve_tunneling/" class="md-nav__link">
         Geneve tunneling
       </a>
     </li>
@@ -599,7 +606,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../netlink/" class="md-nav__link">
+      <a href="../../networking/netlink/" class="md-nav__link">
         Netlink
       </a>
     </li>
@@ -611,7 +618,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ovn_standalone_on_fedora31/" class="md-nav__link">
+      <a href="../../networking/ovn_standalone_on_fedora31/" class="md-nav__link">
         OVN standalone on Fedora 31
       </a>
     </li>
@@ -623,7 +630,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ovs_recirculation/" class="md-nav__link">
+      <a href="../../networking/ovs_recirculation/" class="md-nav__link">
         OVS packet recirculation
       </a>
     </li>
@@ -635,7 +642,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ovs-vxlan-tunnels-and-dscp/" class="md-nav__link">
+      <a href="../../networking/ovs-vxlan-tunnels-and-dscp/" class="md-nav__link">
         OVS VXLAN tunnels and DSCP
       </a>
     </li>
@@ -647,7 +654,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ovs_with_gdb/" class="md-nav__link">
+      <a href="../../networking/ovs_with_gdb/" class="md-nav__link">
         OVS with GDB
       </a>
     </li>
@@ -659,7 +666,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../sctp/" class="md-nav__link">
+      <a href="../../networking/sctp/" class="md-nav__link">
         SCTP
       </a>
     </li>
@@ -671,7 +678,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../wireguard/" class="md-nav__link">
+      <a href="../../networking/wireguard/" class="md-nav__link">
         Wireguard
       </a>
     </li>
@@ -713,7 +720,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/alertmanager/" class="md-nav__link">
+      <a href="../alertmanager/" class="md-nav__link">
         AlertManager
       </a>
     </li>
@@ -725,7 +732,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/cpu-manager-with-custom-machine-config-pool/" class="md-nav__link">
+      <a href="../cpu-manager-with-custom-machine-config-pool/" class="md-nav__link">
         CPU manager with custom MachineConfigPool
       </a>
     </li>
@@ -737,7 +744,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/crio-conmon-runc/" class="md-nav__link">
+      <a href="../crio-conmon-runc/" class="md-nav__link">
         Crio vs conmon vs runc
       </a>
     </li>
@@ -749,7 +756,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/etcd_perf/" class="md-nav__link">
+      <a href="../etcd_perf/" class="md-nav__link">
         Etcd Performance tests
       </a>
     </li>
@@ -761,7 +768,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/get-vs-list-api-calls/" class="md-nav__link">
+      <a href="../get-vs-list-api-calls/" class="md-nav__link">
         Get vs List API Calls
       </a>
     </li>
@@ -773,7 +780,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/openshift_httpbin_tshark_sidecar/" class="md-nav__link">
+      <a href="../openshift_httpbin_tshark_sidecar/" class="md-nav__link">
         Httpbin tshark sidecar container
       </a>
     </li>
@@ -785,7 +792,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/kubernetes_cluster/" class="md-nav__link">
+      <a href="../kubernetes_cluster/" class="md-nav__link">
         Hints for installing kubernetes on Fedora
       </a>
     </li>
@@ -797,7 +804,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/HPA/" class="md-nav__link">
+      <a href="../HPA/" class="md-nav__link">
         Horizontal Pod Autoscaler
       </a>
     </li>
@@ -809,7 +816,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/how_rhcos_updates_work/" class="md-nav__link">
+      <a href="../how_rhcos_updates_work/" class="md-nav__link">
         How RHCOS updates work
       </a>
     </li>
@@ -821,7 +828,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/ocp4-infra-nodes-with-machineset-without-worker-label/" class="md-nav__link">
+      <a href="../ocp4-infra-nodes-with-machineset-without-worker-label/" class="md-nav__link">
         Infra nodes with MachineSets without worker label
       </a>
     </li>
@@ -833,7 +840,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/ingresscontroller_router_sharding_ocp_on_osp/" class="md-nav__link">
+      <a href="../ingresscontroller_router_sharding_ocp_on_osp/" class="md-nav__link">
         Ingress Controller Sharding OCP on OSP
       </a>
     </li>
@@ -845,7 +852,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/ingress-controller-sharding-on-separate-vip/" class="md-nav__link">
+      <a href="../ingress-controller-sharding-on-separate-vip/" class="md-nav__link">
         Ingress Controller Sharding on separate VIP
       </a>
     </li>
@@ -857,7 +864,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/openshift_mirror_registry/" class="md-nav__link">
+      <a href="../openshift_mirror_registry/" class="md-nav__link">
         Installing a cluster with a mirror registry
       </a>
     </li>
@@ -869,7 +876,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/istio-1.6-on-ocp.4.x/" class="md-nav__link">
+      <a href="../istio-1.6-on-ocp.4.x/" class="md-nav__link">
         Istio 1.6 on OpenShift 4.x
       </a>
     </li>
@@ -881,7 +888,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/kata/" class="md-nav__link">
+      <a href="../kata/" class="md-nav__link">
         kata containers and the kata operatora
       </a>
     </li>
@@ -893,7 +900,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/ovn-kind-hybrid-overlay/" class="md-nav__link">
+      <a href="../ovn-kind-hybrid-overlay/" class="md-nav__link">
         Kind with OVN Kubernetes Hybrid Overlay
       </a>
     </li>
@@ -905,7 +912,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/kind-with-private-registry/" class="md-nav__link">
+      <a href="../kind-with-private-registry/" class="md-nav__link">
         Kind with private registry
       </a>
     </li>
@@ -917,7 +924,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/mounting-container-image/" class="md-nav__link">
+      <a href="../mounting-container-image/" class="md-nav__link">
         Mount a container image
       </a>
     </li>
@@ -941,7 +948,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/private-registry/" class="md-nav__link">
+      <a href="../private-registry/" class="md-nav__link">
         Private container registry
       </a>
     </li>
@@ -953,7 +960,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/proxy-ocp-4.5/" class="md-nav__link">
+      <a href="../proxy-ocp-4.5/" class="md-nav__link">
         Proxy OCP 4.5
       </a>
     </li>
@@ -965,7 +972,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/scc/" class="md-nav__link">
+      <a href="../scc/" class="md-nav__link">
         Security Context Constraints (SCC)
       </a>
     </li>
@@ -977,7 +984,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/fix-selinux-labels-coreos/" class="md-nav__link">
+      <a href="../fix-selinux-labels-coreos/" class="md-nav__link">
         SElinux labels fix
       </a>
     </li>
@@ -989,7 +996,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../sctp/" class="md-nav__link">
+      <a href="../../networking/sctp/" class="md-nav__link">
         SCTP
       </a>
     </li>
@@ -1001,7 +1008,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/openshift_troubleshooting_etcd_state/" class="md-nav__link">
+      <a href="../openshift_troubleshooting_etcd_state/" class="md-nav__link">
         Troubleshooting etcd state
       </a>
     </li>
@@ -1013,7 +1020,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+      <a href="../useful-ocp-commands/" class="md-nav__link">
         Useful commands for OpenShift
       </a>
     </li>
@@ -1025,7 +1032,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openshift/troubleshooting_openshift_on_openstack_worker_creation/" class="md-nav__link">
+      <a href="../troubleshooting_openshift_on_openstack_worker_creation/" class="md-nav__link">
         Troubleshooting OpenShift on OpenStack worker creation
       </a>
     </li>
@@ -1147,42 +1154,212 @@
               
                 
                 
-                <h1 id="install-open-vswitch-on-rocky-linux-8">Install Open vSwitch on Rocky Linux 8</h1>
-<p>Required RPMs can be found at <a href="http://ftp.redhat.com/pub/redhat/linux/enterprise/8Base/en/Fast-Datapath/SRPMS/">http://ftp.redhat.com/pub/redhat/linux/enterprise/8Base/en/Fast-Datapath/SRPMS/</a></p>
-<pre><code>yum install '@Development Tools'
-yum install desktop-file-utils libcap-ng-devel libmnl-devel numactl-devel openssl-devel python3-devel python3-pyOpenSSL python3-setuptools python3-sphinx rdma-core-devel unbound-devel -y
-rpmbuild --rebuild  http://ftp.redhat.com/pub/redhat/linux/enterprise/8Base/en/Fast-Datapath/SRPMS/openvswitch2.13-2.13.0-79.el8fdp.src.rpm
-yum install selinux-policy-devel -y
-rpmbuild --rebuild http://ftp.redhat.com/pub/redhat/linux/enterprise/8Base/en/Fast-Datapath/SRPMS/openvswitch-selinux-extra-policy-1.0-28.el8fdp.src.rpm
-yum localinstall /root/rpmbuild/RPMS/noarch/openvswitch-selinux-extra-policy-1.0-28.el8.noarch.rpm /root/rpmbuild/RPMS/x86_64/openvswitch2.13-2.13.0-79.el8.x86_64.rpm -y
-systemctl enable --now openvswitch
+                <h1 id="analyzing-cni-calls">Analyzing CNI calls</h1>
+<h3 id="creating-a-wrapper-script">Creating a wrapper script</h3>
+<p>This can be done by writing wrapper scripts. Let's say your current CNI configuration is:</p>
+<pre><code>[root@node1 ~]# cat /etc/cni/net.d/100-crio-bridge.conf 
+{
+    &quot;cniVersion&quot;: &quot;0.3.1&quot;,
+    &quot;name&quot;: &quot;crio&quot;,
+    &quot;type&quot;: &quot;bridge&quot;,
+    &quot;bridge&quot;: &quot;cni0&quot;,
+    &quot;isGateway&quot;: true,
+    &quot;ipMasq&quot;: true,
+    &quot;hairpinMode&quot;: true,
+    &quot;ipam&quot;: {
+        &quot;type&quot;: &quot;host-local&quot;,
+        &quot;routes&quot;: [
+            { &quot;dst&quot;: &quot;0.0.0.0/0&quot; },
+            { &quot;dst&quot;: &quot;1100:200::1/24&quot; }
+        ],
+        &quot;ranges&quot;: [
+            [{ &quot;subnet&quot;: &quot;10.85.0.0/16&quot; }],
+            [{ &quot;subnet&quot;: &quot;1100:200::/24&quot; }]
+        ]
+    }
+}
 </code></pre>
-<p>Then, set up Open vSwitch with NetworkManager:</p>
-<pre><code>yum install NetworkManager-ovs.x86_64 -y
+<p>Hence, this will use the plugins <code>bridge</code> and <code>host-local</code> from <code>/opt/bin/cni/</code>.</p>
+<p>Create a script in a temporary location:</p>
+<pre><code>f=$(mktemp)
+cat &lt;&lt;'EOF' &gt; $f
+#!/bin/bash
 
-BRIDGE_NAME=br-ex
-INTERFACE_NAME=enp7s0
-IP_ADDRESS=192.168.123.3/24
+SCRIPT=$(readlink -f $0)
+LOG_DIR=/tmp/log
+if ! [ -d $LOG_DIR ];then
+  mkdir -p $LOG_DIR
+fi
 
-nmcli c add type ovs-bridge conn.interface ${BRIDGE_NAME} con-name ${BRIDGE_NAME}
-nmcli c add type ovs-port conn.interface ${BRIDGE_NAME} master ${BRIDGE_NAME} con-name ovs-port-${BRIDGE_NAME}
-nmcli c add type ovs-interface slave-type ovs-port conn.interface ${BRIDGE_NAME} master ovs-port-${BRIDGE_NAME}  con-name ovs-if-${BRIDGE_NAME}
-nmcli c add type ovs-port conn.interface ${INTERFACE_NAME} master ${BRIDGE_NAME} con-name ovs-port-${INTERFACE_NAME}
-nmcli c add type ethernet conn.interface ${INTERFACE_NAME} master ovs-port-${INTERFACE_NAME} con-name ovs-if-${INTERFACE_NAME}
-nmcli conn delete ${INTERFACE_NAME}
-nmcli conn mod ${BRIDGE_NAME} connection.autoconnect yes
-nmcli conn mod ovs-if-${BRIDGE_NAME} connection.autoconnect yes
-nmcli conn mod ovs-if-${INTERFACE_NAME} connection.autoconnect yes
-nmcli conn mod ovs-port-${INTERFACE_NAME} connection.autoconnect yes
-nmcli conn mod ovs-port-${BRIDGE_NAME} connection.autoconnect yes
-nmcli conn m ovs-if-${BRIDGE_NAME} ipv4.address ${IP_ADDRESS}
-nmcli conn m ovs-if-${BRIDGE_NAME} ipv4.method static
+LOG=${LOG_DIR}/$(basename $0)
 
-systemctl restart NetworkManager
+date &gt;&gt; $LOG
+echo &quot;=================================================================&quot; &gt;&gt; $LOG
+echo &quot;CNI params:&quot; &gt;&gt; $LOG
+env | grep CNI &gt;&gt; $LOG
+echo &quot;env:&quot; &gt;&gt; $LOG
+env &gt;&gt; $LOG
+if [ ! -t 0 ]; then
+  {
+  echo &quot;INPUT:&quot; &gt;&gt; $LOG
+  output=$(tee -a $LOG | ${SCRIPT}-original &quot;$@&quot; | tee /dev/fd/3)
+  echo &quot;&quot; &gt;&gt; $LOG
+  echo &quot;OUTPUT:&quot; &gt;&gt; $LOG
+  echo &quot;$output&quot; &gt;&gt; $LOG
+  } 3&gt;&amp;1
+else
+  echo &quot;OUTPUT:&quot; &gt;&gt; $LOG
+  ${SCRIPT}-original &quot;$@&quot; | tee -a $LOG
+fi
+
+echo &quot;=================================================================&quot; &gt;&gt; $LOG
+echo &quot;&quot; &gt;&gt; $LOG
+echo &quot;&quot; &gt;&gt; $LOG
+EOF
+chmod +x $f
 </code></pre>
-<h3 id="sources">Sources</h3>
-<p>Partially adapted from:
-* <a href="https://blog.oddbit.com/post/2020-02-15-configuring-open-vswitch-with/">https://blog.oddbit.com/post/2020-02-15-configuring-open-vswitch-with/</a></p>
+<p>Then, replace the plugins with this wrapper script and move the plugins to a backup location:</p>
+<pre><code>for plugin in bridge host-local; do
+  \cp /opt/cni/bin/${plugin} /opt/cni/bin/${plugin}-original
+  \cp $f /opt/cni/bin/${plugin}
+done
+</code></pre>
+<p>To revert this back to defaults, after testing, run:</p>
+<pre><code>for plugin in bridge host-local; do
+  \mv /opt/cni/bin/${plugin}-original /opt/cni/bin/${plugin}
+done
+</code></pre>
+<h2 id="examining-cni-calls">Examining CNI calls</h2>
+<p>Now, create a test invocation. For example, use <a href="https://github.com/containernetworking/cni/tree/master/cnitool">https://github.com/containernetworking/cni/tree/master/cnitool</a></p>
+<pre><code>ip netns add testing
+CNI_PATH=/opt/cni/bin/  cnitool add crio /var/run/netns/testing
+</code></pre>
+<p>Alternatively, simply delete a running pod and have it recreated.</p>
+<pre><code>kubectl delete pod -n &lt;...&gt; &lt;...&gt;
+</code></pre>
+<p>In file <code>/tmp/log/host-local</code>, we can see the following during an <code>ADD</code> command:</p>
+<pre><code>Fri Aug 27 07:55:52 EDT 2021
+=================================================================
+CNI params:
+CNI_PATH=/opt/cni/bin:/usr/libexec/cni
+CNI_ARGS=IgnoreUnknown=1;K8S_POD_NAMESPACE=kube-system;K8S_POD_NAME=coredns-78fcd69978-n5khq;K8S_POD_INFRA_CONTAINER_ID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8;K8S_POD_UID=94f2364f-4fd6-4b74-9f5a-c68e2c6f97dd
+CNI_CONTAINERID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8
+CNI_IFNAME=eth0
+CNI_COMMAND=ADD
+CNI_NETNS=/var/run/netns/3526ea0f-6dd9-4985-8f98-0db6d817abd4
+env:
+CNI_PATH=/opt/cni/bin:/usr/libexec/cni
+LANG=en_US.UTF-8
+INVOCATION_ID=77a9194a9cd04940a5fe1bdbca0e218b
+CNI_ARGS=IgnoreUnknown=1;K8S_POD_NAMESPACE=kube-system;K8S_POD_NAME=coredns-78fcd69978-n5khq;K8S_POD_INFRA_CONTAINER_ID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8;K8S_POD_UID=94f2364f-4fd6-4b74-9f5a-c68e2c6f97dd
+CNI_CONTAINERID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8
+GOTRACEBACK=crash
+PWD=/
+JOURNAL_STREAM=9:163692
+CNI_IFNAME=eth0
+CNI_COMMAND=ADD
+CNI_NETNS=/var/run/netns/3526ea0f-6dd9-4985-8f98-0db6d817abd4
+SHLVL=2
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+_=/usr/bin/env
+INPUT:
+{&quot;bridge&quot;:&quot;cni0&quot;,&quot;cniVersion&quot;:&quot;0.3.1&quot;,&quot;hairpinMode&quot;:true,&quot;ipMasq&quot;:true,&quot;ipam&quot;:{&quot;ranges&quot;:[[{&quot;subnet&quot;:&quot;10.85.0.0/16&quot;}],[{&quot;subnet&quot;:&quot;1100:200::/24&quot;}]],&quot;routes&quot;:[{&quot;dst&quot;:&quot;0.0.0.0/0&quot;},{&quot;dst&quot;:&quot;1100:200::1/24&quot;}],&quot;type&quot;:&quot;host-local&quot;},&quot;isGateway&quot;:true,&quot;name&quot;:&quot;crio&quot;,&quot;type&quot;:&quot;bridge&quot;}
+OUTPUT:
+{
+    &quot;cniVersion&quot;: &quot;0.3.1&quot;,
+    &quot;ips&quot;: [
+        {
+            &quot;version&quot;: &quot;4&quot;,
+            &quot;address&quot;: &quot;10.85.0.17/16&quot;,
+            &quot;gateway&quot;: &quot;10.85.0.1&quot;
+        },
+        {
+            &quot;version&quot;: &quot;6&quot;,
+            &quot;address&quot;: &quot;1100:200::f/24&quot;,
+            &quot;gateway&quot;: &quot;1100:200::1&quot;
+        }
+    ],
+    &quot;routes&quot;: [
+        {
+            &quot;dst&quot;: &quot;0.0.0.0/0&quot;
+        },
+        {
+            &quot;dst&quot;: &quot;1100:200::1/24&quot;
+        }
+    ],
+    &quot;dns&quot;: {}
+}
+</code></pre>
+<p>Then, in file <code>/tmp/log/bridge</code> you can see that the output from the <code>host-local</code> plugin is actually used as input to the <code>bridge</code> plugin:</p>
+<pre><code>Fri Aug 27 07:55:52 EDT 2021
+=================================================================
+CNI params:
+CNI_PATH=/opt/cni/bin:/usr/libexec/cni
+CNI_ARGS=IgnoreUnknown=1;K8S_POD_NAMESPACE=kube-system;K8S_POD_NAME=coredns-78fcd69978-n5khq;K8S_POD_INFRA_CONTAINER_ID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8;K8S_POD_UID=94f2364f-4fd6-4b74-9f5a-c68e2c6f97dd
+CNI_CONTAINERID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8
+CNI_IFNAME=eth0
+CNI_COMMAND=ADD
+CNI_NETNS=/var/run/netns/3526ea0f-6dd9-4985-8f98-0db6d817abd4
+env:
+CNI_PATH=/opt/cni/bin:/usr/libexec/cni
+LANG=en_US.UTF-8
+INVOCATION_ID=77a9194a9cd04940a5fe1bdbca0e218b
+CNI_ARGS=IgnoreUnknown=1;K8S_POD_NAMESPACE=kube-system;K8S_POD_NAME=coredns-78fcd69978-n5khq;K8S_POD_INFRA_CONTAINER_ID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8;K8S_POD_UID=94f2364f-4fd6-4b74-9f5a-c68e2c6f97dd
+CNI_CONTAINERID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8
+GOTRACEBACK=crash
+PWD=/
+JOURNAL_STREAM=9:163692
+CNI_IFNAME=eth0
+CNI_COMMAND=ADD
+CNI_NETNS=/var/run/netns/3526ea0f-6dd9-4985-8f98-0db6d817abd4
+SHLVL=1
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+_=/usr/bin/env
+INPUT:
+{&quot;bridge&quot;:&quot;cni0&quot;,&quot;cniVersion&quot;:&quot;0.3.1&quot;,&quot;hairpinMode&quot;:true,&quot;ipMasq&quot;:true,&quot;ipam&quot;:{&quot;ranges&quot;:[[{&quot;subnet&quot;:&quot;10.85.0.0/16&quot;}],[{&quot;subnet&quot;:&quot;1100:200::/24&quot;}]],&quot;routes&quot;:[{&quot;dst&quot;:&quot;0.0.0.0/0&quot;},{&quot;dst&quot;:&quot;1100:200::1/24&quot;}],&quot;type&quot;:&quot;host-local&quot;},&quot;isGateway&quot;:true,&quot;name&quot;:&quot;crio&quot;,&quot;type&quot;:&quot;bridge&quot;}
+OUTPUT:
+{
+    &quot;cniVersion&quot;: &quot;0.3.1&quot;,
+    &quot;interfaces&quot;: [
+        {
+            &quot;name&quot;: &quot;cni0&quot;,
+            &quot;mac&quot;: &quot;8e:14:0e:0e:f1:b0&quot;
+        },
+        {
+            &quot;name&quot;: &quot;vethc4b25c20&quot;,
+            &quot;mac&quot;: &quot;7e:a5:58:f4:d9:93&quot;
+        },
+        {
+            &quot;name&quot;: &quot;eth0&quot;,
+            &quot;mac&quot;: &quot;4a:a6:1c:d8:66:2d&quot;,
+            &quot;sandbox&quot;: &quot;/var/run/netns/3526ea0f-6dd9-4985-8f98-0db6d817abd4&quot;
+        }
+    ],
+    &quot;ips&quot;: [
+        {
+            &quot;version&quot;: &quot;4&quot;,
+            &quot;interface&quot;: 2,
+            &quot;address&quot;: &quot;10.85.0.17/16&quot;,
+            &quot;gateway&quot;: &quot;10.85.0.1&quot;
+        },
+        {
+            &quot;version&quot;: &quot;6&quot;,
+            &quot;interface&quot;: 2,
+            &quot;address&quot;: &quot;1100:200::f/24&quot;,
+            &quot;gateway&quot;: &quot;1100:200::1&quot;
+        }
+    ],
+    &quot;routes&quot;: [
+        {
+            &quot;dst&quot;: &quot;0.0.0.0/0&quot;
+        },
+        {
+            &quot;dst&quot;: &quot;1100:200::1/24&quot;
+        }
+    ],
+    &quot;dns&quot;: {}
+}
+</code></pre>
                 
                   
                     
@@ -1191,7 +1368,7 @@ systemctl restart NetworkManager
 <div class="md-source-date">
   <small>
     
-      Last update: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">August 23, 2021</span>
+      Last update: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">August 27, 2021</span>
     
   </small>
 </div>
@@ -1213,7 +1390,7 @@ systemctl restart NetworkManager
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        <a href="../haproxy-and-h2c/" class="md-footer__link md-footer__link--prev" rel="prev">
+        <a href="../../ceph/ceph-manual-test/" class="md-footer__link md-footer__link--prev" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -1222,19 +1399,19 @@ systemctl restart NetworkManager
               <span class="md-footer__direction">
                 Previous
               </span>
-              haproxy and HTTP/2
+              Ceph manual test with qemu
             </div>
           </div>
         </a>
       
       
-        <a href="../geneve_tunneling/" class="md-footer__link md-footer__link--next" rel="next">
+        <a href="../../linux/cgroups/" class="md-footer__link md-footer__link--next" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Geneve tunneling
+              cgroups
             </div>
           </div>
           <div class="md-footer__button md-icon">

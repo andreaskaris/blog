@@ -152,7 +152,7 @@ OUTPUT:
 }
 ~~~
 
-Then, in file `/tmp/log/bridge` you can see that the output from the `host-local` plugin is actually used as input to the `bridge` plugin:
+In file `/tmp/log/bridge` you can see that the `bridge` plugin uses data from the `host-local` to create the final output:
 ~~~
 Fri Aug 27 07:55:52 EDT 2021
 =================================================================
@@ -223,3 +223,4 @@ OUTPUT:
     "dns": {}
 }
 ~~~
+

@@ -46,6 +46,7 @@ nav:
   - OVS VXLAN tunnels and DSCP: networking/ovs-vxlan-tunnels-and-dscp.md
   - OVS with GDB: networking/ovs_with_gdb.md
   - SCTP: networking/sctp.md
+  - Useful commands: networking/useful-commands.md
   - Wireguard: networking/wireguard.md
 - OpenShift:
   - AlertManager: openshift/alertmanager.md

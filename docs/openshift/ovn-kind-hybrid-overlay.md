@@ -1,5 +1,7 @@
 # Kind with OVN Kubernetes Hybrid Overlay
 
+>> **NOTE:** This feature was removed from upstream `ovn-kubernetes` in December 2020.
+
 If you are interested in playing around with OVN Kubernetes' Hybrid Overlay feature, then one of the easiest ways to test this is by creating a kind setup and by installing the OVN Kubernetes parts.
 
 ## Prerequisites
@@ -105,7 +107,26 @@ echo "ovn-workers"
 ip link add vxlan0 type vxlan dev eth0 id 4097 dstport 4789       
 bridge fdb append to 00:00:00:00:00:00 dst 172.18.0.3 dev vxlan0
 bridge fdb append to 00:00:00:00:00:00 dst 172.18.0.2 dev vxlan0
+ip link set dev vxlan0 up
 ip route add 10.244.0.0/16 dev vxlan0
+EOF
+chmod +x vxlan.sh
+./vxlan.sh
+~~~
+
+Alternatively, something like this should also work and would actually be easier to understand and more elegant:
+~~~
+cat <<'EOF' | tee vxlan.sh
+#!/bin/bash
+dnf install centos-release-nfv-openvswitch
+yum install openvswitch2.13.x86_64 -y
+systemctl enable --now openvswitch
+ovs-vsctl add-port br-vxlan vxlan2 -- set interface vxlan2 type=vxlan options:remote_ip=172.18.0.2 options:key=4097
+ovs-vsctl add-port br-vxlan vxlan3 -- set interface vxlan3 type=vxlan options:remote_ip=172.18.0.3 options:key=4097
+ovs-vsctl add-port br-vxlan vxlan4 -- set interface vxlan4 type=vxlan options:remote_ip=172.18.0.4 options:key=4097
+ip a a dev br-vxlan 9.0.0.1/32
+ip link set dev br-vxlan up
+ip route add 10.244.0.0/16 dev br-vxlan
 EOF
 chmod +x vxlan.sh
 ./vxlan.sh

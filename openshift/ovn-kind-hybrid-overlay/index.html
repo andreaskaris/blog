@@ -631,6 +631,18 @@
   
   
     <li class="md-nav__item">
+      <a href="../../networking/useful-commands/" class="md-nav__link">
+        Useful commands
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../networking/wireguard/" class="md-nav__link">
         Wireguard
       </a>
@@ -1155,6 +1167,11 @@
                 
                 
                 <h1 id="kind-with-ovn-kubernetes-hybrid-overlay">Kind with OVN Kubernetes Hybrid Overlay</h1>
+<blockquote>
+<blockquote>
+<p><strong>NOTE:</strong> This feature was removed from upstream <code>ovn-kubernetes</code> in December 2020.</p>
+</blockquote>
+</blockquote>
 <p>If you are interested in playing around with OVN Kubernetes' Hybrid Overlay feature, then one of the easiest ways to test this is by creating a kind setup and by installing the OVN Kubernetes parts.</p>
 <h2 id="prerequisites">Prerequisites</h2>
 <p>Spawn a RHEL 7.8 or above virtual machine and install:</p>
@@ -1238,7 +1255,24 @@ echo &quot;ovn-workers&quot;
 ip link add vxlan0 type vxlan dev eth0 id 4097 dstport 4789       
 bridge fdb append to 00:00:00:00:00:00 dst 172.18.0.3 dev vxlan0
 bridge fdb append to 00:00:00:00:00:00 dst 172.18.0.2 dev vxlan0
+ip link set dev vxlan0 up
 ip route add 10.244.0.0/16 dev vxlan0
+EOF
+chmod +x vxlan.sh
+./vxlan.sh
+</code></pre>
+<p>Alternatively, something like this should also work and would actually be easier to understand and more elegant:</p>
+<pre><code>cat &lt;&lt;'EOF' | tee vxlan.sh
+#!/bin/bash
+dnf install centos-release-nfv-openvswitch
+yum install openvswitch2.13.x86_64 -y
+systemctl enable --now openvswitch
+ovs-vsctl add-port br-vxlan vxlan2 -- set interface vxlan2 type=vxlan options:remote_ip=172.18.0.2 options:key=4097
+ovs-vsctl add-port br-vxlan vxlan3 -- set interface vxlan3 type=vxlan options:remote_ip=172.18.0.3 options:key=4097
+ovs-vsctl add-port br-vxlan vxlan4 -- set interface vxlan4 type=vxlan options:remote_ip=172.18.0.4 options:key=4097
+ip a a dev br-vxlan 9.0.0.1/32
+ip link set dev br-vxlan up
+ip route add 10.244.0.0/16 dev br-vxlan
 EOF
 chmod +x vxlan.sh
 ./vxlan.sh
@@ -1348,7 +1382,7 @@ metadata:
 <div class="md-source-date">
   <small>
     
-      Last update: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">July 8, 2021</span>
+      Last update: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">October 18, 2021</span>
     
   </small>
 </div>

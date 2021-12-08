@@ -75,6 +75,7 @@ nav:
   - SCTP: networking/sctp.md
   - Troubleshooting etcd state: openshift/openshift_troubleshooting_etcd_state.md
   - Useful commands for OpenShift: openshift/useful-ocp-commands.md
+  - Useful commands for OpenShift SDN: openshift/useful-ocp-sdn-commands.md
   - Troubleshooting OpenShift on OpenStack worker creation: openshift/troubleshooting_openshift_on_openstack_worker_creation.md
 - OpenStack:
   - Reattach to running deployment: openstack/reattach_to_running_deployment.md

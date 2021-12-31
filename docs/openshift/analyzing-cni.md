@@ -68,6 +68,7 @@ else
   ${SCRIPT}-original "$@" | tee -a $LOG
 fi
 
+echo "Returned at: $(date)" >> $LOG
 echo "=================================================================" >> $LOG
 echo "" >> $LOG
 echo "" >> $LOG

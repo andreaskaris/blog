@@ -22,7 +22,7 @@ net.ipv4.conf.vxlan_sys_4789.accept_source_route = 1
 `net.ipv4.conf.all.accept_source_route = 0` will override anything else.
 
 The documentation clearly states that this is a logical AND relationship:
-https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt
+[https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt](https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt)
 ~~~
 accept_source_route - BOOLEAN
 	Accept packets with SRR option.
@@ -33,15 +33,15 @@ accept_source_route - BOOLEAN
 ~~~
 
 Having a look at the kernel code:
-https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/include/linux/inetdevice.h#L103
-https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/include/linux/inetdevice.h#L83
-https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/include/linux/inetdevice.h#L56
+* [https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/include/linux/inetdevice.h#L103](https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/include/linux/inetdevice.h#L103)
+* [https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/include/linux/inetdevice.h#L83](https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/include/linux/inetdevice.h#L83)
+* [https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/include/linux/inetdevice.h#L56](https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/include/linux/inetdevice.h#L56)
 
 The actual drop for IPv4 is happening here:
-https://github.com/torvalds/linux/blob/5bfc75d92efd494db37f5c4c173d3639d4772966/net/ipv4/ip_input.c#L293
+* [https://github.com/torvalds/linux/blob/5bfc75d92efd494db37f5c4c173d3639d4772966/net/ipv4/ip_input.c#L293](https://github.com/torvalds/linux/blob/5bfc75d92efd494db37f5c4c173d3639d4772966/net/ipv4/ip_input.c#L293)
 
 We should be able to see what's happening if we enable martian logging:
-https://github.com/torvalds/linux/blob/5bfc75d92efd494db37f5c4c173d3639d4772966/net/ipv4/ip_input.c#L290
+* [https://github.com/torvalds/linux/blob/5bfc75d92efd494db37f5c4c173d3639d4772966/net/ipv4/ip_input.c#L290](https://github.com/torvalds/linux/blob/5bfc75d92efd494db37f5c4c173d3639d4772966/net/ipv4/ip_input.c#L290)
 
 ### Test setup
 
@@ -175,7 +175,7 @@ dropwatch> stop
 ~~~
 
 You can also enable log martians (yes, *this* one is OR'ed, ironically) ...
-https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt
+[https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt](https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt)
 ~~~
 log_martians - BOOLEAN
 	Log packets with impossible addresses to kernel log.
@@ -326,7 +326,8 @@ net.ipv6.conf.ovs-system.accept_source_route = 0
 net.ipv6.conf.vxlan_sys_4789.accept_source_route = 0
 ~~~
 
-For IPv6, I tried crafting RH0 type packets, but failed miserably at the task. With that said, the kernel only ever accepts RH2 and the default is off, anyways https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt:
+For IPv6, I tried crafting RH0 type packets, but failed miserably at the task. With that said, the kernel only ever accepts RH2 and the default is off, anyway: 
+[https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt(https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt:)
 ~~~
 accept_source_route - INTEGER
 	Accept source routing (routing extension header).
@@ -336,10 +337,11 @@ accept_source_route - INTEGER
 
 	Default: 0
 ~~~
-It looks like this was merged 14 years ago, so we should be good ;-) https://github.com/torvalds/linux/commit/bb4dbf9e61d0801927e7df2569bb3dd8287ea301
+It looks like this was merged 14 years ago, so we should be good ;-) [https://github.com/torvalds/linux/commit/bb4dbf9e61d0801927e7df2569bb3dd8287ea301](https://github.com/torvalds/linux/commit/bb4dbf9e61d0801927e7df2569bb3dd8287ea301)
+The following article on LWN might be of interest, too: [https://lwn.net/Articles/232781/](https://lwn.net/Articles/232781/)
 
 But then, a more thorough test could use scapy or some other tool to actually craft a corret packet.
 
 For IPv6 code, the relevant part might be here, but I have a very limited understanding of the kernel code:
-https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/net/ipv6/exthdrs.c#L687-690
+[https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/net/ipv6/exthdrs.c#L687-690](https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/net/ipv6/exthdrs.c#L687-690)
 

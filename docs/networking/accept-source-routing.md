@@ -330,7 +330,7 @@ net.ipv6.conf.vxlan_sys_4789.accept_source_route = 0
 ~~~
 
 For IPv6, I tried crafting RH0 type packets, but failed miserably at the task. With that said, the kernel only ever accepts RH2 and the default is off, anyway: 
-[https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt(https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt:)
+[https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt](https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt):
 ~~~
 accept_source_route - INTEGER
 	Accept source routing (routing extension header).

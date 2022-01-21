@@ -33,6 +33,7 @@ nav:
   - RHEL Booting a virtual machine with UEFI but without secure boot: linux/libvirt-uefi-without-secureboot.md
   - Setting journalctl limits: linux/setting-journalctl-limits.md
 - Networking:
+  - Accept Source Routing: networking/accept-source-routing.md
   - ARP and the Neighbor table: networking/arp_and_the_neighbor_table.md
   - BPF and tcpdump: networking/bpf-and-tcpdump.md
   - Bonding in Linux: networking/bonding_in_linux.md  

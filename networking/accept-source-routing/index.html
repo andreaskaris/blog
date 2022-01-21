@@ -14,7 +14,7 @@
     
     
       
-        <title>ARP and the Neighbor table - Andreas Karis Blog</title>
+        <title>Accept Source Routing - Andreas Karis Blog</title>
       
     
     
@@ -62,7 +62,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#arp-and-the-neighbor-table" class="md-skip">
+        <a href="#accept-source-routing" class="md-skip">
           Skip to content
         </a>
       
@@ -92,7 +92,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              ARP and the Neighbor table
+              Accept Source Routing
             
           </span>
         </div>
@@ -475,18 +475,6 @@
             
   
   
-  
-    <li class="md-nav__item">
-      <a href="../accept-source-routing/" class="md-nav__link">
-        Accept Source Routing
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
     
   
   
@@ -497,10 +485,85 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Accept Source Routing
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
-        ARP and the Neighbor table
+        Accept Source Routing
       </a>
       
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ipv4" class="md-nav__link">
+    IPv4
+  </a>
+  
+    <nav class="md-nav" aria-label="IPv4">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-setup" class="md-nav__link">
+    Test setup
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-in-a-live-systems-source-routing-disabled" class="md-nav__link">
+    Testing in a live systems - source routing disabled
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-in-a-live-systems-source-routing-enabled" class="md-nav__link">
+    Testing in a live systems - source routing enabled
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ipv6" class="md-nav__link">
+    IPv6
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arp_and_the_neighbor_table/" class="md-nav__link">
+        ARP and the Neighbor table
+      </a>
     </li>
   
 
@@ -1154,222 +1217,298 @@
               
                 
                 
-                <h1 id="arp-and-the-neighbor-table">ARP and the neighbor table</h1>
-<p>Document of reference: <a href="http://haifux.org/lectures/180/netLec2.pdf">http://haifux.org/lectures/180/netLec2.pdf</a></p>
-<h1 id="disabling-arp">Disabling ARP</h1>
-<h2 id="nud-noarp">NUD NOARP</h2>
-<p>From <a href="http://haifux.org/lectures/180/netLec2.pdf">http://haifux.org/lectures/180/netLec2.pdf</a></p>
-<pre><code>Neighboring Subsystem – states
-● Special states:
-● NUD_NOARP
-● NUD_PERMANENT
-● No state transitions are allowed from these states to another 
-state.
+                <h1 id="accept-source-routing">Accept source routing</h1>
+<p>I could only test this for IPv4. For IPv6, the kernel seems to be hardened by default.</p>
+<h2 id="ipv4">IPv4</h2>
+<p>On RHEL, the default settings for IPv4 will look something like this:</p>
+<pre><code># sysctl -a | grep source_route
+net.ipv4.conf.all.accept_source_route = 0
+net.ipv4.conf.bond0.accept_source_route = 1
+net.ipv4.conf.bond0/678.accept_source_route = 1
+net.ipv4.conf.bond0/684.accept_source_route = 1
+net.ipv4.conf.bond1.accept_source_route = 1
+net.ipv4.conf.bond1/682.accept_source_route = 1
+net.ipv4.conf.bond1/683.accept_source_route = 1
+net.ipv4.conf.bond1/684.accept_source_route = 1
+net.ipv4.conf.bond1/698.accept_source_route = 1
+net.ipv4.conf.bond1/699.accept_source_route = 1
+net.ipv4.conf.bond1/700.accept_source_route = 1
+net.ipv4.conf.bond1/701.accept_source_route = 1
 </code></pre>
-<p>This means that if an ARP entry ends up in <code>NUD_NOARP</code>, it will not time out, update or change in any way. 
-An administrator needs to delete the ARP entry for ARP resolution to work again properly for the IP.</p>
-<p>List NOARP entries:</p>
-<pre><code>[root@overcloud-novacomputeiha-0 ~]# ip neigh ls nud noarp
-172.16.2.9 dev lo lladdr 00:00:00:00:00:00 NOARP
-127.0.0.1 dev lo lladdr 00:00:00:00:00:00 NOARP
-ff02::1:ff14:62d7 dev vlan902 lladdr 33:33:ff:14:62:d7 NOARP
-ff02::1:ff8d:846d dev vlan903 lladdr 33:33:ff:8d:84:6d NOARP
-ff02::16 dev ovs-bond-if1 lladdr 33:33:00:00:00:16 NOARP
-ff02::1:ff9f:c668 dev em1 lladdr 33:33:ff:9f:c6:68 NOARP
-ff02::1 dev lx-bond0 lladdr 33:33:00:00:00:01 NOARP
-ff02::16 dev vlan901 lladdr 33:33:00:00:00:16 NOARP
-ff02::16 dev em1 lladdr 33:33:00:00:00:16 NOARP
-ff02::16 dev br-ex lladdr 33:33:00:00:00:16 NOARP
-ff02::1:ff03:a0eb dev vlan901 lladdr 33:33:ff:03:a0:eb NOARP
-ff02::16 dev vlan902 lladdr 33:33:00:00:00:16 NOARP
-ff02::2 dev em4 lladdr 33:33:00:00:00:02 NOARP
-ff02::16 dev veth3 lladdr 33:33:00:00:00:16 NOARP
-ff02::16 dev vlan903 lladdr 33:33:00:00:00:16 NOARP
-ff02::16 dev ovs-bond-if0 lladdr 33:33:00:00:00:16 NOARP
-ff02::1:ff24:4974 dev ovs-bond-if1 lladdr 33:33:ff:24:49:74 NOARP
-ff02::16 dev vxlan_sys_4789 lladdr 33:33:00:00:00:16 NOARP
-ff02::1:ffe5:da4c dev br-ex lladdr 33:33:ff:e5:da:4c NOARP
-ff02::16 dev em4 lladdr 33:33:00:00:00:16 NOARP
-ff02::2 dev vlan901 lladdr 33:33:00:00:00:02 NOARP
-ff02::2 dev em1 lladdr 33:33:00:00:00:02 NOARP
-ff02::2 dev br-ex lladdr 33:33:00:00:00:02 NOARP
-ff02::1:ff9f:c66b dev em4 lladdr 33:33:ff:9f:c6:6b NOARP
-ff02::1:ff91:8481 dev ovs-bond-if0 lladdr 33:33:ff:91:84:81 NOARP
-ff02::2 dev vlan902 lladdr 33:33:00:00:00:02 NOARP
-ff02::16 dev lx-bond0 lladdr 33:33:00:00:00:16 NOARP
-ff02::1:ff5f:4750 dev veth3 lladdr 33:33:ff:5f:47:50 NOARP
-::1 dev lo lladdr 00:00:00:00:00:00 NOARP
-ff02::1:ffb7:7124 dev vxlan_sys_4789 lladdr 33:33:ff:b7:71:24 NOARP
-ff02::2 dev vlan903 lladdr 33:33:00:00:00:02 NOARP
-ff02::1:ff54:bc0d dev lx-bond0 lladdr 33:33:ff:54:bc:0d NOARP
+<p><code>net.ipv4.conf.all.accept_source_route = 0</code> will override anything else.</p>
+<p>The documentation clearly stantes that this is a logical AND relationship:
+https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt</p>
+<pre><code>accept_source_route - BOOLEAN
+    Accept packets with SRR option.
+    conf/all/accept_source_route must also be set to TRUE to accept packets
+    with SRR option on the interface
+    default TRUE (router)
+        FALSE (host)
 </code></pre>
-<h2 id="per-interface">Per interface</h2>
-<p>ARP can be disabled globally on a per interface basis. 
-This may be useful e.g. when using some failover / redundancy solution implemented in user space:</p>
-<pre><code>[root@overcloud-novacomputeiha-0 ~]# ping 192.168.123.11
-PING 192.168.123.11 (192.168.123.11) 56(84) bytes of data.
-64 bytes from 192.168.123.11: icmp_seq=1 ttl=64 time=0.342 ms
-64 bytes from 192.168.123.11: icmp_seq=2 ttl=64 time=0.181 ms
-^C
---- 192.168.123.11 ping statistics ---
-2 packets transmitted, 2 received, 0% packet loss, time 1000ms
-rtt min/avg/max/mdev = 0.181/0.261/0.342/0.082 ms
-[root@overcloud-novacomputeiha-0 ~]# ip r g 192.168.123.11
-192.168.123.11 dev lx-bond0.905 src 192.168.123.10 
-    cache 
-[root@overcloud-novacomputeiha-0 ~]# ip link set dev lx-bond0.905 arp off
-[root@overcloud-novacomputeiha-0 ~]# ip neigh ls | grep 192.168.123.11
-[root@overcloud-novacomputeiha-0 ~]# ip neigh ls nud noarp | grep 192.168.123.11
-[root@overcloud-novacomputeiha-0 ~]# ping 192.168.123.11
-PING 192.168.123.11 (192.168.123.11) 56(84) bytes of data.
-^C
---- 192.168.123.11 ping statistics ---
-2 packets transmitted, 0 received, 100% packet loss, time 1001ms
+<p>Having a look at the kernel code:
+https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/include/linux/inetdevice.h#L103
+https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/include/linux/inetdevice.h#L83
+https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/include/linux/inetdevice.h#L56</p>
+<p>The actual drop for IPv4 is happening here:
+https://github.com/torvalds/linux/blob/5bfc75d92efd494db37f5c4c173d3639d4772966/net/ipv4/ip_input.c#L293</p>
+<p>We should be able to see what's happening if we enable martian logging:
+https://github.com/torvalds/linux/blob/5bfc75d92efd494db37f5c4c173d3639d4772966/net/ipv4/ip_input.c#L290</p>
+<h3 id="test-setup">Test setup</h3>
+<p>I tested with forwarding on:</p>
+<pre><code>[root@centos84 ~]# sysctl -a | grep ip_forward
+net.ipv4.ip_forward = 1
+net.ipv4.ip_forward_update_priority = 1
+net.ipv4.ip_forward_use_pmtu = 0
+[root@centos84 ~]# sysctl -a | grep forward | grep eth0
+net.ipv4.conf.eth0.bc_forwarding = 0
+net.ipv4.conf.eth0.forwarding = 1
+net.ipv4.conf.eth0.mc_forwarding = 0
+net.ipv6.conf.eth0.forwarding = 0
+net.ipv6.conf.eth0.mc_forwarding = 0
 </code></pre>
-<p>The interface will show <code>NOARP</code>:</p>
-<pre><code>[root@overcloud-novacomputeiha-0 ~]# ip link ls dev lx-bond0.905
-31: lx-bond0.905@lx-bond0: &lt;BROADCAST,MULTICAST,NOARP,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
-    link/ether fe:b8:03:54:bc:0d brd ff:ff:ff:ff:ff:ff
-</code></pre>
-<p>This also means that the opposite side cannot resolve the IP address:</p>
-<pre><code>[root@overcloud-novacomputeiha-0 ~]# ip netns exec test2 ping 192.168.123.10
-PING 192.168.123.10 (192.168.123.10) 56(84) bytes of data.
-^C
---- 192.168.123.10 ping statistics ---
-2 packets transmitted, 0 received, 100% packet loss, time 999ms
+<p>The traceroute command <code>traceroute -I 192.168.122.6 -g 192.168.122.6</code> that I'm using below yields the following IPv4 header + ICMP message:</p>
+<pre><code>(...)
+Internet Protocol Version 4, Src: 192.168.122.1, Dst: 192.168.122.6, Via: 192.168.122.6
+    0100 .... = Version: 4
+    .... 1000 = Header Length: 32 bytes (8)
+    Differentiated Services Field: 0x00 (DSCP: CS0, ECN: Not-ECT)
+        0000 00.. = Differentiated Services Codepoint: Default (0)
+        .... ..00 = Explicit Congestion Notification: Not ECN-Capable Transport (0)
+    Total Length: 72
+    Identification: 0x8307 (33543)
+    Flags: 0x0000
+        0... .... .... .... = Reserved bit: Not set
+        .0.. .... .... .... = Don't fragment: Not set
+        ..0. .... .... .... = More fragments: Not set
+        ...0 0000 0000 0000 = Fragment offset: 0
+    Time to live: 6
+    Protocol: ICMP (1)
+    Header checksum: 0x3770 [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 192.168.122.1
+    Current Route: 192.168.122.6
+    Options: (12 bytes), Loose Source Route
+        IP Option - No-Operation (NOP)
+            Type: 1
+                0... .... = Copy on fragmentation: No
+                .00. .... = Class: Control (0)
+                ...0 0001 = Number: No-Operation (NOP) (1)
+        IP Option - Loose Source Route (11 bytes)
+            Type: 131
+                1... .... = Copy on fragmentation: Yes
+                .00. .... = Class: Control (0)
+                ...0 0011 = Number: Loose source route (3)
+            Length: 11
+            Pointer: 4
+            Source Route: 192.168.122.6 &lt;- (next)
+            Destination: 192.168.122.6
+Internet Control Message Protocol
+    Type: 8 (Echo (ping) request)
+    Code: 0
+    Checksum: 0x822c [correct]
+    [Checksum Status: Good]
+    Identifier (BE): 62 (0x003e)
+    Identifier (LE): 15872 (0x3e00)
+    Sequence number (BE): 16 (0x0010)
+    Sequence number (LE): 4096 (0x1000)
+    Data (32 bytes)
 
-[root@overcloud-novacomputeiha-0 ~]# arp -n | grep 192.168.123
-[root@overcloud-novacomputeiha-0 ~]# ip netns exec test2 arp -n | grep 192.168.123
-192.168.123.10                   (incomplete)                              veth2
-[root@overcloud-novacomputeiha-0 ~]# 
+0000  48 49 4a 4b 4c 4d 4e 4f 50 51 52 53 54 55 56 57   HIJKLMNOPQRSTUVW
+0010  58 59 5a 5b 5c 5d 5e 5f 60 61 62 63 64 65 66 67   XYZ[\]^_`abcdefg
+        Data: 48494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f...
+        [Length: 32]
 </code></pre>
-<h2 id="per-arp-entry">Per ARP entry</h2>
-<p>Let's set NOARP for 192.168.123.11:</p>
-<pre><code>[root@overcloud-novacomputeiha-0 ~]# ip neigh ls | grep 192.168.123
-192.168.123.11 dev lx-bond0.905 lladdr 22:a6:81:76:8a:78 REACHABLE
-[root@overcloud-novacomputeiha-0 ~]# ip neigh change 192.168.123.11 dev lx-bond0.905 lladdr 22:a6:81:76:8a:78 nud noarp
-[root@overcloud-novacomputeiha-0 ~]# ip neigh ls | grep 192.168.123
-[root@overcloud-novacomputeiha-0 ~]# ip neigh ls nud noarp | grep 192.168.123
-192.168.123.11 dev lx-bond0.905 lladdr 22:a6:81:76:8a:78 NOARP
-[root@overcloud-novacomputeiha-0 ~]# ping 192.168.123.11
-PING 192.168.123.11 (192.168.123.11) 56(84) bytes of data.
-64 bytes from 192.168.123.11: icmp_seq=1 ttl=64 time=0.344 ms
-^C
---- 192.168.123.11 ping statistics ---
-1 packets transmitted, 1 received, 0% packet loss, time 0ms
-rtt min/avg/max/mdev = 0.344/0.344/0.344/0.000 ms
+<h3 id="testing-in-a-live-systems-source-routing-disabled">Testing in a live systems - source routing disabled</h3>
+<p>Here's how this can be tested, on my CentOS 8.4 system:</p>
+<pre><code>[root@centos84 ~]# ip a | grep 192.168.122.6
+    inet 192.168.122.6/24 brd 192.168.122.255 scope global dynamic noprefixroute eth0
+[root@centos84 ~]# sysctl -a | grep source_route | grep ipv4
+net.ipv4.conf.all.accept_source_route = 0
+net.ipv4.conf.br-ext.accept_source_route = 1
+net.ipv4.conf.br-vxlan.accept_source_route = 1
+net.ipv4.conf.br0.accept_source_route = 1
+net.ipv4.conf.default.accept_source_route = 1
+net.ipv4.conf.eth0.accept_source_route = 1
+net.ipv4.conf.eth1.accept_source_route = 1
+net.ipv4.conf.lo.accept_source_route = 1
+net.ipv4.conf.ovs-system.accept_source_route = 1
+net.ipv4.conf.vxlan_sys_4789.accept_source_route = 1
+[root@centos84 ~]# dropwatch -lkas
+Initalizing kallsyms db
+dropwatch&gt; start
+Enabling monitoring...
+Kernel monitoring activated.
+Issue Ctrl-C to stop monitoring
+(...)
 </code></pre>
-<p>Note that flipping the state for the interface resets the NOARP entry for the neighbor:</p>
-<pre><code>[root@overcloud-novacomputeiha-0 ~]# ip link set dev lx-bond0.905 arp off
-[root@overcloud-novacomputeiha-0 ~]# ip neigh ls nud noarp | grep 192.168.123
-[root@overcloud-novacomputeiha-0 ~]# ip link set dev lx-bond0.905 arp on
-[root@overcloud-novacomputeiha-0 ~]# ip neigh ls nud noarp | grep 192.168.123
-[root@overcloud-novacomputeiha-0 ~]# ip neigh change 192.168.123.11 dev lx-bond0.905 lladdr 22:a6:81:76:8a:78 nud noarp
-RTNETLINK answers: No such file or directory
-[root@overcloud-novacomputeiha-0 ~]# ping 192.168.123.11
-PING 192.168.123.11 (192.168.123.11) 56(84) bytes of data.
-64 bytes from 192.168.123.11: icmp_seq=1 ttl=64 time=0.480 ms
-^C
---- 192.168.123.11 ping statistics ---
-1 packets transmitted, 1 received, 0% packet loss, time 0ms
-rtt min/avg/max/mdev = 0.480/0.480/0.480/0.000 ms
-[root@overcloud-novacomputeiha-0 ~]# ip neigh change 192.168.123.11 dev lx-bond0.905 lladdr 22:a6:81:76:8a:78 nud noarp
-[root@overcloud-novacomputeiha-0 ~]# 
+<p>Now, go to a second CLI, and run:</p>
+<pre><code>[akaris@linux ~]$ traceroute -I 192.168.122.6 -g 192.168.122.6
+traceroute to 192.168.122.6 (192.168.122.6), 30 hops max, 72 byte packets^C
+[akaris@linux ~]$ timeout 5 traceroute -I 192.168.122.6 -g 192.168.122.6
+traceroute to 192.168.122.6 (192.168.122.6), 30 hops max, 72 byte packets
+[akaris@linux ~]$ 
+[akaris@linux ~]$ timeout 5 traceroute -I 192.168.122.6 -g 192.168.122.6
+traceroute to 192.168.122.6 (192.168.122.6), 30 hops max, 72 byte packets
+[akaris@linux ~]$ 
 </code></pre>
-<p>We can see that ARP learning is disabled with the following test. Note that we have to ping from the neighbor.
-Otherwise, even with correct ARP resolution, this won't work:</p>
-<pre><code>[root@overcloud-novacomputeiha-0 ~]# ping 192.168.123.11
-PING 192.168.123.11 (192.168.123.11) 56(84) bytes of data.
-^C
---- 192.168.123.11 ping statistics ---
-2 packets transmitted, 0 received, 100% packet loss, time 999ms
-[root@overcloud-novacomputeiha-0 ~]# ip netns exec test2 ip link set dev veth2 address 22:a6:81:76:8a:78
-[root@overcloud-novacomputeiha-0 ~]# ping 192.168.123.11
-PING 192.168.123.11 (192.168.123.11) 56(84) bytes of data.
-^C
---- 192.168.123.11 ping statistics ---
-5 packets transmitted, 0 received, 100% packet loss, time 4000ms
+<p>As you can see, the traceroute will fail, and dropwatch on the first CLI will report 16 drops
+from the traceroute in ip_rcv_finish:</p>
+<pre><code>(...)
+2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
+16 drops at ip_rcv_finish+20d (0xffffffff8625274d)
+2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
+2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
+2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
+2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
+16 drops at ip_rcv_finish+20d (0xffffffff8625274d)
+2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
+2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
+2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
+2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
+2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
+16 drops at ip_rcv_finish+20d (0xffffffff8625274d)
+2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
+2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
+^CGot a stop message
+dropwatch&gt; stop
+</code></pre>
+<p>You can also enable log martians (yes, <em>this</em> one is OR'ed, ironically) ...
+https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt</p>
+<pre><code>log_martians - BOOLEAN
+    Log packets with impossible addresses to kernel log.
+    log_martians for the interface will be enabled if at least one of
+    conf/{all,interface}/log_martians is set to TRUE,
+    it will be disabled otherwise
+</code></pre>
+<p>And upon source route drop, one will be able to see messages containing string <code>IPv4: source route option</code> in the logs:</p>
+<pre><code>[root@centos84 ~]# sysctl -w net.ipv4.conf.all.log_martians=1
+net.ipv4.conf.all.log_martians = 1
+[root@centos84 ~]# sysctl -a | grep martians
+net.ipv4.conf.all.log_martians = 1
+net.ipv4.conf.br-ext.log_martians = 0
+net.ipv4.conf.br-vxlan.log_martians = 0
+net.ipv4.conf.br0.log_martians = 0
+net.ipv4.conf.default.log_martians = 0
+net.ipv4.conf.eth0.log_martians = 0
+net.ipv4.conf.eth1.log_martians = 0
+net.ipv4.conf.lo.log_martians = 0
+net.ipv4.conf.ovs-system.log_martians = 0
+net.ipv4.conf.vxlan_sys_4789.log_martians = 0
+[root@centos84 ~]# sysctl -a | grep source_route | grep ipv4
+net.ipv4.conf.all.accept_source_route = 0
+net.ipv4.conf.br-ext.accept_source_route = 1
+net.ipv4.conf.br-vxlan.accept_source_route = 1
+net.ipv4.conf.br0.accept_source_route = 1
+net.ipv4.conf.default.accept_source_route = 1
+net.ipv4.conf.eth0.accept_source_route = 1
+net.ipv4.conf.eth1.accept_source_route = 1
+net.ipv4.conf.lo.accept_source_route = 1
+net.ipv4.conf.ovs-system.accept_source_route = 1
+net.ipv4.conf.vxlan_sys_4789.accept_source_route = 1
+[root@centos84 ~]# journalctl -f
+(... sending source route packets here ...)
 
-[root@overcloud-novacomputeiha-0 ~]# ip netns exec test2 ping 192.168.123.10
-PING 192.168.123.10 (192.168.123.10) 56(84) bytes of data.
-64 bytes from 192.168.123.10: icmp_seq=1 ttl=64 time=0.426 ms
-^C
---- 192.168.123.10 ping statistics ---
-1 packets transmitted, 1 received, 0% packet loss, time 0ms
-rtt min/avg/max/mdev = 0.426/0.426/0.426/0.000 ms
-</code></pre>
-<pre><code>[root@overcloud-novacomputeiha-0 ~]# ip netns exec test2 ip a ls dev veth2
-33: veth2@if32: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default qlen 1000
-    link/ether 22:a6:81:76:8a:78 brd ff:ff:ff:ff:ff:ff link-netnsid 0
-    inet 192.168.123.11/24 scope global veth2
-       valid_lft forever preferred_lft forever
-    inet6 fe80::20a6:81ff:fe76:8a78/64 scope link 
-       valid_lft forever preferred_lft forever
-[root@overcloud-novacomputeiha-0 ~]# ip netns exec test2 ip link set dev veth2 address 22:a6:81:76:8a:79
-[root@overcloud-novacomputeiha-0 ~]# ip netns exec test2 ip a ls dev veth2
-33: veth2@if32: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default qlen 1000
-    link/ether 22:a6:81:76:8a:79 brd ff:ff:ff:ff:ff:ff link-netnsid 0
-    inet 192.168.123.11/24 scope global veth2
-       valid_lft forever preferred_lft forever
-    inet6 fe80::20a6:81ff:fe76:8a78/64 scope link 
-       valid_lft forever preferred_lft forever
-[root@overcloud-novacomputeiha-0 ~]# ping 192.168.123.11
-PING 192.168.123.11 (192.168.123.11) 56(84) bytes of data.
-^C
---- 192.168.123.11 ping statistics ---
-2 packets transmitted, 0 received, 100% packet loss, time 999ms
+Jan 21 10:01:01 centos84 CROND[17134]: (root) CMD (run-parts /etc/cron.hourly)
+Jan 21 10:01:01 centos84 run-parts[17137]: (/etc/cron.hourly) starting 0anacron
+Jan 21 10:01:01 centos84 anacron[17143]: Anacron started on 2022-01-21
+Jan 21 10:01:01 centos84 run-parts[17145]: (/etc/cron.hourly) finished 0anacron
+Jan 21 10:01:01 centos84 anacron[17143]: Will run job `cron.daily' in 21 min.
+Jan 21 10:01:01 centos84 anacron[17143]: Jobs will be executed sequentially
+Jan 21 10:01:01 centos84 kernel: net_ratelimit: 6 callbacks suppressed
+Jan 21 10:01:01 centos84 kernel: IPv4: source route option 192.168.122.1 -&gt; 192.168.122.6
+Jan 21 10:01:01 centos84 kernel: IPv4: source route option 192.168.122.1 -&gt; 192.168.122.6
+Jan 21 10:01:01 centos84 kernel: IPv4: source route option 192.168.122.1 -&gt; 192.168.122.6
+Jan 21 10:01:01 centos84 kernel: IPv4: source route option 192.168.122.1 -&gt; 192.168.122.6
+Jan 21 10:01:01 centos84 kernel: IPv4: source route option 192.168.122.1 -&gt; 192.168.122.6
+Jan 21 10:01:01 centos84 kernel: IPv4: source route option 192.168.122.1 -&gt; 192.168.122.6
+Jan 21 10:01:01 centos84 kernel: IPv4: source route option 192.168.122.1 -&gt; 192.168.122.6
+Jan 21 10:01:01 centos84 kernel: IPv4: source route option 192.168.122.1 -&gt; 192.168.122.6
+Jan 21 10:01:01 centos84 kernel: IPv4: source route option 192.168.122.1 -&gt; 192.168.122.6
+Jan 21 10:01:01 centos84 kernel: IPv4: source route option 192.168.122.1 -&gt; 192.168.122.6
 
-[root@overcloud-novacomputeiha-0 ~]# ip link set dev lx-bond0.905 arp off
-[root@overcloud-novacomputeiha-0 ~]# ip link set dev lx-bond0.905 arp on
-[root@overcloud-novacomputeiha-0 ~]# ping 192.168.123.11
-PING 192.168.123.11 (192.168.123.11) 56(84) bytes of data.
-64 bytes from 192.168.123.11: icmp_seq=1 ttl=64 time=0.566 ms
-^C
---- 192.168.123.11 ping statistics ---
-1 packets transmitted, 1 received, 0% packet loss, time 0ms
-rtt min/avg/max/mdev = 0.566/0.566/0.566/0.000 ms
-[root@overcloud-novacomputeiha-0 ~]# 
-</code></pre>
-<p>Here's how it looks with NUD NOARP:</p>
-<pre><code>[root@overcloud-novacomputeiha-0 ~]# ip neigh change 192.168.123.11 dev lx-bond0.905 lladdr 22:a6:81:76:8a:78 nud noarp
-[root@overcloud-novacomputeiha-0 ~]# ip netns exec test2 ping 192.168.123.10
-PING 192.168.123.10 (192.168.123.10) 56(84) bytes of data.
-64 bytes from 192.168.123.10: icmp_seq=1 ttl=64 time=0.175 ms
-^C
---- 192.168.123.10 ping statistics ---
-1 packets transmitted, 1 received, 0% packet loss, time 0ms
-rtt min/avg/max/mdev = 0.175/0.175/0.175/0.000 ms
-[root@overcloud-novacomputeiha-0 ~]# ping 192.168.123.11
-PING 192.168.123.11 (192.168.123.11) 56(84) bytes of data.
-64 bytes from 192.168.123.11: icmp_seq=1 ttl=64 time=0.229 ms
-64 bytes from 192.168.123.11: icmp_seq=2 ttl=64 time=0.190 ms
-^C
---- 192.168.123.11 ping statistics ---
-2 packets transmitted, 2 received, 0% packet loss, time 999ms
-rtt min/avg/max/mdev = 0.190/0.209/0.229/0.024 ms
-[root@overcloud-novacomputeiha-0 ~]# ip netns exec test2 ip link set dev veth2 address 22:a6:81:76:8a:79
-[root@overcloud-novacomputeiha-0 ~]# ping 192.168.123.11
-PING 192.168.123.11 (192.168.123.11) 56(84) bytes of data.
-^C
---- 192.168.123.11 ping statistics ---
-1 packets transmitted, 0 received, 100% packet loss, time 0ms
+(... sending source route packets here ...)
 
-[root@overcloud-novacomputeiha-0 ~]# ip netns exec test2 ping 192.168.123.10
-PING 192.168.123.10 (192.168.123.10) 56(84) bytes of data.
+Jan 21 10:01:08 centos84 kernel: net_ratelimit: 6 callbacks suppressed
+Jan 21 10:01:08 centos84 kernel: IPv4: source route option 192.168.122.1 -&gt; 192.168.122.6
+Jan 21 10:01:08 centos84 kernel: IPv4: source route option 192.168.122.1 -&gt; 192.168.122.6
+Jan 21 10:01:08 centos84 kernel: IPv4: source route option 192.168.122.1 -&gt; 192.168.122.6
+Jan 21 10:01:08 centos84 kernel: IPv4: source route option 192.168.122.1 -&gt; 192.168.122.6
+Jan 21 10:01:08 centos84 kernel: IPv4: source route option 192.168.122.1 -&gt; 192.168.122.6
+Jan 21 10:01:08 centos84 kernel: IPv4: source route option 192.168.122.1 -&gt; 192.168.122.6
+Jan 21 10:01:08 centos84 kernel: IPv4: source route option 192.168.122.1 -&gt; 192.168.122.6
+Jan 21 10:01:08 centos84 kernel: IPv4: source route option 192.168.122.1 -&gt; 192.168.122.6
+Jan 21 10:01:08 centos84 kernel: IPv4: source route option 192.168.122.1 -&gt; 192.168.122.6
+Jan 21 10:01:08 centos84 kernel: IPv4: source route option 192.168.122.1 -&gt; 192.168.122.6
 ^C
---- 192.168.123.10 ping statistics ---
-2 packets transmitted, 0 received, 100% packet loss, time 999ms
-
-[root@overcloud-novacomputeiha-0 ~]# ip link set dev lx-bond0.905 arp off
-[root@overcloud-novacomputeiha-0 ~]# ip link set dev lx-bond0.905 arp on
-[root@overcloud-novacomputeiha-0 ~]# ip netns exec test2 ping 192.168.123.10
-PING 192.168.123.10 (192.168.123.10) 56(84) bytes of data.
-64 bytes from 192.168.123.10: icmp_seq=1 ttl=64 time=0.377 ms
-^C
---- 192.168.123.10 ping statistics ---
-1 packets transmitted, 1 received, 0% packet loss, time 0ms
-rtt min/avg/max/mdev = 0.377/0.377/0.377/0.000 ms
 </code></pre>
+<h3 id="testing-in-a-live-systems-source-routing-enabled">Testing in a live systems - source routing enabled</h3>
+<p>Now, I tested enabling source routing with <code>net.ipv4.conf.all.accept_source_route = 1</code>:</p>
+<pre><code>[root@centos84 ~]# sysctl -w net.ipv4.conf.all.accept_source_route=1
+net.ipv4.conf.all.accept_source_route = 1
+[root@centos84 ~]# sysctl -a | grep source_route | grep ipv4
+net.ipv4.conf.all.accept_source_route = 1
+net.ipv4.conf.br-ext.accept_source_route = 1
+net.ipv4.conf.br-vxlan.accept_source_route = 1
+net.ipv4.conf.br0.accept_source_route = 1
+net.ipv4.conf.default.accept_source_route = 1
+net.ipv4.conf.eth0.accept_source_route = 1
+net.ipv4.conf.eth1.accept_source_route = 1
+net.ipv4.conf.lo.accept_source_route = 1
+net.ipv4.conf.ovs-system.accept_source_route = 1
+net.ipv4.conf.vxlan_sys_4789.accept_source_route = 1
+[root@centos84 ~]# dropwatch -lkas
+Initalizing kallsyms db
+dropwatch&gt; start
+Enabling monitoring...
+Kernel monitoring activated.
+Issue Ctrl-C to stop monitoring
+(...)
+</code></pre>
+<p>Now, my traceroute with the source route option set works:</p>
+<pre><code>[akaris@linux ~]$ timeout 5 traceroute -I 192.168.122.6 -g 192.168.122.6
+traceroute to 192.168.122.6 (192.168.122.6), 30 hops max, 72 byte packets
+ 1  centos84 (192.168.122.6)  0.526 ms  0.509 ms  0.494 ms
+[akaris@linux ~]$ timeout 5 traceroute -I 192.168.122.6 -g 192.168.122.6
+traceroute to 192.168.122.6 (192.168.122.6), 30 hops max, 72 byte packets
+ 1  centos84 (192.168.122.6)  0.459 ms  0.433 ms  0.425 ms
+[akaris@linux ~]$ timeout 5 traceroute -I 192.168.122.6 -g 192.168.122.6
+traceroute to 192.168.122.6 (192.168.122.6), 30 hops max, 72 byte packets
+ 1  centos84 (192.168.122.6)  0.424 ms  0.388 ms  0.387 ms
+[akaris@linux ~]$ timeout 5 traceroute -I 192.168.122.6 -g 192.168.122.6
+traceroute to 192.168.122.6 (192.168.122.6), 30 hops max, 72 byte packets
+ 1  centos84 (192.168.122.6)  0.475 ms  0.460 ms  0.455 ms
+[akaris@linux ~]$ timeout 5 traceroute -I 192.168.122.6 -g 192.168.122.6
+traceroute to 192.168.122.6 (192.168.122.6), 30 hops max, 72 byte packets
+ 1  centos84 (192.168.122.6)  0.571 ms  0.546 ms  0.538 ms
+[akaris@linux ~]$ 
+</code></pre>
+<p>And dropwatch only shows unrelated drops elsewhere:</p>
+<pre><code>(...)
+2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
+2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
+2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
+2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
+2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
+2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
+2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
+^CGot a stop message
+dropwatch&gt; 
+</code></pre>
+<p>And the kernel with martian logging on does not report anything.</p>
+<h2 id="ipv6">IPv6</h2>
+<p>For IPv6, I tried crafting RH0 type packets, but failed miserably at the task. With that said, the kernel only ever accepts RH2 and the default is off, anyways https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt:</p>
+<pre><code>accept_source_route - INTEGER
+    Accept source routing (routing extension header).
+
+    &gt;= 0: Accept only routing header type 2.
+    &lt; 0: Do not accept routing header.
+
+    Default: 0
+</code></pre>
+<p>It looks like this was merged 14 years ago, so we should be good ;-) https://github.com/torvalds/linux/commit/bb4dbf9e61d0801927e7df2569bb3dd8287ea301</p>
+<p>But then, a more thorough test could use scapy or some other tool to actually craft a corret packet.</p>
+<p>For IPv6 code, the relevant part might be here, but I have a very limited understanding of the kernel code:
+https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/net/ipv6/exthdrs.c#L687-690</p>
                 
                   
                     
@@ -1378,7 +1517,7 @@ rtt min/avg/max/mdev = 0.377/0.377/0.377/0.000 ms
 <div class="md-source-date">
   <small>
     
-      Last update: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">September 13, 2020</span>
+      Last update: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 21, 2022</span>
     
   </small>
 </div>
@@ -1400,7 +1539,7 @@ rtt min/avg/max/mdev = 0.377/0.377/0.377/0.000 ms
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        <a href="../accept-source-routing/" class="md-footer__link md-footer__link--prev" rel="prev">
+        <a href="../../linux/setting-journalctl-limits/" class="md-footer__link md-footer__link--prev" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -1409,19 +1548,19 @@ rtt min/avg/max/mdev = 0.377/0.377/0.377/0.000 ms
               <span class="md-footer__direction">
                 Previous
               </span>
-              Accept Source Routing
+              Setting journalctl limits
             </div>
           </div>
         </a>
       
       
-        <a href="../bpf-and-tcpdump/" class="md-footer__link md-footer__link--next" rel="next">
+        <a href="../arp_and_the_neighbor_table/" class="md-footer__link md-footer__link--next" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              BPF and tcpdump
+              ARP and the Neighbor table
             </div>
           </div>
           <div class="md-footer__button md-icon">

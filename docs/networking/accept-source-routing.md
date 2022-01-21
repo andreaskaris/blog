@@ -1,6 +1,6 @@
 # Accept source routing
 
-I could only test this for IPv4. For IPv6, the kernel seems to be hardened by default.
+**Note:** I could only test this for IPv4. For IPv6, the kernel seems to be hardened by default.
 
 ## IPv4
 

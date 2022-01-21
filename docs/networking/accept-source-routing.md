@@ -33,14 +33,17 @@ accept_source_route - BOOLEAN
 ~~~
 
 Having a look at the kernel code:
+
 * [https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/include/linux/inetdevice.h#L103](https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/include/linux/inetdevice.h#L103)
 * [https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/include/linux/inetdevice.h#L83](https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/include/linux/inetdevice.h#L83)
 * [https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/include/linux/inetdevice.h#L56](https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/include/linux/inetdevice.h#L56)
 
 The actual drop for IPv4 is happening here:
+
 * [https://github.com/torvalds/linux/blob/5bfc75d92efd494db37f5c4c173d3639d4772966/net/ipv4/ip_input.c#L293](https://github.com/torvalds/linux/blob/5bfc75d92efd494db37f5c4c173d3639d4772966/net/ipv4/ip_input.c#L293)
 
 We should be able to see what's happening if we enable martian logging:
+
 * [https://github.com/torvalds/linux/blob/5bfc75d92efd494db37f5c4c173d3639d4772966/net/ipv4/ip_input.c#L290](https://github.com/torvalds/linux/blob/5bfc75d92efd494db37f5c4c173d3639d4772966/net/ipv4/ip_input.c#L290)
 
 ### Test setup

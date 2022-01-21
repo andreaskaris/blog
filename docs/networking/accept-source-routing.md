@@ -6,19 +6,17 @@
 
 On RHEL, the default settings for IPv4 will look something like this:
 ~~~
-# sysctl -a | grep source_route
+# sysctl -a | grep source_route | grep ipv4
 net.ipv4.conf.all.accept_source_route = 0
-net.ipv4.conf.bond0.accept_source_route = 1
-net.ipv4.conf.bond0/678.accept_source_route = 1
-net.ipv4.conf.bond0/684.accept_source_route = 1
-net.ipv4.conf.bond1.accept_source_route = 1
-net.ipv4.conf.bond1/682.accept_source_route = 1
-net.ipv4.conf.bond1/683.accept_source_route = 1
-net.ipv4.conf.bond1/684.accept_source_route = 1
-net.ipv4.conf.bond1/698.accept_source_route = 1
-net.ipv4.conf.bond1/699.accept_source_route = 1
-net.ipv4.conf.bond1/700.accept_source_route = 1
-net.ipv4.conf.bond1/701.accept_source_route = 1
+net.ipv4.conf.br-ext.accept_source_route = 1
+net.ipv4.conf.br-vxlan.accept_source_route = 1
+net.ipv4.conf.br0.accept_source_route = 1
+net.ipv4.conf.default.accept_source_route = 1
+net.ipv4.conf.eth0.accept_source_route = 1
+net.ipv4.conf.eth1.accept_source_route = 1
+net.ipv4.conf.lo.accept_source_route = 1
+net.ipv4.conf.ovs-system.accept_source_route = 1
+net.ipv4.conf.vxlan_sys_4789.accept_source_route = 1
 ~~~
 
 `net.ipv4.conf.all.accept_source_route = 0` will override anything else.
@@ -312,6 +310,21 @@ dropwatch>
 And the kernel with martian logging on does not report anything.
 
 ## IPv6
+
+For IPv6, the default settings on RHEL for source routing will yield something like this:
+~~~
+# sysctl -a | grep source_route | grep ipv6
+net.ipv6.conf.all.accept_source_route = 0
+net.ipv6.conf.br-ext.accept_source_route = 0
+net.ipv6.conf.br-vxlan.accept_source_route = 0
+net.ipv6.conf.br0.accept_source_route = 0
+net.ipv6.conf.default.accept_source_route = 0
+net.ipv6.conf.eth0.accept_source_route = 0
+net.ipv6.conf.eth1.accept_source_route = 0
+net.ipv6.conf.lo.accept_source_route = 0
+net.ipv6.conf.ovs-system.accept_source_route = 0
+net.ipv6.conf.vxlan_sys_4789.accept_source_route = 0
+~~~
 
 For IPv6, I tried crafting RH0 type packets, but failed miserably at the task. With that said, the kernel only ever accepts RH2 and the default is off, anyways https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt:
 ~~~

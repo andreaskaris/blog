@@ -21,7 +21,7 @@ net.ipv4.conf.vxlan_sys_4789.accept_source_route = 1
 
 `net.ipv4.conf.all.accept_source_route = 0` will override anything else.
 
-The documentation clearly stantes that this is a logical AND relationship:
+The documentation clearly states that this is a logical AND relationship:
 https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt
 ~~~
 accept_source_route - BOOLEAN

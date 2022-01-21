@@ -523,15 +523,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#testing-in-a-live-systems-source-routing-disabled" class="md-nav__link">
-    Testing in a live systems - source routing disabled
+  <a href="#testing-in-a-live-system-source-routing-disabled" class="md-nav__link">
+    Testing in a live system - source routing disabled
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#testing-in-a-live-systems-source-routing-enabled" class="md-nav__link">
-    Testing in a live systems - source routing enabled
+  <a href="#testing-in-a-live-system-source-routing-enabled" class="md-nav__link">
+    Testing in a live system - source routing enabled
   </a>
   
 </li>
@@ -1322,7 +1322,7 @@ Internet Control Message Protocol
         Data: 48494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f...
         [Length: 32]
 </code></pre>
-<h3 id="testing-in-a-live-systems-source-routing-disabled">Testing in a live systems - source routing disabled</h3>
+<h3 id="testing-in-a-live-system-source-routing-disabled">Testing in a live system - source routing disabled</h3>
 <p>Here's how this can be tested, on my CentOS 8.4 system:</p>
 <pre><code>[root@centos84 ~]# ip a | grep 192.168.122.6
     inet 192.168.122.6/24 brd 192.168.122.255 scope global dynamic noprefixroute eth0
@@ -1445,7 +1445,7 @@ Jan 21 10:01:08 centos84 kernel: IPv4: source route option 192.168.122.1 -&gt; 1
 Jan 21 10:01:08 centos84 kernel: IPv4: source route option 192.168.122.1 -&gt; 192.168.122.6
 ^C
 </code></pre>
-<h3 id="testing-in-a-live-systems-source-routing-enabled">Testing in a live systems - source routing enabled</h3>
+<h3 id="testing-in-a-live-system-source-routing-enabled">Testing in a live system - source routing enabled</h3>
 <p>Now, I tested enabling source routing with <code>net.ipv4.conf.all.accept_source_route = 1</code>:</p>
 <pre><code>[root@centos84 ~]# sysctl -w net.ipv4.conf.all.accept_source_route=1
 net.ipv4.conf.all.accept_source_route = 1

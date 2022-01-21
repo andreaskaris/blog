@@ -116,7 +116,7 @@ Internet Control Message Protocol
         [Length: 32]
 ~~~
 
-### Testing in a live systems - source routing disabled
+### Testing in a live system - source routing disabled
 
 Here's how this can be tested, on my CentOS 8.4 system:
 ~~~
@@ -250,7 +250,7 @@ Jan 21 10:01:08 centos84 kernel: IPv4: source route option 192.168.122.1 -> 192.
 ^C
 ~~~
 
-### Testing in a live systems - source routing enabled
+### Testing in a live system - source routing enabled
 
 Now, I tested enabling source routing with `net.ipv4.conf.all.accept_source_route = 1`:
 ~~~

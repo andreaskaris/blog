@@ -46,6 +46,7 @@ nav:
   - OVS packet recirculation: networking/ovs_recirculation.md
   - OVS VXLAN tunnels and DSCP: networking/ovs-vxlan-tunnels-and-dscp.md
   - OVS with GDB: networking/ovs_with_gdb.md
+  - Packet tracing with OVN: networking/packet-tracing-with-ovn.md  
   - SCTP: networking/sctp.md
   - Useful commands: networking/useful-commands.md
   - Wireguard: networking/wireguard.md

@@ -2,8 +2,8 @@ site_name: Andreas Karis Blog
 theme: 
   name: material
   palette:
-    primary: blue grey
-    accent: red
+    primary: black
+    accent: pink
   features:
     - toc.integrate
 plugins:

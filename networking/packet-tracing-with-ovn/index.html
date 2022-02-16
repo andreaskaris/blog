@@ -1,0 +1,2103 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.0.6">
+    
+    
+      
+        <title>Packet tracing with OVN - Andreas Karis Blog</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2c0c5eaf.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.7fa14f5b.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#546d78">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="blue-grey" data-md-color-accent="red">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#packet-tracing-with-ovn" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Andreas Karis Blog" class="md-header__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Andreas Karis Blog
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Packet tracing with OVN
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="md-header__options">
+      
+    </div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Andreas Karis Blog
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      <label class="md-nav__link" for="__nav_2">
+        Ceph
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Ceph" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Ceph
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ceph/ceph-manual-test/" class="md-nav__link">
+        Ceph manual test with qemu
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      <label class="md-nav__link" for="__nav_3">
+        Containers
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Containers" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Containers
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/analyzing-cni/" class="md-nav__link">
+        Analyzing CNI calls
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/cgroups/" class="md-nav__link">
+        cgroups
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/containers/" class="md-nav__link">
+        Containers in Linux
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/list_docker_registry_containers/" class="md-nav__link">
+        List container images in registry
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/namespaces/" class="md-nav__link">
+        namespaces
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      <label class="md-nav__link" for="__nav_4">
+        Linux
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Linux" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Linux
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/cgroups/" class="md-nav__link">
+        cgroups
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/containers/" class="md-nav__link">
+        Containers in Linux
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/hugepages/" class="md-nav__link">
+        Hugepages
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/ipxe-boot-environment/" class="md-nav__link">
+        iPXE boot environment on Fedora
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/java-idrac-issues/" class="md-nav__link">
+        Java Idrac Issues
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/meson/" class="md-nav__link">
+        meson
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/namespaces/" class="md-nav__link">
+        namespaces
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/old_java_version_with_xorgs_in_container/" class="md-nav__link">
+        Old Java inside a container with xorgs
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/get-process-cgroup-info-and-limits/" class="md-nav__link">
+        Retrieving process cgroup resource usage and limit info
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/libvirt-uefi-without-secureboot/" class="md-nav__link">
+        RHEL Booting a virtual machine with UEFI but without secure boot
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/setting-journalctl-limits/" class="md-nav__link">
+        Setting journalctl limits
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      <label class="md-nav__link" for="__nav_5">
+        Networking
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Networking" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Networking
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../accept-source-routing/" class="md-nav__link">
+        Accept Source Routing
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arp_and_the_neighbor_table/" class="md-nav__link">
+        ARP and the Neighbor table
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bpf-and-tcpdump/" class="md-nav__link">
+        BPF and tcpdump
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bonding_in_linux/" class="md-nav__link">
+        Bonding in Linux
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../juniper_x520/" class="md-nav__link">
+        Configure Juniper switch
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../haproxy-and-h2c/" class="md-nav__link">
+        haproxy and HTTP/2
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install-openvswitch-on-rocky/" class="md-nav__link">
+        Install Open vSwitch on Rocky Linux 8
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../geneve_tunneling/" class="md-nav__link">
+        Geneve tunneling
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../netlink/" class="md-nav__link">
+        Netlink
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ovn_standalone_on_fedora31/" class="md-nav__link">
+        OVN standalone on Fedora 31
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ovs_recirculation/" class="md-nav__link">
+        OVS packet recirculation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ovs-vxlan-tunnels-and-dscp/" class="md-nav__link">
+        OVS VXLAN tunnels and DSCP
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ovs_with_gdb/" class="md-nav__link">
+        OVS with GDB
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sctp/" class="md-nav__link">
+        SCTP
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../useful-commands/" class="md-nav__link">
+        Useful commands
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wireguard/" class="md-nav__link">
+        Wireguard
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      <label class="md-nav__link" for="__nav_6">
+        OpenShift
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="OpenShift" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          OpenShift
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/alertmanager/" class="md-nav__link">
+        AlertManager
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/cpu-manager-with-custom-machine-config-pool/" class="md-nav__link">
+        CPU manager with custom MachineConfigPool
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/crio-conmon-runc/" class="md-nav__link">
+        Crio vs conmon vs runc
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/etcd_perf/" class="md-nav__link">
+        Etcd Performance tests
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/get-vs-list-api-calls/" class="md-nav__link">
+        Get vs List API Calls
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/openshift_httpbin_tshark_sidecar/" class="md-nav__link">
+        Httpbin tshark sidecar container
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/kubernetes_cluster/" class="md-nav__link">
+        Hints for installing kubernetes on Fedora
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/HPA/" class="md-nav__link">
+        Horizontal Pod Autoscaler
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/how_rhcos_updates_work/" class="md-nav__link">
+        How RHCOS updates work
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/ocp4-infra-nodes-with-machineset-without-worker-label/" class="md-nav__link">
+        Infra nodes with MachineSets without worker label
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/ingresscontroller_router_sharding_ocp_on_osp/" class="md-nav__link">
+        Ingress Controller Sharding OCP on OSP
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/ingress-controller-sharding-on-separate-vip/" class="md-nav__link">
+        Ingress Controller Sharding on separate VIP
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/openshift_mirror_registry/" class="md-nav__link">
+        Installing a cluster with a mirror registry
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/istio-1.6-on-ocp.4.x/" class="md-nav__link">
+        Istio 1.6 on OpenShift 4.x
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/kata/" class="md-nav__link">
+        kata containers and the kata operatora
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/ovn-kind-hybrid-overlay/" class="md-nav__link">
+        Kind with OVN Kubernetes Hybrid Overlay
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/kind-with-private-registry/" class="md-nav__link">
+        Kind with private registry
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/mounting-container-image/" class="md-nav__link">
+        Mount a container image
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openstack/install_openshift_on_openstack/" class="md-nav__link">
+        OpenShift on OpenStack
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/patch-service-loadbalancer-ingress-ip.yaml" class="md-nav__link">
+        Patch status.loadBalancer.ingress IP manually
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/private-registry/" class="md-nav__link">
+        Private container registry
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/proxy-ocp-4.5/" class="md-nav__link">
+        Proxy OCP 4.5
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/scc/" class="md-nav__link">
+        Security Context Constraints (SCC)
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/fix-selinux-labels-coreos/" class="md-nav__link">
+        SElinux labels fix
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sctp/" class="md-nav__link">
+        SCTP
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/openshift_troubleshooting_etcd_state/" class="md-nav__link">
+        Troubleshooting etcd state
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/useful-ocp-sdn-commands/" class="md-nav__link">
+        Useful commands for OpenShift SDN
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/troubleshooting_openshift_on_openstack_worker_creation/" class="md-nav__link">
+        Troubleshooting OpenShift on OpenStack worker creation
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      <label class="md-nav__link" for="__nav_7">
+        OpenStack
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="OpenStack" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          OpenStack
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openstack/reattach_to_running_deployment/" class="md-nav__link">
+        Reattach to running deployment
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openstack/using_clouds_yaml/" class="md-nav__link">
+        Using clouds.yaml
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      <label class="md-nav__link" for="__nav_8">
+        OperatorSDK
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="OperatorSDK" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          OperatorSDK
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../operator-sdk/operator-sdk-reconciliation/" class="md-nav__link">
+        Controller Reconciliation
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="packet-tracing-with-ovn">Packet tracing with OVN</h1>
+<h2 id="running-various-ovn-traces-in-an-ovn-kubernetes-environment">Running various OVN traces in an ovn-kubernetes environment</h2>
+<h3 id="environment">Environment</h3>
+<p>I use an <a href="https://github.com/ovn-org/ovn-kubernetes">ovn-kubernetes</a> kind deployment as a base environment for the following traces.</p>
+<p>I spawn an environment with:</p>
+<pre><code>contrib/kind.sh
+</code></pre>
+<p>Then, I deploy the following deployment and service:</p>
+<pre><code># cat nginx.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+# cat nginx-svc.yaml 
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-np
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30007
+  type:  NodePort
+</code></pre>
+<p>My pod is on ovn-worker, and the node's IP address is 172.18.0.3. The service can be reached on port 30007 and will then be NATed and forwarded to pod nginx-deployment-9456bbbf9-x6pc6 with IP 10.244.1.3:</p>
+<pre><code>[root@ovnkubernetes egressfw]# oc get svc -o wide
+NAME         TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE   SELECTOR
+kubernetes   ClusterIP   10.96.0.1      &lt;none&gt;        443/TCP        84m   &lt;none&gt;
+nginx-np     NodePort    10.96.91.159   &lt;none&gt;        80:30007/TCP   63m   app=nginx
+[root@ovnkubernetes egressfw]# oc get pods -o wide
+NAME                               READY   STATUS    RESTARTS   AGE   IP           NODE         NOMINATED NODE   READINESS GATES
+nginx-deployment-9456bbbf9-x6pc6   1/1     Running   0          63m   10.244.1.3   ovn-worker   &lt;none&gt;           &lt;none&gt;
+[root@ovnkubernetes egressfw]# oc get nodes -o wide
+NAME                STATUS   ROLES                  AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE       KERNEL-VERSION          CONTAINER-RUNTIME
+ovn-control-plane   Ready    control-plane,master   84m   v1.23.3   172.18.0.3    &lt;none&gt;        Ubuntu 21.10   4.18.0-358.el8.x86_64   containerd://1.5.9
+ovn-worker          Ready    &lt;none&gt;                 84m   v1.23.3   172.18.0.4    &lt;none&gt;        Ubuntu 21.10   4.18.0-358.el8.x86_64   containerd://1.5.9
+ovn-worker2         Ready    &lt;none&gt;                 84m   v1.23.3   172.18.0.2    &lt;none&gt;        Ubuntu 21.10   4.18.0-358.el8.x86_64   containerd://1.5.9
+</code></pre>
+<p>We can run curl against this service from the next-hop gateway with IP address 172.18.0.1 and MAC address 02:42:7a:79:82:ca:</p>
+<pre><code># ip a ls dev br-519277dba8fe
+4: br-519277dba8fe: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default 
+    link/ether 02:42:7a:79:82:ca brd ff:ff:ff:ff:ff:ff
+    inet 172.18.0.1/16 brd 172.18.255.255 scope global br-519277dba8fe
+       valid_lft forever preferred_lft forever
+    inet6 fc00:f853:ccd:e793::1/64 scope global 
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:7aff:fe79:82ca/64 scope link 
+       valid_lft forever preferred_lft forever
+    inet6 fe80::1/64 scope link 
+       valid_lft forever preferred_lft forever
+# curl -I 172.18.0.4:30007 
+HTTP/1.1 200 OK
+Server: nginx/1.14.2
+Date: Wed, 16 Feb 2022 11:32:44 GMT
+Content-Type: text/html
+Content-Length: 612
+Last-Modified: Tue, 04 Dec 2018 14:44:49 GMT
+Connection: keep-alive
+ETag: &quot;5c0692e1-264&quot;
+Accept-Ranges: bytes
+</code></pre>
+<p>The pod has the following IP address and gateway:</p>
+<pre><code># ip a
+1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+3: eth0@if7: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1400 qdisc noqueue state UP group default 
+    link/ether 0a:58:0a:f4:01:03 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 10.244.1.3/24 brd 10.244.1.255 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::858:aff:fef4:103/64 scope link 
+       valid_lft forever preferred_lft forever
+# ip r show default
+default via 10.244.1.1 dev eth0
+# ip neigh
+10.244.1.1 dev eth0 lladdr 0a:58:0a:f4:01:01 STALE
+</code></pre>
+<p>And on the pod, we see the following flow which has gone through DNAT and SNAT:</p>
+<pre><code># tcpdump -nne -i eth0
+dropped privs to tcpdump
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
+11:32:44.407949 0a:58:0a:f4:01:01 &gt; 0a:58:0a:f4:01:03, ethertype IPv4 (0x0800), length 74: 100.64.0.3.53642 &gt; 10.244.1.3.80: Flags [S], seq 2722623038, win 29200, options [mss 1460,sackOK,TS val 757469725 ecr 0,nop,wscale 7], length 0
+11:32:44.408002 0a:58:0a:f4:01:03 &gt; 0a:58:0a:f4:01:01, ethertype IPv4 (0x0800), length 74: 10.244.1.3.80 &gt; 100.64.0.3.53642: Flags [S.], seq 519304349, ack 2722623039, win 26960, options [mss 1360,sackOK,TS val 1904257279 ecr 757469725,nop,wscale 7], length 0
+11:32:44.409948 0a:58:0a:f4:01:01 &gt; 0a:58:0a:f4:01:03, ethertype IPv4 (0x0800), length 147: 100.64.0.3.53642 &gt; 10.244.1.3.80: Flags [P.], seq 1:82, ack 1, win 229, options [nop,nop,TS val 757469728 ecr 1904257279], length 81: HTTP: HEAD / HTTP/1.1
+11:32:44.409953 0a:58:0a:f4:01:01 &gt; 0a:58:0a:f4:01:03, ethertype IPv4 (0x0800), length 66: 100.64.0.3.53642 &gt; 10.244.1.3.80: Flags [.], ack 1, win 229, options [nop,nop,TS val 757469728 ecr 1904257279], length 0
+11:32:44.410001 0a:58:0a:f4:01:03 &gt; 0a:58:0a:f4:01:01, ethertype IPv4 (0x0800), length 66: 10.244.1.3.80 &gt; 100.64.0.3.53642: Flags [.], ack 82, win 211, options [nop,nop,TS val 1904257281 ecr 757469728], length 0
+11:32:44.410031 0a:58:0a:f4:01:03 &gt; 0a:58:0a:f4:01:01, ethertype IPv4 (0x0800), length 66: 10.244.1.3.80 &gt; 100.64.0.3.53642: Flags [.], ack 82, win 211, options [nop,nop,TS val 1904257281 ecr 757469728], length 0
+11:32:44.410399 0a:58:0a:f4:01:03 &gt; 0a:58:0a:f4:01:01, ethertype IPv4 (0x0800), length 304: 10.244.1.3.80 &gt; 100.64.0.3.53642: Flags [P.], seq 1:239, ack 82, win 211, options [nop,nop,TS val 1904257281 ecr 757469728], length 238: HTTP: HTTP/1.1 200 OK
+11:32:44.410491 0a:58:0a:f4:01:01 &gt; 0a:58:0a:f4:01:03, ethertype IPv4 (0x0800), length 66: 100.64.0.3.53642 &gt; 10.244.1.3.80: Flags [.], ack 239, win 237, options [nop,nop,TS val 757469729 ecr 1904257281], length 0
+11:32:44.410772 0a:58:0a:f4:01:01 &gt; 0a:58:0a:f4:01:03, ethertype IPv4 (0x0800), length 66: 100.64.0.3.53642 &gt; 10.244.1.3.80: Flags [F.], seq 82, ack 239, win 237, options [nop,nop,TS val 757469730 ecr 1904257281], length 0
+11:32:44.411039 0a:58:0a:f4:01:03 &gt; 0a:58:0a:f4:01:01, ethertype IPv4 (0x0800), length 66: 10.244.1.3.80 &gt; 100.64.0.3.53642: Flags [F.], seq 239, ack 83, win 211, options [nop,nop,TS val 1904257282 ecr 757469730], length 0
+11:32:44.411154 0a:58:0a:f4:01:01 &gt; 0a:58:0a:f4:01:03, ethertype IPv4 (0x0800), length 66: 100.64.0.3.53642 &gt; 10.244.1.3.80: Flags [.], ack 240, win 237, options [nop,nop,TS val 757469730 ecr 1904257282], length 0
+^C
+11 packets captured
+11 packets received by filter
+0 packets dropped by kernel
+</code></pre>
+<p>Here is an overview of the NBDB state:</p>
+<pre><code>sh-5.1# ovn-nbctl show
+switch cd928d81-4f0f-4c04-860a-f75022f7e0b9 (ext_ovn-control-plane)
+    port breth0_ovn-control-plane
+        type: localnet
+        addresses: [&quot;unknown&quot;]
+    port etor-GR_ovn-control-plane
+        type: router
+        addresses: [&quot;02:42:ac:12:00:03&quot;]
+        router-port: rtoe-GR_ovn-control-plane
+switch 25b2a2f5-437f-4513-90cd-e3e1aaf7f14f (ovn-control-plane)
+    port local-path-storage_local-path-provisioner-5ddd94ff66-krkk7
+        addresses: [&quot;0a:58:0a:f4:02:04 10.244.2.4&quot;]
+    port stor-ovn-control-plane
+        type: router
+        router-port: rtos-ovn-control-plane
+    port k8s-ovn-control-plane
+        addresses: [&quot;82:24:48:8a:77:cc 10.244.2.2&quot;]
+    port kube-system_coredns-64897985d-wdvs9
+        addresses: [&quot;0a:58:0a:f4:02:05 10.244.2.5&quot;]
+    port kube-system_coredns-64897985d-rzjfr
+        addresses: [&quot;0a:58:0a:f4:02:03 10.244.2.3&quot;]
+switch b4dede7d-7660-42bf-a954-c5b3f0f28a7c (ovn-worker)
+    port stor-ovn-worker
+        type: router
+        router-port: rtos-ovn-worker
+    port default_nginx-deployment-9456bbbf9-x6pc6
+        addresses: [&quot;0a:58:0a:f4:01:03 10.244.1.3&quot;]
+    port k8s-ovn-worker
+        addresses: [&quot;4a:d4:28:63:24:1c 10.244.1.2&quot;]
+switch 214f4d51-750d-414a-aad1-94e84e623f9b (ext_ovn-worker)
+    port breth0_ovn-worker
+        type: localnet
+        addresses: [&quot;unknown&quot;]
+    port etor-GR_ovn-worker
+        type: router
+        addresses: [&quot;02:42:ac:12:00:04&quot;]
+        router-port: rtoe-GR_ovn-worker
+switch bcec069e-f578-4927-93d2-6e129595a716 (join)
+    port jtor-GR_ovn-worker
+        type: router
+        router-port: rtoj-GR_ovn-worker
+    port jtor-GR_ovn-control-plane
+        type: router
+        router-port: rtoj-GR_ovn-control-plane
+    port jtor-GR_ovn-worker2
+        type: router
+        router-port: rtoj-GR_ovn-worker2
+    port jtor-ovn_cluster_router
+        type: router
+        router-port: rtoj-ovn_cluster_router
+switch ff675836-2b46-4d83-b53f-41cba7297d8b (ext_ovn-worker2)
+    port breth0_ovn-worker2
+        type: localnet
+        addresses: [&quot;unknown&quot;]
+    port etor-GR_ovn-worker2
+        type: router
+        addresses: [&quot;02:42:ac:12:00:02&quot;]
+        router-port: rtoe-GR_ovn-worker2
+switch e1f67383-f731-4bf7-a018-6361ec60f477 (ovn-worker2)
+    port k8s-ovn-worker2
+        addresses: [&quot;4e:19:7f:89:93:bc 10.244.0.2&quot;]
+    port stor-ovn-worker2
+        type: router
+        router-port: rtos-ovn-worker2
+router 7072022c-7226-4928-a397-fc770b75f98f (GR_ovn-worker2)
+    port rtoj-GR_ovn-worker2
+        mac: &quot;0a:58:64:40:00:02&quot;
+        networks: [&quot;100.64.0.2/16&quot;]
+    port rtoe-GR_ovn-worker2
+        mac: &quot;02:42:ac:12:00:02&quot;
+        networks: [&quot;172.18.0.2/16&quot;]
+    nat d87cc0f7-5053-4739-9617-a952cb37d74c
+        external ip: &quot;172.18.0.2&quot;
+        logical ip: &quot;10.244.0.0/16&quot;
+        type: &quot;snat&quot;
+router 5ea87f54-ceeb-442a-92c8-4b522278b5dd (GR_ovn-worker)
+    port rtoj-GR_ovn-worker
+        mac: &quot;0a:58:64:40:00:03&quot;
+        networks: [&quot;100.64.0.3/16&quot;]
+    port rtoe-GR_ovn-worker
+        mac: &quot;02:42:ac:12:00:04&quot;
+        networks: [&quot;172.18.0.4/16&quot;]
+    nat ca3ef3e0-22c1-427d-a977-b10256a96177
+        external ip: &quot;172.18.0.4&quot;
+        logical ip: &quot;10.244.0.0/16&quot;
+        type: &quot;snat&quot;
+router 1dead945-8773-4d33-b56b-67e5ab8fcca3 (GR_ovn-control-plane)
+    port rtoe-GR_ovn-control-plane
+        mac: &quot;02:42:ac:12:00:03&quot;
+        networks: [&quot;172.18.0.3/16&quot;]
+    port rtoj-GR_ovn-control-plane
+        mac: &quot;0a:58:64:40:00:04&quot;
+        networks: [&quot;100.64.0.4/16&quot;]
+    nat 70a6067c-ffa4-407a-9d0f-cc581b8b1c3a
+        external ip: &quot;172.18.0.3&quot;
+        logical ip: &quot;10.244.0.0/16&quot;
+        type: &quot;snat&quot;
+router 9ac72c76-9f8f-4f3a-9a82-0e18846c4cd9 (ovn_cluster_router)
+    port rtos-ovn-control-plane
+        mac: &quot;0a:58:0a:f4:02:01&quot;
+        networks: [&quot;10.244.2.1/24&quot;]
+        gateway chassis: [9268048a-65bf-467e-b166-d0faffafa686]
+    port rtos-ovn-worker2
+        mac: &quot;0a:58:0a:f4:00:01&quot;
+        networks: [&quot;10.244.0.1/24&quot;]
+        gateway chassis: [fbb949c1-6d62-44cc-b67e-9f93b40d1691]
+    port rtos-ovn-worker
+        mac: &quot;0a:58:0a:f4:01:01&quot;
+        networks: [&quot;10.244.1.1/24&quot;]
+        gateway chassis: [4da007a6-ed1d-45ff-bcf4-62ae8914bbbc]
+    port rtoj-ovn_cluster_router
+        mac: &quot;0a:58:64:40:00:01&quot;
+        networks: [&quot;100.64.0.1/16&quot;]
+</code></pre>
+<p>The service is implemented as an OVN loadbalancer - we are going to look into this load-balancer further in the examples section below:</p>
+<pre><code># ovn-nbctl lr-lb-list GR_ovn-worker
+UUID                                    LB                  PROTO      VIP                 IPs
+bc20db47-e79c-4906-b0d8-dd2dcfaf54b4    Service_default/    tcp        172.18.0.4:30007    10.244.1.3:80
+e7486241-66e1-453a-b44d-3b3e7b2ebc4f    Service_default/    tcp        10.96.0.1:443       172.18.0.3:6443
+</code></pre>
+<h3 id="collection-of-examples">Collection of examples</h3>
+<h4 id="simulating-new-flows-through-conntrack">Simulating new flows through conntrack</h4>
+<p>Tracing a new TCP flow from the outside of the cluster to the service IP and port, knowing that NAT and conntrack are involved. A <code>--minimal</code> trace is always a good starting point. The most important bit here is the <code>--ct new</code> command line parameter to simulate a new conntrack flow:</p>
+<pre><code># ovn-trace --minimal  --ovs ext_ovn-worker 'inport == &quot;breth0_ovn-worker&quot; &amp;&amp; eth.src == 02:42:7a:79:82:ca &amp;&amp;  eth.dst == 02:42:ac:12:00:04 &amp;&amp; ip4.src == 172.18.0.1 &amp;&amp; ip4.dst == 172.18.0.4 &amp;&amp; ip.ttl == 64 &amp;&amp; tcp.src==12345 &amp;&amp; tcp.dst == 30007' --ct new
+</code></pre>
+<p>Result of the <code>--minimal</code> trace:</p>
+<pre><code>sh-5.1# ovn-trace --minimal  --ovs ext_ovn-worker 'inport == &quot;breth0_ovn-worker&quot; &amp;&amp; eth.src == 02:42:7a:79:82:ca &amp;&amp;  eth.dst == 02:42:ac:12:00:04 &amp;&amp; ip4.src == 172.18.0.1 &amp;&amp; ip4.dst == 172.18.0.4 &amp;&amp; ip.ttl == 64 &amp;&amp; tcp.src==12345 &amp;&amp; tcp.dst == 30007' --ct new
+# tcp,reg14=0x1,vlan_tci=0x0000,dl_src=02:42:7a:79:82:ca,dl_dst=02:42:ac:12:00:04,nw_src=172.18.0.1,nw_dst=172.18.0.4,nw_tos=0,nw_ecn=0,nw_ttl=64,tp_src=12345,tp_dst=30007,tcp_flags=0
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+ct_dnat /* assuming no un-dnat entry, so no change */ {
+    *** no OpenFlow flows;
+    ct_lb /* default (use --ct to customize) */ {
+        *** no OpenFlow flows;
+        ip.ttl--;
+        eth.src = 0a:58:64:40:00:03;
+        eth.dst = 0a:58:64:40:00:01;
+        ct_dnat /* assuming no un-dnat entry, so no change */ {
+            *** no OpenFlow flows;
+            *** no OpenFlow flows;
+            *** no OpenFlow flows;
+            ip.ttl--;
+            eth.src = 0a:58:0a:f4:01:01;
+            eth.dst = 0a:58:0a:f4:01:03;
+            *** no OpenFlow flows;
+            *** no OpenFlow flows;
+            *** no OpenFlow flows;
+            reg0[6] = 0;
+            *** chk_lb_hairpin_reply action not implemented;
+            reg0[12] = 0;
+            *** no OpenFlow flows;
+            ct_lb /* default (use --ct to customize) */ {
+                *** no OpenFlow flows;
+                *** no OpenFlow flows;
+                output(&quot;default_nginx-deployment-9456bbbf9-x6pc6&quot;);
+            };
+        };
+    };
+};
+</code></pre>
+<p>In the detailed trace, we can also see the destination IP after the DNAT:</p>
+<pre><code>sh-5.1# ovn-trace --friendly-names  --ovs ext_ovn-worker 'inport == &quot;breth0_ovn-worker&quot; &amp;&amp; eth.src == 02:42:7a:79:82:ca &amp;&amp;  eth.dst == 02:42:ac:12:00:04 &amp;&amp; ip4.src == 172.18.0.1 &amp;&amp; ip4.dst == 172.18.0.4 &amp;&amp; ip.ttl == 64 &amp;&amp; tcp.src==12345 &amp;&amp; tcp.dst == 30007' --ct new | tail -n 15
+
+ct_lb /* default (use --ct to customize) */
+-------------------------------------------
+ 3. ls_out_acl_hint (northd.c:6041): ct.est &amp;&amp; ct_label.blocked == 0, priority 1, uuid 5f2e1810
+    cookie=0x5f2e1810, duration=5184.167s, table=43, n_packets=0, n_bytes=0, idle_age=5184, priority=1,ct_state=+est+trk,ct_label=0/0x1,metadata=0x5 actions=set_field:0x400000000000000000000000000/0x400000000000000000000000000-&gt;xxreg0,resubmit(,44)
+    cookie=0x5f2e1810, duration=5184.149s, table=43, n_packets=28886, n_bytes=7169503, idle_age=1, priority=1,ct_state=+est+trk,ct_label=0/0x1,metadata=0x3 actions=set_field:0x400000000000000000000000000/0x400000000000000000000000000-&gt;xxreg0,resubmit(,44)
+    reg0[10] = 1;
+    next;
+ 8. ls_out_port_sec_ip (northd.c:5130): outport == &quot;default_nginx-deployment-9456bbbf9-x6pc6&quot; &amp;&amp; eth.dst == 0a:58:0a:f4:01:03 &amp;&amp; ip4.dst == {255.255.255.255, 224.0.0.0/4, 10.244.1.3}, priority 90, uuid 701b3cf6
+    *** no OpenFlow flows
+    next;
+ 9. ls_out_port_sec_l2 (northd.c:5594): outport == &quot;default_nginx-deployment-9456bbbf9-x6pc6&quot; &amp;&amp; eth.dst == {0a:58:0a:f4:01:03}, priority 50, uuid b6daec2d
+    *** no OpenFlow flows
+    output;
+    /* output to &quot;default_nginx-deployment-9456bbbf9-x6pc6&quot;, type &quot;&quot; */
+</code></pre>
+<p>Unfortunately, it is very difficult to see what the final packet would look like. We know that an SNAT is involved, too, but that is "hidden" somewhere in the output:</p>
+<pre><code>sh-5.1# ovn-trace --friendly-names  --ovs ext_ovn-worker 'inport == &quot;breth0_ovn-worker&quot; &amp;&amp; eth.src == 02:42:7a:79:82:ca &amp;&amp;  eth.dst == 02:42:ac:12:00:04 &amp;&amp; ip4.src == 172.18.0.1 &amp;&amp; ip4.dst == 172.18.0.4 &amp;&amp; ip.ttl == 64 &amp;&amp; tcp.src==12345 &amp;&amp; tcp.dst == 30007' --ct new | grep 100.64     
+    reg0 = 100.64.0.1;
+    reg1 = 100.64.0.3;
+</code></pre>
+<p>It would indeed be desirable for ovn-trace to show the full packet state of the processed and ready-to-send packet.</p>
+<p>If we look at the flow in a bit more detail, we can see that in the <code>ingress</code> pipeline of <code>GR_ovn-worker</code>, the packet hits the load-balancer flow. SNAT is forced for this load-balancer, and the packet shall be sent to backend <code>10.244.1.3:80</code>:</p>
+<pre><code># ovn-trace --ct new --ct new --ct new  --ovs ext_ovn-worker 'inport == &quot;breth0_ovn-worker&quot; &amp;&amp; eth.src == 02:42:7a:79:82:ca &amp;&amp;  eth.dst == 02:42:ac:12:00:04 &amp;&amp; ip4.src == 172.18.0.1 &amp;&amp; ip4.dst == 172.18.0.4 &amp;&amp; ip.ttl == 64 &amp;&amp; tcp.src==12345 &amp;&amp; tcp.dst == 30007' 
+(...)
+ingress(dp=&quot;GR_ovn-worker&quot;, inport=&quot;rtoe-GR_ovn-worker&quot;)
+--------------------------------------------------------
+ 0. lr_in_admission (northd.c:10523): eth.dst == 02:42:ac:12:00:04 &amp;&amp; inport == &quot;rtoe-GR_ovn-worker&quot;, priority 50, uuid 71cc3085
+    *** no OpenFlow flows
+    xreg0[0..47] = 02:42:ac:12:00:04;
+    next;
+ 1. lr_in_lookup_neighbor (northd.c:10667): 1, priority 0, uuid 39881020
+    cookie=0x39881020, duration=19439.530s, table=9, n_packets=71802, n_bytes=13904424, idle_age=0, priority=0,metadata=0x1 actions=set_field:0x4/0x4-&gt;xreg4,resubmit(,10)
+    cookie=0x39881020, duration=19439.497s, table=9, n_packets=29937, n_bytes=2833154, idle_age=0, priority=0,metadata=0x9 actions=set_field:0x4/0x4-&gt;xreg4,resubmit(,10)
+    reg9[2] = 1;
+    next;
+ 2. lr_in_learn_neighbor (northd.c:10676): reg9[2] == 1 || reg9[3] == 0, priority 100, uuid 6be9d860
+    cookie=0x6be9d860, duration=19439.530s, table=10, n_packets=71802, n_bytes=13904424, idle_age=0, priority=100,reg9=0/0x8,metadata=0x1 actions=resubmit(,11)
+    cookie=0x6be9d860, duration=19439.496s, table=10, n_packets=29949, n_bytes=2833922, idle_age=0, priority=100,reg9=0/0x8,metadata=0x9 actions=resubmit(,11)
+    cookie=0x6be9d860, duration=19439.497s, table=10, n_packets=689, n_bytes=30478, idle_age=150, priority=100,reg9=0x4/0x4,metadata=0x9 actions=resubmit(,11)
+    cookie=0x6be9d860, duration=19439.530s, table=10, n_packets=0, n_bytes=0, idle_age=19439, priority=100,reg9=0x4/0x4,metadata=0x1 actions=resubmit(,11)
+    next;
+ 4. lr_in_unsnat (northd.c:9670): ip4 &amp;&amp; ip4.dst == 172.18.0.4 &amp;&amp; tcp &amp;&amp; tcp.dst == 30007, priority 120, uuid 60d3c124
+    *** no OpenFlow flows
+    next;
+ 5. lr_in_defrag (northd.c:9865): ip &amp;&amp; ip4.dst == 172.18.0.4 &amp;&amp; tcp, priority 110, uuid 4bb8c7f6
+    *** no OpenFlow flows
+    reg0 = 172.18.0.4;
+    reg9[16..31] = tcp.dst;
+    ct_dnat;
+
+ct_dnat /* assuming no un-dnat entry, so no change */
+-----------------------------------------------------
+ 6. lr_in_dnat (northd.c:9701): ct.new &amp;&amp; ip4 &amp;&amp; reg0 == 172.18.0.4 &amp;&amp; tcp &amp;&amp; reg9[16..31] == 30007, priority 120, uuid 25f1ad55
+    *** no OpenFlow flows
+    flags.force_snat_for_lb = 1;
+    ct_lb(backends=10.244.1.3:80);
+
+ct_lb
+-----
+10. lr_in_ip_routing_pre (northd.c:10910): 1, priority 0, uuid 219bc578
+    cookie=0x219bc578, duration=19439.530s, table=18, n_packets=71797, n_bytes=13903874, idle_age=0, priority=0,metadata=0x1 actions=set_field:0/0xffffffff-&gt;xxreg1,resubmit(,19)
+    cookie=0x219bc578, duration=19439.496s, table=18, n_packets=29925, n_bytes=2831554, idle_age=0, priority=0,metadata=0x9 actions=set_field:0/0xffffffff-&gt;xxreg1,resubmit(,19)
+    reg7 = 0;
+    next;
+11. lr_in_ip_routing (northd.c:9439): reg7 == 0 &amp;&amp; ip4.dst == 10.244.0.0/16, priority 49, uuid fbba9ce1
+    *** no OpenFlow flows
+    ip.ttl--;
+    reg8[0..15] = 0;
+    reg0 = 100.64.0.1;
+    reg1 = 100.64.0.3;
+    eth.src = 0a:58:64:40:00:03;
+    outport = &quot;rtoj-GR_ovn-worker&quot;;
+    flags.loopback = 1;
+    next;
+</code></pre>
+<p>We can find the same flow here inside the OVN Southbound database flows:</p>
+<pre><code># ovn-sbctl dump-flows 
+(...)
+Datapath: &quot;GR_ovn-worker&quot; (15e72dff-677d-4794-8f70-a5fea49ad788)  Pipeline: ingress
+(...)
+  table=6 (lr_in_dnat         ), priority=120  , match=(ct.new &amp;&amp; ip4 &amp;&amp; reg0 == 172.18.0.4 &amp;&amp; tcp &amp;&amp; reg9[16..31] == 30007), action=(flags.force_snat_for_lb = 1; ct_lb(backends=10.244.1.3:80);)
+(...)
+  table=11(lr_in_ip_routing   ), priority=49   , match=(reg7 == 0 &amp;&amp; ip4.dst == 10.244.0.0/16), action=(ip.ttl--; reg8[0..15] = 0; reg0 = 100.64.0.1; reg1 = 100.64.0.3; eth.src = 0a:58:64:40:00:03; outport = &quot;rtoj-GR_ovn-worker&quot;; flags.loopback = 1; next;)
+(...)
+</code></pre>
+<h4 id="specifying-multiple-ct-actions">Specifying multiple <code>--ct</code> actions</h4>
+<p>From the ovn-trace man page:</p>
+<pre><code>            A packet might pass through the connection tracker twice in
+            one trip through OVN: once following egress from a VM as it
+            passes outward through a firewall, and once preceding
+            ingress to a second VM as it passes inward through a
+            firewall. Use multiple --ct options to specify the flags for
+            multiple ct_next actions.
+</code></pre>
+<p>Compare the following outputs - note that there is a difference with every <code>--ct new</code> set:</p>
+<pre><code>sh-5.1# ovn-trace --minimal  --ovs ext_ovn-worker 'inport == &quot;breth0_ovn-worker&quot; &amp;&amp; eth.src == 02:42:7a:79:82:ca &amp;&amp;  eth.dst == 02:42:ac:12:00:04 &amp;&amp; ip4.src == 172.18.0.1 &amp;&amp; ip4.dst == 172.18.0.4 &amp;&amp; ip.ttl == 64 &amp;&amp; tcp.src==12345 &amp;&amp; tcp.dst == 30007'              
+# tcp,reg14=0x1,vlan_tci=0x0000,dl_src=02:42:7a:79:82:ca,dl_dst=02:42:ac:12:00:04,nw_src=172.18.0.1,nw_dst=172.18.0.4,nw_tos=0,nw_ecn=0,nw_ttl=64,tp_src=12345,tp_dst=30007,tcp_flags=0
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+ct_dnat /* assuming no un-dnat entry, so no change */ /* default (use --ct to customize) */ {
+    *** no OpenFlow flows;
+    ip.ttl--;
+    eth.src = 02:42:ac:12:00:04;
+    *** no OpenFlow flows;
+};
+sh-5.1# ovn-trace --ct new --minimal  --ovs ext_ovn-worker 'inport == &quot;breth0_ovn-worker&quot; &amp;&amp; eth.src == 02:42:7a:79:82:ca &amp;&amp;  eth.dst == 02:42:ac:12:00:04 &amp;&amp; ip4.src == 172.18.0.1 &amp;&amp; ip4.dst == 172.18.0.4 &amp;&amp; ip.ttl == 64 &amp;&amp; tcp.src==12345 &amp;&amp; tcp.dst == 30007' 
+# tcp,reg14=0x1,vlan_tci=0x0000,dl_src=02:42:7a:79:82:ca,dl_dst=02:42:ac:12:00:04,nw_src=172.18.0.1,nw_dst=172.18.0.4,nw_tos=0,nw_ecn=0,nw_ttl=64,tp_src=12345,tp_dst=30007,tcp_flags=0
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+ct_dnat /* assuming no un-dnat entry, so no change */ {
+    *** no OpenFlow flows;
+    ct_lb /* default (use --ct to customize) */ {
+        *** no OpenFlow flows;
+        ip.ttl--;
+        eth.src = 0a:58:64:40:00:03;
+        eth.dst = 0a:58:64:40:00:01;
+        ct_dnat /* assuming no un-dnat entry, so no change */ {
+            *** no OpenFlow flows;
+            *** no OpenFlow flows;
+            *** no OpenFlow flows;
+            ip.ttl--;
+            eth.src = 0a:58:0a:f4:01:01;
+            eth.dst = 0a:58:0a:f4:01:03;
+            *** no OpenFlow flows;
+            *** no OpenFlow flows;
+            *** no OpenFlow flows;
+            reg0[6] = 0;
+            *** chk_lb_hairpin_reply action not implemented;
+            reg0[12] = 0;
+            *** no OpenFlow flows;
+            ct_lb /* default (use --ct to customize) */ {
+                *** no OpenFlow flows;
+                *** no OpenFlow flows;
+                output(&quot;default_nginx-deployment-9456bbbf9-x6pc6&quot;);
+            };
+        };
+    };
+};
+sh-5.1# ovn-trace --ct new --ct new --minimal  --ovs ext_ovn-worker 'inport == &quot;breth0_ovn-worker&quot; &amp;&amp; eth.src == 02:42:7a:79:82:ca &amp;&amp;  eth.dst == 02:42:ac:12:00:04 &amp;&amp; ip4.src == 172.18.0.1 &amp;&amp; ip4.dst == 172.18.0.4 &amp;&amp; ip.ttl == 64 &amp;&amp; tcp.src==12345 &amp;&amp; tcp.dst == 30007' 
+# tcp,reg14=0x1,vlan_tci=0x0000,dl_src=02:42:7a:79:82:ca,dl_dst=02:42:ac:12:00:04,nw_src=172.18.0.1,nw_dst=172.18.0.4,nw_tos=0,nw_ecn=0,nw_ttl=64,tp_src=12345,tp_dst=30007,tcp_flags=0
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+ct_dnat /* assuming no un-dnat entry, so no change */ {
+    *** no OpenFlow flows;
+    ct_lb {
+        *** no OpenFlow flows;
+        ip.ttl--;
+        eth.src = 0a:58:64:40:00:03;
+        eth.dst = 0a:58:64:40:00:01;
+        ct_dnat /* assuming no un-dnat entry, so no change */ {
+            *** no OpenFlow flows;
+            *** no OpenFlow flows;
+            *** no OpenFlow flows;
+            ip.ttl--;
+            eth.src = 0a:58:0a:f4:01:01;
+            eth.dst = 0a:58:0a:f4:01:03;
+            *** no OpenFlow flows;
+            *** no OpenFlow flows;
+            *** no OpenFlow flows;
+            reg0[6] = 0;
+            *** chk_lb_hairpin_reply action not implemented;
+            reg0[12] = 0;
+            *** no OpenFlow flows;
+            ct_lb /* default (use --ct to customize) */ {
+                *** no OpenFlow flows;
+                *** no OpenFlow flows;
+                output(&quot;default_nginx-deployment-9456bbbf9-x6pc6&quot;);
+            };
+        };
+    };
+};
+sh-5.1# ovn-trace --ct new --ct new --ct new --minimal  --ovs ext_ovn-worker 'inport == &quot;breth0_ovn-worker&quot; &amp;&amp; eth.src == 02:42:7a:79:82:ca &amp;&amp;  eth.dst == 02:42:ac:12:00:04 &amp;&amp; ip4.src == 172.18.0.1 &amp;&amp; ip4.dst == 172.18.0.4 &amp;&amp; ip.ttl == 64 &amp;&amp; tcp.src==12345 &amp;&amp; tcp.dst == 30007' 
+# tcp,reg14=0x1,vlan_tci=0x0000,dl_src=02:42:7a:79:82:ca,dl_dst=02:42:ac:12:00:04,nw_src=172.18.0.1,nw_dst=172.18.0.4,nw_tos=0,nw_ecn=0,nw_ttl=64,tp_src=12345,tp_dst=30007,tcp_flags=0
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+ct_dnat /* assuming no un-dnat entry, so no change */ {
+    *** no OpenFlow flows;
+    ct_lb {
+        *** no OpenFlow flows;
+        ip.ttl--;
+        eth.src = 0a:58:64:40:00:03;
+        eth.dst = 0a:58:64:40:00:01;
+        ct_dnat /* assuming no un-dnat entry, so no change */ {
+            *** no OpenFlow flows;
+            *** no OpenFlow flows;
+            *** no OpenFlow flows;
+            ip.ttl--;
+            eth.src = 0a:58:0a:f4:01:01;
+            eth.dst = 0a:58:0a:f4:01:03;
+            *** no OpenFlow flows;
+            *** no OpenFlow flows;
+            *** no OpenFlow flows;
+            reg0[6] = 0;
+            *** chk_lb_hairpin_reply action not implemented;
+            reg0[12] = 0;
+            *** no OpenFlow flows;
+            ct_lb {
+                *** no OpenFlow flows;
+                *** no OpenFlow flows;
+                output(&quot;default_nginx-deployment-9456bbbf9-x6pc6&quot;);
+            };
+        };
+    };
+};
+sh-5.1# 
+</code></pre>
+<h4 id="specifying-tcp-flags-in-ovn-trace">Specifying TCP flags in ovn-trace</h4>
+<p>It is also possible to provide the exact TCP flags. See RFC 793 for further details:</p>
+<pre><code>  Control Bits:  6 bits (from left to right):
+
+    URG:  Urgent Pointer field significant
+    ACK:  Acknowledgment field significant
+    PSH:  Push Function
+    RST:  Reset the connection
+    SYN:  Synchronize sequence numbers
+    FIN:  No more data from sender
+</code></pre>
+<p>A FIN is hence <code>0x1</code>, a SYN 0x2, a RST is 0x4, a PSH is 0x8, an ACK is 0x10, a SYN/ACK is 0x12 and so on.</p>
+<p>The resulting ovn-trace command:</p>
+<pre><code># ovn-trace --minimal  --ovs ext_ovn-worker 'inport == &quot;breth0_ovn-worker&quot; &amp;&amp; eth.src == 02:42:7a:79:82:ca &amp;&amp;  eth.dst == 02:42:ac:12:00:04 &amp;&amp; ip4.src == 172.18.0.1 &amp;&amp; ip4.dst == 172.18.0.4 &amp;&amp; ip.ttl == 64 &amp;&amp; tcp.src==12345 &amp;&amp; tcp.dst == 30007 &amp;&amp; tcp.flags == 0x2' --ct new 
+# tcp,reg14=0x1,vlan_tci=0x0000,dl_src=02:42:7a:79:82:ca,dl_dst=02:42:ac:12:00:04,nw_src=172.18.0.1,nw_dst=172.18.0.4,nw_tos=0,nw_ecn=0,nw_ttl=64,tp_src=12345,tp_dst=30007,tcp_flags=syn
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+ct_dnat /* assuming no un-dnat entry, so no change */ {
+    *** no OpenFlow flows;
+    ct_lb /* default (use --ct to customize) */ {
+        *** no OpenFlow flows;
+        ip.ttl--;
+        eth.src = 0a:58:64:40:00:03;
+        eth.dst = 0a:58:64:40:00:01;
+        ct_dnat /* assuming no un-dnat entry, so no change */ {
+            *** no OpenFlow flows;
+            *** no OpenFlow flows;
+            *** no OpenFlow flows;
+            ip.ttl--;
+            eth.src = 0a:58:0a:f4:01:01;
+            eth.dst = 0a:58:0a:f4:01:03;
+            *** no OpenFlow flows;
+            *** no OpenFlow flows;
+            *** no OpenFlow flows;
+            reg0[6] = 0;
+            *** chk_lb_hairpin_reply action not implemented;
+            reg0[12] = 0;
+            *** no OpenFlow flows;
+            ct_lb /* default (use --ct to customize) */ {
+                *** no OpenFlow flows;
+                *** no OpenFlow flows;
+                output(&quot;default_nginx-deployment-9456bbbf9-x6pc6&quot;);
+            };
+        };
+    };
+};
+</code></pre>
+<h4 id="simulating-reverse-flows-through-conntrack">Simulating reverse flows through conntrack</h4>
+<p>Let's continue with the earlier example. This time, let's simulate the the answer to the earlier flow. Unfortunately, something seems to go wrong:</p>
+<pre><code># ovn-trace --ct rpl,est --minimal  --ovs ovn-worker 'inport == &quot;default_nginx-deployment-9456bbbf9-x6pc6&quot; &amp;&amp; eth.src == 0a:58:0a:f4:01:03 &amp;&amp;  eth.dst == 0a:58:0a:f4:01:01 &amp;&amp; ip4.src == 10.244.1.3 &amp;&amp; ip4.dst == 100.64.0.3 &amp;&amp; ip.ttl == 64 &amp;&amp; tcp.src==80 &amp;&amp; tcp.dst == 47306' 
+# tcp,reg14=0x3,vlan_tci=0x0000,dl_src=0a:58:0a:f4:01:03,dl_dst=0a:58:0a:f4:01:01,nw_src=10.244.1.3,nw_dst=100.64.0.3,nw_tos=0,nw_ecn=0,nw_ttl=64,tp_src=80,tp_dst=47306,tcp_flags=0
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+ct_lb {
+    reg0[6] = 0;
+    *** chk_lb_hairpin_reply action not implemented;
+    reg0[12] = 0;
+    *** no OpenFlow flows;
+    *** no OpenFlow flows;
+    *** no OpenFlow flows;
+    *** no OpenFlow flows;
+    *** no OpenFlow flows;
+    ip.ttl--;
+    eth.src = 0a:58:64:40:00:01;
+    eth.dst = 0a:58:64:40:00:03;
+    *** no OpenFlow flows;
+    *** no OpenFlow flows;
+    *** no OpenFlow flows;
+    *** no OpenFlow flows;
+};
+</code></pre>
+<p>What happens if we run a detailed trace:</p>
+<pre><code># ovn-trace --ct rpl,est --ovs ovn-worker 'inport == &quot;default_nginx-deployment-9456bbbf9-x6pc6&quot; &amp;&amp; eth.src == 0a:58:0a:f4:01:03 &amp;&amp;  eth.dst == 0a:58:0a:f4:01:01 &amp;&amp; ip4.src == 10.244.1.3 &amp;&amp; ip4.dst == 100.64.0.3 &amp;&amp; ip.ttl == 64 &amp;&amp; tcp.src==80 &amp;&amp; tcp.dst == 47306' 
+# tcp,reg14=0x3,vlan_tci=0x0000,dl_src=0a:58:0a:f4:01:03,dl_dst=0a:58:0a:f4:01:01,nw_src=10.244.1.3,nw_dst=100.64.0.3,nw_tos=0,nw_ecn=0,nw_ttl=64,tp_src=80,tp_dst=47306,tcp_flags=0
+
+ingress(dp=&quot;ovn-worker&quot;, inport=&quot;default_nginx-deployment-9456bbbf9-x6pc6&quot;)
+---------------------------------------------------------------------------
+ 0. ls_in_port_sec_l2 (northd.c:5497): inport == &quot;default_nginx-deployment-9456bbbf9-x6pc6&quot; &amp;&amp; eth.src == {0a:58:0a:f4:01:03}, priority 50, uuid 7fade81c
+    *** no OpenFlow flows
+    next;
+ 1. ls_in_port_sec_ip (northd.c:5130): inport == &quot;default_nginx-deployment-9456bbbf9-x6pc6&quot; &amp;&amp; eth.src == 0a:58:0a:f4:01:03 &amp;&amp; ip4.src == {10.244.1.3}, priority 90, uuid 4d81359d
+    *** no OpenFlow flows
+    next;
+ 5. ls_in_pre_acl (northd.c:5758): ip, priority 100, uuid 7d029aba
+    cookie=0x7d029aba, duration=22959.183s, table=13, n_packets=0, n_bytes=0, idle_age=22959, priority=100,ipv6,metadata=0x3 actions=set_field:0x1000000000000000000000000/0x1000000000000000000000000-&gt;xxreg0,resubmit(,14)
+    cookie=0x7d029aba, duration=22958.578s, table=13, n_packets=0, n_bytes=0, idle_age=22958, priority=100,ip,metadata=0x5 actions=set_field:0x1000000000000000000000000/0x1000000000000000000000000-&gt;xxreg0,resubmit(,14)
+    cookie=0x7d029aba, duration=22958.578s, table=13, n_packets=0, n_bytes=0, idle_age=22958, priority=100,ipv6,metadata=0x5 actions=set_field:0x1000000000000000000000000/0x1000000000000000000000000-&gt;xxreg0,resubmit(,14)
+    cookie=0x7d029aba, duration=22959.182s, table=13, n_packets=260424, n_bytes=52306797, idle_age=0, priority=100,ip,metadata=0x3 actions=set_field:0x1000000000000000000000000/0x1000000000000000000000000-&gt;xxreg0,resubmit(,14)
+    reg0[0] = 1;
+    next;
+ 6. ls_in_pre_lb (northd.c:5890): ip, priority 100, uuid 8a8d61ca
+    cookie=0x8a8d61ca, duration=22959.233s, table=14, n_packets=0, n_bytes=0, idle_age=22959, priority=100,ipv6,metadata=0x5 actions=set_field:0x4000000000000000000000000/0x4000000000000000000000000-&gt;xxreg0,resubmit(,15)
+    cookie=0x8a8d61ca, duration=22959.204s, table=14, n_packets=260424, n_bytes=52306797, idle_age=0, priority=100,ip,metadata=0x3 actions=set_field:0x4000000000000000000000000/0x4000000000000000000000000-&gt;xxreg0,resubmit(,15)
+    cookie=0x8a8d61ca, duration=22959.204s, table=14, n_packets=0, n_bytes=0, idle_age=22959, priority=100,ipv6,metadata=0x3 actions=set_field:0x4000000000000000000000000/0x4000000000000000000000000-&gt;xxreg0,resubmit(,15)
+    cookie=0x8a8d61ca, duration=22959.233s, table=14, n_packets=0, n_bytes=0, idle_age=22959, priority=100,ip,metadata=0x5 actions=set_field:0x4000000000000000000000000/0x4000000000000000000000000-&gt;xxreg0,resubmit(,15)
+    reg0[2] = 1;
+    next;
+ 7. ls_in_pre_stateful (northd.c:5917): reg0[2] == 1 &amp;&amp; ip4 &amp;&amp; tcp, priority 120, uuid 01fdf58b
+    cookie=0x1fdf58b, duration=22959.233s, table=15, n_packets=0, n_bytes=0, idle_age=22959, priority=120,tcp,reg0=0x4/0x4,metadata=0x5 actions=move:NXM_OF_IP_DST[]-&gt;NXM_NX_XXREG0[64..95],move:NXM_OF_TCP_DST[]-&gt;NXM_NX_XXREG0[32..47],ct(table=16,zone=NXM_NX_REG13[0..15],nat)
+    cookie=0x1fdf58b, duration=22959.184s, table=15, n_packets=0, n_bytes=0, idle_age=22959, priority=120,tcp,reg0=0x4/0x4,metadata=0x8 actions=move:NXM_OF_IP_DST[]-&gt;NXM_NX_XXREG0[64..95],move:NXM_OF_TCP_DST[]-&gt;NXM_NX_XXREG0[32..47],ct(table=16,zone=NXM_NX_REG13[0..15],nat)
+    cookie=0x1fdf58b, duration=22959.204s, table=15, n_packets=260424, n_bytes=52306797, idle_age=0, priority=120,tcp,reg0=0x4/0x4,metadata=0x3 actions=move:NXM_OF_IP_DST[]-&gt;NXM_NX_XXREG0[64..95],move:NXM_OF_TCP_DST[]-&gt;NXM_NX_XXREG0[32..47],ct(table=16,zone=NXM_NX_REG13[0..15],nat)
+    cookie=0x1fdf58b, duration=22959.232s, table=15, n_packets=0, n_bytes=0, idle_age=22959, priority=120,tcp,reg0=0x4/0x4,metadata=0x2 actions=move:NXM_OF_IP_DST[]-&gt;NXM_NX_XXREG0[64..95],move:NXM_OF_TCP_DST[]-&gt;NXM_NX_XXREG0[32..47],ct(table=16,zone=NXM_NX_REG13[0..15],nat)
+    reg1 = ip4.dst;
+    reg2[0..15] = tcp.dst;
+    ct_lb;
+
+ct_lb
+-----
+ 8. ls_in_acl_hint (northd.c:6041): ct.est &amp;&amp; ct_label.blocked == 0, priority 1, uuid a17a896f
+    cookie=0xa17a896f, duration=22959.233s, table=16, n_packets=0, n_bytes=0, idle_age=22959, priority=1,ct_state=+est+trk,ct_label=0/0x1,metadata=0x5 actions=set_field:0x400000000000000000000000000/0x400000000000000000000000000-&gt;xxreg0,resubmit(,17)
+    cookie=0xa17a896f, duration=22959.204s, table=16, n_packets=128010, n_bytes=31684495, idle_age=0, priority=1,ct_state=+est+trk,ct_label=0/0x1,metadata=0x3 actions=set_field:0x400000000000000000000000000/0x400000000000000000000000000-&gt;xxreg0,resubmit(,17)
+    reg0[10] = 1;
+    next;
+ 9. ls_in_acl (northd.c:6471): ct.est &amp;&amp; !ct.rel &amp;&amp; !ct.new &amp;&amp; !ct.inv &amp;&amp; ct.rpl &amp;&amp; ct_label.blocked == 0, priority 65532, uuid 5ae98b31
+    cookie=0x5ae98b31, duration=22959.233s, table=17, n_packets=0, n_bytes=0, idle_age=22959, priority=65532,ct_state=-new+est-rel+rpl-inv+trk,ct_label=0/0x1,metadata=0x5 actions=resubmit(,18)
+    cookie=0x5ae98b31, duration=22959.215s, table=17, n_packets=128010, n_bytes=31684495, idle_age=0, priority=65532,ct_state=-new+est-rel+rpl-inv+trk,ct_label=0/0x1,metadata=0x3 actions=resubmit(,18)
+    next;
+13. ls_in_pre_hairpin (northd.c:6801): ip &amp;&amp; ct.trk, priority 100, uuid 2520b1a4
+    cookie=0x2520b1a4, duration=22959.233s, table=21, n_packets=0, n_bytes=0, idle_age=22959, priority=100,ct_state=+trk,ip,metadata=0x5 actions=set_field:0/0x80-&gt;reg10,resubmit(,68),move:NXM_NX_REG10[7]-&gt;NXM_NX_XXREG0[102],set_field:0/0x80-&gt;reg10,resubmit(,69),move:NXM_NX_REG10[7]-&gt;NXM_NX_XXREG0[108],resubmit(,22)
+    cookie=0x2520b1a4, duration=22959.215s, table=21, n_packets=0, n_bytes=0, idle_age=22959, priority=100,ct_state=+trk,ipv6,metadata=0x3 actions=set_field:0/0x80-&gt;reg10,resubmit(,68),move:NXM_NX_REG10[7]-&gt;NXM_NX_XXREG0[102],set_field:0/0x80-&gt;reg10,resubmit(,69),move:NXM_NX_REG10[7]-&gt;NXM_NX_XXREG0[108],resubmit(,22)
+    cookie=0x2520b1a4, duration=22959.215s, table=21, n_packets=251254, n_bytes=51628217, idle_age=0, priority=100,ct_state=+trk,ip,metadata=0x3 actions=set_field:0/0x80-&gt;reg10,resubmit(,68),move:NXM_NX_REG10[7]-&gt;NXM_NX_XXREG0[102],set_field:0/0x80-&gt;reg10,resubmit(,69),move:NXM_NX_REG10[7]-&gt;NXM_NX_XXREG0[108],resubmit(,22)
+    cookie=0x2520b1a4, duration=22959.233s, table=21, n_packets=0, n_bytes=0, idle_age=22959, priority=100,ct_state=+trk,ipv6,metadata=0x5 actions=set_field:0/0x80-&gt;reg10,resubmit(,68),move:NXM_NX_REG10[7]-&gt;NXM_NX_XXREG0[102],set_field:0/0x80-&gt;reg10,resubmit(,69),move:NXM_NX_REG10[7]-&gt;NXM_NX_XXREG0[108],resubmit(,22)
+    reg0[6] = chk_lb_hairpin();
+    reg0[12] = chk_lb_hairpin_reply();
+    *** chk_lb_hairpin_reply action not implemented
+    next;
+22. ls_in_l2_lkup (northd.c:8292): eth.dst == 0a:58:0a:f4:01:01, priority 50, uuid e7b71eee
+    *** no OpenFlow flows
+    outport = &quot;stor-ovn-worker&quot;;
+    output;
+
+egress(dp=&quot;ovn-worker&quot;, inport=&quot;default_nginx-deployment-9456bbbf9-x6pc6&quot;, outport=&quot;stor-ovn-worker&quot;)
+-----------------------------------------------------------------------------------------------------
+ 0. ls_out_pre_lb (northd.c:5647): ip &amp;&amp; outport == &quot;stor-ovn-worker&quot;, priority 110, uuid a85134e9
+    *** no OpenFlow flows
+    next;
+ 1. ls_out_pre_acl (northd.c:5647): ip &amp;&amp; outport == &quot;stor-ovn-worker&quot;, priority 110, uuid 473dc0a5
+    *** no OpenFlow flows
+    next;
+ 3. ls_out_acl_hint (northd.c:6041): ct.est &amp;&amp; ct_label.blocked == 0, priority 1, uuid 5f2e1810
+    cookie=0x5f2e1810, duration=22959.234s, table=43, n_packets=0, n_bytes=0, idle_age=22959, priority=1,ct_state=+est+trk,ct_label=0/0x1,metadata=0x5 actions=set_field:0x400000000000000000000000000/0x400000000000000000000000000-&gt;xxreg0,resubmit(,44)
+    cookie=0x5f2e1810, duration=22959.216s, table=43, n_packets=128010, n_bytes=31684495, idle_age=0, priority=1,ct_state=+est+trk,ct_label=0/0x1,metadata=0x3 actions=set_field:0x400000000000000000000000000/0x400000000000000000000000000-&gt;xxreg0,resubmit(,44)
+    reg0[10] = 1;
+    next;
+ 4. ls_out_acl (northd.c:6473): ct.est &amp;&amp; !ct.rel &amp;&amp; !ct.new &amp;&amp; !ct.inv &amp;&amp; ct.rpl &amp;&amp; ct_label.blocked == 0, priority 65532, uuid 72e85294
+    cookie=0x72e85294, duration=22959.234s, table=44, n_packets=0, n_bytes=0, idle_age=22959, priority=65532,ct_state=-new+est-rel+rpl-inv+trk,ct_label=0/0x1,metadata=0x5 actions=resubmit(,45)
+    cookie=0x72e85294, duration=22959.216s, table=44, n_packets=128010, n_bytes=31684495, idle_age=0, priority=65532,ct_state=-new+est-rel+rpl-inv+trk,ct_label=0/0x1,metadata=0x3 actions=resubmit(,45)
+    next;
+ 9. ls_out_port_sec_l2 (northd.c:5594): outport == &quot;stor-ovn-worker&quot;, priority 50, uuid ae50e49e
+    *** no OpenFlow flows
+    output;
+    /* output to &quot;stor-ovn-worker&quot;, type &quot;patch&quot; */
+
+ingress(dp=&quot;ovn_cluster_router&quot;, inport=&quot;rtos-ovn-worker&quot;)
+----------------------------------------------------------
+ 0. lr_in_admission (northd.c:10523): eth.dst == 0a:58:0a:f4:01:01 &amp;&amp; inport == &quot;rtos-ovn-worker&quot; &amp;&amp; is_chassis_resident(&quot;cr-rtos-ovn-worker&quot;), priority 50, uuid 16833f18
+    *** no OpenFlow flows
+    xreg0[0..47] = 0a:58:0a:f4:01:01;
+    next;
+ 1. lr_in_lookup_neighbor (northd.c:10667): 1, priority 0, uuid 39881020
+    cookie=0x39881020, duration=22959.217s, table=9, n_packets=84769, n_bytes=16419002, idle_age=0, priority=0,metadata=0x1 actions=set_field:0x4/0x4-&gt;xreg4,resubmit(,10)
+    cookie=0x39881020, duration=22959.184s, table=9, n_packets=34573, n_bytes=3262795, idle_age=0, priority=0,metadata=0x9 actions=set_field:0x4/0x4-&gt;xreg4,resubmit(,10)
+    reg9[2] = 1;
+    next;
+ 2. lr_in_learn_neighbor (northd.c:10676): reg9[2] == 1 || reg9[3] == 0, priority 100, uuid 6be9d860
+    cookie=0x6be9d860, duration=22959.217s, table=10, n_packets=84769, n_bytes=16419002, idle_age=0, priority=100,reg9=0/0x8,metadata=0x1 actions=resubmit(,11)
+    cookie=0x6be9d860, duration=22959.183s, table=10, n_packets=34585, n_bytes=3263563, idle_age=0, priority=100,reg9=0/0x8,metadata=0x9 actions=resubmit(,11)
+    cookie=0x6be9d860, duration=22959.184s, table=10, n_packets=869, n_bytes=39094, idle_age=29, priority=100,reg9=0x4/0x4,metadata=0x9 actions=resubmit(,11)
+    cookie=0x6be9d860, duration=22959.217s, table=10, n_packets=0, n_bytes=0, idle_age=22959, priority=100,reg9=0x4/0x4,metadata=0x1 actions=resubmit(,11)
+    next;
+10. lr_in_ip_routing_pre (northd.c:10910): 1, priority 0, uuid 219bc578
+    cookie=0x219bc578, duration=22959.217s, table=18, n_packets=84764, n_bytes=16418452, idle_age=0, priority=0,metadata=0x1 actions=set_field:0/0xffffffff-&gt;xxreg1,resubmit(,19)
+    cookie=0x219bc578, duration=22959.183s, table=18, n_packets=34561, n_bytes=3261195, idle_age=0, priority=0,metadata=0x9 actions=set_field:0/0xffffffff-&gt;xxreg1,resubmit(,19)
+    reg7 = 0;
+    next;
+11. lr_in_ip_routing (northd.c:9439): reg7 == 0 &amp;&amp; ip4.dst == 100.64.0.3/32, priority 97, uuid 4b1e23e5
+    cookie=0x4b1e23e5, duration=22959.217s, table=19, n_packets=0, n_bytes=0, idle_age=22959, priority=97,ip,reg7=0,metadata=0x1,nw_dst=100.64.0.3 actions=dec_ttl(),set_field:0/0xffff00000000-&gt;xreg4,set_field:0x64400003000000000000000000000000/0xffffffff000000000000000000000000-&gt;xxreg0,set_field:0x644000010000000000000000/0xffffffff0000000000000000-&gt;xxreg0,set_field:0a:58:64:40:00:01-&gt;eth_src,set_field:0x1-&gt;reg15,set_field:0x1/0x1-&gt;reg10,resubmit(,20)
+    ip.ttl--;
+    reg8[0..15] = 0;
+    reg0 = 100.64.0.3;
+    reg1 = 100.64.0.1;
+    eth.src = 0a:58:64:40:00:01;
+    outport = &quot;rtoj-ovn_cluster_router&quot;;
+    flags.loopback = 1;
+    next;
+12. lr_in_ip_routing_ecmp (northd.c:10985): reg8[0..15] == 0, priority 150, uuid f65895a6
+    cookie=0xf65895a6, duration=22959.217s, table=20, n_packets=84764, n_bytes=16418452, idle_age=0, priority=150,reg8=0/0xffff,metadata=0x1 actions=resubmit(,21)
+    cookie=0xf65895a6, duration=22959.186s, table=20, n_packets=21, n_bytes=2064, idle_age=14155, priority=150,reg8=0/0xffff,metadata=0x9 actions=resubmit(,21)
+    next;
+13. lr_in_policy (northd.c:8672): ip4.src == 10.244.0.0/16 &amp;&amp; ip4.dst == 100.64.0.0/16, priority 101, uuid f385bfe8
+    cookie=0xf385bfe8, duration=22959.218s, table=21, n_packets=0, n_bytes=0, idle_age=22959, priority=101,ip,metadata=0x1,nw_src=10.244.0.0/16,nw_dst=100.64.0.0/16 actions=set_field:0/0xffff00000000-&gt;xreg4,resubmit(,22)
+    reg8[0..15] = 0;
+    next;
+14. lr_in_policy_ecmp (northd.c:11120): reg8[0..15] == 0, priority 150, uuid e3a1301b
+    cookie=0xe3a1301b, duration=22959.217s, table=22, n_packets=84764, n_bytes=16418452, idle_age=0, priority=150,reg8=0/0xffff,metadata=0x1 actions=resubmit(,23)
+    cookie=0xe3a1301b, duration=22959.186s, table=22, n_packets=21, n_bytes=2064, idle_age=14155, priority=150,reg8=0/0xffff,metadata=0x9 actions=resubmit(,23)
+    next;
+15. lr_in_arp_resolve (northd.c:11506): outport == &quot;rtoj-ovn_cluster_router&quot; &amp;&amp; reg0 == 100.64.0.3, priority 100, uuid 33f04862
+    cookie=0x33f04862, duration=22959.218s, table=23, n_packets=0, n_bytes=0, idle_age=22959, priority=100,reg0=0x64400003,reg15=0x1,metadata=0x1 actions=set_field:0a:58:64:40:00:03-&gt;eth_dst,resubmit(,24)
+    eth.dst = 0a:58:64:40:00:03;
+    next;
+19. lr_in_arp_request (northd.c:11801): 1, priority 0, uuid 0abbeff8
+    cookie=0xabbeff8, duration=22959.218s, table=27, n_packets=84764, n_bytes=16418452, idle_age=0, priority=0,metadata=0x1 actions=resubmit(,37)
+    cookie=0xabbeff8, duration=22959.184s, table=27, n_packets=20, n_bytes=1990, idle_age=14155, priority=0,metadata=0x9 actions=resubmit(,37)
+    output;
+
+egress(dp=&quot;ovn_cluster_router&quot;, inport=&quot;rtos-ovn-worker&quot;, outport=&quot;rtoj-ovn_cluster_router&quot;)
+--------------------------------------------------------------------------------------------
+ 0. lr_out_chk_dnat_local (northd.c:13026): 1, priority 0, uuid a02f42a1
+    cookie=0xa02f42a1, duration=22959.218s, table=40, n_packets=84752, n_bytes=16417482, idle_age=0, priority=0,metadata=0x1 actions=set_field:0/0x10-&gt;xreg4,resubmit(,41)
+    cookie=0xa02f42a1, duration=22959.184s, table=40, n_packets=465, n_bytes=21988, idle_age=29, priority=0,metadata=0x9 actions=set_field:0/0x10-&gt;xreg4,resubmit(,41)
+    reg9[4] = 0;
+    next;
+ 6. lr_out_delivery (northd.c:11848): outport == &quot;rtoj-ovn_cluster_router&quot;, priority 100, uuid 5428c7e9
+    cookie=0x5428c7e9, duration=22959.218s, table=46, n_packets=0, n_bytes=0, idle_age=22959, priority=100,reg15=0x1,metadata=0x1 actions=resubmit(,64)
+    output;
+    /* output to &quot;rtoj-ovn_cluster_router&quot;, type &quot;patch&quot; */
+
+ingress(dp=&quot;join&quot;, inport=&quot;jtor-ovn_cluster_router&quot;)
+----------------------------------------------------
+ 0. ls_in_port_sec_l2 (northd.c:5497): inport == &quot;jtor-ovn_cluster_router&quot;, priority 50, uuid 485af0cc
+    cookie=0x485af0cc, duration=22959.234s, table=8, n_packets=0, n_bytes=0, idle_age=22959, priority=50,reg14=0x1,metadata=0x2 actions=resubmit(,9)
+    next;
+ 6. ls_in_pre_lb (northd.c:5644): ip &amp;&amp; inport == &quot;jtor-ovn_cluster_router&quot;, priority 110, uuid 61c2f8b4
+    cookie=0x61c2f8b4, duration=22959.234s, table=14, n_packets=0, n_bytes=0, idle_age=22959, priority=110,ipv6,reg14=0x1,metadata=0x2 actions=resubmit(,15)
+    cookie=0x61c2f8b4, duration=22959.234s, table=14, n_packets=0, n_bytes=0, idle_age=22959, priority=110,ip,reg14=0x1,metadata=0x2 actions=resubmit(,15)
+    next;
+22. ls_in_l2_lkup (northd.c:8292): eth.dst == 0a:58:64:40:00:03, priority 50, uuid 4ec697e3
+    cookie=0x4ec697e3, duration=22959.234s, table=30, n_packets=0, n_bytes=0, idle_age=22959, priority=50,metadata=0x2,dl_dst=0a:58:64:40:00:03 actions=set_field:0x2-&gt;reg15,resubmit(,37)
+    outport = &quot;jtor-GR_ovn-worker&quot;;
+    output;
+
+egress(dp=&quot;join&quot;, inport=&quot;jtor-ovn_cluster_router&quot;, outport=&quot;jtor-GR_ovn-worker&quot;)
+---------------------------------------------------------------------------------
+ 0. ls_out_pre_lb (northd.c:5647): ip &amp;&amp; outport == &quot;jtor-GR_ovn-worker&quot;, priority 110, uuid ff3a234e
+    *** no OpenFlow flows
+    next;
+ 9. ls_out_port_sec_l2 (northd.c:5594): outport == &quot;jtor-GR_ovn-worker&quot;, priority 50, uuid 65252832
+    *** no OpenFlow flows
+    output;
+    /* output to &quot;jtor-GR_ovn-worker&quot;, type &quot;l3gateway&quot; */
+
+ingress(dp=&quot;GR_ovn-worker&quot;, inport=&quot;rtoj-GR_ovn-worker&quot;)
+--------------------------------------------------------
+ 0. lr_in_admission (northd.c:10523): eth.dst == 0a:58:64:40:00:03 &amp;&amp; inport == &quot;rtoj-GR_ovn-worker&quot;, priority 50, uuid edfaf0af
+    *** no OpenFlow flows
+    xreg0[0..47] = 0a:58:64:40:00:03;
+    next;
+ 1. lr_in_lookup_neighbor (northd.c:10667): 1, priority 0, uuid 39881020
+    cookie=0x39881020, duration=22959.218s, table=9, n_packets=84769, n_bytes=16419002, idle_age=0, priority=0,metadata=0x1 actions=set_field:0x4/0x4-&gt;xreg4,resubmit(,10)
+    cookie=0x39881020, duration=22959.185s, table=9, n_packets=34573, n_bytes=3262795, idle_age=0, priority=0,metadata=0x9 actions=set_field:0x4/0x4-&gt;xreg4,resubmit(,10)
+    reg9[2] = 1;
+    next;
+ 2. lr_in_learn_neighbor (northd.c:10676): reg9[2] == 1 || reg9[3] == 0, priority 100, uuid 6be9d860
+    cookie=0x6be9d860, duration=22959.219s, table=10, n_packets=84769, n_bytes=16419002, idle_age=0, priority=100,reg9=0/0x8,metadata=0x1 actions=resubmit(,11)
+    cookie=0x6be9d860, duration=22959.185s, table=10, n_packets=34585, n_bytes=3263563, idle_age=0, priority=100,reg9=0/0x8,metadata=0x9 actions=resubmit(,11)
+    cookie=0x6be9d860, duration=22959.186s, table=10, n_packets=869, n_bytes=39094, idle_age=29, priority=100,reg9=0x4/0x4,metadata=0x9 actions=resubmit(,11)
+    cookie=0x6be9d860, duration=22959.219s, table=10, n_packets=0, n_bytes=0, idle_age=22959, priority=100,reg9=0x4/0x4,metadata=0x1 actions=resubmit(,11)
+    next;
+ 4. lr_in_unsnat (northd.c:10378): inport == &quot;rtoj-GR_ovn-worker&quot; &amp;&amp; ip4.dst == 100.64.0.3, priority 110, uuid e548aaeb
+    *** no OpenFlow flows
+    ct_snat;
+</code></pre>
+<p>We can see that we hit <code>ct_snat</code> in the <code>ingress</code> pipeline of <code>GR_ovn-worker</code>:</p>
+<pre><code># ovn-sbctl dump-flows
+(...)
+Datapath: &quot;GR_ovn-worker&quot; (15e72dff-677d-4794-8f70-a5fea49ad788)  Pipeline: ingress
+(...)
+  table=4 (lr_in_unsnat       ), priority=110  , match=(inport == &quot;rtoj-GR_ovn-worker&quot; &amp;&amp; ip4.dst == 100.64.0.3), action=(ct_snat;)
+(...)
+</code></pre>
+<p>Now, here, we hit an unfortunate shortcoming of ovn-trace - it does not what to do due to missing conntrack entries, and thus on a gatway router it will treat <code>ct_snat</code> as if this was a noop:</p>
+<pre><code>      This action distinguishes between gateway routers and distributed
+      routers.  A gateway router is defined as a logical datapath that contains
+      an &lt;code&gt;l3gateway&lt;/code&gt; port; any other logical datapath is a
+      distributed router.  On a gateway router, &lt;code&gt;ct_snat;&lt;/code&gt; is
+      treated as a no-op.  On a distributed router, it is treated the same way
+      as &lt;code&gt;ct_dnat;&lt;/code&gt;.
+</code></pre>
+<blockquote>
+<p><a href="https://github.com/ovn-org/ovn/blob/ed81be75e8b3b33745eeb9b6ce2686b87ef72cd0/utilities/ovn-trace.8.xml#L242">https://github.com/ovn-org/ovn/blob/ed81be75e8b3b33745eeb9b6ce2686b87ef72cd0/utilities/ovn-trace.8.xml#L242</a></p>
+</blockquote>
+<p>For our example, this means that the processing stops here, and that we have to figure out ourselves what would happen here. We know that the loadbalancer should rewrite the DNAT and SNAT that was done initially, and we can simply run a new trace. First, though, we have to find out from where.</p>
+<p>We know that the packet will go out of <code>GR_ovn-worker</code> and from port <code>rtoe-GR_ovn-worker</code>:</p>
+<pre><code># ovn-nbctl show
+(...)
+switch 214f4d51-750d-414a-aad1-94e84e623f9b (ext_ovn-worker)
+    port breth0_ovn-worker
+        type: localnet
+        addresses: [&quot;unknown&quot;]
+    port etor-GR_ovn-worker
+        type: router
+        addresses: [&quot;02:42:ac:12:00:04&quot;]
+        router-port: rtoe-GR_ovn-worker
+(...)
+router 5ea87f54-ceeb-442a-92c8-4b522278b5dd (GR_ovn-worker)
+    port rtoj-GR_ovn-worker
+        mac: &quot;0a:58:64:40:00:03&quot;
+        networks: [&quot;100.64.0.3/16&quot;]
+    port rtoe-GR_ovn-worker
+        mac: &quot;02:42:ac:12:00:04&quot;
+        networks: [&quot;172.18.0.4/16&quot;]
+    nat ca3ef3e0-22c1-427d-a977-b10256a96177
+        external ip: &quot;172.18.0.4&quot;
+        logical ip: &quot;10.244.0.0/16&quot;
+        type: &quot;snat&quot;
+(...)
+</code></pre>
+<p>Let's find the switch port that matches this router port:</p>
+<pre><code>sh-5.1# ovn-nbctl find logical_switch_port &quot;options={router-port=rtoe-GR_ovn-worker}&quot;
+_uuid               : 2b6e5ae2-a67f-4526-8b53-316a265a1acc
+addresses           : [&quot;02:42:ac:12:00:04&quot;]
+dhcpv4_options      : []
+dhcpv6_options      : []
+dynamic_addresses   : []
+enabled             : []
+external_ids        : {}
+ha_chassis_group    : []
+name                : etor-GR_ovn-worker
+options             : {router-port=rtoe-GR_ovn-worker}
+parent_name         : []
+port_security       : []
+tag                 : []
+tag_request         : []
+type                : router
+up                  : true
+</code></pre>
+<p>And now, we can craft the ovn-trace command that shows our packet is indeed leaving on <code>breth0_ovn-worker</code>:</p>
+<pre><code>sh-5.1# ovn-trace --ct est,rpl --ovs ext_ovn-worker 'inport == &quot;etor-GR_ovn-worker&quot; &amp;&amp; eth.src == 02:42:ac:12:00:04 &amp;&amp;  eth.dst == 02:42:7a:79:82:ca &amp;&amp; ip4.src == 171.18.0.4 &amp;&amp; ip4.dst == 171.18.0.1 &amp;&amp; ip.ttl == 64 &amp;&amp; tcp.src==30007 &amp;&amp; tcp.dst == 47306'  --minimal
+# tcp,reg14=0x2,vlan_tci=0x0000,dl_src=02:42:ac:12:00:04,dl_dst=02:42:7a:79:82:ca,nw_src=171.18.0.4,nw_dst=171.18.0.1,nw_tos=0,nw_ecn=0,nw_ttl=64,tp_src=30007,tp_dst=47306,tcp_flags=0
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+*** no OpenFlow flows;
+output(&quot;breth0_ovn-worker&quot;);
+sh-5.1# 
+</code></pre>
+<h2 id="sources-and-references">Sources and references</h2>
+<p>Man pages:</p>
+<ul>
+<li><a href="https://man7.org/linux/man-pages/man8/ovn-trace.8.html">https://man7.org/linux/man-pages/man8/ovn-trace.8.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man5/ovn-sb.5.html">https://man7.org/linux/man-pages/man5/ovn-sb.5.html</a></li>
+</ul>
+<p>Some discussion around ovn-trace:</p>
+<ul>
+<li><a href="https://www.mail-archive.com/ovs-discuss@openvswitch.org/msg07214.html">https://www.mail-archive.com/ovs-discuss@openvswitch.org/msg07214.html</a></li>
+</ul>
+<p>Examples for ovn-trace commands can be found inside the OVN test cases:</p>
+<ul>
+<li><a href="https://www.mail-archive.com/ovs-dev@openvswitch.org/msg55608.html">https://www.mail-archive.com/ovs-dev@openvswitch.org/msg55608.html</a></li>
+<li>Simple test cases with <code>--ct new</code>: <a href="https://github.com/ovn-org/ovn/blob/main/tests/ovn-northd.at">https://github.com/ovn-org/ovn/blob/main/tests/ovn-northd.at</a></li>
+<li>More complex test cases: <a href="https://github.com/ovn-org/ovn/blob/main/tests/ovn.at">https://github.com/ovn-org/ovn/blob/main/tests/ovn.at</a></li>
+</ul>
+<p>RFCs:</p>
+<ul>
+<li><a href="https://datatracker.ietf.org/doc/html/rfc793#section-3.1">https://datatracker.ietf.org/doc/html/rfc793#section-3.1</a></li>
+</ul>
+                
+                  
+                    
+
+<hr>
+<div class="md-source-date">
+  <small>
+    
+      Last update: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">February 16, 2022</span>
+    
+  </small>
+</div>
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fb4a9340.min.js", "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.a1c7c35e.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -865,7 +865,7 @@ Now, here, we hit an unfortunate shortcoming of ovn-trace - it does not what to 
       treated as a no-op.  On a distributed router, it is treated the same way
       as <code>ct_dnat;</code>.
 ~~~
-> [https://github.com/ovn-org/ovn/blob/ed81be75e8b3b33745eeb9b6ce2686b87ef72cd0/utilities/ovn-trace.8.xml#L242](https://github.com/ovn-org/ovn/blob/ed81be75e8b3b33745eeb9b6ce2686b87ef72cd0/utilities/ovn-trace.8.xml#L242)
+From: [https://github.com/ovn-org/ovn/blob/ed81be75e8b3b33745eeb9b6ce2686b87ef72cd0/utilities/ovn-trace.8.xml#L242](https://github.com/ovn-org/ovn/blob/ed81be75e8b3b33745eeb9b6ce2686b87ef72cd0/utilities/ovn-trace.8.xml#L242)
 
 For our example, this means that the processing stops here, and that we have to figure out ourselves what would happen here. We know that the loadbalancer should rewrite the DNAT and SNAT that was done initially, and we can simply run a new trace. First, though, we have to find out from where.
 

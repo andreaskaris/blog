@@ -8,11 +8,10 @@ theme:
     - toc.integrate
 plugins:
   - git-revision-date-localized
-hide:
-  - toc
+# hide:
+#   - toc
 markdown_extensions:
   - pymdownx.highlight:
-      anchor_linenums: true
       guess_lang: true
       linenums: true
   - pymdownx.inlinehilite

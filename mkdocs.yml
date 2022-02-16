@@ -13,8 +13,8 @@ hide:
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
-      linenums: true
       guess_lang: true
+      linenums: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences

@@ -7,12 +7,12 @@
 I use an [ovn-kubernetes](https://github.com/ovn-org/ovn-kubernetes) kind deployment as a base environment for the following traces.
 
 I spawn an environment with:
-~~~
+``` bash linenums="1"
 contrib/kind.sh
-~~~
+```
 
 Then, I deploy the following deployment and service:
-~~~
+``` yaml linenums="1"
 # cat nginx.yaml 
 apiVersion: apps/v1
 kind: Deployment
@@ -49,10 +49,10 @@ spec:
       targetPort: 80
       nodePort: 30007
   type:  NodePort
-~~~
+```
 
 My pod is on ovn-worker, and the node's IP address is 172.18.0.3. The service can be reached on port 30007 and will then be NATed and forwarded to pod nginx-deployment-9456bbbf9-x6pc6 with IP 10.244.1.3:
-~~~
+``` bash linenums="1"
 [root@ovnkubernetes egressfw]# oc get svc -o wide
 NAME         TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE   SELECTOR
 kubernetes   ClusterIP   10.96.0.1      <none>        443/TCP        84m   <none>
@@ -65,10 +65,10 @@ NAME                STATUS   ROLES                  AGE   VERSION   INTERNAL-IP 
 ovn-control-plane   Ready    control-plane,master   84m   v1.23.3   172.18.0.3    <none>        Ubuntu 21.10   4.18.0-358.el8.x86_64   containerd://1.5.9
 ovn-worker          Ready    <none>                 84m   v1.23.3   172.18.0.4    <none>        Ubuntu 21.10   4.18.0-358.el8.x86_64   containerd://1.5.9
 ovn-worker2         Ready    <none>                 84m   v1.23.3   172.18.0.2    <none>        Ubuntu 21.10   4.18.0-358.el8.x86_64   containerd://1.5.9
-~~~
+```
 
 We can run curl against this service from the next-hop gateway with IP address 172.18.0.1 and MAC address 02:42:7a:79:82:ca:
-~~~
+``` bash linenums="1"
 # ip a ls dev br-519277dba8fe
 4: br-519277dba8fe: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
     link/ether 02:42:7a:79:82:ca brd ff:ff:ff:ff:ff:ff
@@ -90,10 +90,10 @@ Last-Modified: Tue, 04 Dec 2018 14:44:49 GMT
 Connection: keep-alive
 ETag: "5c0692e1-264"
 Accept-Ranges: bytes
-~~~
+```
 
 The pod has the following IP address and gateway:
-~~~
+``` bash linenums="1"
 # ip a
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
@@ -111,10 +111,10 @@ The pod has the following IP address and gateway:
 default via 10.244.1.1 dev eth0
 # ip neigh
 10.244.1.1 dev eth0 lladdr 0a:58:0a:f4:01:01 STALE
-~~~
+```
 
 And on the pod, we see the following flow which has gone through DNAT and SNAT:
-~~~
+``` bash linenums="1"
 # tcpdump -nne -i eth0
 dropped privs to tcpdump
 tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
@@ -134,10 +134,10 @@ listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
 11 packets captured
 11 packets received by filter
 0 packets dropped by kernel
-~~~
+```
 
 Here is an overview of the NBDB state:
-~~~
+``` bash linenums="1"
 sh-5.1# ovn-nbctl show
 switch cd928d81-4f0f-4c04-860a-f75022f7e0b9 (ext_ovn-control-plane)
     port breth0_ovn-control-plane
@@ -251,27 +251,27 @@ router 9ac72c76-9f8f-4f3a-9a82-0e18846c4cd9 (ovn_cluster_router)
     port rtoj-ovn_cluster_router
         mac: "0a:58:64:40:00:01"
         networks: ["100.64.0.1/16"]
-~~~
+```
 
 The service is implemented as an OVN loadbalancer - we are going to look into this load-balancer further in the examples section below:
-~~~
+```
 # ovn-nbctl lr-lb-list GR_ovn-worker
 UUID                                    LB                  PROTO      VIP                 IPs
 bc20db47-e79c-4906-b0d8-dd2dcfaf54b4    Service_default/    tcp        172.18.0.4:30007    10.244.1.3:80
 e7486241-66e1-453a-b44d-3b3e7b2ebc4f    Service_default/    tcp        10.96.0.1:443       172.18.0.3:6443
-~~~
+```
 
 ### Collection of examples
 
 #### Simulating new flows through conntrack
 
 Tracing a new TCP flow from the outside of the cluster to the service IP and port, knowing that NAT and conntrack are involved. A `--minimal` trace is always a good starting point. The most important bit here is the `--ct new` command line parameter to simulate a new conntrack flow:
-~~~
+``` bash linenums="1"
 # ovn-trace --minimal  --ovs ext_ovn-worker 'inport == "breth0_ovn-worker" && eth.src == 02:42:7a:79:82:ca &&  eth.dst == 02:42:ac:12:00:04 && ip4.src == 172.18.0.1 && ip4.dst == 172.18.0.4 && ip.ttl == 64 && tcp.src==12345 && tcp.dst == 30007' --ct new
-~~~
+```
 
 Result of the `--minimal` trace:
-~~~
+``` bash linenums="1"
 sh-5.1# ovn-trace --minimal  --ovs ext_ovn-worker 'inport == "breth0_ovn-worker" && eth.src == 02:42:7a:79:82:ca &&  eth.dst == 02:42:ac:12:00:04 && ip4.src == 172.18.0.1 && ip4.dst == 172.18.0.4 && ip.ttl == 64 && tcp.src==12345 && tcp.dst == 30007' --ct new
 # tcp,reg14=0x1,vlan_tci=0x0000,dl_src=02:42:7a:79:82:ca,dl_dst=02:42:ac:12:00:04,nw_src=172.18.0.1,nw_dst=172.18.0.4,nw_tos=0,nw_ecn=0,nw_ttl=64,tp_src=12345,tp_dst=30007,tcp_flags=0
 *** no OpenFlow flows;
@@ -312,10 +312,10 @@ ct_dnat /* assuming no un-dnat entry, so no change */ {
         };
     };
 };
-~~~
+```
 
 In the detailed trace, we can also see the destination IP after the DNAT:
-~~~
+``` bash linenums="1"
 sh-5.1# ovn-trace --friendly-names  --ovs ext_ovn-worker 'inport == "breth0_ovn-worker" && eth.src == 02:42:7a:79:82:ca &&  eth.dst == 02:42:ac:12:00:04 && ip4.src == 172.18.0.1 && ip4.dst == 172.18.0.4 && ip.ttl == 64 && tcp.src==12345 && tcp.dst == 30007' --ct new | tail -n 15
 
 ct_lb /* default (use --ct to customize) */
@@ -332,19 +332,19 @@ ct_lb /* default (use --ct to customize) */
     *** no OpenFlow flows
     output;
     /* output to "default_nginx-deployment-9456bbbf9-x6pc6", type "" */
-~~~
+```
 
 Unfortunately, it is very difficult to see what the final packet would look like. We know that an SNAT is involved, too, but that is "hidden" somewhere in the output:
-~~~
+``` bash linenums="1"
 sh-5.1# ovn-trace --friendly-names  --ovs ext_ovn-worker 'inport == "breth0_ovn-worker" && eth.src == 02:42:7a:79:82:ca &&  eth.dst == 02:42:ac:12:00:04 && ip4.src == 172.18.0.1 && ip4.dst == 172.18.0.4 && ip.ttl == 64 && tcp.src==12345 && tcp.dst == 30007' --ct new | grep 100.64     
     reg0 = 100.64.0.1;
     reg1 = 100.64.0.3;
-~~~
+```
 
 It would indeed be desirable for ovn-trace to show the full packet state of the processed and ready-to-send packet.
 
 If we look at the flow in a bit more detail, we can see that in the `ingress` pipeline of `GR_ovn-worker`, the packet hits the load-balancer flow. SNAT is forced for this load-balancer, and the packet shall be sent to backend `10.244.1.3:80`:
-~~~
+``` bash linenums="1"
 # ovn-trace --ct new --ct new --ct new  --ovs ext_ovn-worker 'inport == "breth0_ovn-worker" && eth.src == 02:42:7a:79:82:ca &&  eth.dst == 02:42:ac:12:00:04 && ip4.src == 172.18.0.1 && ip4.dst == 172.18.0.4 && ip.ttl == 64 && tcp.src==12345 && tcp.dst == 30007' 
 (...)
 ingress(dp="GR_ovn-worker", inport="rtoe-GR_ovn-worker")
@@ -397,10 +397,10 @@ ct_lb
     outport = "rtoj-GR_ovn-worker";
     flags.loopback = 1;
     next;
-~~~
+```
 
 We can find the same flow here inside the OVN Southbound database flows:
-~~~
+``` bash linenums="1"
 # ovn-sbctl dump-flows 
 (...)
 Datapath: "GR_ovn-worker" (15e72dff-677d-4794-8f70-a5fea49ad788)  Pipeline: ingress
@@ -409,7 +409,7 @@ Datapath: "GR_ovn-worker" (15e72dff-677d-4794-8f70-a5fea49ad788)  Pipeline: ingr
 (...)
   table=11(lr_in_ip_routing   ), priority=49   , match=(reg7 == 0 && ip4.dst == 10.244.0.0/16), action=(ip.ttl--; reg8[0..15] = 0; reg0 = 100.64.0.1; reg1 = 100.64.0.3; eth.src = 0a:58:64:40:00:03; outport = "rtoj-GR_ovn-worker"; flags.loopback = 1; next;)
 (...)
-~~~
+```
 
 #### Specifying multiple `--ct` actions
 
@@ -424,7 +424,7 @@ From the ovn-trace man page:
 ~~~
 
 Compare the following outputs - note that there is a difference with every `--ct new` set:
-~~~
+``` bash linenums="1"
 sh-5.1# ovn-trace --minimal  --ovs ext_ovn-worker 'inport == "breth0_ovn-worker" && eth.src == 02:42:7a:79:82:ca &&  eth.dst == 02:42:ac:12:00:04 && ip4.src == 172.18.0.1 && ip4.dst == 172.18.0.4 && ip.ttl == 64 && tcp.src==12345 && tcp.dst == 30007'              
 # tcp,reg14=0x1,vlan_tci=0x0000,dl_src=02:42:7a:79:82:ca,dl_dst=02:42:ac:12:00:04,nw_src=172.18.0.1,nw_dst=172.18.0.4,nw_tos=0,nw_ecn=0,nw_ttl=64,tp_src=12345,tp_dst=30007,tcp_flags=0
 *** no OpenFlow flows;
@@ -563,7 +563,7 @@ ct_dnat /* assuming no un-dnat entry, so no change */ {
     };
 };
 sh-5.1# 
-~~~
+```
 
 #### Specifying TCP flags in ovn-trace
 
@@ -582,7 +582,7 @@ It is also possible to provide the exact TCP flags. See RFC 793 for further deta
 A FIN is hence `0x1`, a SYN 0x2, a RST is 0x4, a PSH is 0x8, an ACK is 0x10, a SYN/ACK is 0x12 and so on.
 
 The resulting ovn-trace command:
-~~~
+``` bash linenums="1"
 # ovn-trace --minimal  --ovs ext_ovn-worker 'inport == "breth0_ovn-worker" && eth.src == 02:42:7a:79:82:ca &&  eth.dst == 02:42:ac:12:00:04 && ip4.src == 172.18.0.1 && ip4.dst == 172.18.0.4 && ip.ttl == 64 && tcp.src==12345 && tcp.dst == 30007 && tcp.flags == 0x2' --ct new 
 # tcp,reg14=0x1,vlan_tci=0x0000,dl_src=02:42:7a:79:82:ca,dl_dst=02:42:ac:12:00:04,nw_src=172.18.0.1,nw_dst=172.18.0.4,nw_tos=0,nw_ecn=0,nw_ttl=64,tp_src=12345,tp_dst=30007,tcp_flags=syn
 *** no OpenFlow flows;
@@ -623,12 +623,12 @@ ct_dnat /* assuming no un-dnat entry, so no change */ {
         };
     };
 };
-~~~
+```
 
 #### Simulating reverse flows through conntrack
 
 Let's continue with the earlier example. This time, let's simulate the the answer to the earlier flow. Unfortunately, something seems to go wrong:
-~~~
+``` bash linenums="1"
 # ovn-trace --ct rpl,est --minimal  --ovs ovn-worker 'inport == "default_nginx-deployment-9456bbbf9-x6pc6" && eth.src == 0a:58:0a:f4:01:03 &&  eth.dst == 0a:58:0a:f4:01:01 && ip4.src == 10.244.1.3 && ip4.dst == 100.64.0.3 && ip.ttl == 64 && tcp.src==80 && tcp.dst == 47306' 
 # tcp,reg14=0x3,vlan_tci=0x0000,dl_src=0a:58:0a:f4:01:03,dl_dst=0a:58:0a:f4:01:01,nw_src=10.244.1.3,nw_dst=100.64.0.3,nw_tos=0,nw_ecn=0,nw_ttl=64,tp_src=80,tp_dst=47306,tcp_flags=0
 *** no OpenFlow flows;
@@ -650,10 +650,10 @@ ct_lb {
     *** no OpenFlow flows;
     *** no OpenFlow flows;
 };
-~~~
+```
 
 What happens if we run a detailed trace:
-~~~
+``` bash linenums="1"
 # ovn-trace --ct rpl,est --ovs ovn-worker 'inport == "default_nginx-deployment-9456bbbf9-x6pc6" && eth.src == 0a:58:0a:f4:01:03 &&  eth.dst == 0a:58:0a:f4:01:01 && ip4.src == 10.244.1.3 && ip4.dst == 100.64.0.3 && ip.ttl == 64 && tcp.src==80 && tcp.dst == 47306' 
 # tcp,reg14=0x3,vlan_tci=0x0000,dl_src=0a:58:0a:f4:01:03,dl_dst=0a:58:0a:f4:01:01,nw_src=10.244.1.3,nw_dst=100.64.0.3,nw_tos=0,nw_ecn=0,nw_ttl=64,tp_src=80,tp_dst=47306,tcp_flags=0
 
@@ -844,17 +844,17 @@ ingress(dp="GR_ovn-worker", inport="rtoj-GR_ovn-worker")
  4. lr_in_unsnat (northd.c:10378): inport == "rtoj-GR_ovn-worker" && ip4.dst == 100.64.0.3, priority 110, uuid e548aaeb
     *** no OpenFlow flows
     ct_snat;
-~~~
+```
 
 We can see that we hit `ct_snat` in the `ingress` pipeline of `GR_ovn-worker`:
-~~~
+``` bash linenums="1"
 # ovn-sbctl dump-flows
 (...)
 Datapath: "GR_ovn-worker" (15e72dff-677d-4794-8f70-a5fea49ad788)  Pipeline: ingress
 (...)
   table=4 (lr_in_unsnat       ), priority=110  , match=(inport == "rtoj-GR_ovn-worker" && ip4.dst == 100.64.0.3), action=(ct_snat;)
 (...)
-~~~
+```
 
 Now, here, we hit an unfortunate shortcoming of ovn-trace - it does not what to do due to missing conntrack entries, and thus on a gatway router it will treat `ct_snat` as if this was a noop:
 ~~~
@@ -870,7 +870,7 @@ Now, here, we hit an unfortunate shortcoming of ovn-trace - it does not what to 
 For our example, this means that the processing stops here, and that we have to figure out ourselves what would happen here. We know that the loadbalancer should rewrite the DNAT and SNAT that was done initially, and we can simply run a new trace. First, though, we have to find out from where.
 
 We know that the packet will go out of `GR_ovn-worker` and from port `rtoe-GR_ovn-worker`:
-~~~
+``` bash linenums="1"
 # ovn-nbctl show
 (...)
 switch 214f4d51-750d-414a-aad1-94e84e623f9b (ext_ovn-worker)
@@ -894,10 +894,10 @@ router 5ea87f54-ceeb-442a-92c8-4b522278b5dd (GR_ovn-worker)
         logical ip: "10.244.0.0/16"
         type: "snat"
 (...)
-~~~
+```
 
 Let's find the switch port that matches this router port:
-~~~
+``` bash linenums="1"
 sh-5.1# ovn-nbctl find logical_switch_port "options={router-port=rtoe-GR_ovn-worker}"
 _uuid               : 2b6e5ae2-a67f-4526-8b53-316a265a1acc
 addresses           : ["02:42:ac:12:00:04"]
@@ -915,10 +915,10 @@ tag                 : []
 tag_request         : []
 type                : router
 up                  : true
-~~~
+```
 
 And now, we can craft the ovn-trace command that shows our packet is indeed leaving on `breth0_ovn-worker`:
-~~~
+``` bash linenums="1"
 sh-5.1# ovn-trace --ct est,rpl --ovs ext_ovn-worker 'inport == "etor-GR_ovn-worker" && eth.src == 02:42:ac:12:00:04 &&  eth.dst == 02:42:7a:79:82:ca && ip4.src == 171.18.0.4 && ip4.dst == 171.18.0.1 && ip.ttl == 64 && tcp.src==30007 && tcp.dst == 47306'  --minimal
 # tcp,reg14=0x2,vlan_tci=0x0000,dl_src=02:42:ac:12:00:04,dl_dst=02:42:7a:79:82:ca,nw_src=171.18.0.4,nw_dst=171.18.0.1,nw_tos=0,nw_ecn=0,nw_ttl=64,tp_src=30007,tp_dst=47306,tcp_flags=0
 *** no OpenFlow flows;
@@ -927,7 +927,7 @@ sh-5.1# ovn-trace --ct est,rpl --ovs ext_ovn-worker 'inport == "etor-GR_ovn-work
 *** no OpenFlow flows;
 output("breth0_ovn-worker");
 sh-5.1# 
-~~~
+```
 
 ## Sources and references
 

@@ -1209,8 +1209,16 @@
                 
                 <h1 id="useful-commands">Useful commands</h1>
 <h2 id="tracking-the-evolution-of-conntrack-with-lnstat">Tracking the evolution of conntrack with lnstat</h2>
-<p>lnstat is a neat tool to check the evolution of entries (and other counters) in the conntrack table:</p>
-<pre><code># lnstat -f nf_conntrack
+<p>lnstat is a neat tool to check the evolution of entries (and other counters) in the conntrack table:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code># lnstat -f nf_conntrack
 nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|
  entries|clashres|   found|     new| invalid|  ignore|  delete|delete_l|  insert|insert_f|    drop|early_dr|icmp_err|expect_n|expect_c|expect_d|search_r|
         |        |        |        |        |        |        |     ist|        |   ailed|        |      op|      or|      ew|   reate|   elete|  estart|
@@ -1219,7 +1227,8 @@ nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt
     1173|       0|       0|       0|       1|       0|       0|       0|       0|       0|       0|       0|       0|       0|       0|       0|       0|
     1169|       0|       0|       0|       1|       0|       0|       0|       0|       0|       0|       0|       0|       0|       0|       0|       0|
     1168|       0|       0|       0|       1|       0|       0|       0|       0|       0|       0|       0|       0|       0|       0|       0|       0|
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
 <p>For more details, see: https://linux.die.net/man/8/lnstat</p>
                 
                   

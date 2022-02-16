@@ -1171,34 +1171,65 @@
                 
                 <h2 id="how-to-patch-statusloadbalanceringress-ips-manually-to-a-service-in-a-baremetal-deployment">How to patch status.loadBalancer.ingress IPs manually to a service in a baremetal deployment?</h2>
 <p>For testing purposes, you might want to modify the status.loadBalancer.ingress of a service directly.</p>
-<p>Here's how you can do this. First, create a service:</p>
-<pre><code>cat &lt;&lt;'EOF' &gt; myservice.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: myservice
-spec:
-  ports:
-  - name: http
-    port: 8888
-    protocol: TCP
-    targetPort: 80
-  type: LoadBalancer
-  selector:
-    app: nginx-app
-EOF
+<p>Here's how you can do this. First, create a service:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>cat <span class="s">&lt;&lt;&#39;EOF&#39; &gt; myservice.yaml</span>
+<span class="s">apiVersion: v1</span>
+<span class="s">kind: Service</span>
+<span class="s">metadata:</span>
+<span class="s">  name: myservice</span>
+<span class="s">spec:</span>
+<span class="s">  ports:</span>
+<span class="s">  - name: http</span>
+<span class="s">    port: 8888</span>
+<span class="s">    protocol: TCP</span>
+<span class="s">    targetPort: 80</span>
+<span class="s">  type: LoadBalancer</span>
+<span class="s">  selector:</span>
+<span class="s">    app: nginx-app</span>
+<span class="s">EOF</span>
 oc apply -f myservice.yaml
-</code></pre>
-<p>Then, open a proxy session:</p>
-<pre><code>oc proxy
-</code></pre>
-<p>Then, open another CLI session and patch the service's status field:</p>
-<pre><code>curl -XPATCH  -H &quot;Accept: application/json&quot; -H &quot;Content-Type: application/json-patch+json&quot;  --data '[{&quot;op&quot;: &quot;add&quot;, &quot;path&quot;: &quot;/status/loadBalancer/ingress&quot;, &quot;value&quot;:[{&quot;ip&quot;: &quot;172.18.0.13&quot;}]}]' http://localhost:8001/api/v1/namespaces/default/services/myservice/status
-</code></pre>
-<p>Now, verify:</p>
-<pre><code>[root@ovnkubernetes ~]# oc get svc  myservice -o yaml | tail -n 10
+</code></pre></div>
+</td></tr></table></p>
+<p>Then, open a proxy session:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>oc proxy
+</code></pre></div>
+</td></tr></table></p>
+<p>Then, open another CLI session and patch the service's status field:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>curl -XPATCH  -H <span class="s2">&quot;Accept: application/json&quot;</span> -H <span class="s2">&quot;Content-Type: application/json-patch+json&quot;</span>  --data <span class="s1">&#39;[{&quot;op&quot;: &quot;add&quot;, &quot;path&quot;: &quot;/status/loadBalancer/ingress&quot;, &quot;value&quot;:[{&quot;ip&quot;: &quot;172.18.0.13&quot;}]}]&#39;</span> http://localhost:8001/api/v1/namespaces/default/services/myservice/status
+</code></pre></div>
+</td></tr></table></p>
+<p>Now, verify:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span>root@ovnkubernetes ~<span class="o">]</span><span class="c1"># oc get svc  myservice -o yaml | tail -n 10</span>
     protocol: TCP
-    targetPort: 80
+    targetPort: <span class="m">80</span>
   selector:
     app: nginx-app
   sessionAffinity: None
@@ -1206,11 +1237,12 @@ oc apply -f myservice.yaml
 status:
   loadBalancer:
     ingress:
-    - ip: 172.18.0.13
-[root@ovnkubernetes ~]# oc get svc
-NAME             TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-myservice   LoadBalancer   10.96.105.206   172.18.0.13   8888:32165/TCP   12s
-</code></pre>
+    - ip: <span class="m">172</span>.18.0.13
+<span class="o">[</span>root@ovnkubernetes ~<span class="o">]</span><span class="c1"># oc get svc</span>
+NAME             TYPE           CLUSTER-IP      EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>          AGE
+myservice   LoadBalancer   <span class="m">10</span>.96.105.206   <span class="m">172</span>.18.0.13   <span class="m">8888</span>:32165/TCP   12s
+</code></pre></div>
+</td></tr></table></p>
                 
                   
                     

@@ -1230,23 +1230,37 @@
                 
                 <h1 id="meson">meson</h1>
 <h2 id="what-is-meson">What is meson?</h2>
-<p>Meson is a new build system, meant to replace <code>make</code>.</p>
-<p><a href="https://mesonbuild.com/index.html">https://mesonbuild.com/index.html</a></p>
-<pre><code>Overview
+<p>Meson is a new build system, meant to replace <code class="highlight">make</code>.</p>
+<p><a href="https://mesonbuild.com/index.html">https://mesonbuild.com/index.html</a>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">Overview</span>
 
-Meson is an open source build system meant to be both extremely fast, and, even more importantly, as user friendly as possible.
+<span class="nv">Meson</span> <span class="nv">is</span> <span class="nv">an</span> <span class="nv">open</span> <span class="nv">source</span> <span class="nv">build</span> <span class="nv">system</span> <span class="nv">meant</span> <span class="nv">to</span> <span class="nv">be</span> <span class="nv">both</span> <span class="nv">extremely</span> <span class="nv">fast</span>, <span class="nv">and</span>, <span class="nv">even</span> <span class="nv">more</span> <span class="nv">importantly</span>, <span class="nv">as</span> <span class="nv">user</span> <span class="nv">friendly</span> <span class="nv">as</span> <span class="nv">possible</span>.
 
-The main design point of Meson is that every moment a developer spends writing or debugging build definitions is a second wasted. So is every second spent waiting for the build system to actually start compiling code.
-Features
+<span class="nv">The</span> <span class="nv">main</span> <span class="nv">design</span> <span class="nv">point</span> <span class="nv">of</span> <span class="nv">Meson</span> <span class="nv">is</span> <span class="nv">that</span> <span class="nv">every</span> <span class="nv">moment</span> <span class="nv">a</span> <span class="nv">developer</span> <span class="nv">spends</span> <span class="nv">writing</span> <span class="nv">or</span> <span class="nv">debugging</span> <span class="nv">build</span> <span class="nv">definitions</span> <span class="nv">is</span> <span class="nv">a</span> <span class="nv">second</span> <span class="nv">wasted</span>. <span class="nv">So</span> <span class="nv">is</span> <span class="nv">every</span> <span class="nv">second</span> <span class="nv">spent</span> <span class="nv">waiting</span> <span class="k">for</span> <span class="nv">the</span> <span class="nv">build</span> <span class="nv">system</span> <span class="nv">to</span> <span class="nv">actually</span> <span class="nv">start</span> <span class="nv">compiling</span> <span class="nv">code</span>.
+<span class="nv">Features</span>
 
-    multiplatform support for Linux, macOS, Windows, GCC, Clang, Visual Studio and others
-    supported languages include C, C++, D, Fortran, Java, Rust
-    build definitions in a very readable and user friendly non-Turing complete DSL
-    cross compilation for many operating systems as well as bare metal
-    optimized for extremely fast full and incremental builds without sacrificing correctness
-    built-in multiplatform dependency provider that works together with distro packages
-    fun!
-</code></pre>
+    <span class="nv">multiplatform</span> <span class="nv">support</span> <span class="k">for</span> <span class="nv">Linux</span>, <span class="nv">macOS</span>, <span class="nv">Windows</span>, <span class="nv">GCC</span>, <span class="nv">Clang</span>, <span class="nv">Visual</span> <span class="nv">Studio</span> <span class="nv">and</span> <span class="nv">others</span>
+    <span class="nv">supported</span> <span class="nv">languages</span> <span class="k">include</span> <span class="nv">C</span>, <span class="nv">C</span><span class="o">++</span>, <span class="nv">D</span>, <span class="nv">Fortran</span>, <span class="nv">Java</span>, <span class="nv">Rust</span>
+    <span class="nv">build</span> <span class="nv">definitions</span> <span class="nv">in</span> <span class="nv">a</span> <span class="nv">very</span> <span class="nv">readable</span> <span class="nv">and</span> <span class="nv">user</span> <span class="nv">friendly</span> <span class="nv">non</span><span class="o">-</span><span class="nv">Turing</span> <span class="nv">complete</span> <span class="nv">DSL</span>
+    <span class="nv">cross</span> <span class="nv">compilation</span> <span class="k">for</span> <span class="nv">many</span> <span class="nv">operating</span> <span class="nv">systems</span> <span class="nv">as</span> <span class="nv">well</span> <span class="nv">as</span> <span class="nv">bare</span> <span class="nv">metal</span>
+    <span class="nv">optimized</span> <span class="k">for</span> <span class="nv">extremely</span> <span class="nv">fast</span> <span class="nv">full</span> <span class="nv">and</span> <span class="nv">incremental</span> <span class="nv">builds</span> <span class="nv">without</span> <span class="nv">sacrificing</span> <span class="nv">correctness</span>
+    <span class="nv">built</span><span class="o">-</span><span class="nv">in</span> <span class="nv">multiplatform</span> <span class="nv">dependency</span> <span class="nv">provider</span> <span class="nv">that</span> <span class="nv">works</span> <span class="nv">together</span> <span class="nv">with</span> <span class="nv">distro</span> <span class="nv">packages</span>
+    <span class="nv">fun</span><span class="o">!</span>
+</code></pre></div>
+</td></tr></table></p>
 <h2 id="who-is-using-meson">Who is using meson?</h2>
 <p><a href="https://mesonbuild.com/Users.html">https://mesonbuild.com/Users.html</a></p>
 <h2 id="requirements-for-meson">Requirements for meson</h2>

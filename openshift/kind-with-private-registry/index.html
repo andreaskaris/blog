@@ -1230,28 +1230,43 @@
                 <h1 id="kind-with-private-registry">Kind with private registry</h1>
 <h2 id="setting-up-a-private-registry-server">Setting up a private registry server</h2>
 <p>Follow <a href="https://andreaskaris.github.io/blog/openshift/private-registry/">https://andreaskaris.github.io/blog/openshift/private-registry/</a></p>
-<p>Create a registry without authentication and make sure that the certificates are signed for DNS <code>kind</code> and that the registry can be queried via <code>curl https://kind:5000/v2/_catalog</code>.</p>
+<p>Create a registry without authentication and make sure that the certificates are signed for DNS <code class="highlight">kind</code> and that the registry can be queried via <code class="highlight">curl https://kind:5000/v2/_catalog</code>.</p>
 <h2 id="setting-up-kind">Setting up kind</h2>
 <h3 id="skipping-certificate-validation">Skipping certificate validation</h3>
-<p>Deploy kind with <code>containerConfigPatches</code> to skip registry verification:</p>
-<pre><code>cat &lt;&lt;'EOF' &gt; kindconfig.yaml
-kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-# 3 control plane node and 1 workers
-nodes:
-- role: control-plane
-# - role: worker
-containerdConfigPatches:
-- |-
-  [plugins.&quot;io.containerd.grpc.v1.cri&quot;.registry.mirrors.&quot;kind:5000&quot;]
-    endpoint = [&quot;https://kind:5000&quot;]
-  [plugins.&quot;io.containerd.grpc.v1.cri&quot;.registry.configs.&quot;kind:5000&quot;.tls]
-    insecure_skip_verify = true
-EOF
-</code></pre>
-<p>Then, create the cluster with:</p>
-<pre><code>kind create cluster -v1 --config kindconfig.yaml
-</code></pre>
+<p>Deploy kind with <code class="highlight">containerConfigPatches</code> to skip registry verification:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">cat</span> <span class="o">&lt;&lt;</span><span class="p">&#39;</span><span class="n">EOF</span><span class="p">&#39;</span> <span class="o">&gt;</span> <span class="n">kindconfig</span><span class="p">.</span><span class="n">yaml</span>
+<span class="nl">kind:</span> <span class="n">Cluster</span>
+<span class="nl">apiVersion:</span> <span class="n">kind</span><span class="p">.</span><span class="n">x</span><span class="o">-</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">v1alpha4</span>
+<span class="p">#</span> <span class="mh">3</span> <span class="n">control</span> <span class="n">plane</span> <span class="n">node</span> <span class="k">and</span> <span class="mh">1</span> <span class="n">workers</span>
+<span class="nl">nodes:</span>
+<span class="o">-</span> <span class="nl">role:</span> <span class="n">control</span><span class="o">-</span><span class="n">plane</span>
+<span class="p">#</span> <span class="o">-</span> <span class="nl">role:</span> <span class="n">worker</span>
+<span class="nl">containerdConfigPatches:</span>
+<span class="o">-</span> <span class="o">|-</span>
+  <span class="p">[</span><span class="n">plugins</span><span class="p">.</span><span class="s">&quot;io.containerd.grpc.v1.cri&quot;</span><span class="p">.</span><span class="n">registry</span><span class="p">.</span><span class="n">mirrors</span><span class="p">.</span><span class="s">&quot;kind:5000&quot;</span><span class="p">]</span>
+    <span class="n">endpoint</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;https://kind:5000&quot;</span><span class="p">]</span>
+  <span class="p">[</span><span class="n">plugins</span><span class="p">.</span><span class="s">&quot;io.containerd.grpc.v1.cri&quot;</span><span class="p">.</span><span class="n">registry</span><span class="p">.</span><span class="n">configs</span><span class="p">.</span><span class="s">&quot;kind:5000&quot;</span><span class="p">.</span><span class="n">tls</span><span class="p">]</span>
+    <span class="n">insecure_skip_verify</span> <span class="o">=</span> <span class="n">true</span>
+<span class="n">EOF</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Then, create the cluster with:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>kind create cluster -v1 --config kindconfig.yaml
+</code></pre></div>
+</td></tr></table></p>
                 
                   
                     

@@ -1239,225 +1239,419 @@
 <p>Let's analyze how CNI actually works. First, you should read through the actual specification: <a href="https://github.com/containernetworking/cni/blob/master/SPEC.md">https://github.com/containernetworking/cni/blob/master/SPEC.md</a></p>
 <p>Once you have done that, the next best thing to writing your own plugin is surely to write a wrapper script around existing plugins and to observe what is being passed to/from the plugins.</p>
 <h3 id="setup">Setup</h3>
-<p>All examples are run on a signle-node Kubernetes cluster with CRI-O. I did not install a CNI plugin, instead I am relying on CRI-O's <code>bridge</code> plugin. The <code>bridge</code> plugin uses the <code>host-local</code> plugin for IPAM. The configuration file can be found under <code>/etc/cni/net.d/100-crio-bridge.conf</code> and its contents look as follows:</p>
-<pre><code>[root@node1 ~]# cat /etc/cni/net.d/100-crio-bridge.conf 
-{
-    &quot;cniVersion&quot;: &quot;0.3.1&quot;,
-    &quot;name&quot;: &quot;crio&quot;,
-    &quot;type&quot;: &quot;bridge&quot;,
-    &quot;bridge&quot;: &quot;cni0&quot;,
-    &quot;isGateway&quot;: true,
-    &quot;ipMasq&quot;: true,
-    &quot;hairpinMode&quot;: true,
-    &quot;ipam&quot;: {
-        &quot;type&quot;: &quot;host-local&quot;,
-        &quot;routes&quot;: [
-            { &quot;dst&quot;: &quot;0.0.0.0/0&quot; },
-            { &quot;dst&quot;: &quot;1100:200::1/24&quot; }
-        ],
-        &quot;ranges&quot;: [
-            [{ &quot;subnet&quot;: &quot;10.85.0.0/16&quot; }],
-            [{ &quot;subnet&quot;: &quot;1100:200::/24&quot; }]
-        ]
-    }
-}
-</code></pre>
-<p>The actual plugin binaries are <code>/opt/bin/cni/bridge</code> and <code>/opt/bin/cni/host-local</code>.</p>
+<p>All examples are run on a signle-node Kubernetes cluster with CRI-O. I did not install a CNI plugin, instead I am relying on CRI-O's <code class="highlight">bridge</code> plugin. The <code class="highlight">bridge</code> plugin uses the <code class="highlight">host-local</code> plugin for IPAM. The configuration file can be found under <code class="highlight">/etc/cni/net.d/100-crio-bridge.conf</code> and its contents look as follows:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@node1 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">cni</span><span class="o">/</span><span class="n">net</span><span class="p">.</span><span class="n">d</span><span class="o">/</span><span class="mi">100</span><span class="o">-</span><span class="n">crio</span><span class="o">-</span><span class="n">bridge</span><span class="p">.</span><span class="n">conf</span><span class="w"> </span>
+<span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="ss">&quot;cniVersion&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;0.3.1&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="ss">&quot;name&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;crio&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="ss">&quot;type&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;bridge&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="ss">&quot;bridge&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;cni0&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="ss">&quot;isGateway&quot;</span><span class="err">:</span><span class="w"> </span><span class="k">true</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="ss">&quot;ipMasq&quot;</span><span class="err">:</span><span class="w"> </span><span class="k">true</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="ss">&quot;hairpinMode&quot;</span><span class="err">:</span><span class="w"> </span><span class="k">true</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="ss">&quot;ipam&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="ss">&quot;type&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;host-local&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="ss">&quot;routes&quot;</span><span class="err">:</span><span class="w"> </span><span class="o">[</span><span class="n"></span>
+<span class="n">            { &quot;dst&quot;: &quot;0.0.0.0/0&quot; },</span>
+<span class="n">            { &quot;dst&quot;: &quot;1100:200::1/24&quot; }</span>
+<span class="n">        </span><span class="o">]</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="ss">&quot;ranges&quot;</span><span class="err">:</span><span class="w"> </span><span class="o">[</span><span class="n"></span>
+<span class="n">            [{ &quot;subnet&quot;: &quot;10.85.0.0/16&quot; }</span><span class="o">]</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="o">[</span><span class="n">{ &quot;subnet&quot;: &quot;1100:200::/24&quot; }</span><span class="o">]</span><span class="w"></span>
+<span class="w">        </span><span class="err">]</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
+<span class="err">}</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p>The actual plugin binaries are <code class="highlight">/opt/bin/cni/bridge</code> and <code class="highlight">/opt/bin/cni/host-local</code>.</p>
 <h3 id="creating-a-wrapper-script">Creating a wrapper script</h3>
-<p>Create the wrapper script in a temporary location:</p>
-<pre><code>f=$(mktemp)
-cat &lt;&lt;'EOF' &gt; $f
-#!/bin/bash
+<p>Create the wrapper script in a temporary location:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">f</span><span class="o">=</span><span class="n">$</span><span class="p">(</span><span class="n">mktemp</span><span class="p">)</span>
+<span class="n">cat</span> <span class="o">&lt;&lt;</span><span class="err">&#39;</span><span class="n">EOF</span><span class="err">&#39;</span> <span class="o">&gt;</span> <span class="n">$f</span>
+<span class="cp">#!/bin/bash</span>
 
-SCRIPT=$(readlink -f $0)
-LOG_DIR=/tmp/log
-if ! [ -d $LOG_DIR ];then
-  mkdir -p $LOG_DIR
-fi
+<span class="n">SCRIPT</span><span class="o">=</span><span class="n">$</span><span class="p">(</span><span class="n">readlink</span> <span class="o">-</span><span class="n">f</span> <span class="n">$0</span><span class="p">)</span>
+<span class="n">LOG_DIR</span><span class="o">=/</span><span class="n">tmp</span><span class="o">/</span><span class="n">log</span>
+<span class="k">if</span> <span class="o">!</span> <span class="p">[</span> <span class="o">-</span><span class="n">d</span> <span class="n">$LOG_DIR</span> <span class="p">];</span><span class="n">then</span>
+  <span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="n">$LOG_DIR</span>
+<span class="n">fi</span>
 
-LOG=${LOG_DIR}/$(basename $0)
+<span class="n">LOG</span><span class="o">=</span><span class="n">$</span><span class="p">{</span><span class="n">LOG_DIR</span><span class="p">}</span><span class="o">/</span><span class="n">$</span><span class="p">(</span><span class="n">basename</span> <span class="n">$0</span><span class="p">)</span>
 
-date &gt;&gt; $LOG
-echo &quot;=================================================================&quot; &gt;&gt; $LOG
-echo &quot;CNI params:&quot; &gt;&gt; $LOG
-env | grep CNI &gt;&gt; $LOG
-echo &quot;env:&quot; &gt;&gt; $LOG
-env &gt;&gt; $LOG
-if [ ! -t 0 ]; then
-  {
-  echo &quot;INPUT:&quot; &gt;&gt; $LOG
-  output=$(tee -a $LOG | ${SCRIPT}-original &quot;$@&quot; | tee /dev/fd/3)
-  echo &quot;&quot; &gt;&gt; $LOG
-  echo &quot;OUTPUT:&quot; &gt;&gt; $LOG
-  echo &quot;$output&quot; &gt;&gt; $LOG
-  } 3&gt;&amp;1
-else
-  echo &quot;OUTPUT:&quot; &gt;&gt; $LOG
-  ${SCRIPT}-original &quot;$@&quot; | tee -a $LOG
-fi
+<span class="n">date</span> <span class="o">&gt;&gt;</span> <span class="n">$LOG</span>
+<span class="n">echo</span> <span class="s">&quot;=================================================================&quot;</span> <span class="o">&gt;&gt;</span> <span class="n">$LOG</span>
+<span class="n">echo</span> <span class="s">&quot;CNI params:&quot;</span> <span class="o">&gt;&gt;</span> <span class="n">$LOG</span>
+<span class="n">env</span> <span class="o">|</span> <span class="n">grep</span> <span class="n">CNI</span> <span class="o">&gt;&gt;</span> <span class="n">$LOG</span>
+<span class="n">echo</span> <span class="s">&quot;env:&quot;</span> <span class="o">&gt;&gt;</span> <span class="n">$LOG</span>
+<span class="n">env</span> <span class="o">&gt;&gt;</span> <span class="n">$LOG</span>
+<span class="k">if</span> <span class="p">[</span> <span class="o">!</span> <span class="o">-</span><span class="n">t</span> <span class="mi">0</span> <span class="p">];</span> <span class="n">then</span>
+  <span class="p">{</span>
+  <span class="n">echo</span> <span class="s">&quot;INPUT:&quot;</span> <span class="o">&gt;&gt;</span> <span class="n">$LOG</span>
+  <span class="n">output</span><span class="o">=</span><span class="n">$</span><span class="p">(</span><span class="n">tee</span> <span class="o">-</span><span class="n">a</span> <span class="n">$LOG</span> <span class="o">|</span> <span class="n">$</span><span class="p">{</span><span class="n">SCRIPT</span><span class="p">}</span><span class="o">-</span><span class="n">original</span> <span class="s">&quot;$@&quot;</span> <span class="o">|</span> <span class="n">tee</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">fd</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span>
+  <span class="n">echo</span> <span class="s">&quot;&quot;</span> <span class="o">&gt;&gt;</span> <span class="n">$LOG</span>
+  <span class="n">echo</span> <span class="s">&quot;OUTPUT:&quot;</span> <span class="o">&gt;&gt;</span> <span class="n">$LOG</span>
+  <span class="n">echo</span> <span class="s">&quot;$output&quot;</span> <span class="o">&gt;&gt;</span> <span class="n">$LOG</span>
+  <span class="p">}</span> <span class="mi">3</span><span class="o">&gt;&amp;</span><span class="mi">1</span>
+<span class="k">else</span>
+  <span class="n">echo</span> <span class="s">&quot;OUTPUT:&quot;</span> <span class="o">&gt;&gt;</span> <span class="n">$LOG</span>
+  <span class="n">$</span><span class="p">{</span><span class="n">SCRIPT</span><span class="p">}</span><span class="o">-</span><span class="n">original</span> <span class="s">&quot;$@&quot;</span> <span class="o">|</span> <span class="n">tee</span> <span class="o">-</span><span class="n">a</span> <span class="n">$LOG</span>
+<span class="n">fi</span>
 
-echo &quot;Returned at: $(date)&quot; &gt;&gt; $LOG
-echo &quot;=================================================================&quot; &gt;&gt; $LOG
-echo &quot;&quot; &gt;&gt; $LOG
-echo &quot;&quot; &gt;&gt; $LOG
-EOF
-chmod +x $f
-</code></pre>
-<p>Then, rename the original plugins to <code>&lt;name&gt;-original</code> and copy the wrapper script into the former location of the binary files:</p>
-<pre><code>for plugin in bridge host-local; do
-  \cp /opt/cni/bin/${plugin} /opt/cni/bin/${plugin}-original
-  \cp $f /opt/cni/bin/${plugin}
+<span class="n">echo</span> <span class="s">&quot;Returned at: $(date)&quot;</span> <span class="o">&gt;&gt;</span> <span class="n">$LOG</span>
+<span class="n">echo</span> <span class="s">&quot;=================================================================&quot;</span> <span class="o">&gt;&gt;</span> <span class="n">$LOG</span>
+<span class="n">echo</span> <span class="s">&quot;&quot;</span> <span class="o">&gt;&gt;</span> <span class="n">$LOG</span>
+<span class="n">echo</span> <span class="s">&quot;&quot;</span> <span class="o">&gt;&gt;</span> <span class="n">$LOG</span>
+<span class="n">EOF</span>
+<span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="n">$f</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Then, rename the original plugins to <code class="highlight">&lt;name&gt;-original</code> and copy the wrapper script into the former location of the binary files:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>for plugin in bridge host-local; do
+  \cp /opt/cni/bin/<span class="cp">${</span><span class="n">plugin</span><span class="cp">}</span> /opt/cni/bin/<span class="cp">${</span><span class="n">plugin</span><span class="cp">}</span>-original
+  \cp <span class="nv">$f</span> /opt/cni/bin/<span class="cp">${</span><span class="n">plugin</span><span class="cp">}</span>
 done
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
 <h3 id="rollback">Rollback</h3>
-<p>To revert this back to defaults, after testing, run:</p>
-<pre><code>for plugin in bridge host-local; do
-  \mv /opt/cni/bin/${plugin}-original /opt/cni/bin/${plugin}
+<p>To revert this back to defaults, after testing, run:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>for plugin in bridge host-local; do
+  \mv /opt/cni/bin/<span class="cp">${</span><span class="n">plugin</span><span class="cp">}</span>-original /opt/cni/bin/<span class="cp">${</span><span class="n">plugin</span><span class="cp">}</span>
 done
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
 <h3 id="triggering-cni-calls">Triggering CNI calls</h3>
-<p>Now, create a test invocation. For example, use <a href="https://github.com/containernetworking/cni/tree/master/cnitool">https://github.com/containernetworking/cni/tree/master/cnitool</a></p>
-<pre><code>git clone  https://github.com/containernetworking/cni
-pushd cni/cnitool
-go build
-mv cnitool /usr/local/bin
-popd
-ip netns add testing
-CNI_PATH=/opt/cni/bin/ cnitool add crio /var/run/netns/testing
-CNI_PATH=/opt/cni/bin/ cnitool del crio /var/run/netns/testing
-</code></pre>
-<p>Alternatively, simply delete a running pod and have it recreated by kubernetes:</p>
-<pre><code>kubectl delete pod -n &lt;...&gt; &lt;...&gt;
-</code></pre>
+<p>Now, create a test invocation. For example, use <a href="https://github.com/containernetworking/cni/tree/master/cnitool">https://github.com/containernetworking/cni/tree/master/cnitool</a>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">git</span> <span class="n">clone</span>  <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">containernetworking</span><span class="o">/</span><span class="n">cni</span>
+<span class="n">pushd</span> <span class="n">cni</span><span class="o">/</span><span class="n">cnitool</span>
+<span class="n">go</span> <span class="n">build</span>
+<span class="n">mv</span> <span class="n">cnitool</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span>
+<span class="n">popd</span>
+<span class="n">ip</span> <span class="n">netns</span> <span class="n">add</span> <span class="n">testing</span>
+<span class="n">CNI_PATH</span><span class="o">=/</span><span class="n">opt</span><span class="o">/</span><span class="n">cni</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span> <span class="n">cnitool</span> <span class="n">add</span> <span class="n">crio</span> <span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">netns</span><span class="o">/</span><span class="n">testing</span>
+<span class="n">CNI_PATH</span><span class="o">=/</span><span class="n">opt</span><span class="o">/</span><span class="n">cni</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span> <span class="n">cnitool</span> <span class="n">del</span> <span class="n">crio</span> <span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">netns</span><span class="o">/</span><span class="n">testing</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Alternatively, simply delete a running pod and have it recreated by kubernetes:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>kubectl delete pod -n &lt;...&gt; &lt;...&gt;
+</code></pre></div>
+</td></tr></table></p>
 <h3 id="examining-cni-calls">Examining CNI calls</h3>
-<p>In file <code>/tmp/log/bridge</code> you can see that the <code>bridge</code> plugin uses data from the <code>host-local</code> to create the final output:</p>
-<pre><code>Fri Aug 27 07:55:52 EDT 2021
-=================================================================
-CNI params:
-CNI_PATH=/opt/cni/bin:/usr/libexec/cni
-CNI_ARGS=IgnoreUnknown=1;K8S_POD_NAMESPACE=kube-system;K8S_POD_NAME=coredns-78fcd69978-n5khq;K8S_POD_INFRA_CONTAINER_ID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8;K8S_POD_UID=94f2364f-4fd6-4b74-9f5a-c68e2c6f97dd
-CNI_CONTAINERID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8
-CNI_IFNAME=eth0
-CNI_COMMAND=ADD
-CNI_NETNS=/var/run/netns/3526ea0f-6dd9-4985-8f98-0db6d817abd4
-env:
-CNI_PATH=/opt/cni/bin:/usr/libexec/cni
-LANG=en_US.UTF-8
-INVOCATION_ID=77a9194a9cd04940a5fe1bdbca0e218b
-CNI_ARGS=IgnoreUnknown=1;K8S_POD_NAMESPACE=kube-system;K8S_POD_NAME=coredns-78fcd69978-n5khq;K8S_POD_INFRA_CONTAINER_ID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8;K8S_POD_UID=94f2364f-4fd6-4b74-9f5a-c68e2c6f97dd
-CNI_CONTAINERID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8
-GOTRACEBACK=crash
-PWD=/
-JOURNAL_STREAM=9:163692
-CNI_IFNAME=eth0
-CNI_COMMAND=ADD
-CNI_NETNS=/var/run/netns/3526ea0f-6dd9-4985-8f98-0db6d817abd4
-SHLVL=1
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
-_=/usr/bin/env
-INPUT:
-{&quot;bridge&quot;:&quot;cni0&quot;,&quot;cniVersion&quot;:&quot;0.3.1&quot;,&quot;hairpinMode&quot;:true,&quot;ipMasq&quot;:true,&quot;ipam&quot;:{&quot;ranges&quot;:[[{&quot;subnet&quot;:&quot;10.85.0.0/16&quot;}],[{&quot;subnet&quot;:&quot;1100:200::/24&quot;}]],&quot;routes&quot;:[{&quot;dst&quot;:&quot;0.0.0.0/0&quot;},{&quot;dst&quot;:&quot;1100:200::1/24&quot;}],&quot;type&quot;:&quot;host-local&quot;},&quot;isGateway&quot;:true,&quot;name&quot;:&quot;crio&quot;,&quot;type&quot;:&quot;bridge&quot;}
-OUTPUT:
-{
-    &quot;cniVersion&quot;: &quot;0.3.1&quot;,
-    &quot;interfaces&quot;: [
-        {
-            &quot;name&quot;: &quot;cni0&quot;,
-            &quot;mac&quot;: &quot;8e:14:0e:0e:f1:b0&quot;
-        },
-        {
-            &quot;name&quot;: &quot;vethc4b25c20&quot;,
-            &quot;mac&quot;: &quot;7e:a5:58:f4:d9:93&quot;
-        },
-        {
-            &quot;name&quot;: &quot;eth0&quot;,
-            &quot;mac&quot;: &quot;4a:a6:1c:d8:66:2d&quot;,
-            &quot;sandbox&quot;: &quot;/var/run/netns/3526ea0f-6dd9-4985-8f98-0db6d817abd4&quot;
-        }
-    ],
-    &quot;ips&quot;: [
-        {
-            &quot;version&quot;: &quot;4&quot;,
-            &quot;interface&quot;: 2,
-            &quot;address&quot;: &quot;10.85.0.17/16&quot;,
-            &quot;gateway&quot;: &quot;10.85.0.1&quot;
-        },
-        {
-            &quot;version&quot;: &quot;6&quot;,
-            &quot;interface&quot;: 2,
-            &quot;address&quot;: &quot;1100:200::f/24&quot;,
-            &quot;gateway&quot;: &quot;1100:200::1&quot;
-        }
-    ],
-    &quot;routes&quot;: [
-        {
-            &quot;dst&quot;: &quot;0.0.0.0/0&quot;
-        },
-        {
-            &quot;dst&quot;: &quot;1100:200::1/24&quot;
-        }
-    ],
-    &quot;dns&quot;: {}
-}
-</code></pre>
-<p>When we look at <a href="https://github.com/containernetworking/cni/blob/master/SPEC.md#section-4-plugin-delegation">https://github.com/containernetworking/cni/blob/master/SPEC.md#section-4-plugin-delegation</a>, we can see the following:</p>
-<pre><code>It is however the responsibility of the CNI plugin, rather than the runtime, to invoke the IPAM plugin at the proper moment in its execution. The IPAM plugin must determine the interface IP/subnet, Gateway and Routes and return this information to the &quot;main&quot; plugin to apply. The IPAM plugin may obtain the information via a protocol (e.g. dhcp), data stored on a local filesystem, the &quot;ipam&quot; section of the Network Configuration file, etc.
-</code></pre>
-<p>The <code>bridge</code> plugin delegates IP address allocation to an <code>ipam</code> plugin here:
+<p>In file <code class="highlight">/tmp/log/bridge</code> you can see that the <code class="highlight">bridge</code> plugin uses data from the <code class="highlight">host-local</code> to create the final output:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">Fri</span> <span class="n">Aug</span> <span class="mi">27</span> <span class="mi">07</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mi">52</span> <span class="n">EDT</span> <span class="mi">2021</span>
+<span class="o">=================================================================</span>
+<span class="n">CNI</span> <span class="n">params</span><span class="p">:</span>
+<span class="n">CNI_PATH</span><span class="o">=/</span><span class="n">opt</span><span class="o">/</span><span class="n">cni</span><span class="o">/</span><span class="n">bin</span><span class="p">:</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">libexec</span><span class="o">/</span><span class="n">cni</span>
+<span class="n">CNI_ARGS</span><span class="o">=</span><span class="n">IgnoreUnknown</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">K8S_POD_NAMESPACE</span><span class="o">=</span><span class="n">kube</span><span class="o">-</span><span class="n">system</span><span class="p">;</span><span class="n">K8S_POD_NAME</span><span class="o">=</span><span class="n">coredns</span><span class="o">-</span><span class="mi">78</span><span class="n">fcd69978</span><span class="o">-</span><span class="n">n5khq</span><span class="p">;</span><span class="n">K8S_POD_INFRA_CONTAINER_ID</span><span class="o">=</span><span class="mi">9</span><span class="n">b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8</span><span class="p">;</span><span class="n">K8S_POD_UID</span><span class="o">=</span><span class="mi">94</span><span class="n">f2364f</span><span class="o">-</span><span class="mi">4</span><span class="n">fd6</span><span class="o">-</span><span class="mi">4</span><span class="n">b74</span><span class="o">-</span><span class="mi">9</span><span class="n">f5a</span><span class="o">-</span><span class="n">c68e2c6f97dd</span>
+<span class="n">CNI_CONTAINERID</span><span class="o">=</span><span class="mi">9</span><span class="n">b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8</span>
+<span class="n">CNI_IFNAME</span><span class="o">=</span><span class="n">eth0</span>
+<span class="n">CNI_COMMAND</span><span class="o">=</span><span class="n">ADD</span>
+<span class="n">CNI_NETNS</span><span class="o">=/</span><span class="k">var</span><span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">netns</span><span class="o">/</span><span class="mi">3526</span><span class="n">ea0f</span><span class="o">-</span><span class="mi">6</span><span class="n">dd9</span><span class="o">-</span><span class="mi">4985</span><span class="o">-</span><span class="mi">8</span><span class="n">f98</span><span class="o">-</span><span class="mi">0</span><span class="n">db6d817abd4</span>
+<span class="n">env</span><span class="p">:</span>
+<span class="n">CNI_PATH</span><span class="o">=/</span><span class="n">opt</span><span class="o">/</span><span class="n">cni</span><span class="o">/</span><span class="n">bin</span><span class="p">:</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">libexec</span><span class="o">/</span><span class="n">cni</span>
+<span class="n">LANG</span><span class="o">=</span><span class="n">en_US</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+<span class="n">INVOCATION_ID</span><span class="o">=</span><span class="mi">77</span><span class="n">a9194a9cd04940a5fe1bdbca0e218b</span>
+<span class="n">CNI_ARGS</span><span class="o">=</span><span class="n">IgnoreUnknown</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">K8S_POD_NAMESPACE</span><span class="o">=</span><span class="n">kube</span><span class="o">-</span><span class="n">system</span><span class="p">;</span><span class="n">K8S_POD_NAME</span><span class="o">=</span><span class="n">coredns</span><span class="o">-</span><span class="mi">78</span><span class="n">fcd69978</span><span class="o">-</span><span class="n">n5khq</span><span class="p">;</span><span class="n">K8S_POD_INFRA_CONTAINER_ID</span><span class="o">=</span><span class="mi">9</span><span class="n">b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8</span><span class="p">;</span><span class="n">K8S_POD_UID</span><span class="o">=</span><span class="mi">94</span><span class="n">f2364f</span><span class="o">-</span><span class="mi">4</span><span class="n">fd6</span><span class="o">-</span><span class="mi">4</span><span class="n">b74</span><span class="o">-</span><span class="mi">9</span><span class="n">f5a</span><span class="o">-</span><span class="n">c68e2c6f97dd</span>
+<span class="n">CNI_CONTAINERID</span><span class="o">=</span><span class="mi">9</span><span class="n">b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8</span>
+<span class="n">GOTRACEBACK</span><span class="o">=</span><span class="n">crash</span>
+<span class="n">PWD</span><span class="o">=/</span>
+<span class="n">JOURNAL_STREAM</span><span class="o">=</span><span class="mi">9</span><span class="p">:</span><span class="mi">163692</span>
+<span class="n">CNI_IFNAME</span><span class="o">=</span><span class="n">eth0</span>
+<span class="n">CNI_COMMAND</span><span class="o">=</span><span class="n">ADD</span>
+<span class="n">CNI_NETNS</span><span class="o">=/</span><span class="k">var</span><span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">netns</span><span class="o">/</span><span class="mi">3526</span><span class="n">ea0f</span><span class="o">-</span><span class="mi">6</span><span class="n">dd9</span><span class="o">-</span><span class="mi">4985</span><span class="o">-</span><span class="mi">8</span><span class="n">f98</span><span class="o">-</span><span class="mi">0</span><span class="n">db6d817abd4</span>
+<span class="n">SHLVL</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">PATH</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">sbin</span><span class="p">:</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="p">:</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">sbin</span><span class="p">:</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span>
+<span class="n">_</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">env</span>
+<span class="n">INPUT</span><span class="p">:</span>
+<span class="p">{</span><span class="s2">&quot;bridge&quot;</span><span class="p">:</span><span class="s2">&quot;cni0&quot;</span><span class="p">,</span><span class="s2">&quot;cniVersion&quot;</span><span class="p">:</span><span class="s2">&quot;0.3.1&quot;</span><span class="p">,</span><span class="s2">&quot;hairpinMode&quot;</span><span class="p">:</span><span class="bp">true</span><span class="p">,</span><span class="s2">&quot;ipMasq&quot;</span><span class="p">:</span><span class="bp">true</span><span class="p">,</span><span class="s2">&quot;ipam&quot;</span><span class="p">:{</span><span class="s2">&quot;ranges&quot;</span><span class="p">:[[{</span><span class="s2">&quot;subnet&quot;</span><span class="p">:</span><span class="s2">&quot;10.85.0.0/16&quot;</span><span class="p">}],[{</span><span class="s2">&quot;subnet&quot;</span><span class="p">:</span><span class="s2">&quot;1100:200::/24&quot;</span><span class="p">}]],</span><span class="s2">&quot;routes&quot;</span><span class="p">:[{</span><span class="s2">&quot;dst&quot;</span><span class="p">:</span><span class="s2">&quot;0.0.0.0/0&quot;</span><span class="p">},{</span><span class="s2">&quot;dst&quot;</span><span class="p">:</span><span class="s2">&quot;1100:200::1/24&quot;</span><span class="p">}],</span><span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;host-local&quot;</span><span class="p">},</span><span class="s2">&quot;isGateway&quot;</span><span class="p">:</span><span class="bp">true</span><span class="p">,</span><span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;crio&quot;</span><span class="p">,</span><span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;bridge&quot;</span><span class="p">}</span>
+<span class="n">OUTPUT</span><span class="p">:</span>
+<span class="p">{</span>
+    <span class="s2">&quot;cniVersion&quot;</span><span class="p">:</span> <span class="s2">&quot;0.3.1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;interfaces&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;cni0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;mac&quot;</span><span class="p">:</span> <span class="s2">&quot;8e:14:0e:0e:f1:b0&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;vethc4b25c20&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;mac&quot;</span><span class="p">:</span> <span class="s2">&quot;7e:a5:58:f4:d9:93&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;eth0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;mac&quot;</span><span class="p">:</span> <span class="s2">&quot;4a:a6:1c:d8:66:2d&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sandbox&quot;</span><span class="p">:</span> <span class="s2">&quot;/var/run/netns/3526ea0f-6dd9-4985-8f98-0db6d817abd4&quot;</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;ips&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;4&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;interface&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s2">&quot;address&quot;</span><span class="p">:</span> <span class="s2">&quot;10.85.0.17/16&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;gateway&quot;</span><span class="p">:</span> <span class="s2">&quot;10.85.0.1&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;6&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;interface&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s2">&quot;address&quot;</span><span class="p">:</span> <span class="s2">&quot;1100:200::f/24&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;gateway&quot;</span><span class="p">:</span> <span class="s2">&quot;1100:200::1&quot;</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;routes&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;dst&quot;</span><span class="p">:</span> <span class="s2">&quot;0.0.0.0/0&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;dst&quot;</span><span class="p">:</span> <span class="s2">&quot;1100:200::1/24&quot;</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;dns&quot;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>When we look at <a href="https://github.com/containernetworking/cni/blob/master/SPEC.md#section-4-plugin-delegation">https://github.com/containernetworking/cni/blob/master/SPEC.md#section-4-plugin-delegation</a>, we can see the following:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">It</span> <span class="nv">is</span> <span class="nv">however</span> <span class="nv">the</span> <span class="nv">responsibility</span> <span class="nv">of</span> <span class="nv">the</span> <span class="nv">CNI</span> <span class="nv">plugin</span>, <span class="nv">rather</span> <span class="nv">than</span> <span class="nv">the</span> <span class="nv">runtime</span>, <span class="nv">to</span> <span class="nv">invoke</span> <span class="nv">the</span> <span class="nv">IPAM</span> <span class="nv">plugin</span> <span class="nv">at</span> <span class="nv">the</span> <span class="nv">proper</span> <span class="nv">moment</span> <span class="nv">in</span> <span class="nv">its</span> <span class="nv">execution</span>. <span class="nv">The</span> <span class="nv">IPAM</span> <span class="nv">plugin</span> <span class="nv">must</span> <span class="nv">determine</span> <span class="nv">the</span> <span class="nv">interface</span> <span class="nv">IP</span><span class="o">/</span><span class="nv">subnet</span>, <span class="nv">Gateway</span> <span class="nv">and</span> <span class="nv">Routes</span> <span class="nv">and</span> <span class="k">return</span> <span class="nv">this</span> <span class="nv">information</span> <span class="nv">to</span> <span class="nv">the</span> <span class="s2">&quot;</span><span class="s">main</span><span class="s2">&quot;</span> <span class="nv">plugin</span> <span class="nv">to</span> <span class="nv">apply</span>. <span class="nv">The</span> <span class="nv">IPAM</span> <span class="nv">plugin</span> <span class="nv">may</span> <span class="nv">obtain</span> <span class="nv">the</span> <span class="nv">information</span> <span class="nv">via</span> <span class="nv">a</span> <span class="nv">protocol</span> <span class="ss">(</span><span class="nv">e</span>.<span class="nv">g</span>. <span class="nv">dhcp</span><span class="ss">)</span>, <span class="nv">data</span> <span class="nv">stored</span> <span class="nv">on</span> <span class="nv">a</span> <span class="nv">local</span> <span class="nv">filesystem</span>, <span class="nv">the</span> <span class="s2">&quot;</span><span class="s">ipam</span><span class="s2">&quot;</span> <span class="nv">section</span> <span class="nv">of</span> <span class="nv">the</span> <span class="nv">Network</span> <span class="nv">Configuration</span> <span class="nv">file</span>, <span class="nv">etc</span>.
+</code></pre></div>
+</td></tr></table></p>
+<p>The <code class="highlight">bridge</code> plugin delegates IP address allocation to an <code class="highlight">ipam</code> plugin here:
 <a href="https://github.com/containernetworking/plugins/blob/8632ace977f4126c8ded601975f564571c66b922/plugins/main/bridge/bridge.go#L465">https://github.com/containernetworking/plugins/blob/8632ace977f4126c8ded601975f564571c66b922/plugins/main/bridge/bridge.go#L465</a></p>
-<p>In file <code>/tmp/log/host-local</code>, we can see the following during an <code>ADD</code> command. This is the result of the delegation:</p>
-<pre><code>Fri Aug 27 07:55:52 EDT 2021
-=================================================================
-CNI params:
-CNI_PATH=/opt/cni/bin:/usr/libexec/cni
-CNI_ARGS=IgnoreUnknown=1;K8S_POD_NAMESPACE=kube-system;K8S_POD_NAME=coredns-78fcd69978-n5khq;K8S_POD_INFRA_CONTAINER_ID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8;K8S_POD_UID=94f2364f-4fd6-4b74-9f5a-c68e2c6f97dd
-CNI_CONTAINERID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8
-CNI_IFNAME=eth0
-CNI_COMMAND=ADD
-CNI_NETNS=/var/run/netns/3526ea0f-6dd9-4985-8f98-0db6d817abd4
-env:
-CNI_PATH=/opt/cni/bin:/usr/libexec/cni
-LANG=en_US.UTF-8
-INVOCATION_ID=77a9194a9cd04940a5fe1bdbca0e218b
-CNI_ARGS=IgnoreUnknown=1;K8S_POD_NAMESPACE=kube-system;K8S_POD_NAME=coredns-78fcd69978-n5khq;K8S_POD_INFRA_CONTAINER_ID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8;K8S_POD_UID=94f2364f-4fd6-4b74-9f5a-c68e2c6f97dd
-CNI_CONTAINERID=9b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8
-GOTRACEBACK=crash
-PWD=/
-JOURNAL_STREAM=9:163692
-CNI_IFNAME=eth0
-CNI_COMMAND=ADD
-CNI_NETNS=/var/run/netns/3526ea0f-6dd9-4985-8f98-0db6d817abd4
-SHLVL=2
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
-_=/usr/bin/env
-INPUT:
-{&quot;bridge&quot;:&quot;cni0&quot;,&quot;cniVersion&quot;:&quot;0.3.1&quot;,&quot;hairpinMode&quot;:true,&quot;ipMasq&quot;:true,&quot;ipam&quot;:{&quot;ranges&quot;:[[{&quot;subnet&quot;:&quot;10.85.0.0/16&quot;}],[{&quot;subnet&quot;:&quot;1100:200::/24&quot;}]],&quot;routes&quot;:[{&quot;dst&quot;:&quot;0.0.0.0/0&quot;},{&quot;dst&quot;:&quot;1100:200::1/24&quot;}],&quot;type&quot;:&quot;host-local&quot;},&quot;isGateway&quot;:true,&quot;name&quot;:&quot;crio&quot;,&quot;type&quot;:&quot;bridge&quot;}
-OUTPUT:
-{
-    &quot;cniVersion&quot;: &quot;0.3.1&quot;,
-    &quot;ips&quot;: [
-        {
-            &quot;version&quot;: &quot;4&quot;,
-            &quot;address&quot;: &quot;10.85.0.17/16&quot;,
-            &quot;gateway&quot;: &quot;10.85.0.1&quot;
-        },
-        {
-            &quot;version&quot;: &quot;6&quot;,
-            &quot;address&quot;: &quot;1100:200::f/24&quot;,
-            &quot;gateway&quot;: &quot;1100:200::1&quot;
-        }
-    ],
-    &quot;routes&quot;: [
-        {
-            &quot;dst&quot;: &quot;0.0.0.0/0&quot;
-        },
-        {
-            &quot;dst&quot;: &quot;1100:200::1/24&quot;
-        }
-    ],
-    &quot;dns&quot;: {}
-}
-</code></pre>
+<p>In file <code class="highlight">/tmp/log/host-local</code>, we can see the following during an <code class="highlight">ADD</code> command. This is the result of the delegation:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">Fri</span> <span class="n">Aug</span> <span class="mi">27</span> <span class="mi">07</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mi">52</span> <span class="n">EDT</span> <span class="mi">2021</span>
+<span class="o">=================================================================</span>
+<span class="n">CNI</span> <span class="n">params</span><span class="p">:</span>
+<span class="n">CNI_PATH</span><span class="o">=/</span><span class="n">opt</span><span class="o">/</span><span class="n">cni</span><span class="o">/</span><span class="n">bin</span><span class="p">:</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">libexec</span><span class="o">/</span><span class="n">cni</span>
+<span class="n">CNI_ARGS</span><span class="o">=</span><span class="n">IgnoreUnknown</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">K8S_POD_NAMESPACE</span><span class="o">=</span><span class="n">kube</span><span class="o">-</span><span class="n">system</span><span class="p">;</span><span class="n">K8S_POD_NAME</span><span class="o">=</span><span class="n">coredns</span><span class="o">-</span><span class="mi">78</span><span class="n">fcd69978</span><span class="o">-</span><span class="n">n5khq</span><span class="p">;</span><span class="n">K8S_POD_INFRA_CONTAINER_ID</span><span class="o">=</span><span class="mi">9</span><span class="n">b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8</span><span class="p">;</span><span class="n">K8S_POD_UID</span><span class="o">=</span><span class="mi">94</span><span class="n">f2364f</span><span class="o">-</span><span class="mi">4</span><span class="n">fd6</span><span class="o">-</span><span class="mi">4</span><span class="n">b74</span><span class="o">-</span><span class="mi">9</span><span class="n">f5a</span><span class="o">-</span><span class="n">c68e2c6f97dd</span>
+<span class="n">CNI_CONTAINERID</span><span class="o">=</span><span class="mi">9</span><span class="n">b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8</span>
+<span class="n">CNI_IFNAME</span><span class="o">=</span><span class="n">eth0</span>
+<span class="n">CNI_COMMAND</span><span class="o">=</span><span class="n">ADD</span>
+<span class="n">CNI_NETNS</span><span class="o">=/</span><span class="k">var</span><span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">netns</span><span class="o">/</span><span class="mi">3526</span><span class="n">ea0f</span><span class="o">-</span><span class="mi">6</span><span class="n">dd9</span><span class="o">-</span><span class="mi">4985</span><span class="o">-</span><span class="mi">8</span><span class="n">f98</span><span class="o">-</span><span class="mi">0</span><span class="n">db6d817abd4</span>
+<span class="n">env</span><span class="p">:</span>
+<span class="n">CNI_PATH</span><span class="o">=/</span><span class="n">opt</span><span class="o">/</span><span class="n">cni</span><span class="o">/</span><span class="n">bin</span><span class="p">:</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">libexec</span><span class="o">/</span><span class="n">cni</span>
+<span class="n">LANG</span><span class="o">=</span><span class="n">en_US</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+<span class="n">INVOCATION_ID</span><span class="o">=</span><span class="mi">77</span><span class="n">a9194a9cd04940a5fe1bdbca0e218b</span>
+<span class="n">CNI_ARGS</span><span class="o">=</span><span class="n">IgnoreUnknown</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">K8S_POD_NAMESPACE</span><span class="o">=</span><span class="n">kube</span><span class="o">-</span><span class="n">system</span><span class="p">;</span><span class="n">K8S_POD_NAME</span><span class="o">=</span><span class="n">coredns</span><span class="o">-</span><span class="mi">78</span><span class="n">fcd69978</span><span class="o">-</span><span class="n">n5khq</span><span class="p">;</span><span class="n">K8S_POD_INFRA_CONTAINER_ID</span><span class="o">=</span><span class="mi">9</span><span class="n">b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8</span><span class="p">;</span><span class="n">K8S_POD_UID</span><span class="o">=</span><span class="mi">94</span><span class="n">f2364f</span><span class="o">-</span><span class="mi">4</span><span class="n">fd6</span><span class="o">-</span><span class="mi">4</span><span class="n">b74</span><span class="o">-</span><span class="mi">9</span><span class="n">f5a</span><span class="o">-</span><span class="n">c68e2c6f97dd</span>
+<span class="n">CNI_CONTAINERID</span><span class="o">=</span><span class="mi">9</span><span class="n">b6e84650c3ed8407953c396efa391d2c2173388d8a8b3615c937a5779d526e8</span>
+<span class="n">GOTRACEBACK</span><span class="o">=</span><span class="n">crash</span>
+<span class="n">PWD</span><span class="o">=/</span>
+<span class="n">JOURNAL_STREAM</span><span class="o">=</span><span class="mi">9</span><span class="p">:</span><span class="mi">163692</span>
+<span class="n">CNI_IFNAME</span><span class="o">=</span><span class="n">eth0</span>
+<span class="n">CNI_COMMAND</span><span class="o">=</span><span class="n">ADD</span>
+<span class="n">CNI_NETNS</span><span class="o">=/</span><span class="k">var</span><span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">netns</span><span class="o">/</span><span class="mi">3526</span><span class="n">ea0f</span><span class="o">-</span><span class="mi">6</span><span class="n">dd9</span><span class="o">-</span><span class="mi">4985</span><span class="o">-</span><span class="mi">8</span><span class="n">f98</span><span class="o">-</span><span class="mi">0</span><span class="n">db6d817abd4</span>
+<span class="n">SHLVL</span><span class="o">=</span><span class="mi">2</span>
+<span class="n">PATH</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">sbin</span><span class="p">:</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="p">:</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">sbin</span><span class="p">:</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span>
+<span class="n">_</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">env</span>
+<span class="n">INPUT</span><span class="p">:</span>
+<span class="p">{</span><span class="s2">&quot;bridge&quot;</span><span class="p">:</span><span class="s2">&quot;cni0&quot;</span><span class="p">,</span><span class="s2">&quot;cniVersion&quot;</span><span class="p">:</span><span class="s2">&quot;0.3.1&quot;</span><span class="p">,</span><span class="s2">&quot;hairpinMode&quot;</span><span class="p">:</span><span class="bp">true</span><span class="p">,</span><span class="s2">&quot;ipMasq&quot;</span><span class="p">:</span><span class="bp">true</span><span class="p">,</span><span class="s2">&quot;ipam&quot;</span><span class="p">:{</span><span class="s2">&quot;ranges&quot;</span><span class="p">:[[{</span><span class="s2">&quot;subnet&quot;</span><span class="p">:</span><span class="s2">&quot;10.85.0.0/16&quot;</span><span class="p">}],[{</span><span class="s2">&quot;subnet&quot;</span><span class="p">:</span><span class="s2">&quot;1100:200::/24&quot;</span><span class="p">}]],</span><span class="s2">&quot;routes&quot;</span><span class="p">:[{</span><span class="s2">&quot;dst&quot;</span><span class="p">:</span><span class="s2">&quot;0.0.0.0/0&quot;</span><span class="p">},{</span><span class="s2">&quot;dst&quot;</span><span class="p">:</span><span class="s2">&quot;1100:200::1/24&quot;</span><span class="p">}],</span><span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;host-local&quot;</span><span class="p">},</span><span class="s2">&quot;isGateway&quot;</span><span class="p">:</span><span class="bp">true</span><span class="p">,</span><span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;crio&quot;</span><span class="p">,</span><span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;bridge&quot;</span><span class="p">}</span>
+<span class="n">OUTPUT</span><span class="p">:</span>
+<span class="p">{</span>
+    <span class="s2">&quot;cniVersion&quot;</span><span class="p">:</span> <span class="s2">&quot;0.3.1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ips&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;4&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;address&quot;</span><span class="p">:</span> <span class="s2">&quot;10.85.0.17/16&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;gateway&quot;</span><span class="p">:</span> <span class="s2">&quot;10.85.0.1&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;6&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;address&quot;</span><span class="p">:</span> <span class="s2">&quot;1100:200::f/24&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;gateway&quot;</span><span class="p">:</span> <span class="s2">&quot;1100:200::1&quot;</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;routes&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;dst&quot;</span><span class="p">:</span> <span class="s2">&quot;0.0.0.0/0&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;dst&quot;</span><span class="p">:</span> <span class="s2">&quot;1100:200::1/24&quot;</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;dns&quot;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table></p>
                 
                   
                     

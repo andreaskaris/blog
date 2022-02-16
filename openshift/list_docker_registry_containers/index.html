@@ -1179,16 +1179,24 @@
                 
                 
                 <h1 id="list-all-images-in-a-registry">List all images in a registry</h1>
-<p>How to list all container images in a registry:</p>
-<pre><code>]# curl -X GET https://local-registry:4443/v2/_catalog | jq .&quot;repositories&quot; | jq .[] | sed 's/&quot;//g' | while read c ; do echo &quot;curl -X GET https://local-registry:4443/v2/$c/tags/list&quot; ;  curl -X GET https://local-registry:4443/v2/$c/tags/list; done
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100    54  100    54    0     0    580      0 --:--:-- --:--:-- --:--:--   580
-curl -X GET https://local-registry:4443/v2/fedora-infrared/tags/list
-{&quot;name&quot;:&quot;fedora1&quot;,&quot;tags&quot;:[&quot;latest&quot;]}
-curl -X GET https://local-registry:4443/v2/fedora-rundeck/tags/list
-{&quot;name&quot;:&quot;fedora2&quot;,&quot;tags&quot;:[&quot;latest&quot;]}
-</code></pre>
+<p>How to list all container images in a registry:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">]</span><span class="s s-Atom">#</span> <span class="s s-Atom">curl</span> <span class="o">-</span><span class="nv">X</span> <span class="nv">GET</span> <span class="nn">https</span><span class="p">:</span><span class="o">//</span><span class="s s-Atom">local</span><span class="o">-</span><span class="nn">registry</span><span class="p">:</span><span class="mi">4443</span><span class="o">/</span><span class="s s-Atom">v2/</span><span class="k">_</span><span class="s s-Atom">catalog</span> <span class="p">|</span> <span class="s s-Atom">jq</span> <span class="p">.</span><span class="s2">&quot;repositories&quot;</span> <span class="p">|</span> <span class="s s-Atom">jq</span> <span class="p">.[]</span> <span class="p">|</span> <span class="s s-Atom">sed</span> <span class="s s-Atom">&#39;s/&quot;//g&#39;</span> <span class="p">|</span> <span class="s s-Atom">while</span> <span class="s s-Atom">read</span> <span class="s s-Atom">c</span> <span class="p">;</span> <span class="s s-Atom">do</span> <span class="s s-Atom">echo</span> <span class="s2">&quot;curl -X GET https://local-registry:4443/v2/$c/tags/list&quot;</span> <span class="p">;</span>  <span class="s s-Atom">curl</span> <span class="o">-</span><span class="nv">X</span> <span class="nv">GET</span> <span class="nn">https</span><span class="p">:</span><span class="o">//</span><span class="s s-Atom">local</span><span class="o">-</span><span class="nn">registry</span><span class="p">:</span><span class="mi">4443</span><span class="o">/</span><span class="s s-Atom">v2/</span><span class="err">$</span><span class="s s-Atom">c</span><span class="o">/</span><span class="s s-Atom">tags</span><span class="o">/</span><span class="s s-Atom">list</span><span class="p">;</span> <span class="s s-Atom">done</span>
+  <span class="c1">% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current</span>
+                                 <span class="nv">Dload</span>  <span class="nv">Upload</span>   <span class="nv">Total</span>   <span class="nv">Spent</span>    <span class="nv">Left</span>  <span class="nv">Speed</span>
+<span class="mi">100</span>    <span class="mi">54</span>  <span class="mi">100</span>    <span class="mi">54</span>    <span class="mi">0</span>     <span class="mi">0</span>    <span class="mi">580</span>      <span class="mi">0</span> <span class="s s-Atom">--:--:--</span> <span class="s s-Atom">--:--:--</span> <span class="s s-Atom">--:--:--</span>   <span class="mi">580</span>
+<span class="s s-Atom">curl</span> <span class="o">-</span><span class="nv">X</span> <span class="nv">GET</span> <span class="nn">https</span><span class="p">:</span><span class="o">//</span><span class="s s-Atom">local</span><span class="o">-</span><span class="nn">registry</span><span class="p">:</span><span class="mi">4443</span><span class="o">/</span><span class="s s-Atom">v2</span><span class="o">/</span><span class="s s-Atom">fedora</span><span class="o">-</span><span class="s s-Atom">infrared</span><span class="o">/</span><span class="s s-Atom">tags</span><span class="o">/</span><span class="s s-Atom">list</span>
+<span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="s s-Atom">:</span><span class="s2">&quot;fedora1&quot;</span><span class="p">,</span><span class="s2">&quot;tags&quot;</span><span class="s s-Atom">:</span><span class="p">[</span><span class="s2">&quot;latest&quot;</span><span class="p">]}</span>
+<span class="s s-Atom">curl</span> <span class="o">-</span><span class="nv">X</span> <span class="nv">GET</span> <span class="nn">https</span><span class="p">:</span><span class="o">//</span><span class="s s-Atom">local</span><span class="o">-</span><span class="nn">registry</span><span class="p">:</span><span class="mi">4443</span><span class="o">/</span><span class="s s-Atom">v2</span><span class="o">/</span><span class="s s-Atom">fedora</span><span class="o">-</span><span class="s s-Atom">rundeck</span><span class="o">/</span><span class="s s-Atom">tags</span><span class="o">/</span><span class="s s-Atom">list</span>
+<span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="s s-Atom">:</span><span class="s2">&quot;fedora2&quot;</span><span class="p">,</span><span class="s2">&quot;tags&quot;</span><span class="s s-Atom">:</span><span class="p">[</span><span class="s2">&quot;latest&quot;</span><span class="p">]}</span>
+</code></pre></div>
+</td></tr></table></p>
                 
                   
                     

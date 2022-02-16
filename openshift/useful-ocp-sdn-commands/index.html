@@ -1221,32 +1221,54 @@
                 <h2 id="useful-ocp-sdn-commands">Useful OCP SDN commands</h2>
 <h3 id="increasing-log-level-for-specific-nodes">Increasing log level for specific nodes</h3>
 <p>See: <a href="https://github.com/openshift/cluster-network-operator/wiki/How-to-increase-the-log-level-on-a-single-SDN-or-OVN-node">https://github.com/openshift/cluster-network-operator/wiki/How-to-increase-the-log-level-on-a-single-SDN-or-OVN-node</a></p>
-<p>The following is an example:</p>
-<pre><code>cat &lt;&lt; 'EOF' &gt; overrides.yaml 
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: env-overrides
-  namespace: openshift-ovn-kubernetes
-data:
-  openshift-worker-1: |
-    # This sets the log level for the ovn-kubernetes node process:
-    OVN_KUBE_LOG_LEVEL=5
-EOF
-oc apply -f overrides.yaml 
-oc delete pod -n openshift-ovn-kubernetes --field-selector spec.nodeName=openshift-worker-1 -l app=ovnkube-node
-</code></pre>
-<p>That will increase the log level to level 5 which allows to get more verbose output:</p>
-<pre><code>$ oc logs -f -n openshift-ovn-kubernetes ovnkube-node-vg55p --tail=0 -c ovnkube-node
-(...)
-I1208 15:37:38.996350 3343454 healthcheck.go:253] Gateway OpenFlow sync requested
-I1208 15:37:38.996370 3343454 gateway_iptables.go:45] Adding rule in table: nat, chain: OVN-KUBE-NODEPORT with args: &quot;-p TCP -m addrtype --dst-type LOCAL --dport 30000 -j DNAT --to-destination 172.30.239.167:27017&quot; for protocol: 0 
-I1208 15:37:38.996476 3343454 ovs.go:209] exec(164): /usr/bin/ovs-ofctl -O OpenFlow13 --bundle replace-flows br-ex -
-I1208 15:37:39.001098 3343454 gateway_iptables.go:48] Chain: &quot;nat&quot; in table: &quot;OVN-KUBE-NODEPORT&quot; already exists, skipping creation
-I1208 15:37:39.010805 3343454 gateway_iptables.go:45] Adding rule in table: nat, chain: OVN-KUBE-NODEPORT with args: &quot;-p TCP -m addrtype --dst-type LOCAL --dport 30000 -j DNAT --to-destination [fd02::82b5]:27017&quot; for protocol: 1 
-I1208 15:37:39.015130 3343454 gateway_iptables.go:48] Chain: &quot;nat&quot; in table: &quot;OVN-KUBE-NODEPORT&quot; already exists, skipping creation
-(...)
-</code></pre>
+<p>The following is an example:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">cat</span> <span class="o">&lt;&lt;</span> <span class="s1">&#39;</span><span class="s">EOF</span><span class="s1">&#39;</span> <span class="o">&gt;</span> <span class="nv">overrides</span>.<span class="nv">yaml</span> 
+<span class="nv">kind</span>: <span class="nv">ConfigMap</span>
+<span class="nv">apiVersion</span>: <span class="nv">v1</span>
+<span class="nv">metadata</span>:
+  <span class="nv">name</span>: <span class="nv">env</span><span class="o">-</span><span class="nv">overrides</span>
+  <span class="nv">namespace</span>: <span class="nv">openshift</span><span class="o">-</span><span class="nv">ovn</span><span class="o">-</span><span class="nv">kubernetes</span>
+<span class="nv">data</span>:
+  <span class="nv">openshift</span><span class="o">-</span><span class="nv">worker</span><span class="o">-</span><span class="mi">1</span>: <span class="o">|</span>
+    # <span class="nv">This</span> <span class="nv">sets</span> <span class="nv">the</span> <span class="nv">log</span> <span class="nv">level</span> <span class="k">for</span> <span class="nv">the</span> <span class="nv">ovn</span><span class="o">-</span><span class="nv">kubernetes</span> <span class="nv">node</span> <span class="nv">process</span>:
+    <span class="nv">OVN_KUBE_LOG_LEVEL</span><span class="o">=</span><span class="mi">5</span>
+<span class="nv">EOF</span>
+<span class="nv">oc</span> <span class="nv">apply</span> <span class="o">-</span><span class="nv">f</span> <span class="nv">overrides</span>.<span class="nv">yaml</span> 
+<span class="nv">oc</span> <span class="nv">delete</span> <span class="nv">pod</span> <span class="o">-</span><span class="nv">n</span> <span class="nv">openshift</span><span class="o">-</span><span class="nv">ovn</span><span class="o">-</span><span class="nv">kubernetes</span> <span class="o">--</span><span class="nv">field</span><span class="o">-</span><span class="nv">selector</span> <span class="nv">spec</span>.<span class="nv">nodeName</span><span class="o">=</span><span class="nv">openshift</span><span class="o">-</span><span class="nv">worker</span><span class="o">-</span><span class="mi">1</span> <span class="o">-</span><span class="nv">l</span> <span class="nv">app</span><span class="o">=</span><span class="nv">ovnkube</span><span class="o">-</span><span class="nv">node</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>That will increase the log level to level 5 which allows to get more verbose output:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc logs -f -n openshift-ovn-kubernetes ovnkube-node-vg55p --tail<span class="o">=</span><span class="m">0</span> -c ovnkube-node
+<span class="o">(</span>...<span class="o">)</span>
+I1208 <span class="m">15</span>:37:38.996350 <span class="m">3343454</span> healthcheck.go:253<span class="o">]</span> Gateway OpenFlow sync requested
+I1208 <span class="m">15</span>:37:38.996370 <span class="m">3343454</span> gateway_iptables.go:45<span class="o">]</span> Adding rule <span class="k">in</span> table: nat, chain: OVN-KUBE-NODEPORT with args: <span class="s2">&quot;-p TCP -m addrtype --dst-type LOCAL --dport 30000 -j DNAT --to-destination 172.30.239.167:27017&quot;</span> <span class="k">for</span> protocol: <span class="m">0</span> 
+I1208 <span class="m">15</span>:37:38.996476 <span class="m">3343454</span> ovs.go:209<span class="o">]</span> exec<span class="o">(</span><span class="m">164</span><span class="o">)</span>: /usr/bin/ovs-ofctl -O OpenFlow13 --bundle replace-flows br-ex -
+I1208 <span class="m">15</span>:37:39.001098 <span class="m">3343454</span> gateway_iptables.go:48<span class="o">]</span> Chain: <span class="s2">&quot;nat&quot;</span> <span class="k">in</span> table: <span class="s2">&quot;OVN-KUBE-NODEPORT&quot;</span> already exists, skipping creation
+I1208 <span class="m">15</span>:37:39.010805 <span class="m">3343454</span> gateway_iptables.go:45<span class="o">]</span> Adding rule <span class="k">in</span> table: nat, chain: OVN-KUBE-NODEPORT with args: <span class="s2">&quot;-p TCP -m addrtype --dst-type LOCAL --dport 30000 -j DNAT --to-destination [fd02::82b5]:27017&quot;</span> <span class="k">for</span> protocol: <span class="m">1</span> 
+I1208 <span class="m">15</span>:37:39.015130 <span class="m">3343454</span> gateway_iptables.go:48<span class="o">]</span> Chain: <span class="s2">&quot;nat&quot;</span> <span class="k">in</span> table: <span class="s2">&quot;OVN-KUBE-NODEPORT&quot;</span> already exists, skipping creation
+<span class="o">(</span>...<span class="o">)</span>
+</code></pre></div>
+</td></tr></table></p>
                 
                   
                     

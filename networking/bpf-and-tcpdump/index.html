@@ -1361,194 +1361,317 @@
 <li><a href="https://blog.cloudflare.com/bpf-the-forgotten-bytecode/">https://blog.cloudflare.com/bpf-the-forgotten-bytecode/</a></li>
 </ul>
 <h3 id="tcpdumps-inconsistent-bpf-expression-compiler">tcpdump's inconsistent BPF expression compiler</h3>
-<p>Now that you have a good idea about this, let's look at how tcpdump compiles the following filter expression:</p>
-<pre><code>icmp
-</code></pre>
-<p>This will be straight forward:</p>
-<pre><code>[root@host ~]# tcpdump -i lo icmp -d
-(000) ldh      [12]
-(001) jeq      #0x800           jt 2    jf 5
-(002) ldb      [23]
-(003) jeq      #0x1             jt 4    jf 5
-(004) ret      #262144
-(005) ret      #0
-</code></pre>
-<p>We'd also expect this to be the same if we look at a file capture:</p>
-<pre><code>[root@host ~]# timeout 1 tcpdump -i lo -w lo.pcap
-dropped privs to tcpdump
-tcpdump: listening on lo, link-type EN10MB (Ethernet), capture size 262144 bytes
-0 packets captured
-6 packets received by filter
-0 packets dropped by kernel
-[root@host ~]# tcpdump -r lo.pcap icmp -d
-reading from file lo.pcap, link-type EN10MB (Ethernet)
-(000) ldh      [12]
-(001) jeq      #0x800           jt 2    jf 5             # &lt;---- ethertype for IP
-(002) ldb      [23]
-(003) jeq      #0x1             jt 4    jf 5             # &lt;---- IP protocol number for ICMP
-(004) ret      #262144
-(005) ret      #0
-</code></pre>
+<p>Now that you have a good idea about this, let's look at how tcpdump compiles the following filter expression:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>icmp
+</code></pre></div>
+</td></tr></table></p>
+<p>This will be straight forward:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@host ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">tcpdump</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="n">lo</span><span class="w"> </span><span class="n">icmp</span><span class="w"> </span><span class="o">-</span><span class="n">d</span><span class="w"></span>
+<span class="p">(</span><span class="mi">000</span><span class="p">)</span><span class="w"> </span><span class="n">ldh</span><span class="w">      </span><span class="o">[</span><span class="n">12</span><span class="o">]</span><span class="w"></span>
+<span class="p">(</span><span class="mi">001</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x800</span><span class="w">           </span><span class="n">jt</span><span class="w"> </span><span class="mi">2</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">5</span><span class="w"></span>
+<span class="p">(</span><span class="mi">002</span><span class="p">)</span><span class="w"> </span><span class="n">ldb</span><span class="w">      </span><span class="o">[</span><span class="n">23</span><span class="o">]</span><span class="w"></span>
+<span class="p">(</span><span class="mi">003</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x1</span><span class="w">             </span><span class="n">jt</span><span class="w"> </span><span class="mi">4</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">5</span><span class="w"></span>
+<span class="p">(</span><span class="mi">004</span><span class="p">)</span><span class="w"> </span><span class="n">ret</span><span class="w">      </span><span class="n">#262144</span><span class="w"></span>
+<span class="p">(</span><span class="mi">005</span><span class="p">)</span><span class="w"> </span><span class="n">ret</span><span class="w">      </span><span class="n">#0</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p>We'd also expect this to be the same if we look at a file capture:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@host ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">timeout</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">tcpdump</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="n">lo</span><span class="w"> </span><span class="o">-</span><span class="n">w</span><span class="w"> </span><span class="n">lo</span><span class="p">.</span><span class="n">pcap</span><span class="w"></span>
+<span class="n">dropped</span><span class="w"> </span><span class="n">privs</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">tcpdump</span><span class="w"></span>
+<span class="nl">tcpdump</span><span class="p">:</span><span class="w"> </span><span class="n">listening</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">lo</span><span class="p">,</span><span class="w"> </span><span class="n">link</span><span class="o">-</span><span class="n">type</span><span class="w"> </span><span class="n">EN10MB</span><span class="w"> </span><span class="p">(</span><span class="n">Ethernet</span><span class="p">),</span><span class="w"> </span><span class="n">capture</span><span class="w"> </span><span class="k">size</span><span class="w"> </span><span class="mi">262144</span><span class="w"> </span><span class="n">bytes</span><span class="w"></span>
+<span class="mi">0</span><span class="w"> </span><span class="n">packets</span><span class="w"> </span><span class="n">captured</span><span class="w"></span>
+<span class="mi">6</span><span class="w"> </span><span class="n">packets</span><span class="w"> </span><span class="n">received</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="k">filter</span><span class="w"></span>
+<span class="mi">0</span><span class="w"> </span><span class="n">packets</span><span class="w"> </span><span class="n">dropped</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">kernel</span><span class="w"></span>
+<span class="o">[</span><span class="n">root@host ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">tcpdump</span><span class="w"> </span><span class="o">-</span><span class="n">r</span><span class="w"> </span><span class="n">lo</span><span class="p">.</span><span class="n">pcap</span><span class="w"> </span><span class="n">icmp</span><span class="w"> </span><span class="o">-</span><span class="n">d</span><span class="w"></span>
+<span class="n">reading</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="k">file</span><span class="w"> </span><span class="n">lo</span><span class="p">.</span><span class="n">pcap</span><span class="p">,</span><span class="w"> </span><span class="n">link</span><span class="o">-</span><span class="n">type</span><span class="w"> </span><span class="n">EN10MB</span><span class="w"> </span><span class="p">(</span><span class="n">Ethernet</span><span class="p">)</span><span class="w"></span>
+<span class="p">(</span><span class="mi">000</span><span class="p">)</span><span class="w"> </span><span class="n">ldh</span><span class="w">      </span><span class="o">[</span><span class="n">12</span><span class="o">]</span><span class="w"></span>
+<span class="p">(</span><span class="mi">001</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x800</span><span class="w">           </span><span class="n">jt</span><span class="w"> </span><span class="mi">2</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">5</span><span class="w">             </span><span class="err">#</span><span class="w"> </span><span class="o">&lt;----</span><span class="w"> </span><span class="n">ethertype</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">IP</span><span class="w"></span>
+<span class="p">(</span><span class="mi">002</span><span class="p">)</span><span class="w"> </span><span class="n">ldb</span><span class="w">      </span><span class="o">[</span><span class="n">23</span><span class="o">]</span><span class="w"></span>
+<span class="p">(</span><span class="mi">003</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x1</span><span class="w">             </span><span class="n">jt</span><span class="w"> </span><span class="mi">4</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">5</span><span class="w">             </span><span class="err">#</span><span class="w"> </span><span class="o">&lt;----</span><span class="w"> </span><span class="n">IP</span><span class="w"> </span><span class="n">protocol</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">ICMP</span><span class="w"></span>
+<span class="p">(</span><span class="mi">004</span><span class="p">)</span><span class="w"> </span><span class="n">ret</span><span class="w">      </span><span class="n">#262144</span><span class="w"></span>
+<span class="p">(</span><span class="mi">005</span><span class="p">)</span><span class="w"> </span><span class="n">ret</span><span class="w">      </span><span class="n">#0</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
 <p>So far, so good and straight forward. We look at byte 23 and check if the IP protocol number is 1. Before that, we check the ethernet header in byte 12 and make sure that we are using IP.</p>
-<p>But what happens if we use this expression?</p>
-<pre><code>vlan
-</code></pre>
+<p>But what happens if we use this expression?
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>vlan
+</code></pre></div>
+</td></tr></table></p>
 <p>We'd expect to look into byte 12 of the ethernet header and make sure that we have the ethertype for 802.1q there. So we'd want to see 0x8100 and if we look for Q-in-Q we'd look for 0x88A8 and for double tagging we'd also look for 0x9100:</p>
 <ul>
 <li><a href="https://en.wikipedia.org/wiki/EtherType">https://en.wikipedia.org/wiki/EtherType</a></li>
 </ul>
-<p>And if we apply the filter to our previously captured file, this is precisely what happens:</p>
-<pre><code>[root@host ~]# tcpdump -r lo.pcap vlan -d
-reading from file lo.pcap, link-type EN10MB (Ethernet)
-(000) ldh      [12]
-(001) jeq      #0x8100          jt 4    jf 2
-(002) jeq      #0x88a8          jt 4    jf 3
-(003) jeq      #0x9100          jt 4    jf 5
-(004) ret      #262144
-(005) ret      #0
-</code></pre>
-<p>Now, let's look at a live capture from the loopback interface. We should expect the same expression:</p>
-<pre><code>[root@host ~]# tcpdump -i lo vlan -d
-(000) ldb      [-4048]
-(001) jeq      #0x1             jt 6    jf 2
-(002) ldh      [12]
-(003) jeq      #0x8100          jt 6    jf 4
-(004) jeq      #0x88a8          jt 6    jf 5
-(005) jeq      #0x9100          jt 6    jf 7
-(006) ret      #262144
-(007) ret      #0
-</code></pre>
+<p>And if we apply the filter to our previously captured file, this is precisely what happens:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@host ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">tcpdump</span><span class="w"> </span><span class="o">-</span><span class="n">r</span><span class="w"> </span><span class="n">lo</span><span class="p">.</span><span class="n">pcap</span><span class="w"> </span><span class="n">vlan</span><span class="w"> </span><span class="o">-</span><span class="n">d</span><span class="w"></span>
+<span class="n">reading</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="k">file</span><span class="w"> </span><span class="n">lo</span><span class="p">.</span><span class="n">pcap</span><span class="p">,</span><span class="w"> </span><span class="n">link</span><span class="o">-</span><span class="n">type</span><span class="w"> </span><span class="n">EN10MB</span><span class="w"> </span><span class="p">(</span><span class="n">Ethernet</span><span class="p">)</span><span class="w"></span>
+<span class="p">(</span><span class="mi">000</span><span class="p">)</span><span class="w"> </span><span class="n">ldh</span><span class="w">      </span><span class="o">[</span><span class="n">12</span><span class="o">]</span><span class="w"></span>
+<span class="p">(</span><span class="mi">001</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x8100</span><span class="w">          </span><span class="n">jt</span><span class="w"> </span><span class="mi">4</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
+<span class="p">(</span><span class="mi">002</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x88a8</span><span class="w">          </span><span class="n">jt</span><span class="w"> </span><span class="mi">4</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">3</span><span class="w"></span>
+<span class="p">(</span><span class="mi">003</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x9100</span><span class="w">          </span><span class="n">jt</span><span class="w"> </span><span class="mi">4</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">5</span><span class="w"></span>
+<span class="p">(</span><span class="mi">004</span><span class="p">)</span><span class="w"> </span><span class="n">ret</span><span class="w">      </span><span class="n">#262144</span><span class="w"></span>
+<span class="p">(</span><span class="mi">005</span><span class="p">)</span><span class="w"> </span><span class="n">ret</span><span class="w">      </span><span class="n">#0</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Now, let's look at a live capture from the loopback interface. We should expect the same expression:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@host ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">tcpdump</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="n">lo</span><span class="w"> </span><span class="n">vlan</span><span class="w"> </span><span class="o">-</span><span class="n">d</span><span class="w"></span>
+<span class="p">(</span><span class="mi">000</span><span class="p">)</span><span class="w"> </span><span class="n">ldb</span><span class="w">      </span><span class="o">[</span><span class="n">-4048</span><span class="o">]</span><span class="w"></span>
+<span class="p">(</span><span class="mi">001</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x1</span><span class="w">             </span><span class="n">jt</span><span class="w"> </span><span class="mi">6</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
+<span class="p">(</span><span class="mi">002</span><span class="p">)</span><span class="w"> </span><span class="n">ldh</span><span class="w">      </span><span class="o">[</span><span class="n">12</span><span class="o">]</span><span class="w"></span>
+<span class="p">(</span><span class="mi">003</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x8100</span><span class="w">          </span><span class="n">jt</span><span class="w"> </span><span class="mi">6</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">4</span><span class="w"></span>
+<span class="p">(</span><span class="mi">004</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x88a8</span><span class="w">          </span><span class="n">jt</span><span class="w"> </span><span class="mi">6</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">5</span><span class="w"></span>
+<span class="p">(</span><span class="mi">005</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x9100</span><span class="w">          </span><span class="n">jt</span><span class="w"> </span><span class="mi">6</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">7</span><span class="w"></span>
+<span class="p">(</span><span class="mi">006</span><span class="p">)</span><span class="w"> </span><span class="n">ret</span><span class="w">      </span><span class="n">#262144</span><span class="w"></span>
+<span class="p">(</span><span class="mi">007</span><span class="p">)</span><span class="w"> </span><span class="n">ret</span><span class="w">      </span><span class="n">#0</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
 <p>The expression is different now! Why is that? Well, the kernel has an internal optimization and will actually store VLAN information in a location with negative offset.</p>
-<p>The reason for this is that the kernel no longer passes vlan tag information as-is to libpcap. See <a href="https://bugs.launchpad.net/ubuntu/+source/tcpdump/+bug/1641429">https://bugs.launchpad.net/ubuntu/+source/tcpdump/+bug/1641429</a> for further details:</p>
-<pre><code>The kernel now longer passes vlan tag information as-is to libpcap, instead BPF needs to access ancillary data.
+<p>The reason for this is that the kernel no longer passes vlan tag information as-is to libpcap. See <a href="https://bugs.launchpad.net/ubuntu/+source/tcpdump/+bug/1641429">https://bugs.launchpad.net/ubuntu/+source/tcpdump/+bug/1641429</a> for further details:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">The</span> <span class="nv">kernel</span> <span class="nv">now</span> <span class="nv">longer</span> <span class="nv">passes</span> <span class="nv">vlan</span> <span class="nv">tag</span> <span class="nv">information</span> <span class="nv">as</span><span class="o">-</span><span class="nv">is</span> <span class="nv">to</span> <span class="nv">libpcap</span>, <span class="nv">instead</span> <span class="nv">BPF</span> <span class="nv">needs</span> <span class="nv">to</span> <span class="nv">access</span> <span class="nv">ancillary</span> <span class="nv">data</span>.
 
-That is the reason &quot;vlan 114&quot; works (because it does the right thing), and a manual filter doesn't, because libpcap never actually sees this.
+<span class="nv">That</span> <span class="nv">is</span> <span class="nv">the</span> <span class="nv">reason</span> <span class="s2">&quot;</span><span class="s">vlan 114</span><span class="s2">&quot;</span> <span class="nv">works</span> <span class="ss">(</span><span class="nv">because</span> <span class="nv">it</span> <span class="nv">does</span> <span class="nv">the</span> <span class="nv">right</span> <span class="nv">thing</span><span class="ss">)</span>, <span class="nv">and</span> <span class="nv">a</span> <span class="nv">manual</span> <span class="nv">filter</span> <span class="nv">doesn</span><span class="s1">&#39;</span><span class="s">t, because libpcap never actually sees this.</span>
 
-Offsets are negative because this is the way to access this ancillary data (like vlan tags) in the Linux kernel:
-https://github.com/torvalds/linux/blob/6f0d349d922ba44e4348a17a78ea51b7135965b1/include/uapi/linux/filter.h#L60
-</code></pre>
+<span class="nv">Offsets</span> <span class="nv">are</span> <span class="nv">negative</span> <span class="nv">because</span> <span class="nv">this</span> <span class="nv">is</span> <span class="nv">the</span> <span class="nv">way</span> <span class="nv">to</span> <span class="nv">access</span> <span class="nv">this</span> <span class="nv">ancillary</span> <span class="nv">data</span> <span class="ss">(</span><span class="nv">like</span> <span class="nv">vlan</span> <span class="nv">tags</span><span class="ss">)</span> <span class="nv">in</span> <span class="nv">the</span> <span class="nv">Linux</span> <span class="nv">kernel</span>:
+<span class="nv">https</span>:<span class="o">//</span><span class="nv">github</span>.<span class="nv">com</span><span class="o">/</span><span class="nv">torvalds</span><span class="o">/</span><span class="nv">linux</span><span class="o">/</span><span class="nv">blob</span><span class="o">/</span><span class="mi">6</span><span class="nv">f0d349d922ba44e4348a17a78ea51b7135965b1</span><span class="o">/</span><span class="k">include</span><span class="o">/</span><span class="nv">uapi</span><span class="o">/</span><span class="nv">linux</span><span class="o">/</span><span class="nv">filter</span>.<span class="nv">h</span>#<span class="nv">L60</span>
+</code></pre></div>
+</td></tr></table></p>
 <p>And see the kernel documentation as well: <a href="https://github.com/torvalds/linux/blob/7acac4b3196caee5e21fb5ea53f8bc124e6a16fc/include/uapi/linux/filter.h#L60">https://github.com/torvalds/linux/blob/7acac4b3196caee5e21fb5ea53f8bc124e6a16fc/include/uapi/linux/filter.h#L60</a>:</p>
-<pre><code>/* RATIONALE. Negative offsets are invalid in BPF.
-   We use them to reference ancillary data.
-   Unlike introduction new instructions, it does not break
-   existing compilers/optimizers.
- */
-</code></pre>
-<p>For example, let's look for VLAN 32 (0x20):</p>
-<pre><code>[root@host ~]# tcpdump -r lo.pcap vlan 32 -d
-reading from file lo.pcap, link-type EN10MB (Ethernet)
-(000) ldh      [12]                                  # &lt;---- look for dot1q, etc. at byte 12
-(001) jeq      #0x8100          jt 4    jf 2
-(002) jeq      #0x88a8          jt 4    jf 3
-(003) jeq      #0x9100          jt 4    jf 8
-(004) ldh      [14]
-(005) and      #0xfff                                # &lt;---- extract the last 12 bits from the field (VID)
-(006) jeq      #0x20            jt 7    jf 8         # &lt;---- check for VLAN 32
-(007) ret      #262144
-(008) ret      #0
-</code></pre>
-<p>That, too, makes sense. But if we do a live capture, the logic becomes more complex:</p>
-<pre><code>[root@host ~]# tcpdump -i lo vlan 32 -d
-(000) ldb      [-4048]
-(001) jeq      #0x1             jt 6    jf 2       # &lt;---- does the kernel special field report this as a VLAN?
-(002) ldh      [12]                                # &lt;---- otherwise fallback and check the on-wire format as above
-(003) jeq      #0x8100          jt 6    jf 4
-(004) jeq      #0x88a8          jt 6    jf 5
-(005) jeq      #0x9100          jt 6    jf 14
-(006) ldb      [-4048]                             # &lt;---- does the kernel special field report this as a VLAN?
-(007) jeq      #0x1             jt 8    jf 10
-(008) ldb      [-4052]
-(009) ja       11
-(010) ldh      [14]
-(011) and      #0xfff
-(012) jeq      #0x20            jt 13   jf 14      # &lt;---- look for VLAN 32 as earlier
-(013) ret      #262144
-(014) ret      #0
-</code></pre>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="cm">/* RATIONALE. Negative offsets are invalid in BPF.</span>
+<span class="cm">   We use them to reference ancillary data.</span>
+<span class="cm">   Unlike introduction new instructions, it does not break</span>
+<span class="cm">   existing compilers/optimizers.</span>
+<span class="cm"> */</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
+<p>For example, let's look for VLAN 32 (0x20):
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@host ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">tcpdump</span><span class="w"> </span><span class="o">-</span><span class="n">r</span><span class="w"> </span><span class="n">lo</span><span class="p">.</span><span class="n">pcap</span><span class="w"> </span><span class="n">vlan</span><span class="w"> </span><span class="mi">32</span><span class="w"> </span><span class="o">-</span><span class="n">d</span><span class="w"></span>
+<span class="n">reading</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="k">file</span><span class="w"> </span><span class="n">lo</span><span class="p">.</span><span class="n">pcap</span><span class="p">,</span><span class="w"> </span><span class="n">link</span><span class="o">-</span><span class="n">type</span><span class="w"> </span><span class="n">EN10MB</span><span class="w"> </span><span class="p">(</span><span class="n">Ethernet</span><span class="p">)</span><span class="w"></span>
+<span class="p">(</span><span class="mi">000</span><span class="p">)</span><span class="w"> </span><span class="n">ldh</span><span class="w">      </span><span class="o">[</span><span class="n">12</span><span class="o">]</span><span class="w">                                  </span><span class="err">#</span><span class="w"> </span><span class="o">&lt;----</span><span class="w"> </span><span class="n">look</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">dot1q</span><span class="p">,</span><span class="w"> </span><span class="n">etc</span><span class="p">.</span><span class="w"> </span><span class="k">at</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="mi">12</span><span class="w"></span>
+<span class="p">(</span><span class="mi">001</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x8100</span><span class="w">          </span><span class="n">jt</span><span class="w"> </span><span class="mi">4</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
+<span class="p">(</span><span class="mi">002</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x88a8</span><span class="w">          </span><span class="n">jt</span><span class="w"> </span><span class="mi">4</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">3</span><span class="w"></span>
+<span class="p">(</span><span class="mi">003</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x9100</span><span class="w">          </span><span class="n">jt</span><span class="w"> </span><span class="mi">4</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">8</span><span class="w"></span>
+<span class="p">(</span><span class="mi">004</span><span class="p">)</span><span class="w"> </span><span class="n">ldh</span><span class="w">      </span><span class="o">[</span><span class="n">14</span><span class="o">]</span><span class="w"></span>
+<span class="p">(</span><span class="mi">005</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w">      </span><span class="n">#0xfff</span><span class="w">                                </span><span class="err">#</span><span class="w"> </span><span class="o">&lt;----</span><span class="w"> </span><span class="k">extract</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">last</span><span class="w"> </span><span class="mi">12</span><span class="w"> </span><span class="n">bits</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">field</span><span class="w"> </span><span class="p">(</span><span class="n">VID</span><span class="p">)</span><span class="w"></span>
+<span class="p">(</span><span class="mi">006</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x20</span><span class="w">            </span><span class="n">jt</span><span class="w"> </span><span class="mi">7</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">8</span><span class="w">         </span><span class="err">#</span><span class="w"> </span><span class="o">&lt;----</span><span class="w"> </span><span class="k">check</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">VLAN</span><span class="w"> </span><span class="mi">32</span><span class="w"></span>
+<span class="p">(</span><span class="mi">007</span><span class="p">)</span><span class="w"> </span><span class="n">ret</span><span class="w">      </span><span class="n">#262144</span><span class="w"></span>
+<span class="p">(</span><span class="mi">008</span><span class="p">)</span><span class="w"> </span><span class="n">ret</span><span class="w">      </span><span class="n">#0</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p>That, too, makes sense. But if we do a live capture, the logic becomes more complex:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@host ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">tcpdump</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="n">lo</span><span class="w"> </span><span class="n">vlan</span><span class="w"> </span><span class="mi">32</span><span class="w"> </span><span class="o">-</span><span class="n">d</span><span class="w"></span>
+<span class="p">(</span><span class="mi">000</span><span class="p">)</span><span class="w"> </span><span class="n">ldb</span><span class="w">      </span><span class="o">[</span><span class="n">-4048</span><span class="o">]</span><span class="w"></span>
+<span class="p">(</span><span class="mi">001</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x1</span><span class="w">             </span><span class="n">jt</span><span class="w"> </span><span class="mi">6</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">2</span><span class="w">       </span><span class="err">#</span><span class="w"> </span><span class="o">&lt;----</span><span class="w"> </span><span class="n">does</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">kernel</span><span class="w"> </span><span class="n">special</span><span class="w"> </span><span class="n">field</span><span class="w"> </span><span class="n">report</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">VLAN</span><span class="vm">?</span><span class="w"></span>
+<span class="p">(</span><span class="mi">002</span><span class="p">)</span><span class="w"> </span><span class="n">ldh</span><span class="w">      </span><span class="o">[</span><span class="n">12</span><span class="o">]</span><span class="w">                                </span><span class="err">#</span><span class="w"> </span><span class="o">&lt;----</span><span class="w"> </span><span class="n">otherwise</span><span class="w"> </span><span class="n">fallback</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="k">check</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">on</span><span class="o">-</span><span class="n">wire</span><span class="w"> </span><span class="nf">format</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">above</span><span class="w"></span>
+<span class="p">(</span><span class="mi">003</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x8100</span><span class="w">          </span><span class="n">jt</span><span class="w"> </span><span class="mi">6</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">4</span><span class="w"></span>
+<span class="p">(</span><span class="mi">004</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x88a8</span><span class="w">          </span><span class="n">jt</span><span class="w"> </span><span class="mi">6</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">5</span><span class="w"></span>
+<span class="p">(</span><span class="mi">005</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x9100</span><span class="w">          </span><span class="n">jt</span><span class="w"> </span><span class="mi">6</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">14</span><span class="w"></span>
+<span class="p">(</span><span class="mi">006</span><span class="p">)</span><span class="w"> </span><span class="n">ldb</span><span class="w">      </span><span class="o">[</span><span class="n">-4048</span><span class="o">]</span><span class="w">                             </span><span class="err">#</span><span class="w"> </span><span class="o">&lt;----</span><span class="w"> </span><span class="n">does</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">kernel</span><span class="w"> </span><span class="n">special</span><span class="w"> </span><span class="n">field</span><span class="w"> </span><span class="n">report</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">VLAN</span><span class="vm">?</span><span class="w"></span>
+<span class="p">(</span><span class="mi">007</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x1</span><span class="w">             </span><span class="n">jt</span><span class="w"> </span><span class="mi">8</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">10</span><span class="w"></span>
+<span class="p">(</span><span class="mi">008</span><span class="p">)</span><span class="w"> </span><span class="n">ldb</span><span class="w">      </span><span class="o">[</span><span class="n">-4052</span><span class="o">]</span><span class="w"></span>
+<span class="p">(</span><span class="mi">009</span><span class="p">)</span><span class="w"> </span><span class="n">ja</span><span class="w">       </span><span class="mi">11</span><span class="w"></span>
+<span class="p">(</span><span class="mi">010</span><span class="p">)</span><span class="w"> </span><span class="n">ldh</span><span class="w">      </span><span class="o">[</span><span class="n">14</span><span class="o">]</span><span class="w"></span>
+<span class="p">(</span><span class="mi">011</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w">      </span><span class="n">#0xfff</span><span class="w"></span>
+<span class="p">(</span><span class="mi">012</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x20</span><span class="w">            </span><span class="n">jt</span><span class="w"> </span><span class="mi">13</span><span class="w">   </span><span class="n">jf</span><span class="w"> </span><span class="mi">14</span><span class="w">      </span><span class="err">#</span><span class="w"> </span><span class="o">&lt;----</span><span class="w"> </span><span class="n">look</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">VLAN</span><span class="w"> </span><span class="mi">32</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">earlier</span><span class="w"></span>
+<span class="p">(</span><span class="mi">013</span><span class="p">)</span><span class="w"> </span><span class="n">ret</span><span class="w">      </span><span class="n">#262144</span><span class="w"></span>
+<span class="p">(</span><span class="mi">014</span><span class="p">)</span><span class="w"> </span><span class="n">ret</span><span class="w">      </span><span class="n">#0</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
 <p>As a conclusion:</p>
 <ul>
-<li>Data from a <code>.pcap</code> file is treated as if everything came directly from the wire, the offsets are the same as we'd see them on the physical layer</li>
+<li>Data from a <code class="highlight"><span class="na">.pcap</span></code> file is treated as if everything came directly from the wire, the offsets are the same as we'd see them on the physical layer</li>
 <li>When we capture data from an interface, libpcap will use kernel ancillary data but it will also add a fallback expression in newer versions</li>
 </ul>
 <h3 id="how-does-tcpdump-compile-user-provided-expressions-source-code-analysis">How does tcpdump compile user provided expressions - Source code analysis</h3>
 <p>Let's look at how tcpdump (by means of libpcap) compiles its expressions into the appropriate BPF bytecode.</p>
 <p>tcpdump will compile different types of BPF depending on if the optimization flag is set but also particularly depending on if we open a file for reading or if we run a live capture.</p>
-<p>The <code>-r</code> indicates to read from a file and the parameter is read here:</p>
+<p>The <code class="highlight">-r</code> indicates to read from a file and the parameter is read here:</p>
 <ul>
 <li><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1759">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1759</a></li>
 </ul>
-<pre><code>        case 'r':
-            RFileName = optarg;
-            break;
-</code></pre>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>        <span class="nv">case</span> <span class="s1">&#39;</span><span class="s">r</span><span class="s1">&#39;</span>:
+            <span class="nv">RFileName</span> <span class="o">=</span> <span class="nv">optarg</span><span class="c1">;</span>
+            <span class="k">break</span><span class="c1">;</span>
+</code></pre></div>
+</td></tr></table>
 <p>Opening a file for reading:</p>
 <ul>
 <li><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2053">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2053</a></li>
 </ul>
-<p>This is done here:</p>
-<pre><code>#ifdef HAVE_PCAP_SET_TSTAMP_PRECISION
-        pd = pcap_open_offline_with_tstamp_precision(RFileName,
-            ndo-&gt;ndo_tstamp_precision, ebuf);
-#else
-        pd = pcap_open_offline(RFileName, ebuf);
-#endif
-</code></pre>
-<p>If <code>-r</code> is not specified, then libpcap will listen on the interface instead:</p>
+<p>This is done here:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="cp">#ifdef HAVE_PCAP_SET_TSTAMP_PRECISION</span>
+        <span class="n">pd</span> <span class="o">=</span> <span class="n">pcap_open_offline_with_tstamp_precision</span><span class="p">(</span><span class="n">RFileName</span><span class="p">,</span>
+            <span class="n">ndo</span><span class="o">-&gt;</span><span class="n">ndo_tstamp_precision</span><span class="p">,</span> <span class="n">ebuf</span><span class="p">);</span>
+<span class="cp">#else</span>
+        <span class="n">pd</span> <span class="o">=</span> <span class="n">pcap_open_offline</span><span class="p">(</span><span class="n">RFileName</span><span class="p">,</span> <span class="n">ebuf</span><span class="p">);</span>
+<span class="cp">#endif</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>If <code class="highlight">-r</code> is not specified, then libpcap will listen on the interface instead:</p>
 <ul>
-<li><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2135">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2135</a></li>
-</ul>
-<pre><code>        /*
+<li><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2135">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2135</a>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>        /*
          * Try to open the interface with the specified name.
          */
         pd = open_interface(device, ndo, ebuf);
-</code></pre>
+</code></pre></div>
+</td></tr></table></li>
+</ul>
 <p>If a file was used as an input or an socket on a network interface determines how the BPF will be compiled. The the section above.</p>
 <p>The actual compilation of the user provided filter expression to BPF happens here:</p>
 <ul>
-<li><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2238">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2238</a></li>
+<li><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2238">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2238</a>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>    <span class="k">if</span> <span class="ss">(</span><span class="nv">pcap_compile</span><span class="ss">(</span><span class="nv">pd</span>, <span class="o">&amp;</span><span class="nv">fcode</span>, <span class="nv">cmdbuf</span>, <span class="nv">Oflag</span>, <span class="nv">netmask</span><span class="ss">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="ss">)</span>
+        <span class="nv">error</span><span class="ss">(</span><span class="s2">&quot;</span><span class="s">%s</span><span class="s2">&quot;</span>, <span class="nv">pcap_geterr</span><span class="ss">(</span><span class="nv">pd</span><span class="ss">))</span><span class="c1">;</span>
+</code></pre></div>
+</td></tr></table></li>
 </ul>
-<pre><code>    if (pcap_compile(pd, &amp;fcode, cmdbuf, Oflag, netmask) &lt; 0)
-        error(&quot;%s&quot;, pcap_geterr(pd));
-</code></pre>
-<p>If the <code>-d</code> parameter (and thus the <code>dflag</code>) is set, tcpdump will call libpcap's <code>bpf_dump</code> function to print the expression in one of three formats:</p>
+<p>If the <code class="highlight">-d</code> parameter (and thus the <code class="highlight">dflag</code>) is set, tcpdump will call libpcap's <code class="highlight">bpf_dump</code> function to print the expression in one of three formats:</p>
 <ul>
-<li><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1600">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1600</a></li>
-</ul>
-<pre><code>        case 'D':
-            Dflag++;
-            break;
-</code></pre>
-<ul>
-<li><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2240">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2240</a></li>
-</ul>
-<pre><code>    if (dflag) {
-        bpf_dump(&amp;fcode, dflag);
-        pcap_close(pd);
-        free(cmdbuf);
-        pcap_freecode(&amp;fcode);
-        exit_tcpdump(S_SUCCESS);
+<li>
+<p><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1600">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1600</a>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>        <span class="nv">case</span> <span class="s1">&#39;</span><span class="s">D</span><span class="s1">&#39;</span>:
+            <span class="nv">Dflag</span><span class="o">++</span><span class="c1">;</span>
+            <span class="k">break</span><span class="c1">;</span>
+</code></pre></div>
+</td></tr></table></p>
+</li>
+<li>
+<p><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2240">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2240</a>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>    <span class="k">if</span> <span class="ss">(</span><span class="nv">dflag</span><span class="ss">)</span> {
+        <span class="nv">bpf_dump</span><span class="ss">(</span><span class="o">&amp;</span><span class="nv">fcode</span>, <span class="nv">dflag</span><span class="ss">)</span><span class="c1">;</span>
+        <span class="nv">pcap_close</span><span class="ss">(</span><span class="nv">pd</span><span class="ss">)</span><span class="c1">;</span>
+        <span class="nv">free</span><span class="ss">(</span><span class="nv">cmdbuf</span><span class="ss">)</span><span class="c1">;</span>
+        <span class="nv">pcap_freecode</span><span class="ss">(</span><span class="o">&amp;</span><span class="nv">fcode</span><span class="ss">)</span><span class="c1">;</span>
+        <span class="nv">exit_tcpdump</span><span class="ss">(</span><span class="nv">S_SUCCESS</span><span class="ss">)</span><span class="c1">;</span>
     }
-</code></pre>
-<p>The different dump formats are explained in the man page:</p>
-<pre><code>man tcpdump
-(...)
-       -d     Dump the compiled packet-matching code in a human readable form to standard output and stop.
+</code></pre></div>
+</td></tr></table></p>
+</li>
+</ul>
+<p>The different dump formats are explained in the man page:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">man</span> <span class="nv">tcpdump</span>
+<span class="ss">(</span>...<span class="ss">)</span>
+       <span class="o">-</span><span class="nv">d</span>     <span class="nv">Dump</span> <span class="nv">the</span> <span class="nv">compiled</span> <span class="nv">packet</span><span class="o">-</span><span class="nv">matching</span> <span class="nv">code</span> <span class="nv">in</span> <span class="nv">a</span> <span class="nv">human</span> <span class="nv">readable</span> <span class="nv">form</span> <span class="nv">to</span> <span class="nv">standard</span> <span class="nv">output</span> <span class="nv">and</span> <span class="nv">stop</span>.
 
-              Please  mind  that  although code compilation is always DLT-specific, typically it is impossible (and
-              unnecessary) to specify which DLT to use for the dump because tcpdump uses either the DLT of the  in‐
-              put  pcap  file  specified with -r, or the default DLT of the network interface specified with -i, or
-              the particular DLT of the network interface specified with -y and -i respectively. In these cases the
-              dump shows the same exact code that would filter the input file or the network interface without -d.
+              <span class="nv">Please</span>  <span class="nv">mind</span>  <span class="nv">that</span>  <span class="nv">although</span> <span class="nv">code</span> <span class="nv">compilation</span> <span class="nv">is</span> <span class="nv">always</span> <span class="nv">DLT</span><span class="o">-</span><span class="nv">specific</span>, <span class="nv">typically</span> <span class="nv">it</span> <span class="nv">is</span> <span class="nv">impossible</span> <span class="ss">(</span><span class="nv">and</span>
+              <span class="nv">unnecessary</span><span class="ss">)</span> <span class="nv">to</span> <span class="nv">specify</span> <span class="nv">which</span> <span class="nv">DLT</span> <span class="nv">to</span> <span class="nv">use</span> <span class="k">for</span> <span class="nv">the</span> <span class="nv">dump</span> <span class="nv">because</span> <span class="nv">tcpdump</span> <span class="nv">uses</span> <span class="nv">either</span> <span class="nv">the</span> <span class="nv">DLT</span> <span class="nv">of</span> <span class="nv">the</span>  <span class="nv">in</span>‐
+              <span class="nv">put</span>  <span class="nv">pcap</span>  <span class="nv">file</span>  <span class="nv">specified</span> <span class="nv">with</span> <span class="o">-</span><span class="nv">r</span>, <span class="nv">or</span> <span class="nv">the</span> <span class="nv">default</span> <span class="nv">DLT</span> <span class="nv">of</span> <span class="nv">the</span> <span class="nv">network</span> <span class="nv">interface</span> <span class="nv">specified</span> <span class="nv">with</span> <span class="o">-</span><span class="nv">i</span>, <span class="nv">or</span>
+              <span class="nv">the</span> <span class="nv">particular</span> <span class="nv">DLT</span> <span class="nv">of</span> <span class="nv">the</span> <span class="nv">network</span> <span class="nv">interface</span> <span class="nv">specified</span> <span class="nv">with</span> <span class="o">-</span><span class="nv">y</span> <span class="nv">and</span> <span class="o">-</span><span class="nv">i</span> <span class="nv">respectively</span>. <span class="nv">In</span> <span class="nv">these</span> <span class="nv">cases</span> <span class="nv">the</span>
+              <span class="nv">dump</span> <span class="nv">shows</span> <span class="nv">the</span> <span class="nv">same</span> <span class="nv">exact</span> <span class="nv">code</span> <span class="nv">that</span> <span class="nv">would</span> <span class="nv">filter</span> <span class="nv">the</span> <span class="nv">input</span> <span class="nv">file</span> <span class="nv">or</span> <span class="nv">the</span> <span class="nv">network</span> <span class="nv">interface</span> <span class="nv">without</span> <span class="o">-</span><span class="nv">d</span>.
 
-              However, when neither -r nor -i is specified, specifying -d prevents tcpdump from guessing a suitable
-              network interface (see -i).  In this case the DLT defaults to EN10MB and can be set to another  valid
-              value manually with -y.
+              <span class="nv">However</span>, <span class="nv">when</span> <span class="nv">neither</span> <span class="o">-</span><span class="nv">r</span> <span class="nv">nor</span> <span class="o">-</span><span class="nv">i</span> <span class="nv">is</span> <span class="nv">specified</span>, <span class="nv">specifying</span> <span class="o">-</span><span class="nv">d</span> <span class="nv">prevents</span> <span class="nv">tcpdump</span> <span class="nv">from</span> <span class="nv">guessing</span> <span class="nv">a</span> <span class="nv">suitable</span>
+              <span class="nv">network</span> <span class="nv">interface</span> <span class="ss">(</span><span class="nv">see</span> <span class="o">-</span><span class="nv">i</span><span class="ss">)</span>.  <span class="nv">In</span> <span class="nv">this</span> <span class="nv">case</span> <span class="nv">the</span> <span class="nv">DLT</span> <span class="nv">defaults</span> <span class="nv">to</span> <span class="nv">EN10MB</span> <span class="nv">and</span> <span class="nv">can</span> <span class="nv">be</span> <span class="nv">set</span> <span class="nv">to</span> <span class="nv">another</span>  <span class="nv">valid</span>
+              <span class="nv">value</span> <span class="nv">manually</span> <span class="nv">with</span> <span class="o">-</span><span class="nv">y</span>.
 
-       -dd    Dump packet-matching code as a C program fragment.
+       <span class="o">-</span><span class="nv">dd</span>    <span class="nv">Dump</span> <span class="nv">packet</span><span class="o">-</span><span class="nv">matching</span> <span class="nv">code</span> <span class="nv">as</span> <span class="nv">a</span> <span class="nv">C</span> <span class="nv">program</span> <span class="nv">fragment</span>.
 
-       -ddd   Dump packet-matching code as decimal numbers (preceded with a count).
-(...)
-</code></pre>
+       <span class="o">-</span><span class="nv">ddd</span>   <span class="nv">Dump</span> <span class="nv">packet</span><span class="o">-</span><span class="nv">matching</span> <span class="nv">code</span> <span class="nv">as</span> <span class="nv">decimal</span> <span class="nv">numbers</span> <span class="ss">(</span><span class="nv">preceded</span> <span class="nv">with</span> <span class="nv">a</span> <span class="nv">count</span><span class="ss">)</span>.
+<span class="ss">(</span>...<span class="ss">)</span>
+</code></pre></div>
+</td></tr></table></p>
 <h3 id="building-a-filter-expression-compiler">Building a filter expression compiler</h3>
 <h4 id="documentation">Documentation</h4>
 <p>In order to build a filter expression compiler, we look at the source code:</p>
@@ -1560,109 +1683,260 @@ reading from file lo.pcap, link-type EN10MB (Ethernet)
 <li><a href="https://www.tcpdump.org/pcap.html">https://www.tcpdump.org/pcap.html</a></li>
 </ul>
 <h4 id="installing-dependencies">Installing dependencies</h4>
-<p>Install build dependencies:</p>
-<pre><code>subscription-manager repos --enable=codeready-builder-for-rhel-8-x86_64-rpms 
-yum install libpcap-devel -y
-</code></pre>
+<p>Install build dependencies:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">subscription</span><span class="o">-</span><span class="nv">manager</span> <span class="nv">repos</span> <span class="o">--</span><span class="nv">enable</span><span class="o">=</span><span class="nv">codeready</span><span class="o">-</span><span class="nv">builder</span><span class="o">-</span><span class="k">for</span><span class="o">-</span><span class="nv">rhel</span><span class="o">-</span><span class="mi">8</span><span class="o">-</span><span class="nv">x86_64</span><span class="o">-</span><span class="nv">rpms</span> 
+<span class="nv">yum</span> <span class="nv">install</span> <span class="nv">libpcap</span><span class="o">-</span><span class="nv">devel</span> <span class="o">-</span><span class="nv">y</span>
+</code></pre></div>
+</td></tr></table></p>
 <h4 id="creating-the-code">Creating the code</h4>
-<p>Now, create the following code:</p>
-<pre><code>cat &lt;&lt;'EOF' &gt; libpcap_expression_compiler.c
-// From:
-// https://github.com/the-tcpdump-group/tcpdump/blob/master/tcpdump.c#L2238
-// https://www.tcpdump.org/pcap.html
-// https://git.netfilter.org/iptables/tree/utils/nfbpf_compile.c
+<p>Now, create the following code:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="s1">&#39;EOF&#39;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">libpcap_expression_compiler</span><span class="p">.</span><span class="n">c</span><span class="w"></span>
+<span class="o">//</span><span class="w"> </span><span class="k">From</span><span class="err">:</span><span class="w"></span>
+<span class="o">//</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">the</span><span class="o">-</span><span class="n">tcpdump</span><span class="o">-</span><span class="k">group</span><span class="o">/</span><span class="n">tcpdump</span><span class="o">/</span><span class="k">blob</span><span class="o">/</span><span class="n">master</span><span class="o">/</span><span class="n">tcpdump</span><span class="p">.</span><span class="n">c#L2238</span><span class="w"></span>
+<span class="o">//</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="p">.</span><span class="n">tcpdump</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="n">pcap</span><span class="p">.</span><span class="n">html</span><span class="w"></span>
+<span class="o">//</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="n">git</span><span class="p">.</span><span class="n">netfilter</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="n">iptables</span><span class="o">/</span><span class="n">tree</span><span class="o">/</span><span class="n">utils</span><span class="o">/</span><span class="n">nfbpf_compile</span><span class="p">.</span><span class="n">c</span><span class="w"></span>
 
-#include &lt;string.h&gt;
-#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;pcap.h&gt;
+<span class="n">#include</span><span class="w"> </span><span class="o">&lt;</span><span class="n">string</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;</span><span class="w"></span>
+<span class="n">#include</span><span class="w"> </span><span class="o">&lt;</span><span class="n">stdio</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;</span><span class="w"></span>
+<span class="n">#include</span><span class="w"> </span><span class="o">&lt;</span><span class="n">stdlib</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;</span><span class="w"></span>
+<span class="n">#include</span><span class="w"> </span><span class="o">&lt;</span><span class="n">pcap</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;</span><span class="w"></span>
 
-/*
- * Concatenate all input arguments into a long string
- */
-char * concat_args(int argc, char **argv) {
-    char * arg_string;
-    int len;
+<span class="cm">/*</span>
+<span class="cm"> * Concatenate all input arguments into a long string</span>
+<span class="cm"> */</span><span class="w"></span>
+<span class="nc">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">concat_args</span><span class="p">(</span><span class="nc">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="nc">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="nc">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">arg_string</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="nc">int</span><span class="w"> </span><span class="nf">len</span><span class="p">;</span><span class="w"></span>
 
-        for(int i=1; i&lt;argc; i++) {
-            len += strlen(argv[i]);
-        }
-        arg_string = (char *)malloc(len+argc-1);
+<span class="w">        </span><span class="k">for</span><span class="p">(</span><span class="nc">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">argc</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">            </span><span class="nf">len</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">strlen</span><span class="p">(</span><span class="n">argv</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="err">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">arg_string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nc">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="nf">len</span><span class="o">+</span><span class="n">argc</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
 
-    for (int i=1; i &lt; argc; i++) {
-        if(i != 1) {
-            arg_string = strcat(arg_string, &quot; &quot;);
-        }
-        arg_string = strcat(arg_string, argv[i]);
-    }
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="nc">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">argc</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">arg_string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strcat</span><span class="p">(</span><span class="n">arg_string</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot; &quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="err">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">arg_string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strcat</span><span class="p">(</span><span class="n">arg_string</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
 
-    return arg_string;
-}
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">arg_string</span><span class="p">;</span><span class="w"></span>
+<span class="err">}</span><span class="w"></span>
 
-int main(int argc, char **argv) {
-    pcap_t *handle;
-    char dev[] = &quot;lo&quot;;
-    char errbuf[PCAP_ERRBUF_SIZE];
-    struct bpf_program fcode;
-    bpf_u_int32 localnet = 0, netmask = 0;
-    int Oflag = 1;
+<span class="nc">int</span><span class="w"> </span><span class="n">main</span><span class="p">(</span><span class="nc">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="nc">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">pcap_t</span><span class="w"> </span><span class="o">*</span><span class="n">handle</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="nc">char</span><span class="w"> </span><span class="n">dev</span><span class="err">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;lo&quot;</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="nc">char</span><span class="w"> </span><span class="n">errbuf</span><span class="o">[</span><span class="n">PCAP_ERRBUF_SIZE</span><span class="o">]</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">struct</span><span class="w"> </span><span class="n">bpf_program</span><span class="w"> </span><span class="n">fcode</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">bpf_u_int32</span><span class="w"> </span><span class="n">localnet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">netmask</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="nc">int</span><span class="w"> </span><span class="n">Oflag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
 
-    char * filter_exp = concat_args(argc, argv);
-    if(argc &lt;= 1) {
-        fprintf(stderr, &quot;Empty filter expression\n&quot;);
-        exit(1);
-    }
-    printf(&quot;Compiling expression '%s'\n\n&quot;, filter_exp);
+<span class="w">    </span><span class="nc">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">filter_exp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">concat_args</span><span class="p">(</span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;Empty filter expression\n&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="ss">&quot;Compiling expression &#39;%s&#39;\n\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">filter_exp</span><span class="p">);</span><span class="w"></span>
 
-    if (pcap_lookupnet(dev, &amp;localnet, &amp;netmask, errbuf) == -1) {
-        fprintf(stderr, &quot;Can't get netmask for device %s\n&quot;, dev);
-        localnet = 0;
-        netmask = 0;
-    }
-    handle = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
-    if (handle == NULL) {
-        fprintf(stderr, &quot;Couldn't open device %s: %s\n&quot;, dev, errbuf);
-        return(2);
-    }
-    if (pcap_compile(handle, &amp;fcode, filter_exp, Oflag, netmask) &lt; 0) {
-        fprintf(stderr, &quot;Couldn't parse filter %s: %s\n&quot;, filter_exp, pcap_geterr(handle));
-         return(2);
-    }
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pcap_lookupnet</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">localnet</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">netmask</span><span class="p">,</span><span class="w"> </span><span class="n">errbuf</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;Can&#39;t get netmask for device %s\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">dev</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">localnet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">netmask</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pcap_open_live</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">BUFSIZ</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span><span class="w"> </span><span class="n">errbuf</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">handle</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">NULL</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;Couldn&#39;t open device %s: %s\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">errbuf</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pcap_compile</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">fcode</span><span class="p">,</span><span class="w"> </span><span class="n">filter_exp</span><span class="p">,</span><span class="w"> </span><span class="n">Oflag</span><span class="p">,</span><span class="w"> </span><span class="n">netmask</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;Couldn&#39;t parse filter %s: %s\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">filter_exp</span><span class="p">,</span><span class="w"> </span><span class="n">pcap_geterr</span><span class="p">(</span><span class="n">handle</span><span class="p">));</span><span class="w"></span>
+<span class="w">         </span><span class="k">return</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
 
-    printf(&quot;*** Dump compiled packet-matching code (-d) ***\n\n&quot;);
-    bpf_dump(&amp;fcode, 1);
-    printf(&quot;\n*** Dump packet-matching code as a C program fragment (-dd) ***\n\n&quot;);
-    bpf_dump(&amp;fcode, 2);
-    printf(&quot;\n*** Dump packet-matching code as bytecode (-ddd) ***\n\n&quot;);
-    bpf_dump(&amp;fcode, 3);
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="ss">&quot;*** Dump compiled packet-matching code (-d) ***\n\n&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">bpf_dump</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fcode</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="ss">&quot;\n*** Dump packet-matching code as a C program fragment (-dd) ***\n\n&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">bpf_dump</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fcode</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="ss">&quot;\n*** Dump packet-matching code as bytecode (-ddd) ***\n\n&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">bpf_dump</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fcode</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span><span class="w"></span>
 
-    // https://git.netfilter.org/iptables/tree/utils/nfbpf_compile.c
-    printf(&quot;\n*** Dump packet-matching code as bytecode (on one line) ***\n\n&quot;);
-    struct bpf_insn *ins;
-    ins = fcode.bf_insns;
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="n">git</span><span class="p">.</span><span class="n">netfilter</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="n">iptables</span><span class="o">/</span><span class="n">tree</span><span class="o">/</span><span class="n">utils</span><span class="o">/</span><span class="n">nfbpf_compile</span><span class="p">.</span><span class="n">c</span><span class="w"></span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="ss">&quot;\n*** Dump packet-matching code as bytecode (on one line) ***\n\n&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">struct</span><span class="w"> </span><span class="n">bpf_insn</span><span class="w"> </span><span class="o">*</span><span class="n">ins</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">ins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fcode</span><span class="p">.</span><span class="n">bf_insns</span><span class="p">;</span><span class="w"></span>
 
-    printf(&quot;%d,&quot;, fcode.bf_len);
-    for (int i = 0; i &lt; fcode.bf_len-1; ++ins, ++i) {
-    printf(&quot;%u %u %u %u,&quot;, ins-&gt;code, ins-&gt;jt, ins-&gt;jf, ins-&gt;k);
-    }
-    printf(&quot;%u %u %u %u\n&quot;, ins-&gt;code, ins-&gt;jt, ins-&gt;jf, ins-&gt;k);
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="ss">&quot;%d,&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">fcode</span><span class="p">.</span><span class="n">bf_len</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="nc">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">fcode</span><span class="p">.</span><span class="n">bf_len</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">ins</span><span class="p">,</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="ss">&quot;%u %u %u %u,&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ins</span><span class="o">-&gt;</span><span class="n">code</span><span class="p">,</span><span class="w"> </span><span class="n">ins</span><span class="o">-&gt;</span><span class="n">jt</span><span class="p">,</span><span class="w"> </span><span class="n">ins</span><span class="o">-&gt;</span><span class="n">jf</span><span class="p">,</span><span class="w"> </span><span class="n">ins</span><span class="o">-&gt;</span><span class="n">k</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="ss">&quot;%u %u %u %u\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ins</span><span class="o">-&gt;</span><span class="n">code</span><span class="p">,</span><span class="w"> </span><span class="n">ins</span><span class="o">-&gt;</span><span class="n">jt</span><span class="p">,</span><span class="w"> </span><span class="n">ins</span><span class="o">-&gt;</span><span class="n">jf</span><span class="p">,</span><span class="w"> </span><span class="n">ins</span><span class="o">-&gt;</span><span class="n">k</span><span class="p">);</span><span class="w"></span>
 
-    pcap_close(handle);
-    free(filter_exp);
-    pcap_freecode(&amp;fcode);
+<span class="w">    </span><span class="n">pcap_close</span><span class="p">(</span><span class="n">handle</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">free</span><span class="p">(</span><span class="n">filter_exp</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">pcap_freecode</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fcode</span><span class="p">);</span><span class="w"></span>
 
-    exit(0);
-}
-EOF
-</code></pre>
+<span class="w">    </span><span class="k">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<span class="err">}</span><span class="w"></span>
+<span class="n">EOF</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
 <h4 id="compiling-the-code">Compiling the code</h4>
-<p>And compile it:</p>
-<pre><code>gcc libpcap_expression_compiler.c -o libpcap_expression_compiler -lpcap
-</code></pre>
+<p>And compile it:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>gcc libpcap_expression_compiler.c -o libpcap_expression_compiler -lpcap
+</code></pre></div>
+</td></tr></table></p>
 <h4 id="using-the-tool">Using the tool</h4>
-<p>The tool will now produce the same output as tcpdump with the <code>-d</code>, <code>-dd</code> or <code>-ddd</code> flag set:</p>
-<pre><code># ./libpcap_expression_compiler vlan 32
-Compiling expression 'vlan 32'
+<p>The tool will now produce the same output as tcpdump with the <code class="highlight">-d</code>, <code class="highlight">-dd</code> or <code class="highlight">-ddd</code> flag set:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code># ./libpcap_expression_compiler vlan 32
+Compiling expression &#39;vlan 32&#39;
 
 *** Dump compiled packet-matching code (-d) ***
 
@@ -1722,10 +1996,77 @@ Compiling expression 'vlan 32'
 *** Dump packet-matching code as bytecode (on one line) ***
 
 15,48 0 0 4294963248,21 4 0 1,40 0 0 12,21 2 0 33024,21 1 0 34984,21 0 8 37120,48 0 0 4294963248,21 0 2 1,48 0 0 4294963244,5 0 0 1,40 0 0 14,84 0 0 4095,21 0 1 32,6 0 0 8192,6 0 0 0
-</code></pre>
-<p>Or let's create another filter expression, just as another example:</p>
-<pre><code># ./libpcap_expression_compiler host 127.0.0.254 and tcp and port 5353
-Compiling expression 'host 127.0.0.254 and tcp and port 5353'
+</code></pre></div>
+</td></tr></table>
+<p>Or let's create another filter expression, just as another example:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code># ./libpcap_expression_compiler host 127.0.0.254 and tcp and port 5353
+Compiling expression &#39;host 127.0.0.254 and tcp and port 5353&#39;
 
 *** Dump compiled packet-matching code (-d) ***
 
@@ -1791,7 +2132,8 @@ Compiling expression 'host 127.0.0.254 and tcp and port 5353'
 *** Dump packet-matching code as bytecode (on one line) ***
 
 17,40 0 0 12,21 0 14 2048,32 0 0 26,21 2 0 2130706686,32 0 0 30,21 0 10 2130706686,48 0 0 23,21 0 8 6,40 0 0 20,69 6 0 8191,177 0 0 14,72 0 0 14,21 2 0 5353,72 0 0 16,21 0 1 5353,6 0 0 8192,6 0 0 0
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
 <h2 id="bpf-bytecode">BPF Bytecode</h2>
 <ul>
 <li><a href="https://www.kernel.org/doc/Documentation/networking/filter.txt">https://www.kernel.org/doc/Documentation/networking/filter.txt</a></li>
@@ -1800,8 +2142,24 @@ Compiling expression 'host 127.0.0.254 and tcp and port 5353'
 <h3 id="compiling-bpf-bytecode">Compiling BPF Bytecode</h3>
 <p>In order to get to BPF Bytecode, there is an easy, an intermediate and a more complex way.</p>
 <h4 id="tcpdump-with-filter-expression">tcpdump with filter expression</h4>
-<p>This is the easiest way:</p>
-<pre><code># tcpdump -i lo -e -nn  &quot;tcp dst port 8080&quot; -d 
+<p>This is the easiest way:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code># tcpdump -i lo -e -nn  &quot;tcp dst port 8080&quot; -d 
 (000) ldh      [12]
 (001) jeq      #0x86dd          jt 2    jf 6
 (002) ldb      [20]
@@ -1818,14 +2176,31 @@ Compiling expression 'host 127.0.0.254 and tcp and port 5353'
 (013) jeq      #0x1f90          jt 14   jf 15
 (014) ret      #262144
 (015) ret      #0
-</code></pre>
-<p>You get the Bytecode with:</p>
-<pre><code># tcpdump -i lo -e -nn  &quot;tcp dst port 8080&quot; -ddd | tr '\n' ','
+</code></pre></div>
+</td></tr></table></p>
+<p>You get the Bytecode with:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code># tcpdump -i lo -e -nn  &quot;tcp dst port 8080&quot; -ddd | tr &#39;\n&#39; &#39;,&#39;
 16,40 0 0 12,21 0 4 34525,48 0 0 20,21 0 11 6,40 0 0 56,21 8 9 8080,21 0 8 2048,48 0 0 23,21 0 6 6,40 0 0 20,69 4 0 8191,177 0 0 14,72 0 0 16,21 0 1 8080,6 0 0 262144,6 0 0 0,
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
 <h4 id="tcpdump-with-explicit-offset-expression">tcpdump with explicit offset expression</h4>
-<p>Let's get a bit more fancy. In <code>test.pcap</code>, I captured a TCP request to port 8080. The hexdump looks as follows:</p>
-<pre><code># tcpdump -e -nn -r test.pcap -XX | tail -n 12
+<p>Let's get a bit more fancy. In <code class="highlight">test.pcap</code>, I captured a TCP request to port 8080. The hexdump looks as follows:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code># tcpdump -e -nn -r test.pcap -XX | tail -n 12
 reading from file test.pcap, link-type EN10MB (Ethernet)
 dropped privs to tcpdump
 07:03:36.901256 00:00:00:00:00:00 &gt; 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 66: 192.168.122.92.36166 &gt; 192.168.122.92.8080: Flags [F.], seq 84, ack 1993, win 1373, options [nop,nop,TS val 3322938017 ecr 3322938017], length 0
@@ -1840,75 +2215,122 @@ dropped privs to tcpdump
     0x0020:  7a5c 1f90 8d46 7a9a 5a92 86e0 b75f 8010  z\...Fz.Z...._..
     0x0030:  0156 7630 0000 0101 080a c610 02a1 c610  .Vv0............
     0x0040:  02a1    
-</code></pre>
-<p>We want to identify all packets with a dst port of <code>8080</code> (or <code>0x1f90</code> in hex notation). Each visual block in the hexdump is a half word, or 16 bits. Offsets in tcpdump are specified in Bytes, and the dst port field is 2 Bytes in lenght. We are looking for the 18th half word, or Bytes 36 and 37. The tcpdump expression would hence be:</p>
-<pre><code>ether[36:2] == 0x1f90
-</code></pre>
-<p>Here's the result of the filter:</p>
-<pre><code># tcpdump -e -nn -r test.pcap ether[36:2] == 0x1f90
-reading from file test.pcap, link-type EN10MB (Ethernet)
-dropped privs to tcpdump
-07:03:36.900276 00:00:00:00:00:00 &gt; 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 74: 192.168.122.92.36166 &gt; 192.168.122.92.8080: Flags [S], seq 2262873866, win 43690, options [mss 65495,sackOK,TS val 3322938016 ecr 0,nop,wscale 7], length 0
-07:03:36.900297 00:00:00:00:00:00 &gt; 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 66: 192.168.122.92.36166 &gt; 192.168.122.92.8080: Flags [.], ack 2056934090, win 342, options [nop,nop,TS val 3322938016 ecr 3322938016], length 0
-07:03:36.900328 00:00:00:00:00:00 &gt; 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 149: 192.168.122.92.36166 &gt; 192.168.122.92.8080: Flags [P.], seq 0:83, ack 1, win 342, options [nop,nop,TS val 3322938016 ecr 3322938016], length 83: HTTP: GET / HTTP/1.1
-07:03:36.901097 00:00:00:00:00:00 &gt; 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 66: 192.168.122.92.36166 &gt; 192.168.122.92.8080: Flags [.], ack 156, win 350, options [nop,nop,TS val 3322938016 ecr 3322938016], length 0
-07:03:36.901122 00:00:00:00:00:00 &gt; 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 66: 192.168.122.92.36166 &gt; 192.168.122.92.8080: Flags [.], ack 1992, win 1373, options [nop,nop,TS val 3322938017 ecr 3322938016], length 0
-07:03:36.901256 00:00:00:00:00:00 &gt; 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 66: 192.168.122.92.36166 &gt; 192.168.122.92.8080: Flags [F.], seq 83, ack 1993, win 1373, options [nop,nop,TS val 3322938017 ecr 3322938017], length 0
-</code></pre>
-<p>And the compiled expression:</p>
-<pre><code># tcpdump -e -nn -i lo ether[36:2] == 0x1f90 -d
+</code></pre></div>
+</td></tr></table></p>
+<p>We want to identify all packets with a dst port of <code class="highlight"><span class="mf">8080</span></code> (or <code class="highlight"><span class="mf">0</span><span class="n">x1f90</span></code> in hex notation). Each visual block in the hexdump is a half word, or 16 bits. Offsets in tcpdump are specified in Bytes, and the dst port field is 2 Bytes in lenght. We are looking for the 18th half word, or Bytes 36 and 37. The tcpdump expression would hence be:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>ether[36:2] == 0x1f90
+</code></pre></div>
+</td></tr></table></p>
+<p>Here's the result of the filter:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="err">#</span><span class="w"> </span><span class="n">tcpdump</span><span class="w"> </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="o">-</span><span class="n">nn</span><span class="w"> </span><span class="o">-</span><span class="n">r</span><span class="w"> </span><span class="n">test</span><span class="p">.</span><span class="n">pcap</span><span class="w"> </span><span class="n">ether</span><span class="o">[</span><span class="n">36:2</span><span class="o">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x1f90</span><span class="w"></span>
+<span class="n">reading</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="k">file</span><span class="w"> </span><span class="n">test</span><span class="p">.</span><span class="n">pcap</span><span class="p">,</span><span class="w"> </span><span class="n">link</span><span class="o">-</span><span class="n">type</span><span class="w"> </span><span class="n">EN10MB</span><span class="w"> </span><span class="p">(</span><span class="n">Ethernet</span><span class="p">)</span><span class="w"></span>
+<span class="n">dropped</span><span class="w"> </span><span class="n">privs</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">tcpdump</span><span class="w"></span>
+<span class="mi">07</span><span class="err">:</span><span class="mi">03</span><span class="err">:</span><span class="mf">36.900276</span><span class="w"> </span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="p">,</span><span class="w"> </span><span class="n">ethertype</span><span class="w"> </span><span class="n">IPv4</span><span class="w"> </span><span class="p">(</span><span class="mh">0x0800</span><span class="p">),</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">74</span><span class="err">:</span><span class="w"> </span><span class="mf">192.168.122.92.36166</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">192.168.122.92.8080</span><span class="err">:</span><span class="w"> </span><span class="n">Flags</span><span class="w"> </span><span class="o">[</span><span class="n">S</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="n">seq</span><span class="w"> </span><span class="mi">2262873866</span><span class="p">,</span><span class="w"> </span><span class="n">win</span><span class="w"> </span><span class="mi">43690</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">[</span><span class="n">mss 65495,sackOK,TS val 3322938016 ecr 0,nop,wscale 7</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="mi">07</span><span class="err">:</span><span class="mi">03</span><span class="err">:</span><span class="mf">36.900297</span><span class="w"> </span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="p">,</span><span class="w"> </span><span class="n">ethertype</span><span class="w"> </span><span class="n">IPv4</span><span class="w"> </span><span class="p">(</span><span class="mh">0x0800</span><span class="p">),</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">66</span><span class="err">:</span><span class="w"> </span><span class="mf">192.168.122.92.36166</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">192.168.122.92.8080</span><span class="err">:</span><span class="w"> </span><span class="n">Flags</span><span class="w"> </span><span class="o">[</span><span class="n">.</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="n">ack</span><span class="w"> </span><span class="mi">2056934090</span><span class="p">,</span><span class="w"> </span><span class="n">win</span><span class="w"> </span><span class="mi">342</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">[</span><span class="n">nop,nop,TS val 3322938016 ecr 3322938016</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="mi">07</span><span class="err">:</span><span class="mi">03</span><span class="err">:</span><span class="mf">36.900328</span><span class="w"> </span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="p">,</span><span class="w"> </span><span class="n">ethertype</span><span class="w"> </span><span class="n">IPv4</span><span class="w"> </span><span class="p">(</span><span class="mh">0x0800</span><span class="p">),</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">149</span><span class="err">:</span><span class="w"> </span><span class="mf">192.168.122.92.36166</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">192.168.122.92.8080</span><span class="err">:</span><span class="w"> </span><span class="n">Flags</span><span class="w"> </span><span class="o">[</span><span class="n">P.</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="n">seq</span><span class="w"> </span><span class="mi">0</span><span class="err">:</span><span class="mi">83</span><span class="p">,</span><span class="w"> </span><span class="n">ack</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">win</span><span class="w"> </span><span class="mi">342</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">[</span><span class="n">nop,nop,TS val 3322938016 ecr 3322938016</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">83</span><span class="err">:</span><span class="w"> </span><span class="nl">HTTP</span><span class="p">:</span><span class="w"> </span><span class="k">GET</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span><span class="w"></span>
+<span class="mi">07</span><span class="err">:</span><span class="mi">03</span><span class="err">:</span><span class="mf">36.901097</span><span class="w"> </span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="p">,</span><span class="w"> </span><span class="n">ethertype</span><span class="w"> </span><span class="n">IPv4</span><span class="w"> </span><span class="p">(</span><span class="mh">0x0800</span><span class="p">),</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">66</span><span class="err">:</span><span class="w"> </span><span class="mf">192.168.122.92.36166</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">192.168.122.92.8080</span><span class="err">:</span><span class="w"> </span><span class="n">Flags</span><span class="w"> </span><span class="o">[</span><span class="n">.</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="n">ack</span><span class="w"> </span><span class="mi">156</span><span class="p">,</span><span class="w"> </span><span class="n">win</span><span class="w"> </span><span class="mi">350</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">[</span><span class="n">nop,nop,TS val 3322938016 ecr 3322938016</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="mi">07</span><span class="err">:</span><span class="mi">03</span><span class="err">:</span><span class="mf">36.901122</span><span class="w"> </span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="p">,</span><span class="w"> </span><span class="n">ethertype</span><span class="w"> </span><span class="n">IPv4</span><span class="w"> </span><span class="p">(</span><span class="mh">0x0800</span><span class="p">),</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">66</span><span class="err">:</span><span class="w"> </span><span class="mf">192.168.122.92.36166</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">192.168.122.92.8080</span><span class="err">:</span><span class="w"> </span><span class="n">Flags</span><span class="w"> </span><span class="o">[</span><span class="n">.</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="n">ack</span><span class="w"> </span><span class="mi">1992</span><span class="p">,</span><span class="w"> </span><span class="n">win</span><span class="w"> </span><span class="mi">1373</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">[</span><span class="n">nop,nop,TS val 3322938017 ecr 3322938016</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="mi">07</span><span class="err">:</span><span class="mi">03</span><span class="err">:</span><span class="mf">36.901256</span><span class="w"> </span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="p">,</span><span class="w"> </span><span class="n">ethertype</span><span class="w"> </span><span class="n">IPv4</span><span class="w"> </span><span class="p">(</span><span class="mh">0x0800</span><span class="p">),</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">66</span><span class="err">:</span><span class="w"> </span><span class="mf">192.168.122.92.36166</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">192.168.122.92.8080</span><span class="err">:</span><span class="w"> </span><span class="n">Flags</span><span class="w"> </span><span class="o">[</span><span class="n">F.</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="n">seq</span><span class="w"> </span><span class="mi">83</span><span class="p">,</span><span class="w"> </span><span class="n">ack</span><span class="w"> </span><span class="mi">1993</span><span class="p">,</span><span class="w"> </span><span class="n">win</span><span class="w"> </span><span class="mi">1373</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">[</span><span class="n">nop,nop,TS val 3322938017 ecr 3322938017</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p>And the compiled expression:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code># tcpdump -e -nn -i lo ether[36:2] == 0x1f90 -d
 (000) ldh      [36]
 (001) jeq      #0x1f90          jt 2    jf 3
 (002) ret      #262144
 (003) ret      #0
-# tcpdump -e -nn -i lo ether[36:2] == 0x1f90 -ddd | tr '\n' ','
+# tcpdump -e -nn -i lo ether[36:2] == 0x1f90 -ddd | tr &#39;\n&#39; &#39;,&#39;
 4,40 0 0 36,21 0 1 8080,6 0 0 262144,6 0 0 0,
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
 <h4 id="using-bpf-asm-like-code">Using BPF asm-like code</h4>
 <h5 id="compiling-helper-binaries">Compiling helper binaries</h5>
 <p>First, you will need the bpf_asm binary from the kernel source code. </p>
-<p>For RHEL/CentOS 8, install build dependencies:</p>
-<pre><code>yum install '@Development Tools' -y
-yum install gcc-toolset -y
-yum install binutils-devel -y
-yum install readline-devel -y
-yum install elfutils-libelf-devel -y
-yum install clang -y
-yum install llvm -y
-</code></pre>
-<p>Get the kernel source code on RHEL / CentOS:</p>
-<pre><code>mkdir -p kernel/src
-cd kernel/
-yumdownloader --source kernel
-cp kernel-*.src.rpm src/ ; cd src ; rpm2cpio kernel-*.src.rpm | cpio -idmv
-tar -xf linux-*.tar.xz
-</code></pre>
-<p>Compile the BPF toolset:</p>
-<pre><code>cd $(find . -path '*tools/bpf')
-make all
-cp bpf_asm /usr/local/bin/.
-cp bpf_dbg /usr/local/bin/.
-cp bpf_jit_disasm /usr/local/bin/.
-cp bpftool/bpftool /usr/local/bin/.
-</code></pre>
+<p>For RHEL/CentOS 8, install build dependencies:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">yum</span> <span class="n">install</span> <span class="s1">&#39;@Development Tools&#39;</span> <span class="o">-</span><span class="n">y</span>
+<span class="n">yum</span> <span class="n">install</span> <span class="n">gcc</span><span class="o">-</span><span class="n">toolset</span> <span class="o">-</span><span class="n">y</span>
+<span class="n">yum</span> <span class="n">install</span> <span class="n">binutils</span><span class="o">-</span><span class="n">devel</span> <span class="o">-</span><span class="n">y</span>
+<span class="n">yum</span> <span class="n">install</span> <span class="n">readline</span><span class="o">-</span><span class="n">devel</span> <span class="o">-</span><span class="n">y</span>
+<span class="n">yum</span> <span class="n">install</span> <span class="n">elfutils</span><span class="o">-</span><span class="n">libelf</span><span class="o">-</span><span class="n">devel</span> <span class="o">-</span><span class="n">y</span>
+<span class="n">yum</span> <span class="n">install</span> <span class="n">clang</span> <span class="o">-</span><span class="n">y</span>
+<span class="n">yum</span> <span class="n">install</span> <span class="n">llvm</span> <span class="o">-</span><span class="n">y</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Get the kernel source code on RHEL / CentOS:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="n">kernel</span><span class="o">/</span><span class="n">src</span>
+<span class="n">cd</span> <span class="n">kernel</span><span class="o">/</span>
+<span class="n">yumdownloader</span> <span class="o">--</span><span class="n">source</span> <span class="n">kernel</span>
+<span class="n">cp</span> <span class="n">kernel</span><span class="o">-*.</span><span class="n">src</span><span class="o">.</span><span class="n">rpm</span> <span class="n">src</span><span class="o">/</span> <span class="p">;</span> <span class="n">cd</span> <span class="n">src</span> <span class="p">;</span> <span class="n">rpm2cpio</span> <span class="n">kernel</span><span class="o">-*.</span><span class="n">src</span><span class="o">.</span><span class="n">rpm</span> <span class="o">|</span> <span class="n">cpio</span> <span class="o">-</span><span class="n">idmv</span>
+<span class="n">tar</span> <span class="o">-</span><span class="n">xf</span> <span class="n">linux</span><span class="o">-*.</span><span class="n">tar</span><span class="o">.</span><span class="n">xz</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Compile the BPF toolset:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">cd</span> <span class="o">$</span><span class="p">(</span><span class="n">find</span> <span class="o">.</span> <span class="o">-</span><span class="n">path</span> <span class="s1">&#39;*tools/bpf&#39;</span><span class="p">)</span>
+<span class="n">make</span> <span class="n">all</span>
+<span class="n">cp</span> <span class="n">bpf_asm</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/.</span>
+<span class="n">cp</span> <span class="n">bpf_dbg</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/.</span>
+<span class="n">cp</span> <span class="n">bpf_jit_disasm</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/.</span>
+<span class="n">cp</span> <span class="n">bpftool</span><span class="o">/</span><span class="n">bpftool</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/.</span>
+</code></pre></div>
+</td></tr></table></p>
 <h5 id="building-byte-code">Building Byte code</h5>
-<p>Now, create the following ASM like code:</p>
-<pre><code># cat test.bpf 
+<p>Now, create the following ASM like code:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code># cat test.bpf 
      ldh [36]
      jneq #0x1f90, lb_1
      ret #1
 
 lb_1:
      ret #0
-</code></pre>
-<p>And compile it with:</p>
-<pre><code># bpf_asm test.bpf 
+</code></pre></div>
+</td></tr></table></p>
+<p>And compile it with:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code># bpf_asm test.bpf 
 4,40 0 0 36,21 0 1 8080,6 0 0 1,6 0 0 0,
-</code></pre>
-<p>Compare this to the earlier output of <code>tcpdump -ddd</code>:</p>
-<pre><code># tcpdump -e -nn -i lo ether[36:2] == 0x1f90 -ddd | tr '\n' ','
+</code></pre></div>
+</td></tr></table></p>
+<p>Compare this to the earlier output of <code class="highlight">tcpdump -ddd</code>:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code># tcpdump -e -nn -i lo ether[36:2] == 0x1f90 -ddd | tr &#39;\n&#39; &#39;,&#39;
 4,40 0 0 36,21 0 1 8080,6 0 0 262144,6 0 0 0,
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
 <p>The only thing that's different here is the return code.</p>
 <p>For further details, see:</p>
 <ul>
@@ -1921,105 +2343,183 @@ lb_1:
 <li><a href="https://www.lowendtalk.com/discussion/47469/bpf-a-bytecode-for-filtering">https://www.lowendtalk.com/discussion/47469/bpf-a-bytecode-for-filtering</a></li>
 <li><a href="https://git.netfilter.org/iptables/tree/utils/nfbpf_compile.c">https://git.netfilter.org/iptables/tree/utils/nfbpf_compile.c</a></li>
 </ul>
-<p><code>nfbpf_compile</code> will create slightly different Bytecode, suited for iptables. Here's the full script from the above link (just in case the original resource changes):</p>
-<pre><code>cat &lt;&lt;'EOF' &gt; nbpf_compile.c
-/*
- * BPF program compilation tool
- *
- * Generates decimal output, similar to `tcpdump -ddd ...`.
- * Unlike tcpdump, will generate for any given link layer type.
- *
- * Written by Willem de Bruijn (willemb@google.com)
- * Copyright Google, Inc. 2013
- * Licensed under the GNU General Public License version 2 (GPLv2)
-*/
+<p><code class="highlight">nfbpf_compile</code> will create slightly different Bytecode, suited for iptables. Here's the full script from the above link (just in case the original resource changes):
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="s1">&#39;EOF&#39;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">nbpf_compile</span><span class="p">.</span><span class="n">c</span><span class="w"></span>
+<span class="cm">/*</span>
+<span class="cm"> * BPF program compilation tool</span>
+<span class="cm"> *</span>
+<span class="cm"> * Generates decimal output, similar to `tcpdump -ddd ...`.</span>
+<span class="cm"> * Unlike tcpdump, will generate for any given link layer type.</span>
+<span class="cm"> *</span>
+<span class="cm"> * Written by Willem de Bruijn (willemb@google.com)</span>
+<span class="cm"> * Copyright Google, Inc. 2013</span>
+<span class="cm"> * Licensed under the GNU General Public License version 2 (GPLv2)</span>
+<span class="cm">*/</span><span class="w"></span>
 
-#include &lt;pcap.h&gt;
-#include &lt;stdio.h&gt;
+<span class="n">#include</span><span class="w"> </span><span class="o">&lt;</span><span class="n">pcap</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;</span><span class="w"></span>
+<span class="n">#include</span><span class="w"> </span><span class="o">&lt;</span><span class="n">stdio</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;</span><span class="w"></span>
 
-int main(int argc, char **argv)
-{
-    struct bpf_program program;
-    struct bpf_insn *ins;
-    int i, dlt = DLT_RAW;
+<span class="nc">int</span><span class="w"> </span><span class="n">main</span><span class="p">(</span><span class="nc">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="nc">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span><span class="w"></span>
+<span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">struct</span><span class="w"> </span><span class="n">bpf_program</span><span class="w"> </span><span class="n">program</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">struct</span><span class="w"> </span><span class="n">bpf_insn</span><span class="w"> </span><span class="o">*</span><span class="n">ins</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="nc">int</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">dlt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DLT_RAW</span><span class="p">;</span><span class="w"></span>
 
-    if (argc &lt; 2 || argc &gt; 3) {
-        fprintf(stderr, &quot;Usage:    %s [link] '&lt;program&gt;'\n\n&quot;
-                &quot;          link is a pcap linklayer type:\n&quot;
-                &quot;          one of EN10MB, RAW, SLIP, ...\n\n&quot;
-                &quot;Examples: %s RAW 'tcp and greater 100'\n&quot;
-                &quot;          %s EN10MB 'ip proto 47'\n'&quot;,
-                argv[0], argv[0], argv[0]);
-        return 1;
-    }
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">argc</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;Usage:    %s [link] &#39;&lt;program&gt;&#39;\n\n&quot;</span><span class="w"></span>
+<span class="w">                </span><span class="ss">&quot;          link is a pcap linklayer type:\n&quot;</span><span class="w"></span>
+<span class="w">                </span><span class="ss">&quot;          one of EN10MB, RAW, SLIP, ...\n\n&quot;</span><span class="w"></span>
+<span class="w">                </span><span class="ss">&quot;Examples: %s RAW &#39;tcp and greater 100&#39;\n&quot;</span><span class="w"></span>
+<span class="w">                </span><span class="ss">&quot;          %s EN10MB &#39;ip proto 47&#39;\n&#39;&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="n">argv</span><span class="o">[</span><span class="n">0</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="o">[</span><span class="n">0</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="o">[</span><span class="n">0</span><span class="o">]</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
 
-    if (argc == 3) {
-        dlt = pcap_datalink_name_to_val(argv[1]);
-        if (dlt == -1) {
-            fprintf(stderr, &quot;Unknown datalinktype: %s\n&quot;, argv[1]);
-            return 1;
-        }
-    }
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">dlt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pcap_datalink_name_to_val</span><span class="p">(</span><span class="n">argv</span><span class="o">[</span><span class="n">1</span><span class="o">]</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dlt</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;Unknown datalinktype: %s\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="o">[</span><span class="n">1</span><span class="o">]</span><span class="p">);</span><span class="w"></span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="err">}</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
 
-    if (pcap_compile_nopcap(65535, dlt, &amp;program, argv[argc - 1], 1,
-                PCAP_NETMASK_UNKNOWN)) {
-        fprintf(stderr, &quot;Compilation error\n&quot;);
-        return 1;
-    }
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pcap_compile_nopcap</span><span class="p">(</span><span class="mi">65535</span><span class="p">,</span><span class="w"> </span><span class="n">dlt</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">program</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="o">[</span><span class="n">argc - 1</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="n">PCAP_NETMASK_UNKNOWN</span><span class="p">))</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;Compilation error\n&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
 
-    printf(&quot;%d,&quot;, program.bf_len);
-    ins = program.bf_insns;
-    for (i = 0; i &lt; program.bf_len-1; ++ins, ++i)
-        printf(&quot;%u %u %u %u,&quot;, ins-&gt;code, ins-&gt;jt, ins-&gt;jf, ins-&gt;k);
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="ss">&quot;%d,&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">program</span><span class="p">.</span><span class="n">bf_len</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">ins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">program</span><span class="p">.</span><span class="n">bf_insns</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">program</span><span class="p">.</span><span class="n">bf_len</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">ins</span><span class="p">,</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="ss">&quot;%u %u %u %u,&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ins</span><span class="o">-&gt;</span><span class="n">code</span><span class="p">,</span><span class="w"> </span><span class="n">ins</span><span class="o">-&gt;</span><span class="n">jt</span><span class="p">,</span><span class="w"> </span><span class="n">ins</span><span class="o">-&gt;</span><span class="n">jf</span><span class="p">,</span><span class="w"> </span><span class="n">ins</span><span class="o">-&gt;</span><span class="n">k</span><span class="p">);</span><span class="w"></span>
 
-    printf(&quot;%u %u %u %u\n&quot;, ins-&gt;code, ins-&gt;jt, ins-&gt;jf, ins-&gt;k);
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="ss">&quot;%u %u %u %u\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ins</span><span class="o">-&gt;</span><span class="n">code</span><span class="p">,</span><span class="w"> </span><span class="n">ins</span><span class="o">-&gt;</span><span class="n">jt</span><span class="p">,</span><span class="w"> </span><span class="n">ins</span><span class="o">-&gt;</span><span class="n">jf</span><span class="p">,</span><span class="w"> </span><span class="n">ins</span><span class="o">-&gt;</span><span class="n">k</span><span class="p">);</span><span class="w"></span>
 
-    pcap_freecode(&amp;program);
-    return 0;
-}
-EOF
-</code></pre>
-<p>Compile this with:</p>
-<pre><code>gcc nbpf_compile.c -o nbpf_compile -lpcap
-</code></pre>
-<p>Now, run this:</p>
-<pre><code># ./nbpf_compile RAW 'tcp port 8080'
+<span class="w">    </span><span class="n">pcap_freecode</span><span class="p">(</span><span class="o">&amp;</span><span class="n">program</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="err">}</span><span class="w"></span>
+<span class="n">EOF</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Compile this with:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>gcc nbpf_compile.c -o nbpf_compile -lpcap
+</code></pre></div>
+</td></tr></table></p>
+<p>Now, run this:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code># ./nbpf_compile RAW &#39;tcp port 8080&#39;
 23,48 0 0 0,84 0 0 240,21 0 6 96,48 0 0 6,21 0 17 6,40 0 0 40,21 14 0 8080,40 0 0 42,21 12 13 8080,48 0 0 0,84 0 0 240,21 0 10 64,48 0 0 9,21 0 8 6,40 0 0 6,69 6 0 8191,177 0 0 0,72 0 0 0,21 2 0 8080,72 0 0 2,21 0 1 8080,6 0 0 65535,6 0 0 0
-</code></pre>
-<p>Compare this to the tcpdump output which will not work:</p>
-<pre><code># tcpdump -r  test.pcap -d tcp port 8080 -ddd | tr '\n' ' '
+</code></pre></div>
+</td></tr></table></p>
+<p>Compare this to the tcpdump output which will not work:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code># tcpdump -r  test.pcap -d tcp port 8080 -ddd | tr &#39;\n&#39; &#39; &#39;
 reading from file test.pcap, link-type EN10MB (Ethernet)
 20 40 0 0 12 21 0 6 34525 48 0 0 20 21 0 15 6 40 0 0 54 21 12 0 8080 40 0 0 56 21 10 11 8080 21 0 10 2048 48 0 0 23 21 0 8 6 40 0 0 20 69 6 0 8191 177 0 0 14 72 0 0 14 21 2 0 8080 72 0 0 16 21 0 1 8080 6 0 0 262144 6 0 0 0 
-# tcpdump -i lo  -d tcp port 8080 -ddd | tr '\n' ' '
+# tcpdump -i lo  -d tcp port 8080 -ddd | tr &#39;\n&#39; &#39; &#39;
 20 40 0 0 12 21 0 6 34525 48 0 0 20 21 0 15 6 40 0 0 54 21 12 0 8080 40 0 0 56 21 10 11 8080 21 0 10 2048 48 0 0 23 21 0 8 6 40 0 0 20 69 6 0 8191 177 0 0 14 72 0 0 14 21 2 0 8080 72 0 0 16 21 0 1 8080 6 0 0 262144 6 0 0 0
-</code></pre>
-<p>And also run a little web server for the sake of this test:</p>
-<pre><code>#  python3 -m http.server 8080 &amp;
-</code></pre>
-<p>Run curl against the web server just to check that it's serving documents and can be reached:</p>
-<pre><code># curl 192.168.122.92:8080 -I
-HTTP/1.0 200 OK
-Server: SimpleHTTP/0.6 Python/3.6.8
-Date: Fri, 26 Mar 2021 15:46:30 GMT
-Content-type: text/html; charset=utf-8
-Content-Length: 2272
-</code></pre>
-<p>Now, let's create an iptables rule that will match on the Byte code and apply it:</p>
-<pre><code># iptables -I INPUT -m bpf --bytecode &quot;23,48 0 0 0,84 0 0 240,21 0 6 96,48 0 0 6,21 0 17 6,40 0 0 40,21 14 0 8080,40 0 0 42,21 12 13 8080,48 0 0 0,84 0 0 240,21 0 10 64,48 0 0 9,21 0 8 6,40 0 0 6,69 6 0 8191,177 0 0 0,72 0 0 0,21 2 0 8080,72 0 0 2,21 0 1 8080,6 0 0 65535,6 0 0 0&quot; --j REJECT
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
+<p>And also run a little web server for the sake of this test:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>#  python3 -m http.server 8080 &amp;
+</code></pre></div>
+</td></tr></table></p>
+<p>Run curl against the web server just to check that it's serving documents and can be reached:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="err">#</span> <span class="nt">curl</span> <span class="nt">192</span><span class="p">.</span><span class="nc">168</span><span class="p">.</span><span class="nc">122</span><span class="p">.</span><span class="nc">92</span><span class="p">:</span><span class="nd">8080</span> <span class="nt">-I</span>
+<span class="nt">HTTP</span><span class="o">/</span><span class="nt">1</span><span class="p">.</span><span class="nc">0</span> <span class="nt">200</span> <span class="nt">OK</span>
+<span class="nt">Server</span><span class="o">:</span> <span class="nt">SimpleHTTP</span><span class="o">/</span><span class="nt">0</span><span class="p">.</span><span class="nc">6</span> <span class="nt">Python</span><span class="o">/</span><span class="nt">3</span><span class="p">.</span><span class="nc">6</span><span class="p">.</span><span class="nc">8</span>
+<span class="nt">Date</span><span class="o">:</span> <span class="nt">Fri</span><span class="o">,</span> <span class="nt">26</span> <span class="nt">Mar</span> <span class="nt">2021</span> <span class="nt">15</span><span class="p">:</span><span class="nd">46</span><span class="p">:</span><span class="nd">30</span> <span class="nt">GMT</span>
+<span class="nt">Content-type</span><span class="o">:</span> <span class="nt">text</span><span class="o">/</span><span class="nt">html</span><span class="o">;</span> <span class="nt">charset</span><span class="o">=</span><span class="nt">utf-8</span>
+<span class="nt">Content-Length</span><span class="o">:</span> <span class="nt">2272</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Now, let's create an iptables rule that will match on the Byte code and apply it:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code># iptables -I INPUT -m bpf --bytecode &quot;23,48 0 0 0,84 0 0 240,21 0 6 96,48 0 0 6,21 0 17 6,40 0 0 40,21 14 0 8080,40 0 0 42,21 12 13 8080,48 0 0 0,84 0 0 240,21 0 10 64,48 0 0 9,21 0 8 6,40 0 0 6,69 6 0 8191,177 0 0 0,72 0 0 0,21 2 0 8080,72 0 0 2,21 0 1 8080,6 0 0 65535,6 0 0 0&quot; --j REJECT
+</code></pre></div>
+</td></tr></table></p>
 <blockquote>
-<p>This <em>must</em> be from <code>nbpf_compile</code>!</p>
+<p>This <em>must</em> be from <code class="highlight">nbpf_compile</code>!</p>
 </blockquote>
-<p>After applying the rule, we can no longer contact the web server:</p>
-<pre><code># curl 192.168.122.92:8080 -I
-curl: (7) Failed connect to 192.168.122.92:8080; Connection refused
-</code></pre>
-<p>And we can see that this rule here was matched:</p>
-<pre><code># iptables -L INPUT -nv
+<p>After applying the rule, we can no longer contact the web server:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="err">#</span> <span class="nt">curl</span> <span class="nt">192</span><span class="p">.</span><span class="nc">168</span><span class="p">.</span><span class="nc">122</span><span class="p">.</span><span class="nc">92</span><span class="p">:</span><span class="nd">8080</span> <span class="nt">-I</span>
+<span class="nt">curl</span><span class="o">:</span> <span class="o">(</span><span class="nt">7</span><span class="o">)</span> <span class="nt">Failed</span> <span class="nt">connect</span> <span class="nt">to</span> <span class="nt">192</span><span class="p">.</span><span class="nc">168</span><span class="p">.</span><span class="nc">122</span><span class="p">.</span><span class="nc">92</span><span class="p">:</span><span class="nd">8080</span><span class="o">;</span> <span class="nt">Connection</span> <span class="nt">refused</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>And we can see that this rule here was matched:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code># iptables -L INPUT -nv
 Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
  pkts bytes target     prot opt in     out     source               destination         
     5   300 REJECT     all  --  *      *       0.0.0.0/0            0.0.0.0/0           match bpf 48 0 0 0,84 0 0 240,21 0 6 96,48 0 0 6,21 0 17 6,40 0 0 40,21 14 0 8080,40 0 0 42,21 12 13 8080,48 0 0 0,84 0 0 240,21 0 10 64,48 0 0 9,21 0 8 6,40 0 0 6,69 6 0 8191,177 0 0 0,72 0 0 0,21 2 0 8080,72 0 0 2,21 0 1 8080,6 0 0 65535,6 0 0 0 reject-with icmp-port-unreachable
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
                 
                   
                     

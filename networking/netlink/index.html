@@ -1317,61 +1317,105 @@
                 
                 <h1 id="quick-guide-for-netlink">Quick guide for Netlink</h1>
 <h3 id="what-is-netlink">What is Netlink?</h3>
-<p>A means to exchange networking information between kernel and userspace:</p>
-<pre><code>The Netlink socket family is a Linux kernel interface used for inter-process communication (IPC) 
-between both the kernel and userspace processes, and between different userspace processes, 
-in a way similar to the Unix domain sockets. Similarly to the Unix domain sockets, and unlike
-INET sockets, Netlink communication cannot traverse host boundaries. However, while the Unix domain
-sockets use the file system namespace, Netlink processes are usually addressed by process identifiers (PIDs). [3]
+<p>A means to exchange networking information between kernel and userspace:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">The</span> <span class="n">Netlink</span> <span class="n">socket</span> <span class="n">family</span> <span class="n">is</span> <span class="n">a</span> <span class="n">Linux</span> <span class="n">kernel</span> <span class="n">interface</span> <span class="n">used</span> <span class="k">for</span> <span class="n">inter</span><span class="o">-</span><span class="n">process</span> <span class="n">communication</span> <span class="p">(</span><span class="n">IPC</span><span class="p">)</span> 
+<span class="n">between</span> <span class="n">both</span> <span class="n">the</span> <span class="n">kernel</span> <span class="k">and</span> <span class="n">userspace</span> <span class="n">processes</span><span class="p">,</span> <span class="k">and</span> <span class="n">between</span> <span class="n">different</span> <span class="n">userspace</span> <span class="n">processes</span><span class="p">,</span> 
+<span class="n">in</span> <span class="n">a</span> <span class="n">way</span> <span class="n">similar</span> <span class="n">to</span> <span class="n">the</span> <span class="n">Unix</span> <span class="n">domain</span> <span class="n">sockets</span><span class="p">.</span> <span class="n">Similarly</span> <span class="n">to</span> <span class="n">the</span> <span class="n">Unix</span> <span class="n">domain</span> <span class="n">sockets</span><span class="p">,</span> <span class="k">and</span> <span class="n">unlike</span>
+<span class="n">INET</span> <span class="n">sockets</span><span class="p">,</span> <span class="n">Netlink</span> <span class="n">communication</span> <span class="n">cannot</span> <span class="n">traverse</span> <span class="n">host</span> <span class="n">boundaries</span><span class="p">.</span> <span class="n">However</span><span class="p">,</span> <span class="k">while</span> <span class="n">the</span> <span class="n">Unix</span> <span class="n">domain</span>
+<span class="n">sockets</span> <span class="n">use</span> <span class="n">the</span> <span class="n">file</span> <span class="n">system</span> <span class="n">namespace</span><span class="p">,</span> <span class="n">Netlink</span> <span class="n">processes</span> <span class="n">are</span> <span class="n">usually</span> <span class="n">addressed</span> <span class="n">by</span> <span class="n">process</span> <span class="n">identifiers</span> <span class="p">(</span><span class="n">PIDs</span><span class="p">).</span> <span class="p">[</span><span class="mh">3</span><span class="p">]</span>
 
-Netlink is designed and used for transferring miscellaneous networking information between the 
-kernel space and userspace processes. Networking utilities, such as the iproute2 family and the utilities
-used for configuring mac80211-based wireless drivers, use Netlink to communicate with the Linux kernel
-from userspace. Netlink provides a standard socket-based interface for userspace processes, and a 
-kernel-side API for internal use by kernel modules. Originally, Netlink used the AF_NETLINK socket family. 
-</code></pre>
-<p><a href="https://en.wikipedia.org/wiki/Netlink">https://en.wikipedia.org/wiki/Netlink</a></p>
+<span class="n">Netlink</span> <span class="n">is</span> <span class="n">designed</span> <span class="k">and</span> <span class="n">used</span> <span class="k">for</span> <span class="n">transferring</span> <span class="n">miscellaneous</span> <span class="n">networking</span> <span class="n">information</span> <span class="n">between</span> <span class="n">the</span> 
+<span class="n">kernel</span> <span class="n">space</span> <span class="k">and</span> <span class="n">userspace</span> <span class="n">processes</span><span class="p">.</span> <span class="n">Networking</span> <span class="n">utilities</span><span class="p">,</span> <span class="n">such</span> <span class="n">as</span> <span class="n">the</span> <span class="n">iproute2</span> <span class="n">family</span> <span class="k">and</span> <span class="n">the</span> <span class="n">utilities</span>
+<span class="n">used</span> <span class="k">for</span> <span class="n">configuring</span> <span class="n">mac80211</span><span class="o">-</span><span class="n">based</span> <span class="n">wireless</span> <span class="n">drivers</span><span class="p">,</span> <span class="n">use</span> <span class="n">Netlink</span> <span class="n">to</span> <span class="n">communicate</span> <span class="n">with</span> <span class="n">the</span> <span class="n">Linux</span> <span class="n">kernel</span>
+<span class="n">from</span> <span class="n">userspace</span><span class="p">.</span> <span class="n">Netlink</span> <span class="n">provides</span> <span class="n">a</span> <span class="n">standard</span> <span class="n">socket</span><span class="o">-</span><span class="n">based</span> <span class="n">interface</span> <span class="k">for</span> <span class="n">userspace</span> <span class="n">processes</span><span class="p">,</span> <span class="k">and</span> <span class="n">a</span> 
+<span class="n">kernel</span><span class="o">-</span><span class="n">side</span> <span class="n">API</span> <span class="k">for</span> <span class="n">internal</span> <span class="n">use</span> <span class="n">by</span> <span class="n">kernel</span> <span class="n">modules</span><span class="p">.</span> <span class="n">Originally</span><span class="p">,</span> <span class="n">Netlink</span> <span class="n">used</span> <span class="n">the</span> <span class="n">AF_NETLINK</span> <span class="n">socket</span> <span class="n">family</span><span class="p">.</span> 
+</code></pre></div>
+</td></tr></table>
+<a href="https://en.wikipedia.org/wiki/Netlink">https://en.wikipedia.org/wiki/Netlink</a></p>
 <p>Netlink is defined and thoroughly described in <a href="https://tools.ietf.org/html/rfc3549">RFC3549</a></p>
 <p>The idea is to keep code that's critical for performance in the kernel and to move anything related to control and management in user-space (<a href="https://www.linuxjournal.com/article/7356">https://www.linuxjournal.com/article/7356</a>).</p>
-<pre><code>Netlink socket is a special IPC used for transferring information between kernel and user-space processes. 
-It provides a full-duplex communication link between the two by way of standard socket APIs for user-space 
-processes and a special kernel API for kernel modules. Netlink socket uses the address family AF_NETLINK, as 
-compared to AF_INET used by TCP/IP socket. Each netlink socket feature defines its own protocol type in the 
-kernel header file include/linux/netlink.h. 
-</code></pre>
-<p><a href="https://www.linuxjournal.com/article/7356">https://www.linuxjournal.com/article/7356</a></p>
+<p><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">Netlink</span> <span class="nv">socket</span> <span class="nv">is</span> <span class="nv">a</span> <span class="nv">special</span> <span class="nv">IPC</span> <span class="nv">used</span> <span class="k">for</span> <span class="nv">transferring</span> <span class="nv">information</span> <span class="nv">between</span> <span class="nv">kernel</span> <span class="nv">and</span> <span class="nv">user</span><span class="o">-</span><span class="nv">space</span> <span class="nv">processes</span>. 
+<span class="nv">It</span> <span class="nv">provides</span> <span class="nv">a</span> <span class="nv">full</span><span class="o">-</span><span class="nv">duplex</span> <span class="nv">communication</span> <span class="nv">link</span> <span class="nv">between</span> <span class="nv">the</span> <span class="nv">two</span> <span class="nv">by</span> <span class="nv">way</span> <span class="nv">of</span> <span class="nv">standard</span> <span class="nv">socket</span> <span class="nv">APIs</span> <span class="k">for</span> <span class="nv">user</span><span class="o">-</span><span class="nv">space</span> 
+<span class="nv">processes</span> <span class="nv">and</span> <span class="nv">a</span> <span class="nv">special</span> <span class="nv">kernel</span> <span class="nv">API</span> <span class="k">for</span> <span class="nv">kernel</span> <span class="nv">modules</span>. <span class="nv">Netlink</span> <span class="nv">socket</span> <span class="nv">uses</span> <span class="nv">the</span> <span class="nv">address</span> <span class="nv">family</span> <span class="nv">AF_NETLINK</span>, <span class="nv">as</span> 
+<span class="nv">compared</span> <span class="nv">to</span> <span class="nv">AF_INET</span> <span class="nv">used</span> <span class="nv">by</span> <span class="nv">TCP</span><span class="o">/</span><span class="nv">IP</span> <span class="nv">socket</span>. <span class="nv">Each</span> <span class="nv">netlink</span> <span class="nv">socket</span> <span class="nv">feature</span> <span class="nv">defines</span> <span class="nv">its</span> <span class="nv">own</span> <span class="nv">protocol</span> <span class="nv">type</span> <span class="nv">in</span> <span class="nv">the</span> 
+<span class="nv">kernel</span> <span class="nv">header</span> <span class="nv">file</span> <span class="k">include</span><span class="o">/</span><span class="nv">linux</span><span class="o">/</span><span class="nv">netlink</span>.<span class="nv">h</span>. 
+</code></pre></div>
+</td></tr></table>
+<a href="https://www.linuxjournal.com/article/7356">https://www.linuxjournal.com/article/7356</a></p>
 <h3 id="who-uses-netlink-examples">Who uses Netlink? Examples</h3>
 <p>Just a few examples:
-* iproute2 </p>
-<pre><code>[root@dell-r430-30 ~]# strace -e trace=network /usr/sbin/ip route
-socket(AF_NETLINK, SOCK_RAW|SOCK_CLOEXEC, NETLINK_ROUTE) = 3
-setsockopt(3, SOL_SOCKET, SO_SNDBUF, [32768], 4) = 0
-setsockopt(3, SOL_SOCKET, SO_RCVBUF, [1048576], 4) = 0
-bind(3, {sa_family=AF_NETLINK, pid=0, groups=00000000}, 12) = 0
-getsockname(3, {sa_family=AF_NETLINK, pid=161345, groups=00000000}, [12]) = 0
-sendto(3, &quot;(\0\0\0\32\0\1\3\330A\367[\0\0\0\0\2\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0&quot;..., 40, 0, NULL, 0) = 40
-recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{&quot;4\0\0\0\30\0\2\0\330A\367[Av\2\0\2\0\0\0\376\3\0\1\0\0\0\0\10\0\17\0&quot;..., 32768}], msg_controllen=0, msg_flags=0}, 0) = 1312
-socket(AF_LOCAL, SOCK_DGRAM|SOCK_CLOEXEC, 0) = 4
-default via 10.10.99.254 dev br-redhat 
-socket(AF_LOCAL, SOCK_DGRAM|SOCK_CLOEXEC, 0) = 4
-10.10.96.0/22 dev br-redhat proto kernel scope link src 10.10.96.194 
-socket(AF_LOCAL, SOCK_DGRAM|SOCK_CLOEXEC, 0) = 4
-169.254.0.0/16 dev br-redhat scope link metric 1008 
-socket(AF_LOCAL, SOCK_DGRAM|SOCK_CLOEXEC, 0) = 4
-169.254.0.0/16 dev br-provis scope link metric 1009 
-socket(AF_LOCAL, SOCK_DGRAM|SOCK_CLOEXEC, 0) = 4
-169.254.0.0/16 dev br-trunk1 scope link metric 1010 
-socket(AF_LOCAL, SOCK_DGRAM|SOCK_CLOEXEC, 0) = 4
-169.254.0.0/16 dev br-stonith scope link metric 1011 
-socket(AF_LOCAL, SOCK_DGRAM|SOCK_CLOEXEC, 0) = 4
-169.254.0.0/16 dev br-trunk2 scope link metric 1012 
-socket(AF_LOCAL, SOCK_DGRAM|SOCK_CLOEXEC, 0) = 4
-192.168.111.0/24 dev br-stonith proto kernel scope link src 192.168.111.1 
-socket(AF_LOCAL, SOCK_DGRAM|SOCK_CLOEXEC, 0) = 4
-192.168.122.0/24 dev virbr0 proto kernel scope link src 192.168.122.1 
-recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{&quot;\24\0\0\0\3\0\2\0\330A\367[Av\2\0\0\0\0\0&quot;, 32768}], msg_controllen=0, msg_flags=0}, 0) = 20
-+++ exited with 0 +++
-</code></pre>
+* iproute2 
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@dell-r430-30 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">strace</span><span class="w"> </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="n">trace</span><span class="o">=</span><span class="n">network</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">ip</span><span class="w"> </span><span class="n">route</span><span class="w"></span>
+<span class="n">socket</span><span class="p">(</span><span class="n">AF_NETLINK</span><span class="p">,</span><span class="w"> </span><span class="n">SOCK_RAW</span><span class="o">|</span><span class="n">SOCK_CLOEXEC</span><span class="p">,</span><span class="w"> </span><span class="n">NETLINK_ROUTE</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"></span>
+<span class="n">setsockopt</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="n">SOL_SOCKET</span><span class="p">,</span><span class="w"> </span><span class="n">SO_SNDBUF</span><span class="p">,</span><span class="w"> </span><span class="o">[</span><span class="n">32768</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="n">setsockopt</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="n">SOL_SOCKET</span><span class="p">,</span><span class="w"> </span><span class="n">SO_RCVBUF</span><span class="p">,</span><span class="w"> </span><span class="o">[</span><span class="n">1048576</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="n">bind</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="err">{</span><span class="n">sa_family</span><span class="o">=</span><span class="n">AF_NETLINK</span><span class="p">,</span><span class="w"> </span><span class="n">pid</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">groups</span><span class="o">=</span><span class="mi">00000000</span><span class="err">}</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="n">getsockname</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="err">{</span><span class="n">sa_family</span><span class="o">=</span><span class="n">AF_NETLINK</span><span class="p">,</span><span class="w"> </span><span class="n">pid</span><span class="o">=</span><span class="mi">161345</span><span class="p">,</span><span class="w"> </span><span class="n">groups</span><span class="o">=</span><span class="mi">00000000</span><span class="err">}</span><span class="p">,</span><span class="w"> </span><span class="o">[</span><span class="n">12</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="n">sendto</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;(\0\0\0\32\0\1\3\330A\367[\0\0\0\0\2\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0&quot;</span><span class="p">...,</span><span class="w"> </span><span class="mi">40</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">40</span><span class="w"></span>
+<span class="n">recvmsg</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="err">{</span><span class="n">msg_name</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span><span class="o">=</span><span class="err">{</span><span class="n">sa_family</span><span class="o">=</span><span class="n">AF_NETLINK</span><span class="p">,</span><span class="w"> </span><span class="n">pid</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">groups</span><span class="o">=</span><span class="mi">00000000</span><span class="err">}</span><span class="p">,</span><span class="w"> </span><span class="n">msg_iov</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">=[</span><span class="n">{&quot;4\0\0\0\30\0\2\0\330A\367[Av\2\0\2\0\0\0\376\3\0\1\0\0\0\0\10\0\17\0&quot;..., 32768}</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="n">msg_controllen</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">msg_flags</span><span class="o">=</span><span class="mi">0</span><span class="err">}</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1312</span><span class="w"></span>
+<span class="n">socket</span><span class="p">(</span><span class="n">AF_LOCAL</span><span class="p">,</span><span class="w"> </span><span class="n">SOCK_DGRAM</span><span class="o">|</span><span class="n">SOCK_CLOEXEC</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="w"></span>
+<span class="k">default</span><span class="w"> </span><span class="n">via</span><span class="w"> </span><span class="mf">10.10.99.254</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">br</span><span class="o">-</span><span class="n">redhat</span><span class="w"> </span>
+<span class="n">socket</span><span class="p">(</span><span class="n">AF_LOCAL</span><span class="p">,</span><span class="w"> </span><span class="n">SOCK_DGRAM</span><span class="o">|</span><span class="n">SOCK_CLOEXEC</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="w"></span>
+<span class="mf">10.10.96.0</span><span class="o">/</span><span class="mi">22</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">br</span><span class="o">-</span><span class="n">redhat</span><span class="w"> </span><span class="n">proto</span><span class="w"> </span><span class="n">kernel</span><span class="w"> </span><span class="k">scope</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">src</span><span class="w"> </span><span class="mf">10.10.96.194</span><span class="w"> </span>
+<span class="n">socket</span><span class="p">(</span><span class="n">AF_LOCAL</span><span class="p">,</span><span class="w"> </span><span class="n">SOCK_DGRAM</span><span class="o">|</span><span class="n">SOCK_CLOEXEC</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="w"></span>
+<span class="mf">169.254.0.0</span><span class="o">/</span><span class="mi">16</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">br</span><span class="o">-</span><span class="n">redhat</span><span class="w"> </span><span class="k">scope</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">metric</span><span class="w"> </span><span class="mi">1008</span><span class="w"> </span>
+<span class="n">socket</span><span class="p">(</span><span class="n">AF_LOCAL</span><span class="p">,</span><span class="w"> </span><span class="n">SOCK_DGRAM</span><span class="o">|</span><span class="n">SOCK_CLOEXEC</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="w"></span>
+<span class="mf">169.254.0.0</span><span class="o">/</span><span class="mi">16</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">br</span><span class="o">-</span><span class="n">provis</span><span class="w"> </span><span class="k">scope</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">metric</span><span class="w"> </span><span class="mi">1009</span><span class="w"> </span>
+<span class="n">socket</span><span class="p">(</span><span class="n">AF_LOCAL</span><span class="p">,</span><span class="w"> </span><span class="n">SOCK_DGRAM</span><span class="o">|</span><span class="n">SOCK_CLOEXEC</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="w"></span>
+<span class="mf">169.254.0.0</span><span class="o">/</span><span class="mi">16</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">br</span><span class="o">-</span><span class="n">trunk1</span><span class="w"> </span><span class="k">scope</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">metric</span><span class="w"> </span><span class="mi">1010</span><span class="w"> </span>
+<span class="n">socket</span><span class="p">(</span><span class="n">AF_LOCAL</span><span class="p">,</span><span class="w"> </span><span class="n">SOCK_DGRAM</span><span class="o">|</span><span class="n">SOCK_CLOEXEC</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="w"></span>
+<span class="mf">169.254.0.0</span><span class="o">/</span><span class="mi">16</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">br</span><span class="o">-</span><span class="n">stonith</span><span class="w"> </span><span class="k">scope</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">metric</span><span class="w"> </span><span class="mi">1011</span><span class="w"> </span>
+<span class="n">socket</span><span class="p">(</span><span class="n">AF_LOCAL</span><span class="p">,</span><span class="w"> </span><span class="n">SOCK_DGRAM</span><span class="o">|</span><span class="n">SOCK_CLOEXEC</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="w"></span>
+<span class="mf">169.254.0.0</span><span class="o">/</span><span class="mi">16</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">br</span><span class="o">-</span><span class="n">trunk2</span><span class="w"> </span><span class="k">scope</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">metric</span><span class="w"> </span><span class="mi">1012</span><span class="w"> </span>
+<span class="n">socket</span><span class="p">(</span><span class="n">AF_LOCAL</span><span class="p">,</span><span class="w"> </span><span class="n">SOCK_DGRAM</span><span class="o">|</span><span class="n">SOCK_CLOEXEC</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="w"></span>
+<span class="mf">192.168.111.0</span><span class="o">/</span><span class="mi">24</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">br</span><span class="o">-</span><span class="n">stonith</span><span class="w"> </span><span class="n">proto</span><span class="w"> </span><span class="n">kernel</span><span class="w"> </span><span class="k">scope</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">src</span><span class="w"> </span><span class="mf">192.168.111.1</span><span class="w"> </span>
+<span class="n">socket</span><span class="p">(</span><span class="n">AF_LOCAL</span><span class="p">,</span><span class="w"> </span><span class="n">SOCK_DGRAM</span><span class="o">|</span><span class="n">SOCK_CLOEXEC</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="w"></span>
+<span class="mf">192.168.122.0</span><span class="o">/</span><span class="mi">24</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">virbr0</span><span class="w"> </span><span class="n">proto</span><span class="w"> </span><span class="n">kernel</span><span class="w"> </span><span class="k">scope</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">src</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span>
+<span class="n">recvmsg</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="err">{</span><span class="n">msg_name</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span><span class="o">=</span><span class="err">{</span><span class="n">sa_family</span><span class="o">=</span><span class="n">AF_NETLINK</span><span class="p">,</span><span class="w"> </span><span class="n">pid</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">groups</span><span class="o">=</span><span class="mi">00000000</span><span class="err">}</span><span class="p">,</span><span class="w"> </span><span class="n">msg_iov</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">=[</span><span class="n">{&quot;\24\0\0\0\3\0\2\0\330A\367[Av\2\0\0\0\0\0&quot;, 32768}</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="n">msg_controllen</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">msg_flags</span><span class="o">=</span><span class="mi">0</span><span class="err">}</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span><span class="w"></span>
+<span class="o">+++</span><span class="w"> </span><span class="n">exited</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">+++</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
 <ul>
 <li>OVS</li>
 </ul>
@@ -1383,107 +1427,170 @@ recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov
 <h5 id="program">Program</h5>
 <p>Let's start with a generic example for IPC via sockets in C. The following contains an example for a UDP socket:
 <a href="https://github.com/andreaskaris/blog/blob/master/messenger.c">https://github.com/andreaskaris/blog/blob/master/messenger.c</a></p>
-<p>Compile:</p>
-<pre><code>[akaris@wks-akaris c]$ gcc messenger.c -o messenger
-[akaris@wks-akaris c]$ 
-</code></pre>
-<p>Then run, in one CLI the receiver:</p>
-<pre><code>[akaris@wks-akaris c]$ ./messenger receiver
-This node is a receiver
-Starting receiver
-Received datagram from 127.0.0.1
-Datagram content: MSG
-Received datagram from 127.0.0.1
-Datagram content: MSG
-</code></pre>
-<p>In the other CLI the sender:</p>
-<pre><code>[akaris@wks-akaris c]$ ./messenger sender
-This node is a sender
-Starting sender
-[akaris@wks-akaris c]$ ./messenger sender
-This node is a sender
-Starting sender
-</code></pre>
+<p>Compile:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">akaris@wks-akaris c</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">gcc</span><span class="w"> </span><span class="n">messenger</span><span class="p">.</span><span class="n">c</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">messenger</span><span class="w"></span>
+<span class="o">[</span><span class="n">akaris@wks-akaris c</span><span class="o">]</span><span class="err">$</span><span class="w"> </span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Then run, in one CLI the receiver:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">akaris@wks-akaris c</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="n">messenger</span><span class="w"> </span><span class="n">receiver</span><span class="w"></span>
+<span class="n">This</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">receiver</span><span class="w"></span>
+<span class="n">Starting</span><span class="w"> </span><span class="n">receiver</span><span class="w"></span>
+<span class="n">Received</span><span class="w"> </span><span class="n">datagram</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="mf">127.0.0.1</span><span class="w"></span>
+<span class="n">Datagram</span><span class="w"> </span><span class="nl">content</span><span class="p">:</span><span class="w"> </span><span class="n">MSG</span><span class="w"></span>
+<span class="n">Received</span><span class="w"> </span><span class="n">datagram</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="mf">127.0.0.1</span><span class="w"></span>
+<span class="n">Datagram</span><span class="w"> </span><span class="nl">content</span><span class="p">:</span><span class="w"> </span><span class="n">MSG</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p>In the other CLI the sender:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">akaris@wks-akaris c</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="n">messenger</span><span class="w"> </span><span class="n">sender</span><span class="w"></span>
+<span class="n">This</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">sender</span><span class="w"></span>
+<span class="n">Starting</span><span class="w"> </span><span class="n">sender</span><span class="w"></span>
+<span class="o">[</span><span class="n">akaris@wks-akaris c</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="n">messenger</span><span class="w"> </span><span class="n">sender</span><span class="w"></span>
+<span class="n">This</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">sender</span><span class="w"></span>
+<span class="n">Starting</span><span class="w"> </span><span class="n">sender</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
 <h4 id="python">Python</h4>
 <h5 id="resources_1">Resources</h5>
 <p><a href="https://wiki.python.org/moin/UdpCommunication">https://wiki.python.org/moin/UdpCommunication</a></p>
 <h5 id="program_1">Program</h5>
 <p>Let's start with a generic example for IPC via sockets in Python. The following contains an example for a UDP socket:
 <a href="https://github.com/andreaskaris/blog/blob/master/messenger.py">https://github.com/andreaskaris/blog/blob/master/messenger.py</a></p>
-<p>Run the server:</p>
-<pre><code>[akaris@wks-akaris python]$ ./messenger.py rec
-This node is a receiver
-Starting receiver
-Received datagram from  ('127.0.0.1', 58172)
-Datagram content:  b'MSG'
-Received datagram from  ('127.0.0.1', 39735)
-Datagram content:  b'MSG'
-</code></pre>
-<p>Run the client in another CLI:</p>
-<pre><code>[akaris@wks-akaris python]$ ./messenger.py sender
-This node is a sender
-Starting sender
-[akaris@wks-akaris python]$ ./messenger.py sender
-This node is a sender
-Starting sender
-[akaris@wks-akaris python]$ 
-</code></pre>
+<p>Run the server:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">akaris@wks-akaris python</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="n">messenger</span><span class="p">.</span><span class="n">py</span><span class="w"> </span><span class="n">rec</span><span class="w"></span>
+<span class="n">This</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">receiver</span><span class="w"></span>
+<span class="n">Starting</span><span class="w"> </span><span class="n">receiver</span><span class="w"></span>
+<span class="n">Received</span><span class="w"> </span><span class="n">datagram</span><span class="w"> </span><span class="k">from</span><span class="w">  </span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">58172</span><span class="p">)</span><span class="w"></span>
+<span class="n">Datagram</span><span class="w"> </span><span class="nl">content</span><span class="p">:</span><span class="w">  </span><span class="n">b</span><span class="s1">&#39;MSG&#39;</span><span class="w"></span>
+<span class="n">Received</span><span class="w"> </span><span class="n">datagram</span><span class="w"> </span><span class="k">from</span><span class="w">  </span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">39735</span><span class="p">)</span><span class="w"></span>
+<span class="n">Datagram</span><span class="w"> </span><span class="nl">content</span><span class="p">:</span><span class="w">  </span><span class="n">b</span><span class="s1">&#39;MSG&#39;</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Run the client in another CLI:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">akaris@wks-akaris python</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="n">messenger</span><span class="p">.</span><span class="n">py</span><span class="w"> </span><span class="n">sender</span><span class="w"></span>
+<span class="n">This</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">sender</span><span class="w"></span>
+<span class="n">Starting</span><span class="w"> </span><span class="n">sender</span><span class="w"></span>
+<span class="o">[</span><span class="n">akaris@wks-akaris python</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="n">messenger</span><span class="p">.</span><span class="n">py</span><span class="w"> </span><span class="n">sender</span><span class="w"></span>
+<span class="n">This</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">sender</span><span class="w"></span>
+<span class="n">Starting</span><span class="w"> </span><span class="n">sender</span><span class="w"></span>
+<span class="o">[</span><span class="n">akaris@wks-akaris python</span><span class="o">]</span><span class="err">$</span><span class="w"> </span>
+</code></pre></div>
+</td></tr></table></p>
 <h3 id="how-to-use-netlink-programming-example">How to use Netlink - programming example</h3>
 <p><a href="https://www.linuxjournal.com/article/7356">https://www.linuxjournal.com/article/7356</a> has a walkthrough for using Netlink in C.</p>
 <p><a href="https://www.linuxjournal.com/article/8498">https://www.linuxjournal.com/article/8498</a> as well.</p>
 <h4 id="c_1">C</h4>
 <p>The following C application monitors any route changes that happen in the kernel: 
 <a href="https://github.com/andreaskaris/blog/blob/master/netlink.c">https://github.com/andreaskaris/blog/blob/master/netlink.c</a></p>
-<p>Compile the code:</p>
-<pre><code>gcc netlink.c -o netlink
-</code></pre>
-<p>Start the application and while the application is running, modify the routing table:</p>
-<pre><code>[akaris@wks-akaris python]$ sudo ip r a 4.3.2.0/30 via 127.0.0.1
-[akaris@wks-akaris python]$ sudo ip r d 4.3.2.0/30 via 127.0.0.1
-</code></pre>
-<p>The application will yield the following. We can see live when the route is added and when it is deleted:</p>
-<pre><code>[akaris@wks-akaris c]$ ./netlink 
-Starting netlink receiverd
-nlmsg_len: 60, nlmsg_type 24, nlmsg_flags: 1536, nlmsg_seq: 1543015716, nlmsg_pid: 15333
-Netmask: 30
-nlmsg_len: 60, nlmsg_type 25, nlmsg_flags: 0, nlmsg_seq: 1543015717, nlmsg_pid: 15343
-Netmask: 30
-</code></pre>
+<p>Compile the code:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>gcc netlink.c -o netlink
+</code></pre></div>
+</td></tr></table></p>
+<p>Start the application and while the application is running, modify the routing table:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">akaris@wks-akaris python</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">sudo</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="mf">4.3.2.0</span><span class="o">/</span><span class="mi">30</span><span class="w"> </span><span class="n">via</span><span class="w"> </span><span class="mf">127.0.0.1</span><span class="w"></span>
+<span class="o">[</span><span class="n">akaris@wks-akaris python</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">sudo</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="mf">4.3.2.0</span><span class="o">/</span><span class="mi">30</span><span class="w"> </span><span class="n">via</span><span class="w"> </span><span class="mf">127.0.0.1</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p>The application will yield the following. We can see live when the route is added and when it is deleted:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">akaris@wks-akaris c</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="n">netlink</span><span class="w"> </span>
+<span class="n">Starting</span><span class="w"> </span><span class="n">netlink</span><span class="w"> </span><span class="n">receiverd</span><span class="w"></span>
+<span class="nl">nlmsg_len</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span><span class="w"> </span><span class="n">nlmsg_type</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span><span class="w"> </span><span class="nl">nlmsg_flags</span><span class="p">:</span><span class="w"> </span><span class="mi">1536</span><span class="p">,</span><span class="w"> </span><span class="nl">nlmsg_seq</span><span class="p">:</span><span class="w"> </span><span class="mi">1543015716</span><span class="p">,</span><span class="w"> </span><span class="nl">nlmsg_pid</span><span class="p">:</span><span class="w"> </span><span class="mi">15333</span><span class="w"></span>
+<span class="nl">Netmask</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="w"></span>
+<span class="nl">nlmsg_len</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span><span class="w"> </span><span class="n">nlmsg_type</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w"> </span><span class="nl">nlmsg_flags</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nl">nlmsg_seq</span><span class="p">:</span><span class="w"> </span><span class="mi">1543015717</span><span class="p">,</span><span class="w"> </span><span class="nl">nlmsg_pid</span><span class="p">:</span><span class="w"> </span><span class="mi">15343</span><span class="w"></span>
+<span class="nl">Netmask</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
 <p>Note that a more complete example can be found here: <a href="https://gist.github.com/cl4u2/5204374">https://gist.github.com/cl4u2/5204374</a></p>
 <h4 id="python_1">Python</h4>
 <p>The following python application monitors any route changes that happen in the kernel:
 <a href="https://github.com/andreaskaris/blog/blob/master/netlink.py">https://github.com/andreaskaris/blog/blob/master/netlink.py</a></p>
-<p>Start the application and while the application is running, modify the routing table:</p>
-<pre><code>[akaris@wks-akaris python]$ sudo ip r a 4.3.2.0/30 via 127.0.0.1
-[akaris@wks-akaris python]$ sudo ip r d 4.3.2.0/30 via 127.0.0.1
-</code></pre>
-<p>The application will yield the following. We can see live when the route is added and when it is deleted:</p>
-<pre><code>[akaris@wks-akaris python]$ ./netlink.py 
-Netlink header:  60 RTM_NEWROUTE 1536 1543012056 13037
-Netlink payload:  2 30 0 0 254 3 0 1 0
-Netmask: 30
-IP:  b'\x04\x03\x02\x00'
-Netlink header:  60 RTM_DELROUTE 0 1543012061 13047
-Netlink payload:  2 30 0 0 254 3 0 1 0
-Netmask: 30
-IP:  b'\x04\x03\x02\x00'
-</code></pre>
-<p>strace'ing the application reveals even more about the message structure:</p>
-<pre><code>[akaris@wks-akaris python]$ strace -e trace=network ./netlink.py 
-socket(AF_NETLINK, SOCK_RAW|SOCK_CLOEXEC, NETLINK_ROUTE) = 3
-bind(3, {sa_family=AF_NETLINK, nl_pid=13307, nl_groups=0x000040}, 12) = 0
-recvfrom(3, {{len=60, type=RTM_NEWROUTE, flags=NLM_F_EXCL|NLM_F_CREATE, seq=1543012305, pid=13310}, {rtm_family=AF_INET, rtm_dst_len=30, rtm_src_len=0, rtm_tos=0, rtm_table=RT_TABLE_MAIN, rtm_protocol=RTPROT_BOOT, rtm_scope=RT_SCOPE_UNIVERSE, rtm_type=RTN_UNICAST, rtm_flags=0}, [{{nla_len=8, nla_type=RTA_TABLE}, RT_TABLE_MAIN}, {{nla_len=8, nla_type=RTA_DST}, 4.3.2.0}, {{nla_len=8, nla_type=RTA_GATEWAY}, 127.0.0.1}, {{nla_len=8, nla_type=RTA_OIF}, if_nametoindex(&quot;lo&quot;)}]}, 65535, 0, NULL, NULL) = 60
-Netlink header:  60 RTM_NEWROUTE 1536 1543012305 13310
-Netlink payload:  2 30 0 0 254 3 0 1 0
-Netmask: 30
-IP:  b'\x04\x03\x02\x00'
-recvfrom(3, {{len=60, type=RTM_DELROUTE, flags=0, seq=1543012307, pid=13320}, {rtm_family=AF_INET, rtm_dst_len=30, rtm_src_len=0, rtm_tos=0, rtm_table=RT_TABLE_MAIN, rtm_protocol=RTPROT_BOOT, rtm_scope=RT_SCOPE_UNIVERSE, rtm_type=RTN_UNICAST, rtm_flags=0}, [{{nla_len=8, nla_type=RTA_TABLE}, RT_TABLE_MAIN}, {{nla_len=8, nla_type=RTA_DST}, 4.3.2.0}, {{nla_len=8, nla_type=RTA_GATEWAY}, 127.0.0.1}, {{nla_len=8, nla_type=RTA_OIF}, if_nametoindex(&quot;lo&quot;)}]}, 65535, 0, NULL, NULL) = 60
-Netlink header:  60 RTM_DELROUTE 0 1543012307 13320
-Netlink payload:  2 30 0 0 254 3 0 1 0
-Netmask: 30
-IP:  b'\x04\x03\x02\x00'
-recvfrom(3, 
-</code></pre>
+<p>Start the application and while the application is running, modify the routing table:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">akaris@wks-akaris python</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">sudo</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="mf">4.3.2.0</span><span class="o">/</span><span class="mi">30</span><span class="w"> </span><span class="n">via</span><span class="w"> </span><span class="mf">127.0.0.1</span><span class="w"></span>
+<span class="o">[</span><span class="n">akaris@wks-akaris python</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">sudo</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="mf">4.3.2.0</span><span class="o">/</span><span class="mi">30</span><span class="w"> </span><span class="n">via</span><span class="w"> </span><span class="mf">127.0.0.1</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p>The application will yield the following. We can see live when the route is added and when it is deleted:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">wks</span><span class="o">-</span><span class="n">akaris</span> <span class="n">python</span><span class="p">]</span><span class="o">$</span> <span class="o">./</span><span class="n">netlink</span><span class="o">.</span><span class="n">py</span> 
+<span class="n">Netlink</span> <span class="n">header</span><span class="p">:</span>  <span class="mi">60</span> <span class="n">RTM_NEWROUTE</span> <span class="mi">1536</span> <span class="mi">1543012056</span> <span class="mi">13037</span>
+<span class="n">Netlink</span> <span class="n">payload</span><span class="p">:</span>  <span class="mi">2</span> <span class="mi">30</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">254</span> <span class="mi">3</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span>
+<span class="n">Netmask</span><span class="p">:</span> <span class="mi">30</span>
+<span class="n">IP</span><span class="p">:</span>  <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x04\x03\x02\x00</span><span class="s1">&#39;</span>
+<span class="n">Netlink</span> <span class="n">header</span><span class="p">:</span>  <span class="mi">60</span> <span class="n">RTM_DELROUTE</span> <span class="mi">0</span> <span class="mi">1543012061</span> <span class="mi">13047</span>
+<span class="n">Netlink</span> <span class="n">payload</span><span class="p">:</span>  <span class="mi">2</span> <span class="mi">30</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">254</span> <span class="mi">3</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span>
+<span class="n">Netmask</span><span class="p">:</span> <span class="mi">30</span>
+<span class="n">IP</span><span class="p">:</span>  <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x04\x03\x02\x00</span><span class="s1">&#39;</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>strace'ing the application reveals even more about the message structure:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">wks</span><span class="o">-</span><span class="n">akaris</span> <span class="n">python</span><span class="p">]</span><span class="o">$</span> <span class="n">strace</span> <span class="o">-</span><span class="n">e</span> <span class="n">trace</span><span class="o">=</span><span class="n">network</span> <span class="o">./</span><span class="n">netlink</span><span class="o">.</span><span class="n">py</span> 
+<span class="n">socket</span><span class="p">(</span><span class="n">AF_NETLINK</span><span class="p">,</span> <span class="n">SOCK_RAW</span><span class="o">|</span><span class="n">SOCK_CLOEXEC</span><span class="p">,</span> <span class="n">NETLINK_ROUTE</span><span class="p">)</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">bind</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">{</span><span class="n">sa_family</span><span class="o">=</span><span class="n">AF_NETLINK</span><span class="p">,</span> <span class="n">nl_pid</span><span class="o">=</span><span class="mi">13307</span><span class="p">,</span> <span class="n">nl_groups</span><span class="o">=</span><span class="mh">0x000040</span><span class="p">},</span> <span class="mi">12</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">recvfrom</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">{{</span><span class="n">len</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">type</span><span class="o">=</span><span class="n">RTM_NEWROUTE</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">NLM_F_EXCL</span><span class="o">|</span><span class="n">NLM_F_CREATE</span><span class="p">,</span> <span class="n">seq</span><span class="o">=</span><span class="mi">1543012305</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="mi">13310</span><span class="p">},</span> <span class="p">{</span><span class="n">rtm_family</span><span class="o">=</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">rtm_dst_len</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">rtm_src_len</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rtm_tos</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rtm_table</span><span class="o">=</span><span class="n">RT_TABLE_MAIN</span><span class="p">,</span> <span class="n">rtm_protocol</span><span class="o">=</span><span class="n">RTPROT_BOOT</span><span class="p">,</span> <span class="n">rtm_scope</span><span class="o">=</span><span class="n">RT_SCOPE_UNIVERSE</span><span class="p">,</span> <span class="n">rtm_type</span><span class="o">=</span><span class="n">RTN_UNICAST</span><span class="p">,</span> <span class="n">rtm_flags</span><span class="o">=</span><span class="mi">0</span><span class="p">},</span> <span class="p">[{{</span><span class="n">nla_len</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">nla_type</span><span class="o">=</span><span class="n">RTA_TABLE</span><span class="p">},</span> <span class="n">RT_TABLE_MAIN</span><span class="p">},</span> <span class="p">{{</span><span class="n">nla_len</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">nla_type</span><span class="o">=</span><span class="n">RTA_DST</span><span class="p">},</span> <span class="mf">4.3</span><span class="o">.</span><span class="mf">2.0</span><span class="p">},</span> <span class="p">{{</span><span class="n">nla_len</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">nla_type</span><span class="o">=</span><span class="n">RTA_GATEWAY</span><span class="p">},</span> <span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="p">},</span> <span class="p">{{</span><span class="n">nla_len</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">nla_type</span><span class="o">=</span><span class="n">RTA_OIF</span><span class="p">},</span> <span class="n">if_nametoindex</span><span class="p">(</span><span class="s2">&quot;lo&quot;</span><span class="p">)}]},</span> <span class="mi">65535</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">NULL</span><span class="p">,</span> <span class="n">NULL</span><span class="p">)</span> <span class="o">=</span> <span class="mi">60</span>
+<span class="n">Netlink</span> <span class="n">header</span><span class="p">:</span>  <span class="mi">60</span> <span class="n">RTM_NEWROUTE</span> <span class="mi">1536</span> <span class="mi">1543012305</span> <span class="mi">13310</span>
+<span class="n">Netlink</span> <span class="n">payload</span><span class="p">:</span>  <span class="mi">2</span> <span class="mi">30</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">254</span> <span class="mi">3</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span>
+<span class="n">Netmask</span><span class="p">:</span> <span class="mi">30</span>
+<span class="n">IP</span><span class="p">:</span>  <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x04\x03\x02\x00</span><span class="s1">&#39;</span>
+<span class="n">recvfrom</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">{{</span><span class="n">len</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">type</span><span class="o">=</span><span class="n">RTM_DELROUTE</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">seq</span><span class="o">=</span><span class="mi">1543012307</span><span class="p">,</span> <span class="n">pid</span><span class="o">=</span><span class="mi">13320</span><span class="p">},</span> <span class="p">{</span><span class="n">rtm_family</span><span class="o">=</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">rtm_dst_len</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">rtm_src_len</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rtm_tos</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rtm_table</span><span class="o">=</span><span class="n">RT_TABLE_MAIN</span><span class="p">,</span> <span class="n">rtm_protocol</span><span class="o">=</span><span class="n">RTPROT_BOOT</span><span class="p">,</span> <span class="n">rtm_scope</span><span class="o">=</span><span class="n">RT_SCOPE_UNIVERSE</span><span class="p">,</span> <span class="n">rtm_type</span><span class="o">=</span><span class="n">RTN_UNICAST</span><span class="p">,</span> <span class="n">rtm_flags</span><span class="o">=</span><span class="mi">0</span><span class="p">},</span> <span class="p">[{{</span><span class="n">nla_len</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">nla_type</span><span class="o">=</span><span class="n">RTA_TABLE</span><span class="p">},</span> <span class="n">RT_TABLE_MAIN</span><span class="p">},</span> <span class="p">{{</span><span class="n">nla_len</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">nla_type</span><span class="o">=</span><span class="n">RTA_DST</span><span class="p">},</span> <span class="mf">4.3</span><span class="o">.</span><span class="mf">2.0</span><span class="p">},</span> <span class="p">{{</span><span class="n">nla_len</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">nla_type</span><span class="o">=</span><span class="n">RTA_GATEWAY</span><span class="p">},</span> <span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="p">},</span> <span class="p">{{</span><span class="n">nla_len</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">nla_type</span><span class="o">=</span><span class="n">RTA_OIF</span><span class="p">},</span> <span class="n">if_nametoindex</span><span class="p">(</span><span class="s2">&quot;lo&quot;</span><span class="p">)}]},</span> <span class="mi">65535</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">NULL</span><span class="p">,</span> <span class="n">NULL</span><span class="p">)</span> <span class="o">=</span> <span class="mi">60</span>
+<span class="n">Netlink</span> <span class="n">header</span><span class="p">:</span>  <span class="mi">60</span> <span class="n">RTM_DELROUTE</span> <span class="mi">0</span> <span class="mi">1543012307</span> <span class="mi">13320</span>
+<span class="n">Netlink</span> <span class="n">payload</span><span class="p">:</span>  <span class="mi">2</span> <span class="mi">30</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">254</span> <span class="mi">3</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span>
+<span class="n">Netmask</span><span class="p">:</span> <span class="mi">30</span>
+<span class="n">IP</span><span class="p">:</span>  <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x04\x03\x02\x00</span><span class="s1">&#39;</span>
+<span class="n">recvfrom</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> 
+</code></pre></div>
+</td></tr></table></p>
 <h3 id="resources_2">Resources</h3>
 <p><a href="https://en.wikipedia.org/wiki/Netlink">https://en.wikipedia.org/wiki/Netlink</a></p>
 <p><a href="https://tools.ietf.org/html/rfc3549">https://tools.ietf.org/html/rfc3549</a></p>

@@ -1213,7 +1213,7 @@
 <ul>
 <li>
 <p>Linux bonding kernel driver
-  To verify: <code>cat /proc/net/bonding/&lt;bond name&gt;</code></p>
+  To verify: <code class="highlight">cat /proc/net/bonding/&lt;bond name&gt;</code></p>
 </li>
 <li>
 <p>Teaming driver where only the essential stuff is in kernel, the rest is userspace (<a href="https://rhelblog.redhat.com/2014/06/23/team-driver/">https://rhelblog.redhat.com/2014/06/23/team-driver/</a> , <a href="https://github.com/jpirko/libteam/wiki/Infrastructure-Specification">https://github.com/jpirko/libteam/wiki/Infrastructure-Specification</a>)</p>
@@ -1221,7 +1221,7 @@
 <li>
 <p>OVS (either bonding PMDs in DPDK or kernel interfaces)
   <a href="http://docs.openvswitch.org/en/latest/topics/bonding/">http://docs.openvswitch.org/en/latest/topics/bonding/</a>
-  To verify: <code>ovs-appctl bond/show ; ovs-appctl lacp/show</code></p>
+  To verify: <code class="highlight"><span class="nv">ovs</span><span class="o">-</span><span class="nv">appctl</span> <span class="nv">bond</span><span class="o">/</span><span class="k">show</span> <span class="c1">; ovs-appctl lacp/show</span></code></p>
 </li>
 <li>
 <p>DPDK (there is a bonding PMD)</p>

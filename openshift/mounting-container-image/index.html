@@ -1206,36 +1206,58 @@
                   <h1>Mount a container image</h1>
                 
                 <h3 id="how-to-mount-a-container-image">How to mount a container image</h3>
-<p>This is an easy task with <code>buildah</code>.</p>
-<pre><code>buildah from &lt;image name&gt;:&lt;tag&gt;
-</code></pre>
-<p>Identify the container name of the container that was generated from the image:</p>
-<pre><code>buildah ps
-</code></pre>
-<p>Mount the container locally:</p>
-<pre><code>buildah mount &lt;container name&gt;
-</code></pre>
-<p>Full example:</p>
-<pre><code># buildah from quay.io/akaris/sosreport-operator-bundle
-sosreport-operator-bundle-working-container
-# buildah ps
-CONTAINER ID  BUILDER  IMAGE ID     IMAGE NAME                       CONTAINER NAME
-29ec805903bf     *     062a9b2fe5ee quay.io/akaris/sosreport-oper... sosreport-operator-bundle-working-container
-# buildah mount sosreport-operator-bundle-working-container
-/var/lib/containers/storage/overlay/a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e/merged
-# find /var/lib/containers/storage/overlay/a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e/merged
-/var/lib/containers/storage/overlay/a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e/merged
-/var/lib/containers/storage/overlay/a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e/merged/manifests
-/var/lib/containers/storage/overlay/a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e/merged/manifests/sosreport-operator-controller-manager-metrics-service_v1_service.yaml
-/var/lib/containers/storage/overlay/a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e/merged/manifests/sosreport-operator-metrics-reader_rbac.authorization.k8s.io_v1_clusterrole.yaml
-/var/lib/containers/storage/overlay/a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e/merged/manifests/sosreport-operator.clusterserviceversion.yaml
-/var/lib/containers/storage/overlay/a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e/merged/manifests/support.openshift.io_sosreports.yaml
-/var/lib/containers/storage/overlay/a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e/merged/tests
-/var/lib/containers/storage/overlay/a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e/merged/tests/scorecard
-/var/lib/containers/storage/overlay/a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e/merged/tests/scorecard/config.yaml
-/var/lib/containers/storage/overlay/a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e/merged/metadata
-/var/lib/containers/storage/overlay/a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e/merged/metadata/annotations.yaml
-</code></pre>
+<p>This is an easy task with <code class="highlight">buildah</code>.
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>buildah from &lt;image name&gt;:&lt;tag&gt;
+</code></pre></div>
+</td></tr></table></p>
+<p>Identify the container name of the container that was generated from the image:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>buildah ps
+</code></pre></div>
+</td></tr></table></p>
+<p>Mount the container locally:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>buildah mount &lt;container name&gt;
+</code></pre></div>
+</td></tr></table></p>
+<p>Full example:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="c1"># buildah from quay.io/akaris/sosreport-operator-bundle</span>
+<span class="n">sosreport</span><span class="o">-</span><span class="n">operator</span><span class="o">-</span><span class="n">bundle</span><span class="o">-</span><span class="n">working</span><span class="o">-</span><span class="n">container</span>
+<span class="c1"># buildah ps</span>
+<span class="n">CONTAINER</span> <span class="n">ID</span>  <span class="n">BUILDER</span>  <span class="n">IMAGE</span> <span class="n">ID</span>     <span class="n">IMAGE</span> <span class="n">NAME</span>                       <span class="n">CONTAINER</span> <span class="n">NAME</span>
+<span class="mi">29</span><span class="n">ec805903bf</span>     <span class="o">*</span>     <span class="mi">062</span><span class="n">a9b2fe5ee</span> <span class="n">quay</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">akaris</span><span class="o">/</span><span class="n">sosreport</span><span class="o">-</span><span class="n">oper</span><span class="o">...</span> <span class="n">sosreport</span><span class="o">-</span><span class="n">operator</span><span class="o">-</span><span class="n">bundle</span><span class="o">-</span><span class="n">working</span><span class="o">-</span><span class="n">container</span>
+<span class="c1"># buildah mount sosreport-operator-bundle-working-container</span>
+<span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">containers</span><span class="o">/</span><span class="n">storage</span><span class="o">/</span><span class="n">overlay</span><span class="o">/</span><span class="n">a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e</span><span class="o">/</span><span class="n">merged</span>
+<span class="c1"># find /var/lib/containers/storage/overlay/a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e/merged</span>
+<span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">containers</span><span class="o">/</span><span class="n">storage</span><span class="o">/</span><span class="n">overlay</span><span class="o">/</span><span class="n">a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e</span><span class="o">/</span><span class="n">merged</span>
+<span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">containers</span><span class="o">/</span><span class="n">storage</span><span class="o">/</span><span class="n">overlay</span><span class="o">/</span><span class="n">a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e</span><span class="o">/</span><span class="n">merged</span><span class="o">/</span><span class="n">manifests</span>
+<span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">containers</span><span class="o">/</span><span class="n">storage</span><span class="o">/</span><span class="n">overlay</span><span class="o">/</span><span class="n">a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e</span><span class="o">/</span><span class="n">merged</span><span class="o">/</span><span class="n">manifests</span><span class="o">/</span><span class="n">sosreport</span><span class="o">-</span><span class="n">operator</span><span class="o">-</span><span class="n">controller</span><span class="o">-</span><span class="n">manager</span><span class="o">-</span><span class="n">metrics</span><span class="o">-</span><span class="n">service_v1_service</span><span class="o">.</span><span class="n">yaml</span>
+<span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">containers</span><span class="o">/</span><span class="n">storage</span><span class="o">/</span><span class="n">overlay</span><span class="o">/</span><span class="n">a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e</span><span class="o">/</span><span class="n">merged</span><span class="o">/</span><span class="n">manifests</span><span class="o">/</span><span class="n">sosreport</span><span class="o">-</span><span class="n">operator</span><span class="o">-</span><span class="n">metrics</span><span class="o">-</span><span class="n">reader_rbac</span><span class="o">.</span><span class="n">authorization</span><span class="o">.</span><span class="n">k8s</span><span class="o">.</span><span class="n">io_v1_clusterrole</span><span class="o">.</span><span class="n">yaml</span>
+<span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">containers</span><span class="o">/</span><span class="n">storage</span><span class="o">/</span><span class="n">overlay</span><span class="o">/</span><span class="n">a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e</span><span class="o">/</span><span class="n">merged</span><span class="o">/</span><span class="n">manifests</span><span class="o">/</span><span class="n">sosreport</span><span class="o">-</span><span class="n">operator</span><span class="o">.</span><span class="n">clusterserviceversion</span><span class="o">.</span><span class="n">yaml</span>
+<span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">containers</span><span class="o">/</span><span class="n">storage</span><span class="o">/</span><span class="n">overlay</span><span class="o">/</span><span class="n">a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e</span><span class="o">/</span><span class="n">merged</span><span class="o">/</span><span class="n">manifests</span><span class="o">/</span><span class="n">support</span><span class="o">.</span><span class="n">openshift</span><span class="o">.</span><span class="n">io_sosreports</span><span class="o">.</span><span class="n">yaml</span>
+<span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">containers</span><span class="o">/</span><span class="n">storage</span><span class="o">/</span><span class="n">overlay</span><span class="o">/</span><span class="n">a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e</span><span class="o">/</span><span class="n">merged</span><span class="o">/</span><span class="n">tests</span>
+<span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">containers</span><span class="o">/</span><span class="n">storage</span><span class="o">/</span><span class="n">overlay</span><span class="o">/</span><span class="n">a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e</span><span class="o">/</span><span class="n">merged</span><span class="o">/</span><span class="n">tests</span><span class="o">/</span><span class="n">scorecard</span>
+<span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">containers</span><span class="o">/</span><span class="n">storage</span><span class="o">/</span><span class="n">overlay</span><span class="o">/</span><span class="n">a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e</span><span class="o">/</span><span class="n">merged</span><span class="o">/</span><span class="n">tests</span><span class="o">/</span><span class="n">scorecard</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">yaml</span>
+<span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">containers</span><span class="o">/</span><span class="n">storage</span><span class="o">/</span><span class="n">overlay</span><span class="o">/</span><span class="n">a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e</span><span class="o">/</span><span class="n">merged</span><span class="o">/</span><span class="n">metadata</span>
+<span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">containers</span><span class="o">/</span><span class="n">storage</span><span class="o">/</span><span class="n">overlay</span><span class="o">/</span><span class="n">a2c8b0bb76a14d28e6030ed85dc7b749d4657df6c3752b2029178475cdcc9c1e</span><span class="o">/</span><span class="n">merged</span><span class="o">/</span><span class="n">metadata</span><span class="o">/</span><span class="n">annotations</span><span class="o">.</span><span class="n">yaml</span>
+</code></pre></div>
+</td></tr></table></p>
                 
                   
                     

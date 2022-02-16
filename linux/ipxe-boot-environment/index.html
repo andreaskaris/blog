@@ -1225,100 +1225,202 @@
 <p>In order to get a working iPXE boot environment, you need to set up dnsmasq/tftp and httpd. dnsmasq is used as the DHCP server, if needed as the DNS server (although disabled in the following example) and as the tftp server. httpd will serve the actual images to boot from.</p>
 <p>The following steps are a manual walkthrough of the steps taken in <a href="https://github.com/andreaskaris/fedora-ipxe-container">https://github.com/andreaskaris/fedora-ipxe-container</a>.</p>
 <h2 id="install-dependencies">Install dependencies</h2>
-<p>Install required dependencies:</p>
-<pre><code>yum install ipxe-bootimgs dnsmasq httpd -y
-</code></pre>
+<p>Install required dependencies:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>yum install ipxe-bootimgs dnsmasq httpd -y
+</code></pre></div>
+</td></tr></table></p>
 <h2 id="setting-up-dnsmasq-and-tftp">Setting up dnsmasq and tftp</h2>
-<p>Create required directories:</p>
-<pre><code>mkdir /tftpboot
+<p>Create required directories:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>mkdir /tftpboot
 mkdir /dhcphosts
-</code></pre>
-<p>Create the following configuration for dnsmasq and adjust according to your needs.</p>
-<pre><code>cat &lt;&lt;'EOF' &gt; /etc/dnsmasq.conf
-# enable logs if required
-#log-queries
-#log-dhcp
+</code></pre></div>
+</td></tr></table></p>
+<p>Create the following configuration for dnsmasq and adjust according to your needs.
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">cat</span> <span class="o">&lt;&lt;</span><span class="s1">&#39;</span><span class="s">EOF</span><span class="s1">&#39;</span> <span class="o">&gt;</span> <span class="o">/</span><span class="nv">etc</span><span class="o">/</span><span class="nv">dnsmasq</span>.<span class="nv">conf</span>
+# <span class="nv">enable</span> <span class="nv">logs</span> <span class="k">if</span> <span class="nv">required</span>
+#<span class="nv">log</span><span class="o">-</span><span class="nv">queries</span>
+#<span class="nv">log</span><span class="o">-</span><span class="nv">dhcp</span>
 
-# disable DNS server
-port=0
+# <span class="nv">disable</span> <span class="nv">DNS</span> <span class="nv">server</span>
+<span class="nv">port</span><span class="o">=</span><span class="mi">0</span>
 
-listen-address=192.168.123.1
-interface=baremetal
+<span class="nv">listen</span><span class="o">-</span><span class="nv">address</span><span class="o">=</span><span class="mi">192</span>.<span class="mi">168</span>.<span class="mi">123</span>.<span class="mi">1</span>
+<span class="nv">interface</span><span class="o">=</span><span class="nv">baremetal</span>
 
-# enable built-in tftp server
-enable-tftp
-tftp-root=/tftpboot
+# <span class="nv">enable</span> <span class="nv">built</span><span class="o">-</span><span class="nv">in</span> <span class="nv">tftp</span> <span class="nv">server</span>
+<span class="nv">enable</span><span class="o">-</span><span class="nv">tftp</span>
+<span class="nv">tftp</span><span class="o">-</span><span class="nv">root</span><span class="o">=/</span><span class="nv">tftpboot</span>
 
-# DHCP range 192.168.123.200 ~ 192.168.123.250
-dhcp-range=192.168.123.200,192.168.123.250,255.255.255.0,24h
+# <span class="nv">DHCP</span> <span class="nv">range</span> <span class="mi">192</span>.<span class="mi">168</span>.<span class="mi">123</span>.<span class="mi">200</span> <span class="o">~</span> <span class="mi">192</span>.<span class="mi">168</span>.<span class="mi">123</span>.<span class="mi">250</span>
+<span class="nv">dhcp</span><span class="o">-</span><span class="nv">range</span><span class="o">=</span><span class="mi">192</span>.<span class="mi">168</span>.<span class="mi">123</span>.<span class="mi">200</span>,<span class="mi">192</span>.<span class="mi">168</span>.<span class="mi">123</span>.<span class="mi">250</span>,<span class="mi">255</span>.<span class="mi">255</span>.<span class="mi">255</span>.<span class="mi">0</span>,<span class="mi">24</span><span class="nv">h</span>
 
-# Default gateway
-dhcp-option=3,192.168.123.1
+# <span class="nv">Default</span> <span class="nv">gateway</span>
+<span class="nv">dhcp</span><span class="o">-</span><span class="nv">option</span><span class="o">=</span><span class="mi">3</span>,<span class="mi">192</span>.<span class="mi">168</span>.<span class="mi">123</span>.<span class="mi">1</span>
 
-dhcp-option=6,192.168.123.1
+<span class="nv">dhcp</span><span class="o">-</span><span class="nv">option</span><span class="o">=</span><span class="mi">6</span>,<span class="mi">192</span>.<span class="mi">168</span>.<span class="mi">123</span>.<span class="mi">1</span>
 
-# Domain name - homelab.net
-dhcp-option=15,example.com
+# <span class="nv">Domain</span> <span class="nv">name</span> <span class="o">-</span> <span class="nv">homelab</span>.<span class="nv">net</span>
+<span class="nv">dhcp</span><span class="o">-</span><span class="nv">option</span><span class="o">=</span><span class="mi">15</span>,<span class="nv">example</span>.<span class="nv">com</span>
 
-# Broadcast address
-dhcp-option=28,192.168.123.255
+# <span class="nv">Broadcast</span> <span class="nv">address</span>
+<span class="nv">dhcp</span><span class="o">-</span><span class="nv">option</span><span class="o">=</span><span class="mi">28</span>,<span class="mi">192</span>.<span class="mi">168</span>.<span class="mi">123</span>.<span class="mi">255</span>
 
-# Set interface MTU to 9000 bytes (jumbo frame)
-# Enable only when your network supports it
-# dhcp-option=26,9000
-dhcp-option-force=26,9000
+# <span class="nv">Set</span> <span class="nv">interface</span> <span class="nv">MTU</span> <span class="nv">to</span> <span class="mi">9000</span> <span class="nv">bytes</span> <span class="ss">(</span><span class="nv">jumbo</span> <span class="nv">frame</span><span class="ss">)</span>
+# <span class="nv">Enable</span> <span class="nv">only</span> <span class="nv">when</span> <span class="nv">your</span> <span class="nv">network</span> <span class="nv">supports</span> <span class="nv">it</span>
+# <span class="nv">dhcp</span><span class="o">-</span><span class="nv">option</span><span class="o">=</span><span class="mi">26</span>,<span class="mi">9000</span>
+<span class="nv">dhcp</span><span class="o">-</span><span class="nv">option</span><span class="o">-</span><span class="nv">force</span><span class="o">=</span><span class="mi">26</span>,<span class="mi">9000</span>
 
 
-# Tag dhcp request from iPXE
-dhcp-match=set:ipxe,175
+# <span class="nv">Tag</span> <span class="nv">dhcp</span> <span class="nv">request</span> <span class="nv">from</span> <span class="nv">iPXE</span>
+<span class="nv">dhcp</span><span class="o">-</span><span class="nv">match</span><span class="o">=</span><span class="nv">set</span>:<span class="nv">ipxe</span>,<span class="mi">175</span>
 
-# inspect the vendor class string and tag BIOS client
-dhcp-vendorclass=BIOS,PXEClient:Arch:00000
+# <span class="nv">inspect</span> <span class="nv">the</span> <span class="nv">vendor</span> <span class="nv">class</span> <span class="nv">string</span> <span class="nv">and</span> <span class="nv">tag</span> <span class="nv">BIOS</span> <span class="nv">client</span>
+<span class="nv">dhcp</span><span class="o">-</span><span class="nv">vendorclass</span><span class="o">=</span><span class="nv">BIOS</span>,<span class="nv">PXEClient</span>:<span class="nv">Arch</span>:<span class="mi">00000</span>
 
-# 1st boot file - Legacy BIOS client
-dhcp-boot=tag:!ipxe,tag:BIOS,undionly.kpxe,192.168.123.1
+# <span class="mi">1</span><span class="nv">st</span> <span class="nv">boot</span> <span class="nv">file</span> <span class="o">-</span> <span class="nv">Legacy</span> <span class="nv">BIOS</span> <span class="nv">client</span>
+<span class="nv">dhcp</span><span class="o">-</span><span class="nv">boot</span><span class="o">=</span><span class="nv">tag</span>:<span class="o">!</span><span class="nv">ipxe</span>,<span class="nv">tag</span>:<span class="nv">BIOS</span>,<span class="nv">undionly</span>.<span class="nv">kpxe</span>,<span class="mi">192</span>.<span class="mi">168</span>.<span class="mi">123</span>.<span class="mi">1</span>
 
-# 1st boot file - EFI client
-# at the moment all non-BIOS clients are considered
-# EFI client
-dhcp-boot=tag:!ipxe,tag:!BIOS,ipxe.efi,192.168.123.1
+# <span class="mi">1</span><span class="nv">st</span> <span class="nv">boot</span> <span class="nv">file</span> <span class="o">-</span> <span class="nv">EFI</span> <span class="nv">client</span>
+# <span class="nv">at</span> <span class="nv">the</span> <span class="nv">moment</span> <span class="nv">all</span> <span class="nv">non</span><span class="o">-</span><span class="nv">BIOS</span> <span class="nv">clients</span> <span class="nv">are</span> <span class="nv">considered</span>
+# <span class="nv">EFI</span> <span class="nv">client</span>
+<span class="nv">dhcp</span><span class="o">-</span><span class="nv">boot</span><span class="o">=</span><span class="nv">tag</span>:<span class="o">!</span><span class="nv">ipxe</span>,<span class="nv">tag</span>:<span class="o">!</span><span class="nv">BIOS</span>,<span class="nv">ipxe</span>.<span class="nv">efi</span>,<span class="mi">192</span>.<span class="mi">168</span>.<span class="mi">123</span>.<span class="mi">1</span>
 
-# 2nd boot file
-dhcp-boot=tag:ipxe,menu/boot.ipxe
-EOF
-</code></pre>
-<p>Within the DHCP range, create a range of static leases:</p>
-<pre><code>cat &lt;&lt;'EOF' &gt; /dhcphosts/hosts 
+# <span class="mi">2</span><span class="nv">nd</span> <span class="nv">boot</span> <span class="nv">file</span>
+<span class="nv">dhcp</span><span class="o">-</span><span class="nv">boot</span><span class="o">=</span><span class="nv">tag</span>:<span class="nv">ipxe</span>,<span class="nv">menu</span><span class="o">/</span><span class="nv">boot</span>.<span class="nv">ipxe</span>
+<span class="nv">EOF</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Within the DHCP range, create a range of static leases:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>cat &lt;&lt;&#39;EOF&#39; &gt; /dhcphosts/hosts 
 52:54:00:00:00:01,192.168.123.200,node-0
 52:54:00:00:00:01,192.168.123.201,node-1
 EOF
-</code></pre>
-<p>Run dnsmasq in the foreground for testing:</p>
-<pre><code>/usr/sbin/dnsmasq -k --dhcp-hostsdir=/dhcphosts --bind-interfaces --log-facility=/dev/stdout
-</code></pre>
-<p>Obviously, this should better be run as a service:</p>
-<pre><code>cat &lt;&lt;'EOF' &gt; /etc/systemd/system/dnsmasq-custom.service 
-[Unit]
-Description=DNS caching server.
-After=network.target
+</code></pre></div>
+</td></tr></table></p>
+<p>Run dnsmasq in the foreground for testing:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>/usr/sbin/dnsmasq -k --dhcp-hostsdir=/dhcphosts --bind-interfaces --log-facility=/dev/stdout
+</code></pre></div>
+</td></tr></table></p>
+<p>Obviously, this should better be run as a service:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="s1">&#39;EOF&#39;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="k">system</span><span class="o">/</span><span class="n">dnsmasq</span><span class="o">-</span><span class="n">custom</span><span class="p">.</span><span class="n">service</span><span class="w"> </span>
+<span class="o">[</span><span class="n">Unit</span><span class="o">]</span><span class="w"></span>
+<span class="n">Description</span><span class="o">=</span><span class="n">DNS</span><span class="w"> </span><span class="n">caching</span><span class="w"> </span><span class="n">server</span><span class="p">.</span><span class="w"></span>
+<span class="k">After</span><span class="o">=</span><span class="n">network</span><span class="p">.</span><span class="n">target</span><span class="w"></span>
 
-[Service]
-ExecStart=/usr/sbin/dnsmasq -k --dhcp-hostsdir=/dhcphosts --bind-interfaces
-Type=forking
-PIDFile=/run/dnsmasq.pid
+<span class="o">[</span><span class="n">Service</span><span class="o">]</span><span class="w"></span>
+<span class="n">ExecStart</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">dnsmasq</span><span class="w"> </span><span class="o">-</span><span class="n">k</span><span class="w"> </span><span class="o">--</span><span class="n">dhcp</span><span class="o">-</span><span class="n">hostsdir</span><span class="o">=/</span><span class="n">dhcphosts</span><span class="w"> </span><span class="o">--</span><span class="n">bind</span><span class="o">-</span><span class="n">interfaces</span><span class="w"></span>
+<span class="n">Type</span><span class="o">=</span><span class="n">forking</span><span class="w"></span>
+<span class="n">PIDFile</span><span class="o">=/</span><span class="n">run</span><span class="o">/</span><span class="n">dnsmasq</span><span class="p">.</span><span class="n">pid</span><span class="w"></span>
 
-[Install]
-WantedBy=multi-user.target
-EOF
-systemctl daemon-reload
-systemctl enable --now dnsmasq-custom
-</code></pre>
-<p>Create files <code>/tftpboot/ipxe.efi</code>, <code>/tftpboot/undionly.kpxe</code>:</p>
-<pre><code>RUN cp /usr/share/ipxe/undionly.kpxe /tftpboot
+<span class="o">[</span><span class="n">Install</span><span class="o">]</span><span class="w"></span>
+<span class="n">WantedBy</span><span class="o">=</span><span class="n">multi</span><span class="o">-</span><span class="k">user</span><span class="p">.</span><span class="n">target</span><span class="w"></span>
+<span class="n">EOF</span><span class="w"></span>
+<span class="n">systemctl</span><span class="w"> </span><span class="n">daemon</span><span class="o">-</span><span class="n">reload</span><span class="w"></span>
+<span class="n">systemctl</span><span class="w"> </span><span class="n">enable</span><span class="w"> </span><span class="c1">--now dnsmasq-custom</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Create files <code class="highlight">/tftpboot/ipxe.efi</code>, <code class="highlight">/tftpboot/undionly.kpxe</code>:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>RUN cp /usr/share/ipxe/undionly.kpxe /tftpboot
 RUN cp /usr/share/ipxe/ipxe-x86_64.efi /tftpboot/ipxe.efi
-</code></pre>
-<p>Create the PXE boot menu:</p>
-<pre><code>cat &lt;&lt;'EOF' &gt; /tftpboot/menu/boot.ipxe 
+</code></pre></div>
+</td></tr></table></p>
+<p>Create the PXE boot menu:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>cat <span class="err">&lt;&lt;</span>&#39;EOF&#39; &gt; /tftpboot/menu/boot.ipxe 
 #!ipxe 
 
 menu PXE Boot Options
@@ -1331,12 +1433,12 @@ item openshift-worker openshift-worker
 item shell iPXE shell
 item exit  Exit to BIOS
 
-choose --default exit --timeout 10000 option &amp;&amp; goto ${option}
+choose --default exit --timeout 10000 option <span class="err">&amp;&amp;</span> goto <span class="cp">${</span><span class="n">option</span><span class="cp">}</span>
 
 :fedora
 set server_root http://192.168.123.1:8081/fedora/
-initrd ${server_root}/initrd.img
-kernel ${server_root}/vmlinuz ip=dhcp ipv6.disable initrd=initrd.img inst.ks=${server_root}/kickstart.cfg
+initrd <span class="cp">${</span><span class="n">server_root</span><span class="cp">}</span>/initrd.img
+kernel <span class="cp">${</span><span class="n">server_root</span><span class="cp">}</span>/vmlinuz ip=dhcp ipv6.disable initrd=initrd.img inst.ks=<span class="cp">${</span><span class="n">server_root</span><span class="cp">}</span>/kickstart.cfg
 boot
 
 :shell
@@ -1344,42 +1446,73 @@ shell
 
 :exit
 exit
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
 <h2 id="configure-httpd-and-images">Configure httpd and images</h2>
-<p>Prepare httpd:</p>
-<pre><code>systemctl enable --now httpd
-</code></pre>
-<p>Now, download and add Fedora to be booted from iPXE:</p>
-<pre><code>cat &lt;&lt;'EOF' &gt; example_netinstall.sh
-#!/bin/bash
+<p>Prepare httpd:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>systemctl enable --now httpd
+</code></pre></div>
+</td></tr></table></p>
+<p>Now, download and add Fedora to be booted from iPXE:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">cat</span> <span class="o">&lt;&lt;</span><span class="err">&#39;</span><span class="n">EOF</span><span class="err">&#39;</span> <span class="o">&gt;</span> <span class="n">example_netinstall</span><span class="p">.</span><span class="n">sh</span>
+<span class="cp">#!/bin/bash</span>
 
-echo &quot;Installing Fedora PXE boot image for debugging&quot;
-curl -L -o /tmp/fedora.iso &quot;https://download.fedoraproject.org/pub/fedora/linux/releases/32/Server/x86_64/iso/Fedora-Server-dvd-x86_64-32-1.6.iso&quot;
-mkdir /mnt/fedora
-mkdir /var/www/html/fedora/dvd -p
-mount -o loop /tmp/fedora.iso /mnt/fedora
-\cp -a /mnt/fedora/* /var/www/html/fedora/dvd/.
-\cp /var/www/html/fedora/dvd/images/pxeboot/* /var/www/html/fedora/.
-umount /mnt/fedora
-source config 
-cat &lt;&lt; EOF &gt; /var/www/html/fedora/kickstart.cfg
-url --url http://${PXE_LISTEN_ADDRESS}:${PXE_LISTEN_PORT}/fedora/dvd/
-timezone --utc America/New_York
-lang en_US.UTF-8
-keyboard us
-rootpw --plaintext password
-reboot
-firstboot --disable
-services --enabled=&quot;sshd,chronyd&quot;
-zerombr
-clearpart --all
-autopart --type lvm
-%packages
-@core
-%end
-EOF
-bash example_netinstall.sh
-</code></pre>
+<span class="n">echo</span> <span class="s">&quot;Installing Fedora PXE boot image for debugging&quot;</span>
+<span class="n">curl</span> <span class="o">-</span><span class="n">L</span> <span class="o">-</span><span class="n">o</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">fedora</span><span class="p">.</span><span class="n">iso</span> <span class="s">&quot;https://download.fedoraproject.org/pub/fedora/linux/releases/32/Server/x86_64/iso/Fedora-Server-dvd-x86_64-32-1.6.iso&quot;</span>
+<span class="n">mkdir</span> <span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">fedora</span>
+<span class="n">mkdir</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">html</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">dvd</span> <span class="o">-</span><span class="n">p</span>
+<span class="n">mount</span> <span class="o">-</span><span class="n">o</span> <span class="n">loop</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">fedora</span><span class="p">.</span><span class="n">iso</span> <span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">fedora</span>
+<span class="err">\</span><span class="n">cp</span> <span class="o">-</span><span class="n">a</span> <span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">fedora</span><span class="cm">/* /var/www/html/fedora/dvd/.</span>
+<span class="cm">\cp /var/www/html/fedora/dvd/images/pxeboot/* /var/www/html/fedora/.</span>
+<span class="cm">umount /mnt/fedora</span>
+<span class="cm">source config </span>
+<span class="cm">cat &lt;&lt; EOF &gt; /var/www/html/fedora/kickstart.cfg</span>
+<span class="cm">url --url http://${PXE_LISTEN_ADDRESS}:${PXE_LISTEN_PORT}/fedora/dvd/</span>
+<span class="cm">timezone --utc America/New_York</span>
+<span class="cm">lang en_US.UTF-8</span>
+<span class="cm">keyboard us</span>
+<span class="cm">rootpw --plaintext password</span>
+<span class="cm">reboot</span>
+<span class="cm">firstboot --disable</span>
+<span class="cm">services --enabled=&quot;sshd,chronyd&quot;</span>
+<span class="cm">zerombr</span>
+<span class="cm">clearpart --all</span>
+<span class="cm">autopart --type lvm</span>
+<span class="cm">%packages</span>
+<span class="cm">@core</span>
+<span class="cm">%end</span>
+<span class="cm">EOF</span>
+<span class="cm">bash example_netinstall.sh</span>
+</code></pre></div>
+</td></tr></table></p>
 <p>You should not be able to iPXE boot your server.</p>
                 
                   

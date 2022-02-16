@@ -1206,82 +1206,153 @@
                   <h1>Java Idrac Issues</h1>
                 
                 <h2 id="issues-with-dell-idrac-and-workaround">Issues with Dell iDrac and workaround</h2>
-<p>Since my upgrade to Fedora 33, some of our iDrac servers wouldn't accept keyboard input any more.</p>
-<pre><code>[akaris@linux cases]$ /usr/libexec/icedtea-web/javaws viewer.jnlp 
-selected jre: /usr/lib/jvm/jre-11-openjdk
-WARNING: package javax.jnlp not in java.desktop
-Fri Feb 19 18:32:21 CET 2021 [INFO   ] net.sourceforge.jnlp.runtime.EnvironmentPrinter: OpenWebStartLauncher called with args: [viewer.jnlp].
-Fri Feb 19 18:32:21 CET 2021 [INFO   ] net.sourceforge.jnlp.runtime.EnvironmentPrinter: OS: Linux
-Fri Feb 19 18:32:21 CET 2021 [INFO   ] net.sourceforge.jnlp.runtime.EnvironmentPrinter: Java Runtime Red Hat, Inc.-11.0.10
-(...)
+<p>Since my upgrade to Fedora 33, some of our iDrac servers wouldn't accept keyboard input any more.
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">akaris@linux cases</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">libexec</span><span class="o">/</span><span class="n">icedtea</span><span class="o">-</span><span class="n">web</span><span class="o">/</span><span class="n">javaws</span><span class="w"> </span><span class="n">viewer</span><span class="p">.</span><span class="n">jnlp</span><span class="w"> </span>
+<span class="n">selected</span><span class="w"> </span><span class="nl">jre</span><span class="p">:</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">jvm</span><span class="o">/</span><span class="n">jre</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="n">openjdk</span><span class="w"></span>
+<span class="nl">WARNING</span><span class="p">:</span><span class="w"> </span><span class="n">package</span><span class="w"> </span><span class="n">javax</span><span class="p">.</span><span class="n">jnlp</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="w"></span>
+<span class="n">Fri</span><span class="w"> </span><span class="n">Feb</span><span class="w"> </span><span class="mi">19</span><span class="w"> </span><span class="mi">18</span><span class="err">:</span><span class="mi">32</span><span class="err">:</span><span class="mi">21</span><span class="w"> </span><span class="n">CET</span><span class="w"> </span><span class="mi">2021</span><span class="w"> </span><span class="o">[</span><span class="n">INFO   </span><span class="o">]</span><span class="w"> </span><span class="n">net</span><span class="p">.</span><span class="n">sourceforge</span><span class="p">.</span><span class="n">jnlp</span><span class="p">.</span><span class="n">runtime</span><span class="p">.</span><span class="nl">EnvironmentPrinter</span><span class="p">:</span><span class="w"> </span><span class="n">OpenWebStartLauncher</span><span class="w"> </span><span class="k">called</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="nl">args</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="n">viewer.jnlp</span><span class="o">]</span><span class="p">.</span><span class="w"></span>
+<span class="n">Fri</span><span class="w"> </span><span class="n">Feb</span><span class="w"> </span><span class="mi">19</span><span class="w"> </span><span class="mi">18</span><span class="err">:</span><span class="mi">32</span><span class="err">:</span><span class="mi">21</span><span class="w"> </span><span class="n">CET</span><span class="w"> </span><span class="mi">2021</span><span class="w"> </span><span class="o">[</span><span class="n">INFO   </span><span class="o">]</span><span class="w"> </span><span class="n">net</span><span class="p">.</span><span class="n">sourceforge</span><span class="p">.</span><span class="n">jnlp</span><span class="p">.</span><span class="n">runtime</span><span class="p">.</span><span class="nl">EnvironmentPrinter</span><span class="p">:</span><span class="w"> </span><span class="nl">OS</span><span class="p">:</span><span class="w"> </span><span class="n">Linux</span><span class="w"></span>
+<span class="n">Fri</span><span class="w"> </span><span class="n">Feb</span><span class="w"> </span><span class="mi">19</span><span class="w"> </span><span class="mi">18</span><span class="err">:</span><span class="mi">32</span><span class="err">:</span><span class="mi">21</span><span class="w"> </span><span class="n">CET</span><span class="w"> </span><span class="mi">2021</span><span class="w"> </span><span class="o">[</span><span class="n">INFO   </span><span class="o">]</span><span class="w"> </span><span class="n">net</span><span class="p">.</span><span class="n">sourceforge</span><span class="p">.</span><span class="n">jnlp</span><span class="p">.</span><span class="n">runtime</span><span class="p">.</span><span class="nl">EnvironmentPrinter</span><span class="p">:</span><span class="w"> </span><span class="n">Java</span><span class="w"> </span><span class="n">Runtime</span><span class="w"> </span><span class="n">Red</span><span class="w"> </span><span class="n">Hat</span><span class="p">,</span><span class="w"> </span><span class="n">Inc</span><span class="p">.</span><span class="o">-</span><span class="mf">11.0.10</span><span class="w"></span>
+<span class="p">(...)</span><span class="w"></span>
 
- Client random: 1741975
- KVM session state SESSION_RUNNING
- KVM session is running.
-Exception in thread &quot;AWT-EventQueue-1&quot; java.lang.NoSuchMethodError: 'java.awt.peer.ComponentPeer java.awt.Window.getPeer()'
-    at com.avocent.kvm.nativekeyboard.NativeKVM.a(Unknown Source)
-    at com.avocent.kvm.nativekeyboard.b.a(Unknown Source)
-    at com.avocent.kvm.nativekeyboard.b.b(Unknown Source)
-    at com.avocent.kvm.nativekeyboard.b.windowOpened(Unknown Source)
-    at java.desktop/java.awt.AWTEventMulticaster.windowOpened(AWTEventMulticaster.java:348)
-    at java.desktop/java.awt.Window.processWindowEvent(Window.java:2075)
-    at java.desktop/javax.swing.JFrame.processWindowEvent(JFrame.java:298)
-    at java.desktop/java.awt.Window.processEvent(Window.java:2037)
-    at java.desktop/java.awt.Component.dispatchEventImpl(Component.java:5011)
-    at java.desktop/java.awt.Container.dispatchEventImpl(Container.java:2321)
-    at java.desktop/java.awt.Window.dispatchEventImpl(Window.java:2772)
-    at java.desktop/java.awt.Component.dispatchEvent(Component.java:4843)
-    at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:772)
-    at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:721)
-    at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:715)
-    at java.base/java.security.AccessController.doPrivileged(Native Method)
-    at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:85)
-    at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:95)
-    at java.desktop/java.awt.EventQueue$5.run(EventQueue.java:745)
-    at java.desktop/java.awt.EventQueue$5.run(EventQueue.java:743)
-    at java.base/java.security.AccessController.doPrivileged(Native Method)
-    at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:85)
-    at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:742)
-    at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)
-    at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)
-    at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)
-    at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)
-    at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
-    at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
- Video connect status: true
-CoreSessionListener : state running
-in CoreSessionListner : fireOnSessionStateChanged 
-APCP 8100 status recvd. Status: 0
- KVM session state SESSION_RUNNING
- KVM session is running.
-in CoreSessionListner : fireOnSessionStateChanged 
- KVM session state SESSION_RUNNING
- KVM session is running.
-process() DisplayResolutionResponse: resolution change [1024x768]
- Call to resize from outside event thread.
-** Max Size: W = 1920 H = 1053
- Call to resize from outside event thread.
-** Window Pref Size: W = 1024 H = 841
-** Max Size: W = 1920 H = 1053
-** Window Pref Size: W = 1024 H = 841
-Boot Device: Local:
-   Resource Key: NextBoot_0
-   Resource Key: NextBoot_1
-   Resource Key: NextBoot_6
-   Resource Key: NextBoot_15
-   Resource Key: NextBoot_5
-   Resource Key: NextBoot_2
-   Resource Key: NextBoot_7
-   Resource Key: NextBoot_8
-   Resource Key: NextBoot_16
-   Resource Key: NextBoot_18
-   Resource Key: NextBoot_17
-   Resource Key: NextBoot_19
-</code></pre>
+<span class="w"> </span><span class="n">Client</span><span class="w"> </span><span class="nl">random</span><span class="p">:</span><span class="w"> </span><span class="mi">1741975</span><span class="w"></span>
+<span class="w"> </span><span class="n">KVM</span><span class="w"> </span><span class="k">session</span><span class="w"> </span><span class="k">state</span><span class="w"> </span><span class="n">SESSION_RUNNING</span><span class="w"></span>
+<span class="w"> </span><span class="n">KVM</span><span class="w"> </span><span class="k">session</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">running</span><span class="p">.</span><span class="w"></span>
+<span class="k">Exception</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">thread</span><span class="w"> </span><span class="ss">&quot;AWT-EventQueue-1&quot;</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">lang</span><span class="p">.</span><span class="nl">NoSuchMethodError</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;java.awt.peer.ComponentPeer java.awt.Window.getPeer()&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">com</span><span class="p">.</span><span class="n">avocent</span><span class="p">.</span><span class="n">kvm</span><span class="p">.</span><span class="n">nativekeyboard</span><span class="p">.</span><span class="n">NativeKVM</span><span class="p">.</span><span class="n">a</span><span class="p">(</span><span class="k">Unknown</span><span class="w"> </span><span class="n">Source</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">com</span><span class="p">.</span><span class="n">avocent</span><span class="p">.</span><span class="n">kvm</span><span class="p">.</span><span class="n">nativekeyboard</span><span class="p">.</span><span class="n">b</span><span class="p">.</span><span class="n">a</span><span class="p">(</span><span class="k">Unknown</span><span class="w"> </span><span class="n">Source</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">com</span><span class="p">.</span><span class="n">avocent</span><span class="p">.</span><span class="n">kvm</span><span class="p">.</span><span class="n">nativekeyboard</span><span class="p">.</span><span class="n">b</span><span class="p">.</span><span class="n">b</span><span class="p">(</span><span class="k">Unknown</span><span class="w"> </span><span class="n">Source</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">com</span><span class="p">.</span><span class="n">avocent</span><span class="p">.</span><span class="n">kvm</span><span class="p">.</span><span class="n">nativekeyboard</span><span class="p">.</span><span class="n">b</span><span class="p">.</span><span class="n">windowOpened</span><span class="p">(</span><span class="k">Unknown</span><span class="w"> </span><span class="n">Source</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">AWTEventMulticaster</span><span class="p">.</span><span class="n">windowOpened</span><span class="p">(</span><span class="n">AWTEventMulticaster</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">348</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="k">Window</span><span class="p">.</span><span class="n">processWindowEvent</span><span class="p">(</span><span class="k">Window</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">2075</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">javax</span><span class="p">.</span><span class="n">swing</span><span class="p">.</span><span class="n">JFrame</span><span class="p">.</span><span class="n">processWindowEvent</span><span class="p">(</span><span class="n">JFrame</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">298</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="k">Window</span><span class="p">.</span><span class="n">processEvent</span><span class="p">(</span><span class="k">Window</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">2037</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">Component</span><span class="p">.</span><span class="n">dispatchEventImpl</span><span class="p">(</span><span class="n">Component</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">5011</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">Container</span><span class="p">.</span><span class="n">dispatchEventImpl</span><span class="p">(</span><span class="n">Container</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">2321</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="k">Window</span><span class="p">.</span><span class="n">dispatchEventImpl</span><span class="p">(</span><span class="k">Window</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">2772</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">Component</span><span class="p">.</span><span class="n">dispatchEvent</span><span class="p">(</span><span class="n">Component</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">4843</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventQueue</span><span class="p">.</span><span class="n">dispatchEventImpl</span><span class="p">(</span><span class="n">EventQueue</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">772</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventQueue</span><span class="err">$</span><span class="mf">4.</span><span class="n">run</span><span class="p">(</span><span class="n">EventQueue</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">721</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventQueue</span><span class="err">$</span><span class="mf">4.</span><span class="n">run</span><span class="p">(</span><span class="n">EventQueue</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">715</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">base</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">AccessController</span><span class="p">.</span><span class="n">doPrivileged</span><span class="p">(</span><span class="n">Native</span><span class="w"> </span><span class="k">Method</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">base</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">ProtectionDomain</span><span class="err">$</span><span class="n">JavaSecurityAccessImpl</span><span class="p">.</span><span class="n">doIntersectionPrivilege</span><span class="p">(</span><span class="n">ProtectionDomain</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">85</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">base</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">ProtectionDomain</span><span class="err">$</span><span class="n">JavaSecurityAccessImpl</span><span class="p">.</span><span class="n">doIntersectionPrivilege</span><span class="p">(</span><span class="n">ProtectionDomain</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">95</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventQueue</span><span class="err">$</span><span class="mf">5.</span><span class="n">run</span><span class="p">(</span><span class="n">EventQueue</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">745</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventQueue</span><span class="err">$</span><span class="mf">5.</span><span class="n">run</span><span class="p">(</span><span class="n">EventQueue</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">743</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">base</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">AccessController</span><span class="p">.</span><span class="n">doPrivileged</span><span class="p">(</span><span class="n">Native</span><span class="w"> </span><span class="k">Method</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">base</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">ProtectionDomain</span><span class="err">$</span><span class="n">JavaSecurityAccessImpl</span><span class="p">.</span><span class="n">doIntersectionPrivilege</span><span class="p">(</span><span class="n">ProtectionDomain</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">85</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventQueue</span><span class="p">.</span><span class="n">dispatchEvent</span><span class="p">(</span><span class="n">EventQueue</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">742</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="n">pumpOneEventForFilters</span><span class="p">(</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">203</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="n">pumpEventsForFilter</span><span class="p">(</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">124</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="n">pumpEventsForHierarchy</span><span class="p">(</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">113</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="n">pumpEvents</span><span class="p">(</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">109</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="n">pumpEvents</span><span class="p">(</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">101</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">90</span><span class="p">)</span><span class="w"></span>
+<span class="w"> </span><span class="n">Video</span><span class="w"> </span><span class="k">connect</span><span class="w"> </span><span class="nl">status</span><span class="p">:</span><span class="w"> </span><span class="k">true</span><span class="w"></span>
+<span class="n">CoreSessionListener</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="k">state</span><span class="w"> </span><span class="n">running</span><span class="w"></span>
+<span class="ow">in</span><span class="w"> </span><span class="n">CoreSessionListner</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="n">fireOnSessionStateChanged</span><span class="w"> </span>
+<span class="n">APCP</span><span class="w"> </span><span class="mi">8100</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="n">recvd</span><span class="p">.</span><span class="w"> </span><span class="nl">Status</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="w"> </span><span class="n">KVM</span><span class="w"> </span><span class="k">session</span><span class="w"> </span><span class="k">state</span><span class="w"> </span><span class="n">SESSION_RUNNING</span><span class="w"></span>
+<span class="w"> </span><span class="n">KVM</span><span class="w"> </span><span class="k">session</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">running</span><span class="p">.</span><span class="w"></span>
+<span class="ow">in</span><span class="w"> </span><span class="n">CoreSessionListner</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="n">fireOnSessionStateChanged</span><span class="w"> </span>
+<span class="w"> </span><span class="n">KVM</span><span class="w"> </span><span class="k">session</span><span class="w"> </span><span class="k">state</span><span class="w"> </span><span class="n">SESSION_RUNNING</span><span class="w"></span>
+<span class="w"> </span><span class="n">KVM</span><span class="w"> </span><span class="k">session</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">running</span><span class="p">.</span><span class="w"></span>
+<span class="n">process</span><span class="p">()</span><span class="w"> </span><span class="nl">DisplayResolutionResponse</span><span class="p">:</span><span class="w"> </span><span class="n">resolution</span><span class="w"> </span><span class="n">change</span><span class="w"> </span><span class="o">[</span><span class="n">1024x768</span><span class="o">]</span><span class="w"></span>
+<span class="w"> </span><span class="k">Call</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">resize</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">outside</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="n">thread</span><span class="p">.</span><span class="w"></span>
+<span class="o">**</span><span class="w"> </span><span class="nf">Max</span><span class="w"> </span><span class="k">Size</span><span class="err">:</span><span class="w"> </span><span class="n">W</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1920</span><span class="w"> </span><span class="n">H</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1053</span><span class="w"></span>
+<span class="w"> </span><span class="k">Call</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">resize</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">outside</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="n">thread</span><span class="p">.</span><span class="w"></span>
+<span class="o">**</span><span class="w"> </span><span class="k">Window</span><span class="w"> </span><span class="n">Pref</span><span class="w"> </span><span class="k">Size</span><span class="err">:</span><span class="w"> </span><span class="n">W</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="n">H</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">841</span><span class="w"></span>
+<span class="o">**</span><span class="w"> </span><span class="nf">Max</span><span class="w"> </span><span class="k">Size</span><span class="err">:</span><span class="w"> </span><span class="n">W</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1920</span><span class="w"> </span><span class="n">H</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1053</span><span class="w"></span>
+<span class="o">**</span><span class="w"> </span><span class="k">Window</span><span class="w"> </span><span class="n">Pref</span><span class="w"> </span><span class="k">Size</span><span class="err">:</span><span class="w"> </span><span class="n">W</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="n">H</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">841</span><span class="w"></span>
+<span class="n">Boot</span><span class="w"> </span><span class="nl">Device</span><span class="p">:</span><span class="w"> </span><span class="k">Local</span><span class="err">:</span><span class="w"></span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_0</span><span class="w"></span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_1</span><span class="w"></span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_6</span><span class="w"></span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_15</span><span class="w"></span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_5</span><span class="w"></span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_2</span><span class="w"></span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_7</span><span class="w"></span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_8</span><span class="w"></span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_16</span><span class="w"></span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_18</span><span class="w"></span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_17</span><span class="w"></span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_19</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
 <p>I installed Adopt JDK 8 to fix this: https://adoptopenjdk.net/installation.html?variant=openjdk8&amp;jvmVariant=hotspot#x64_linux-jdk</p>
 <p>Execute the following command to configure icdetea:</p>
-<pre><code>$ /usr/libexec/icedtea-web/itweb-settings
-</code></pre>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ /usr/libexec/icedtea-web/itweb-settings
+</code></pre></div>
+</td></tr></table>
 <p>Adopt openJDK in JVM Settings and connect with openjdk.</p>
 <p>See: https://translate.google.com/translate?sl=auto&amp;tl=en&amp;u=https://minimonk.net/10111</p>
                 

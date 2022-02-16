@@ -1181,39 +1181,57 @@
                 <h1 id="how-to-run-old-java-with-xorgs-in-a-container">How to run old Java with xorgs in a container</h1>
 <p>Also see reference: <a href="https://adam.younglogic.com/2017/01/gui-applications-container/">https://adam.younglogic.com/2017/01/gui-applications-container/</a></p>
 <p>Make sure that you're running xorgs and not wayland:
-<a href="https://docs.fedoraproject.org/en-US/quick-docs/configuring-xorg-as-default-gnome-session/">https://docs.fedoraproject.org/en-US/quick-docs/configuring-xorg-as-default-gnome-session/</a></p>
-<pre><code>Procedure
+<a href="https://docs.fedoraproject.org/en-US/quick-docs/configuring-xorg-as-default-gnome-session/">https://docs.fedoraproject.org/en-US/quick-docs/configuring-xorg-as-default-gnome-session/</a>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">Proc</span><span class="nv">edure</span>
 
-    Open /etc/gdm/custom.conf and uncomment WaylandEnable=false.
+    <span class="nf">Open</span> <span class="o">/</span><span class="nv">etc</span><span class="o">/</span><span class="nv">gdm</span><span class="o">/</span><span class="nv">custom.conf</span> <span class="nv">and</span> <span class="nv">uncomment</span> <span class="nv">WaylandEnable</span><span class="o">=</span><span class="nv">false.</span>
 
-    Add the following line to the [daemon] section:
+    <span class="no">Add</span><span class="kd"> the</span> <span class="nv">following</span> <span class="nv">line</span> <span class="nv">to</span> <span class="nv">the</span> <span class="p">[</span><span class="nv">daemon</span><span class="p">]</span> <span class="nv">section</span><span class="p">:</span>
 
-    DefaultSession=gnome-xorg.desktop
+    <span class="nf">DefaultSession</span><span class="o">=</span><span class="nv">gnome</span><span class="o">-</span><span class="nv">xorg.desktop</span>
 
-    Save the custom.conf file.
-</code></pre>
-<p>Build container with buildah:</p>
-<pre><code>buildah from --name java-container fedora:26
+    <span class="no">Save</span><span class="kd"> the</span> <span class="nv">custom.conf</span> <span class="nv">file.</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Build container with buildah:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>buildah from --name java-container fedora:26
 buildah run java-container -- yum install xclock icedtea-web -y
 buildah commit java-container java-image
-</code></pre>
-<p>Disable selinux:</p>
-<pre><code>sudo setenforce 0
-</code></pre>
-<p>Test container:</p>
-<pre><code>podman run -ti -e DISPLAY --rm -v /run/user/1000/gdm/Xauthority:/run/user/0/gdm/Xauthority:Z --net=host localhost/java-image xclock
-</code></pre>
-<p>If this does not work, check <code>journalctl -f</code>. I got:</p>
-<pre><code>May 19 13:48:48 linux audit[104503]: AVC avc:  denied  { connectto } for  pid=104503 comm=&quot;xclock&quot; path=002F746D702F2E5831312D756E69782F5831 scontext=system_u:system_r:container_t:s0:c616,c783 tcontext=unconfined_u:unconfined_r:xserver_t:s0-s0:c0.c1023 tclass=unix_stream_socket permissive=
-</code></pre>
-<p>In order to work around this:</p>
-<pre><code>echo &quot;(allow container_t xserver_t (unix_stream_socket (connectto)))&quot; &gt; mycontainer.cil
+</code></pre></div>
+</td></tr></table></p>
+<p>Disable selinux:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>sudo setenforce 0
+</code></pre></div>
+</td></tr></table></p>
+<p>Test container:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>podman run -ti -e DISPLAY --rm -v /run/user/1000/gdm/Xauthority:/run/user/0/gdm/Xauthority:Z --net=host localhost/java-image xclock
+</code></pre></div>
+</td></tr></table></p>
+<p>If this does not work, check <code class="highlight">journalctl -f</code>. I got:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">May</span> <span class="mi">19</span> <span class="mi">13</span>:<span class="mi">48</span>:<span class="mi">48</span> <span class="nv">linux</span> <span class="nv">audit</span>[<span class="mi">104503</span>]: <span class="nv">AVC</span> <span class="nv">avc</span>:  <span class="nv">denied</span>  { <span class="nv">connectto</span> } <span class="k">for</span>  <span class="nv">pid</span><span class="o">=</span><span class="mi">104503</span> <span class="nv">comm</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">xclock</span><span class="s2">&quot;</span> <span class="nv">path</span><span class="o">=</span><span class="mi">002</span><span class="nv">F746D702F2E5831312D756E69782F5831</span> <span class="nv">scontext</span><span class="o">=</span><span class="nv">system_u</span>:<span class="nv">system_r</span>:<span class="nv">container_t</span>:<span class="nv">s0</span>:<span class="nv">c616</span>,<span class="nv">c783</span> <span class="nv">tcontext</span><span class="o">=</span><span class="nv">unconfined_u</span>:<span class="nv">unconfined_r</span>:<span class="nv">xserver_t</span>:<span class="nv">s0</span><span class="o">-</span><span class="nv">s0</span>:<span class="nv">c0</span>.<span class="nv">c1023</span> <span class="nv">tclass</span><span class="o">=</span><span class="nv">unix_stream_socket</span> <span class="nv">permissive</span><span class="o">=</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>In order to work around this:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>echo &quot;(allow container_t xserver_t (unix_stream_socket (connectto)))&quot; &gt; mycontainer.cil
 sudo semodule -i mycontainer.ci
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
 <p>Once xclock works, save viewer.jnlp (from the iDrac) to /tmp/viewer.jnlp</p>
-<p>Exit container and run jviewer:</p>
-<pre><code>podman run -ti -e DISPLAY --rm -v /run/user/1000/gdm/Xauthority:/run/user/0/gdm/Xauthority:Z --net=host -v /tmp/viewer.jnlp:/root/viewer.jnlp localhost/java-image javaws /root/viewer.jnlp
-</code></pre>
+<p>Exit container and run jviewer:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>podman run -ti -e DISPLAY --rm -v /run/user/1000/gdm/Xauthority:/run/user/0/gdm/Xauthority:Z --net=host -v /tmp/viewer.jnlp:/root/viewer.jnlp localhost/java-image javaws /root/viewer.jnlp
+</code></pre></div>
+</td></tr></table></p>
                 
                   
                     

@@ -1262,63 +1262,114 @@
 <p>Introductory read about the components that make up a container:</p>
 <p><a href="https://medium.com/@nagarwal/understanding-the-docker-internals-7ccb052ce9fe">https://medium.com/@nagarwal/understanding-the-docker-internals-7ccb052ce9fe</a></p>
 <h2 id="relations-ship-between-containers-cgroups-selinux-and-containers">Relations ship between containers, cgroups, SELinux and containers</h2>
-<p><code>Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems</code> - <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html-single/overview_of_containers_in_red_hat_systems/index">https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html-single/overview_of_containers_in_red_hat_systems/index</a>:</p>
-<pre><code>Kernel namespaces ensure process isolation and cgroups are employed to control
-the system resources. SELinux is used to assure separation between the host and the container and
-also between the individual containers. Management interface forms a higher layer that interacts with
-the aforementioned kernel components and provides tools for construction and management of
-containers.
-</code></pre>
-<p><code>Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems</code> - <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html-single/overview_of_containers_in_red_hat_systems/index">https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html-single/overview_of_containers_in_red_hat_systems/index</a>:</p>
-<pre><code>Namespaces
-The kernel provides process isolation by creating separate namespaces for containers. Namespaces
-enable creating an abstraction of a particular global system resource and make it appear as a
-separated instance to processes within a namespace. Consequently, several containers can use the
-same resource simultaneously without creating a conflict.
-(...)
-Control Groups (cgroups)
-The kernel uses cgroups to group processes for the purpose of system resource management.
-Cgroups allocate CPU time, system memory, network bandwidth, or combinations of these among user-
-defined groups of tasks. In Red Hat Enterprise Linux 7, cgroups are managed with systemd slice, scope,
-and service units. For more information on cgroups, see the Red Hat Enterprise Linux 7 Resource
-Management Guide.
-SELinux
-SELinux provides secure separation of containers by applying SELinux policy and labels. It integrates
-with virtual devices by using the sVirt technology. For more information see the Red Hat Enterprise
-Linux 7 SELinux Users and Administrators Guide.
-(...)
-</code></pre>
-<p><code>Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems</code> - <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html-single/overview_of_containers_in_red_hat_systems/index">https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html-single/overview_of_containers_in_red_hat_systems/index</a>:</p>
-<pre><code>1.3. SECURE CONTAINERS WITH SELINUX
-From the security point of view, there is a need to isolate the host system from a container and to
-isolate containers from each other. The kernel features used by containers, namely cgroups and
-namespaces, by themselves provide a certain level of security. Cgroups ensure that a single container
-cannot exhaust a large amount of system resources, thus preventing some denial-of-service attacks.
-By virtue of namespaces, the /dev directory created within a container is private to each container,
-and therefore unaffected by the host changes. However, this can not prevent a hostile process from
-breaking out of the container since the entire system is not namespaced or containerized. Another
-level of separation, provided by SELinux, is therefore needed.
-Security-Enhanced Linux (SELinux) is an implementation of a mandatory access control (MAC)
-mechanism, multi-level security (MLS), and multi-category security (MCS) in the Linux kernel. The
-sVirt project builds upon SELinux and integrates with Libvirt to provide a MAC framework for virtual
-machines and containers. This architecture provides a secure separation for containers as it prevents
-root processes within the container from interfering with other processes running outside this
-container. The containers created with Docker are automatically assigned with an SELinux context
-specified in the SELinux policy.
-5Red Hat Enterprise Linux Atomic Host 7 Overview of Containers in Red Hat Systems
-By default, containers created with libvirt tools are assigned with the virtd_lxc_t label (execute ps
--eZ | grep virtd_lxc_t). You can apply sVirt by setting static or dynamic labeling for processes
-inside the container.
-Note
-You might notice that SELinux appears to be disabled inside the container even though it is running in
-enforcing mode on host system – you can verify this by executing the getenforce command on host
-and in the container. This is to prevent utilities that have SELinux awareness, such as setenforce, to
-perform any SELinux activity inside the container.
-Note that if SELinux is disabled or running in permissive mode on the host machine, containers are not
-separated securely enough. For more information about SELinux, refer to Red Hat Enterprise Linux 7
-SELinux Users and Administrators Guide, sVirt is described in Red Hat Enterprise Linux 7 Virtualization
-Security Guide.
-</code></pre>
+<p><code class="highlight">Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems</code> - <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html-single/overview_of_containers_in_red_hat_systems/index">https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html-single/overview_of_containers_in_red_hat_systems/index</a>:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">Kernel</span> <span class="n">namespaces</span> <span class="n">ensure</span> <span class="n">process</span> <span class="n">isolation</span> <span class="ow">and</span> <span class="n">cgroups</span> <span class="n">are</span> <span class="n">employed</span> <span class="n">to</span> <span class="n">control</span>
+<span class="n">the</span> <span class="n">system</span> <span class="n">resources</span><span class="o">.</span> <span class="n">SELinux</span> <span class="k">is</span> <span class="n">used</span> <span class="n">to</span> <span class="n">assure</span> <span class="n">separation</span> <span class="n">between</span> <span class="n">the</span> <span class="n">host</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">container</span> <span class="ow">and</span>
+<span class="n">also</span> <span class="n">between</span> <span class="n">the</span> <span class="n">individual</span> <span class="n">containers</span><span class="o">.</span> <span class="n">Management</span> <span class="n">interface</span> <span class="n">forms</span> <span class="n">a</span> <span class="n">higher</span> <span class="n">layer</span> <span class="n">that</span> <span class="n">interacts</span> <span class="n">with</span>
+<span class="n">the</span> <span class="n">aforementioned</span> <span class="n">kernel</span> <span class="n">components</span> <span class="ow">and</span> <span class="n">provides</span> <span class="n">tools</span> <span class="k">for</span> <span class="n">construction</span> <span class="ow">and</span> <span class="n">management</span> <span class="n">of</span>
+<span class="n">containers</span><span class="o">.</span>
+</code></pre></div>
+</td></tr></table></p>
+<p><code class="highlight">Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems</code> - <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html-single/overview_of_containers_in_red_hat_systems/index">https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html-single/overview_of_containers_in_red_hat_systems/index</a>:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">Namespaces</span>
+<span class="n">The</span> <span class="n">kernel</span> <span class="n">provides</span> <span class="n">process</span> <span class="n">isolation</span> <span class="n">by</span> <span class="n">creating</span> <span class="n">separate</span> <span class="n">namespaces</span> <span class="k">for</span> <span class="n">containers</span><span class="p">.</span> <span class="n">Namespaces</span>
+<span class="n">enable</span> <span class="n">creating</span> <span class="n">an</span> <span class="n">abstraction</span> <span class="k">of</span> <span class="n">a</span> <span class="n">particular</span> <span class="k">global</span> <span class="n">system</span> <span class="n">resource</span> <span class="ow">and</span> <span class="n">make</span> <span class="n">it</span> <span class="n">appear</span> <span class="ow">as</span> <span class="n">a</span>
+<span class="n">separated</span> <span class="n">instance</span> <span class="k">to</span> <span class="n">processes</span> <span class="n">within</span> <span class="n">a</span> <span class="n">namespace</span><span class="p">.</span> <span class="n">Consequently</span><span class="p">,</span> <span class="n">several</span> <span class="n">containers</span> <span class="n">can</span> <span class="n">use</span> <span class="n">the</span>
+<span class="n">same</span> <span class="n">resource</span> <span class="n">simultaneously</span> <span class="n">without</span> <span class="n">creating</span> <span class="n">a</span> <span class="n">conflict</span><span class="p">.</span>
+<span class="p">(...)</span>
+<span class="n">Control</span> <span class="n">Groups</span> <span class="p">(</span><span class="n">cgroups</span><span class="p">)</span>
+<span class="n">The</span> <span class="n">kernel</span> <span class="n">uses</span> <span class="n">cgroups</span> <span class="k">to</span> <span class="n">group</span> <span class="n">processes</span> <span class="k">for</span> <span class="n">the</span> <span class="n">purpose</span> <span class="k">of</span> <span class="n">system</span> <span class="n">resource</span> <span class="n">management</span><span class="p">.</span>
+<span class="n">Cgroups</span> <span class="n">allocate</span> <span class="n">CPU</span> <span class="n">time</span><span class="p">,</span> <span class="n">system</span> <span class="n">memory</span><span class="p">,</span> <span class="n">network</span> <span class="n">bandwidth</span><span class="p">,</span> <span class="ow">or</span> <span class="n">combinations</span> <span class="k">of</span> <span class="n">these</span> <span class="n">among</span> <span class="n">user</span><span class="o">-</span>
+<span class="n">defined</span> <span class="n">groups</span> <span class="k">of</span> <span class="n">tasks</span><span class="p">.</span> <span class="ow">In</span> <span class="n">Red</span> <span class="n">Hat</span> <span class="n">Enterprise</span> <span class="n">Linux</span> <span class="mi">7</span><span class="p">,</span> <span class="n">cgroups</span> <span class="n">are</span> <span class="n">managed</span> <span class="k">with</span> <span class="n">systemd</span> <span class="n">slice</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span>
+<span class="ow">and</span> <span class="n">service</span> <span class="n">units</span><span class="p">.</span> <span class="k">For</span> <span class="n">more</span> <span class="n">information</span> <span class="k">on</span> <span class="n">cgroups</span><span class="p">,</span> <span class="n">see</span> <span class="n">the</span> <span class="n">Red</span> <span class="n">Hat</span> <span class="n">Enterprise</span> <span class="n">Linux</span> <span class="mi">7</span> <span class="n">Resource</span>
+<span class="n">Management</span> <span class="n">Guide</span><span class="p">.</span>
+<span class="n">SELinux</span>
+<span class="n">SELinux</span> <span class="n">provides</span> <span class="n">secure</span> <span class="n">separation</span> <span class="k">of</span> <span class="n">containers</span> <span class="n">by</span> <span class="n">applying</span> <span class="n">SELinux</span> <span class="n">policy</span> <span class="ow">and</span> <span class="n">labels</span><span class="p">.</span> <span class="n">It</span> <span class="n">integrates</span>
+<span class="k">with</span> <span class="n">virtual</span> <span class="n">devices</span> <span class="n">by</span> <span class="k">using</span> <span class="n">the</span> <span class="n">sVirt</span> <span class="n">technology</span><span class="p">.</span> <span class="k">For</span> <span class="n">more</span> <span class="n">information</span> <span class="n">see</span> <span class="n">the</span> <span class="n">Red</span> <span class="n">Hat</span> <span class="n">Enterprise</span>
+<span class="n">Linux</span> <span class="mi">7</span> <span class="n">SELinux</span> <span class="n">Users</span> <span class="ow">and</span> <span class="n">Administrators</span> <span class="n">Guide</span><span class="p">.</span>
+<span class="p">(...)</span>
+</code></pre></div>
+</td></tr></table></p>
+<p><code class="highlight">Red Hat Enterprise Linux Atomis Host 7 Overview of Containers in Red Hat Systems</code> - <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html-single/overview_of_containers_in_red_hat_systems/index">https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html-single/overview_of_containers_in_red_hat_systems/index</a>:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="mf">1.3.</span> <span class="n">SECURE</span> <span class="kr">CONT</span><span class="n">AINERS</span> <span class="n">WITH</span> <span class="n">SELINUX</span>
+<span class="n">From</span> <span class="n">the</span> <span class="n">security</span> <span class="n">point</span> <span class="n">of</span> <span class="n">view</span><span class="p">,</span> <span class="n">there</span> <span class="n">is</span> <span class="n">a</span> <span class="n">need</span> <span class="kr">to</span> <span class="n">isolate</span> <span class="n">the</span> <span class="n">host</span> <span class="kr">sys</span><span class="n">tem</span> <span class="n">from</span> <span class="n">a</span> <span class="kr">cont</span><span class="n">ainer</span> <span class="ow">and</span> <span class="kr">to</span>
+<span class="n">isolate</span> <span class="kr">cont</span><span class="n">ainers</span> <span class="n">from</span> <span class="n">each</span> <span class="n">other</span><span class="mf">.</span> <span class="n">The</span> <span class="n">kernel</span> <span class="n">features</span> <span class="n">used</span> <span class="n">by</span> <span class="kr">cont</span><span class="n">ainers</span><span class="p">,</span> <span class="n">namely</span> <span class="n">cgroups</span> <span class="ow">and</span>
+<span class="n">namespaces</span><span class="p">,</span> <span class="n">by</span> <span class="n">themselves</span> <span class="n">provide</span> <span class="n">a</span> <span class="n">certain</span> <span class="n">level</span> <span class="n">of</span> <span class="n">security</span><span class="mf">.</span> <span class="n">Cgroups</span> <span class="n">ensure</span> <span class="n">that</span> <span class="n">a</span> <span class="nb">sin</span><span class="n">gle</span> <span class="kr">cont</span><span class="n">ainer</span>
+<span class="n">cannot</span> <span class="n">exhaust</span> <span class="n">a</span> <span class="n">large</span> <span class="n">amount</span> <span class="n">of</span> <span class="kr">sys</span><span class="n">tem</span> <span class="n">resources</span><span class="p">,</span> <span class="n">thus</span> <span class="n">preventing</span> <span class="n">some</span> <span class="n">denial</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">service</span> <span class="n">attacks</span><span class="mf">.</span>
+<span class="n">By</span> <span class="n">virtue</span> <span class="n">of</span> <span class="n">namespaces</span><span class="p">,</span> <span class="n">the</span> <span class="o">/</span><span class="n">dev</span> <span class="n">directory</span> <span class="n">created</span> <span class="n">within</span> <span class="n">a</span> <span class="kr">cont</span><span class="n">ainer</span> <span class="n">is</span> <span class="n">private</span> <span class="kr">to</span> <span class="n">each</span> <span class="kr">cont</span><span class="n">ainer</span><span class="p">,</span>
+<span class="ow">and</span> <span class="n">therefore</span> <span class="n">unaffected</span> <span class="n">by</span> <span class="n">the</span> <span class="n">host</span> <span class="n">changes</span><span class="mf">.</span> <span class="n">However</span><span class="p">,</span> <span class="n">this</span> <span class="n">can</span> <span class="ow">not</span> <span class="n">prevent</span> <span class="n">a</span> <span class="n">hostile</span> <span class="n">process</span> <span class="n">from</span>
+<span class="n">breaking</span> <span class="n">out</span> <span class="n">of</span> <span class="n">the</span> <span class="kr">cont</span><span class="n">ainer</span> <span class="nb">sin</span><span class="n">ce</span> <span class="n">the</span> <span class="n">entire</span> <span class="kr">sys</span><span class="n">tem</span> <span class="n">is</span> <span class="ow">not</span> <span class="n">namespaced</span> <span class="ow">or</span> <span class="kr">cont</span><span class="n">ainerized</span><span class="mf">.</span> <span class="n">Another</span>
+<span class="n">level</span> <span class="n">of</span> <span class="n">separation</span><span class="p">,</span> <span class="n">provided</span> <span class="n">by</span> <span class="n">SELinux</span><span class="p">,</span> <span class="n">is</span> <span class="n">therefore</span> <span class="n">needed</span><span class="mf">.</span>
+<span class="n">Security</span><span class="o">-</span><span class="n">Enhanced</span> <span class="n">Linux</span> <span class="p">(</span><span class="n">SELinux</span><span class="p">)</span> <span class="n">is</span> <span class="n">an</span> <span class="n">implementation</span> <span class="n">of</span> <span class="n">a</span> <span class="n">mandatory</span> <span class="n">access</span> <span class="kr">cont</span><span class="n">rol</span> <span class="p">(</span><span class="n">MAC</span><span class="p">)</span>
+<span class="n">mechanism</span><span class="p">,</span> <span class="n">multi</span><span class="o">-</span><span class="n">level</span> <span class="n">security</span> <span class="p">(</span><span class="n">MLS</span><span class="p">),</span> <span class="ow">and</span> <span class="n">multi</span><span class="o">-</span><span class="n">category</span> <span class="n">security</span> <span class="p">(</span><span class="n">MCS</span><span class="p">)</span> <span class="n">in</span> <span class="n">the</span> <span class="n">Linux</span> <span class="n">kernel</span><span class="mf">.</span> <span class="n">The</span>
+<span class="n">sVirt</span> <span class="n">project</span> <span class="n">builds</span> <span class="n">upon</span> <span class="n">SELinux</span> <span class="ow">and</span> <span class="nb">int</span><span class="n">egrates</span> <span class="n">with</span> <span class="n">Libvirt</span> <span class="kr">to</span> <span class="n">provide</span> <span class="n">a</span> <span class="n">MAC</span> <span class="n">framework</span> <span class="kr">for</span> <span class="n">virtual</span>
+<span class="n">machines</span> <span class="ow">and</span> <span class="kr">cont</span><span class="n">ainers</span><span class="mf">.</span> <span class="n">This</span> <span class="n">architecture</span> <span class="n">provides</span> <span class="n">a</span> <span class="n">secure</span> <span class="n">separation</span> <span class="kr">for</span> <span class="kr">cont</span><span class="n">ainers</span> <span class="n">as</span> <span class="n">it</span> <span class="n">prevents</span>
+<span class="n">root</span> <span class="n">processes</span> <span class="n">within</span> <span class="n">the</span> <span class="kr">cont</span><span class="n">ainer</span> <span class="n">from</span> <span class="nb">int</span><span class="n">erfering</span> <span class="n">with</span> <span class="n">other</span> <span class="n">processes</span> <span class="kr">run</span><span class="n">ning</span> <span class="n">outside</span> <span class="n">this</span>
+<span class="kr">cont</span><span class="n">ainer</span><span class="mf">.</span> <span class="n">The</span> <span class="kr">cont</span><span class="n">ainers</span> <span class="n">created</span> <span class="n">with</span> <span class="n">Docker</span> <span class="n">are</span> <span class="n">automatically</span> <span class="n">assigned</span> <span class="n">with</span> <span class="n">an</span> <span class="n">SELinux</span> <span class="kr">cont</span><span class="n">ext</span>
+<span class="n">specified</span> <span class="n">in</span> <span class="n">the</span> <span class="n">SELinux</span> <span class="n">policy</span><span class="mf">.</span>
+<span class="mf">5</span><span class="n">Red</span> <span class="n">Hat</span> <span class="n">Enterprise</span> <span class="n">Linux</span> <span class="n">Atomic</span> <span class="n">Host</span> <span class="mf">7</span> <span class="n">Overview</span> <span class="n">of</span> <span class="kr">Cont</span><span class="n">ainers</span> <span class="n">in</span> <span class="n">Red</span> <span class="n">Hat</span> <span class="kr">Sys</span><span class="n">tems</span>
+<span class="n">By</span> <span class="kd">def</span><span class="n">ault</span><span class="p">,</span> <span class="kr">cont</span><span class="n">ainers</span> <span class="n">created</span> <span class="n">with</span> <span class="n">libvirt</span> <span class="kr">to</span><span class="n">ols</span> <span class="n">are</span> <span class="n">assigned</span> <span class="n">with</span> <span class="n">the</span> <span class="n">virtd_lxc_t</span> <span class="n">label</span> <span class="p">(</span><span class="n">execute</span> <span class="n">ps</span>
+<span class="o">-</span><span class="n">eZ</span> <span class="err">|</span> <span class="n">grep</span> <span class="n">virtd_lxc_t</span><span class="p">)</span><span class="mf">.</span> <span class="n">You</span> <span class="n">can</span> <span class="n">apply</span> <span class="n">sVirt</span> <span class="n">by</span> <span class="n">setting</span> <span class="n">static</span> <span class="ow">or</span> <span class="n">dynamic</span> <span class="n">labeling</span> <span class="kr">for</span> <span class="n">processes</span>
+<span class="n">inside</span> <span class="n">the</span> <span class="kr">cont</span><span class="n">ainer</span><span class="mf">.</span>
+<span class="ow">Not</span><span class="n">e</span>
+<span class="n">You</span> <span class="n">might</span> <span class="ow">not</span><span class="n">ice</span> <span class="n">that</span> <span class="n">SELinux</span> <span class="n">appears</span> <span class="kr">to</span> <span class="n">be</span> <span class="n">disabled</span> <span class="n">inside</span> <span class="n">the</span> <span class="kr">cont</span><span class="n">ainer</span> <span class="n">even</span> <span class="n">though</span> <span class="n">it</span> <span class="n">is</span> <span class="kr">run</span><span class="n">ning</span> <span class="n">in</span>
+<span class="n">enforcing</span> <span class="n">mode</span> <span class="kr">on</span> <span class="n">host</span> <span class="kr">sys</span><span class="n">tem</span> <span class="err">–</span> <span class="n">you</span> <span class="n">can</span> <span class="kr">verify</span> <span class="n">this</span> <span class="n">by</span> <span class="n">executing</span> <span class="n">the</span> <span class="kr">get</span><span class="n">enforce</span> <span class="n">command</span> <span class="kr">on</span> <span class="n">host</span>
+<span class="ow">and</span> <span class="n">in</span> <span class="n">the</span> <span class="kr">cont</span><span class="n">ainer</span><span class="mf">.</span> <span class="n">This</span> <span class="n">is</span> <span class="kr">to</span> <span class="n">prevent</span> <span class="n">utilities</span> <span class="n">that</span> <span class="n">have</span> <span class="n">SELinux</span> <span class="n">awareness</span><span class="p">,</span> <span class="n">such</span> <span class="n">as</span> <span class="n">setenforce</span><span class="p">,</span> <span class="kr">to</span>
+<span class="n">perform</span> <span class="n">any</span> <span class="n">SELinux</span> <span class="n">activity</span> <span class="n">inside</span> <span class="n">the</span> <span class="kr">cont</span><span class="n">ainer</span><span class="mf">.</span>
+<span class="ow">Not</span><span class="n">e</span> <span class="n">that</span> <span class="kr">if</span> <span class="n">SELinux</span> <span class="n">is</span> <span class="n">disabled</span> <span class="ow">or</span> <span class="kr">run</span><span class="n">ning</span> <span class="n">in</span> <span class="n">permissive</span> <span class="n">mode</span> <span class="kr">on</span> <span class="n">the</span> <span class="n">host</span> <span class="n">machine</span><span class="p">,</span> <span class="kr">cont</span><span class="n">ainers</span> <span class="n">are</span> <span class="ow">not</span>
+<span class="n">separated</span> <span class="n">securely</span> <span class="n">enough</span><span class="mf">.</span> <span class="kr">For</span> <span class="n">more</span> <span class="n">information</span> <span class="n">about</span> <span class="n">SELinux</span><span class="p">,</span> <span class="n">refer</span> <span class="kr">to</span> <span class="n">Red</span> <span class="n">Hat</span> <span class="n">Enterprise</span> <span class="n">Linux</span> <span class="mf">7</span>
+<span class="n">SELinux</span> <span class="n">Users</span> <span class="ow">and</span> <span class="n">Administrators</span> <span class="n">Guide</span><span class="p">,</span> <span class="n">sVirt</span> <span class="n">is</span> <span class="n">described</span> <span class="n">in</span> <span class="n">Red</span> <span class="n">Hat</span> <span class="n">Enterprise</span> <span class="n">Linux</span> <span class="mf">7</span> <span class="n">Virtualization</span>
+<span class="n">Security</span> <span class="n">Guide</span><span class="mf">.</span>
+</code></pre></div>
+</td></tr></table></p>
                 
                   
                     

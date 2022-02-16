@@ -1256,257 +1256,472 @@
 <h3 id="merging-the-pull-secrets">Merging the pull secrets</h3>
 <p>Download your pull-secret from <a href="https://cloud.redhat.com/openshift/install/pull-secret">https://cloud.redhat.com/openshift/install/pull-secret</a>.</p>
 <p>At time of this writing, a bug makes this procedure a bit more clumsy: <a href="https://bugzilla.redhat.com/show_bug.cgi?id=1866588">https://bugzilla.redhat.com/show_bug.cgi?id=1866588</a></p>
-<pre><code>$ oc registry login --to ./pull-secret.json --registry &quot;192.0.2.100:5000&quot; --auth-basic=root:password
-error: Missing or incomplete configuration info.  Please point to an existing, complete config file:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc registry login --to ./pull-secret.json --registry <span class="s2">&quot;192.0.2.100:5000&quot;</span> --auth-basic<span class="o">=</span>root:password
+error: Missing or incomplete configuration info.  Please point to an existing, <span class="nb">complete</span> config file:
 
 
-  1. Via the command-line flag --kubeconfig
-  2. Via the KUBECONFIG environment variable
-  3. In your home directory as ~/.kube/config
+  <span class="m">1</span>. Via the command-line flag --kubeconfig
+  <span class="m">2</span>. Via the KUBECONFIG environment variable
+  <span class="m">3</span>. In your home directory as ~/.kube/config
 
-To view or setup config directly use the 'config' command.
-</code></pre>
+To view or setup config directly use the <span class="s1">&#39;config&#39;</span> command.
+</code></pre></div>
+</td></tr></table>
 <p>Instead, either follow:
 <a href="https://docs.openshift.com/container-platform/4.2/installing/install_config/installing-restricted-networks-preparations.html#installation-adding-registry-pull-secret_installing-restricted-networks-preparations">https://docs.openshift.com/container-platform/4.2/installing/install_config/installing-restricted-networks-preparations.html#installation-adding-registry-pull-secret_installing-restricted-networks-preparations</a></p>
-<p>Or, more elegantly, create a pull secret with podman:</p>
-<pre><code>$ podman login -u root -p password --authfile pull-secret-podman.json https://192.0.2.100:5000
+<p>Or, more elegantly, create a pull secret with podman:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ podman login -u root -p password --authfile pull-secret-podman.json https://192.0.2.100:5000
 WARNING! Using --password via the cli is insecure. Please consider using --password-stdin
 Login Succeeded!
 $ cat pull-secret-podman.json
-{
-    &quot;auths&quot;: {
-        &quot;192.0.2.100:5000&quot;: {
-            &quot;auth&quot;: &quot;cm9vdDpwYXNzd29yZA==&quot;
-        }
-    }
-</code></pre>
-<p>Install jq</p>
-<pre><code>sudo yum install jq -y
-</code></pre>
-<p>Then, merge both secrets:</p>
-<pre><code>jq -c --argjson var &quot;$(jq .auths pull-secret-podman.json)&quot; '.auths += $var' pull-secret.json &gt; pull-secret-merged.json
-</code></pre>
+<span class="o">{</span>
+    <span class="s2">&quot;auths&quot;</span>: <span class="o">{</span>
+        <span class="s2">&quot;192.0.2.100:5000&quot;</span>: <span class="o">{</span>
+            <span class="s2">&quot;auth&quot;</span>: <span class="s2">&quot;cm9vdDpwYXNzd29yZA==&quot;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Install jq
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>sudo yum install jq -y
+</code></pre></div>
+</td></tr></table></p>
+<p>Then, merge both secrets:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">jq</span> <span class="o">-</span><span class="n">c</span> <span class="o">--</span><span class="n">argjson</span> <span class="k">var</span> <span class="s2">&quot;$(jq .auths pull-secret-podman.json)&quot;</span> <span class="s1">&#39;.auths += $var&#39;</span> <span class="n">pull</span><span class="o">-</span><span class="n">secret</span><span class="o">.</span><span class="n">json</span> <span class="o">&gt;</span> <span class="n">pull</span><span class="o">-</span><span class="n">secret</span><span class="o">-</span><span class="n">merged</span><span class="o">.</span><span class="n">json</span>
+</code></pre></div>
+</td></tr></table></p>
 <h3 id="mirroring-the-container-images">Mirroring the container images</h3>
-<p>Get <code>$OCP_RELEASE</code> from <a href="https://quay.io/repository/openshift-release-dev/ocp-release?tag=latest&amp;tab=tags">https://quay.io/repository/openshift-release-dev/ocp-release?tag=latest&amp;tab=tags</a> and export required env variables, e.g.:</p>
-<pre><code>[root@mirror ~]#  env | egrep 'OCP|LOCAL|PRODUCT|RELEASE'
-export RELEASE_NAME=ocp-release
-export LOCAL_SECRET_JSON=pull-secret-merged.json
-export OCP_RELEASE=4.5.9
-export PRODUCT_REPO=openshift-release-dev
-export LOCAL_REPOSITORY=ocp4/openshift4
-export LOCAL_REGISTRY=192.0.2.100:5000
-export ARCHITECTURE=x86_64
-export REMOVABLE_MEDIA_PATH=removable_media
-</code></pre>
-<p>If you want to simulate the removable media steps, create a directory to simulate removable media and export the variable:</p>
-<pre><code>export REMOVABLE_MEDIA_PATH=removable_media
-mkdir removable_media
-</code></pre>
+<p>Get <code class="highlight">$OCP_RELEASE</code> from <a href="https://quay.io/repository/openshift-release-dev/ocp-release?tag=latest&amp;tab=tags">https://quay.io/repository/openshift-release-dev/ocp-release?tag=latest&amp;tab=tags</a> and export required env variables, e.g.:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">mirror</span> <span class="o">~</span><span class="p">]</span><span class="c1">#  env | egrep &#39;OCP|LOCAL|PRODUCT|RELEASE&#39;</span>
+<span class="k">export</span> <span class="n">RELEASE_NAME</span><span class="o">=</span><span class="n">ocp</span><span class="o">-</span><span class="n">release</span>
+<span class="k">export</span> <span class="n">LOCAL_SECRET_JSON</span><span class="o">=</span><span class="n">pull</span><span class="o">-</span><span class="n">secret</span><span class="o">-</span><span class="n">merged</span><span class="o">.</span><span class="n">json</span>
+<span class="k">export</span> <span class="n">OCP_RELEASE</span><span class="o">=</span><span class="mf">4.5</span><span class="o">.</span><span class="mi">9</span>
+<span class="k">export</span> <span class="n">PRODUCT_REPO</span><span class="o">=</span><span class="n">openshift</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="n">dev</span>
+<span class="k">export</span> <span class="n">LOCAL_REPOSITORY</span><span class="o">=</span><span class="n">ocp4</span><span class="o">/</span><span class="n">openshift4</span>
+<span class="k">export</span> <span class="n">LOCAL_REGISTRY</span><span class="o">=</span><span class="mf">192.0</span><span class="o">.</span><span class="mf">2.100</span><span class="p">:</span><span class="mi">5000</span>
+<span class="k">export</span> <span class="n">ARCHITECTURE</span><span class="o">=</span><span class="n">x86_64</span>
+<span class="k">export</span> <span class="n">REMOVABLE_MEDIA_PATH</span><span class="o">=</span><span class="n">removable_media</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>If you want to simulate the removable media steps, create a directory to simulate removable media and export the variable:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">export</span> <span class="n">REMOVABLE_MEDIA_PATH</span><span class="o">=</span><span class="n">removable_media</span>
+<span class="n">mkdir</span> <span class="n">removable_media</span>
+</code></pre></div>
+</td></tr></table></p>
 <p>Now, continue with the rest of the instructions from <a href="https://docs.openshift.com/container-platform/4.5/installing/install_config/installing-restricted-networks-preparations.html#installation-mirror-repository_installing-restricted-networks-preparations">https://docs.openshift.com/container-platform/4.5/installing/install_config/installing-restricted-networks-preparations.html#installation-mirror-repository_installing-restricted-networks-preparations</a></p>
-<p>For example:</p>
-<pre><code>$ oc adm -a ${LOCAL_SECRET_JSON} release mirror      --from=quay.io/${PRODUCT_REPO}/${RELEASE_NAME}:${OCP_RELEASE}-${ARCHITECTURE}      --to=${LOCAL_REGISTRY}/${LOCAL_REPOSITORY}      --to-release-image=${LOCAL_REGISTRY}/${LOCAL_REPOSITORY}:${OCP_RELEASE}-${ARCHITECTURE}
-</code></pre>
-<p>After mirroring the images, the following instructions will be presented:</p>
-<pre><code>(...)
-Success
-Update image:  192.0.2.100:5000/ocp4/openshift4:4.5.9-x86_64
-Mirror prefix: 192.0.2.100:5000/ocp4/openshift4
+<p>For example:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc adm -a <span class="si">${</span><span class="nv">LOCAL_SECRET_JSON</span><span class="si">}</span> release mirror      --from<span class="o">=</span>quay.io/<span class="si">${</span><span class="nv">PRODUCT_REPO</span><span class="si">}</span>/<span class="si">${</span><span class="nv">RELEASE_NAME</span><span class="si">}</span>:<span class="si">${</span><span class="nv">OCP_RELEASE</span><span class="si">}</span>-<span class="si">${</span><span class="nv">ARCHITECTURE</span><span class="si">}</span>      --to<span class="o">=</span><span class="si">${</span><span class="nv">LOCAL_REGISTRY</span><span class="si">}</span>/<span class="si">${</span><span class="nv">LOCAL_REPOSITORY</span><span class="si">}</span>      --to-release-image<span class="o">=</span><span class="si">${</span><span class="nv">LOCAL_REGISTRY</span><span class="si">}</span>/<span class="si">${</span><span class="nv">LOCAL_REPOSITORY</span><span class="si">}</span>:<span class="si">${</span><span class="nv">OCP_RELEASE</span><span class="si">}</span>-<span class="si">${</span><span class="nv">ARCHITECTURE</span><span class="si">}</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>After mirroring the images, the following instructions will be presented:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="ss">(</span>...<span class="ss">)</span>
+<span class="nv">Success</span>
+<span class="nv">Update</span> <span class="nv">image</span>:  <span class="mi">192</span>.<span class="mi">0</span>.<span class="mi">2</span>.<span class="mi">100</span>:<span class="mi">5000</span><span class="o">/</span><span class="nv">ocp4</span><span class="o">/</span><span class="nv">openshift4</span>:<span class="mi">4</span>.<span class="mi">5</span>.<span class="mi">9</span><span class="o">-</span><span class="nv">x86_64</span>
+<span class="nv">Mirror</span> <span class="nv">prefix</span>: <span class="mi">192</span>.<span class="mi">0</span>.<span class="mi">2</span>.<span class="mi">100</span>:<span class="mi">5000</span><span class="o">/</span><span class="nv">ocp4</span><span class="o">/</span><span class="nv">openshift4</span>
 
-To use the new mirrored repository to install, add the following section to the install-config.yaml:
+<span class="nv">To</span> <span class="nv">use</span> <span class="nv">the</span> <span class="nv">new</span> <span class="nv">mirrored</span> <span class="nv">repository</span> <span class="nv">to</span> <span class="nv">install</span>, <span class="nv">add</span> <span class="nv">the</span> <span class="nv">following</span> <span class="nv">section</span> <span class="nv">to</span> <span class="nv">the</span> <span class="nv">install</span><span class="o">-</span><span class="nv">config</span>.<span class="nv">yaml</span>:
 
-imageContentSources:
-- mirrors:
-  - 192.0.2.100:5000/ocp4/openshift4
-  source: quay.io/openshift-release-dev/ocp-release
-- mirrors:
-  - 192.0.2.100:5000/ocp4/openshift4
-  source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
+<span class="nv">imageContentSources</span>:
+<span class="o">-</span> <span class="nv">mirrors</span>:
+  <span class="o">-</span> <span class="mi">192</span>.<span class="mi">0</span>.<span class="mi">2</span>.<span class="mi">100</span>:<span class="mi">5000</span><span class="o">/</span><span class="nv">ocp4</span><span class="o">/</span><span class="nv">openshift4</span>
+  <span class="nv">source</span>: <span class="nv">quay</span>.<span class="nv">io</span><span class="o">/</span><span class="nv">openshift</span><span class="o">-</span><span class="nv">release</span><span class="o">-</span><span class="nv">dev</span><span class="o">/</span><span class="nv">ocp</span><span class="o">-</span><span class="nv">release</span>
+<span class="o">-</span> <span class="nv">mirrors</span>:
+  <span class="o">-</span> <span class="mi">192</span>.<span class="mi">0</span>.<span class="mi">2</span>.<span class="mi">100</span>:<span class="mi">5000</span><span class="o">/</span><span class="nv">ocp4</span><span class="o">/</span><span class="nv">openshift4</span>
+  <span class="nv">source</span>: <span class="nv">quay</span>.<span class="nv">io</span><span class="o">/</span><span class="nv">openshift</span><span class="o">-</span><span class="nv">release</span><span class="o">-</span><span class="nv">dev</span><span class="o">/</span><span class="nv">ocp</span><span class="o">-</span><span class="nv">v4</span>.<span class="mi">0</span><span class="o">-</span><span class="nv">art</span><span class="o">-</span><span class="nv">dev</span>
 
 
-To use the new mirrored repository for upgrades, use the following to create an ImageContentSourcePolicy:
+<span class="nv">To</span> <span class="nv">use</span> <span class="nv">the</span> <span class="nv">new</span> <span class="nv">mirrored</span> <span class="nv">repository</span> <span class="k">for</span> <span class="nv">upgrades</span>, <span class="nv">use</span> <span class="nv">the</span> <span class="nv">following</span> <span class="nv">to</span> <span class="nv">create</span> <span class="nv">an</span> <span class="nv">ImageContentSourcePolicy</span>:
 
-apiVersion: operator.openshift.io/v1alpha1
-kind: ImageContentSourcePolicy
-metadata:
-  name: example
-spec:
-  repositoryDigestMirrors:
-  - mirrors:
-    - 192.0.2.100:5000/ocp4/openshift4
-    source: quay.io/openshift-release-dev/ocp-release
-  - mirrors:
-    - 192.0.2.100:5000/ocp4/openshift4
-    source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
-</code></pre>
+<span class="nv">apiVersion</span>: <span class="nv">operator</span>.<span class="nv">openshift</span>.<span class="nv">io</span><span class="o">/</span><span class="nv">v1alpha1</span>
+<span class="nv">kind</span>: <span class="nv">ImageContentSourcePolicy</span>
+<span class="nv">metadata</span>:
+  <span class="nv">name</span>: <span class="nv">example</span>
+<span class="nv">spec</span>:
+  <span class="nv">repositoryDigestMirrors</span>:
+  <span class="o">-</span> <span class="nv">mirrors</span>:
+    <span class="o">-</span> <span class="mi">192</span>.<span class="mi">0</span>.<span class="mi">2</span>.<span class="mi">100</span>:<span class="mi">5000</span><span class="o">/</span><span class="nv">ocp4</span><span class="o">/</span><span class="nv">openshift4</span>
+    <span class="nv">source</span>: <span class="nv">quay</span>.<span class="nv">io</span><span class="o">/</span><span class="nv">openshift</span><span class="o">-</span><span class="nv">release</span><span class="o">-</span><span class="nv">dev</span><span class="o">/</span><span class="nv">ocp</span><span class="o">-</span><span class="nv">release</span>
+  <span class="o">-</span> <span class="nv">mirrors</span>:
+    <span class="o">-</span> <span class="mi">192</span>.<span class="mi">0</span>.<span class="mi">2</span>.<span class="mi">100</span>:<span class="mi">5000</span><span class="o">/</span><span class="nv">ocp4</span><span class="o">/</span><span class="nv">openshift4</span>
+    <span class="nv">source</span>: <span class="nv">quay</span>.<span class="nv">io</span><span class="o">/</span><span class="nv">openshift</span><span class="o">-</span><span class="nv">release</span><span class="o">-</span><span class="nv">dev</span><span class="o">/</span><span class="nv">ocp</span><span class="o">-</span><span class="nv">v4</span>.<span class="mi">0</span><span class="o">-</span><span class="nv">art</span><span class="o">-</span><span class="nv">dev</span>
+</code></pre></div>
+</td></tr></table></p>
 <p>Make sure to save these instructions for later.</p>
-<p>Verify contents of the local registry:</p>
-<pre><code>$ curl -u root:password https://192.0.2.100:5000/v2/_catalog | jq
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100    37  100    37    0     0   1121      0 --:--:-- --:--:-- --:--:--  1121
-{
-  &quot;repositories&quot;: [
-    &quot;ocp4/openshift4&quot;
-  ]
-}
-$ curl -u root:password https://192.0.2.100:5000/v2/ocp4/openshift4/tags/list | jq
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100  3241  100  3241    0     0   102k      0 --:--:-- --:--:-- --:--:--  102k
-{
-  &quot;name&quot;: &quot;ocp4/openshift4&quot;,
-  &quot;tags&quot;: [
-    &quot;4.5.9-kube-storage-version-migrator&quot;,
-    &quot;4.5.9-csi-snapshot-controller&quot;,
-    &quot;4.5.9-cluster-kube-apiserver-operator&quot;,
-    &quot;4.5.9-grafana&quot;,
-    &quot;4.5.9-cluster-update-keys&quot;,
-    &quot;4.5.9-hyperkube&quot;,
-    &quot;4.5.9-container-networking-plugins&quot;,
-    &quot;4.5.9-etcd&quot;,
-    &quot;4.5.9-baremetal-operator&quot;,
-    &quot;4.5.9-jenkins-agent-nodejs&quot;,
-    &quot;4.5.9-cluster-monitoring-operator&quot;,
-    &quot;4.5.9-installer&quot;,
-    &quot;4.5.9-aws-machine-controllers&quot;,
-    &quot;4.5.9-kube-etcd-signer-server&quot;,
-    &quot;4.5.9-kuryr-controller&quot;,
-    &quot;4.5.9-oauth-server&quot;,
-    &quot;4.5.9-cluster-authentication-operator&quot;,
-    &quot;4.5.9-operator-lifecycle-manager&quot;,
-    &quot;4.5.9-haproxy-router&quot;,
-    &quot;4.5.9-cluster-node-tuning-operator&quot;,
-    &quot;4.5.9-openshift-state-metrics&quot;,
-    &quot;4.5.9-prom-label-proxy&quot;,
-    &quot;4.5.9-cluster-kube-scheduler-operator&quot;,
-    &quot;4.5.9-machine-os-content&quot;,
-    &quot;4.5.9-cli-artifacts&quot;,
-    &quot;4.5.9-cluster-kube-controller-manager-operator&quot;,
-    &quot;4.5.9-libvirt-machine-controllers&quot;,
-    &quot;4.5.9-console-operator&quot;,
-    &quot;4.5.9-prometheus-operator&quot;,
-    &quot;4.5.9-openshift-apiserver&quot;,
-    &quot;4.5.9-x86_64&quot;,
-    &quot;4.5.9-console&quot;,
-    &quot;4.5.9-operator-marketplace&quot;,
-    &quot;4.5.9-cluster-etcd-operator&quot;,
-    &quot;4.5.9-k8s-prometheus-adapter&quot;,
-    &quot;4.5.9-ironic-inspector&quot;,
-    &quot;4.5.9-kube-rbac-proxy&quot;,
-    &quot;4.5.9-machine-config-operator&quot;,
-    &quot;4.5.9-ovirt-machine-controllers&quot;,
-    &quot;4.5.9-cluster-dns-operator&quot;,
-    &quot;4.5.9-aws-pod-identity-webhook&quot;,
-    &quot;4.5.9-ironic-machine-os-downloader&quot;,
-    &quot;4.5.9-cluster-csi-snapshot-controller-operator&quot;,
-    &quot;4.5.9-cluster-image-registry-operator&quot;,
-    &quot;4.5.9-kube-proxy&quot;,
-    &quot;4.5.9-cluster-autoscaler-operator&quot;,
-    &quot;4.5.9-multus-whereabouts-ipam-cni&quot;,
-    &quot;4.5.9-cluster-bootstrap&quot;,
-    &quot;4.5.9-insights-operator&quot;,
-    &quot;4.5.9-keepalived-ipfailover&quot;,
-    &quot;4.5.9-machine-api-operator&quot;,
-    &quot;4.5.9-azure-machine-controllers&quot;,
-    &quot;4.5.9-cluster-policy-controller&quot;,
-    &quot;4.5.9-cluster-machine-approver&quot;,
-    &quot;4.5.9-deployer&quot;,
-    &quot;4.5.9-installer-artifacts&quot;,
-    &quot;4.5.9-gcp-machine-controllers&quot;,
-    &quot;4.5.9-service-ca-operator&quot;,
-    &quot;4.5.9-prometheus-config-reloader&quot;,
-    &quot;4.5.9-oauth-proxy&quot;,
-    &quot;4.5.9-ovn-kubernetes&quot;,
-    &quot;4.5.9-prometheus&quot;,
-    &quot;4.5.9-sdn&quot;,
-    &quot;4.5.9-ironic-hardware-inventory-recorder&quot;,
-    &quot;4.5.9-baremetal-runtimecfg&quot;,
-    &quot;4.5.9-baremetal-installer&quot;,
-    &quot;4.5.9-ironic-ipa-downloader&quot;,
-    &quot;4.5.9-operator-registry&quot;,
-    &quot;4.5.9-pod&quot;,
-    &quot;4.5.9-multus-cni&quot;,
-    &quot;4.5.9-cloud-credential-operator&quot;,
-    &quot;4.5.9-kuryr-cni&quot;,
-    &quot;4.5.9-cluster-kube-storage-version-migrator-operator&quot;,
-    &quot;4.5.9-docker-builder&quot;,
-    &quot;4.5.9-telemeter&quot;,
-    &quot;4.5.9-tools&quot;,
-    &quot;4.5.9-docker-registry&quot;,
-    &quot;4.5.9-baremetal-machine-controllers&quot;,
-    &quot;4.5.9-tests&quot;,
-    &quot;4.5.9-cluster-svcat-controller-manager-operator&quot;,
-    &quot;4.5.9-cluster-ingress-operator&quot;,
-    &quot;4.5.9-kube-client-agent&quot;,
-    &quot;4.5.9-cli&quot;,
-    &quot;4.5.9-ironic-static-ip-manager&quot;,
-    &quot;4.5.9-jenkins&quot;,
-    &quot;4.5.9-cluster-node-tuned&quot;,
-    &quot;4.5.9-cluster-storage-operator&quot;,
-    &quot;4.5.9-prometheus-node-exporter&quot;,
-    &quot;4.5.9-openstack-machine-controllers&quot;,
-    &quot;4.5.9-cluster-openshift-apiserver-operator&quot;,
-    &quot;4.5.9-ironic&quot;,
-    &quot;4.5.9-cluster-version-operator&quot;,
-    &quot;4.5.9-local-storage-static-provisioner&quot;,
-    &quot;4.5.9-mdns-publisher&quot;,
-    &quot;4.5.9-multus-route-override-cni&quot;,
-    &quot;4.5.9-thanos&quot;,
-    &quot;4.5.9-cluster-config-operator&quot;,
-    &quot;4.5.9-jenkins-agent-maven&quot;,
-    &quot;4.5.9-openshift-controller-manager&quot;,
-    &quot;4.5.9-prometheus-alertmanager&quot;,
-    &quot;4.5.9-cluster-autoscaler&quot;,
-    &quot;4.5.9-configmap-reloader&quot;,
-    &quot;4.5.9-multus-admission-controller&quot;,
-    &quot;4.5.9-kube-state-metrics&quot;,
-    &quot;4.5.9-coredns&quot;,
-    &quot;4.5.9-cluster-openshift-controller-manager-operator&quot;,
-    &quot;4.5.9-cluster-samples-operator&quot;,
-    &quot;4.5.9-cluster-svcat-apiserver-operator&quot;,
-    &quot;4.5.9-must-gather&quot;,
-    &quot;4.5.9-cluster-network-operator&quot;
-  ]
-}
-</code></pre>
-<p>Now, extract the new <code>openshift-install</code> command:</p>
-<pre><code>$ oc adm -a ${LOCAL_SECRET_JSON} release extract --command=openshift-install &quot;${LOCAL_REGISTRY}/${LOCAL_REPOSITORY}:${OCP_RELEASE}-${ARCHITECTURE}
-</code></pre>
-<p>The resulting file can be found in the current working directory:</p>
-<pre><code>$ ls openshift-install
+<p>Verify contents of the local registry:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">  1</span>
+<span class="normal">  2</span>
+<span class="normal">  3</span>
+<span class="normal">  4</span>
+<span class="normal">  5</span>
+<span class="normal">  6</span>
+<span class="normal">  7</span>
+<span class="normal">  8</span>
+<span class="normal">  9</span>
+<span class="normal"> 10</span>
+<span class="normal"> 11</span>
+<span class="normal"> 12</span>
+<span class="normal"> 13</span>
+<span class="normal"> 14</span>
+<span class="normal"> 15</span>
+<span class="normal"> 16</span>
+<span class="normal"> 17</span>
+<span class="normal"> 18</span>
+<span class="normal"> 19</span>
+<span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="err">$</span> <span class="s s-Atom">curl</span> <span class="o">-</span><span class="s s-Atom">u</span> <span class="nn">root</span><span class="p">:</span><span class="s s-Atom">password</span> <span class="nn">https</span><span class="p">:</span><span class="o">//</span><span class="mf">192.0.2.100</span><span class="s s-Atom">:</span><span class="mi">5000</span><span class="o">/</span><span class="s s-Atom">v2/</span><span class="k">_</span><span class="s s-Atom">catalog</span> <span class="p">|</span> <span class="s s-Atom">jq</span>
+  <span class="c1">% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current</span>
+                                 <span class="nv">Dload</span>  <span class="nv">Upload</span>   <span class="nv">Total</span>   <span class="nv">Spent</span>    <span class="nv">Left</span>  <span class="nv">Speed</span>
+<span class="mi">100</span>    <span class="mi">37</span>  <span class="mi">100</span>    <span class="mi">37</span>    <span class="mi">0</span>     <span class="mi">0</span>   <span class="mi">1121</span>      <span class="mi">0</span> <span class="s s-Atom">--:--:--</span> <span class="s s-Atom">--:--:--</span> <span class="s s-Atom">--:--:--</span>  <span class="mi">1121</span>
+<span class="p">{</span>
+  <span class="s2">&quot;repositories&quot;</span><span class="s s-Atom">:</span> <span class="p">[</span>
+    <span class="s2">&quot;ocp4/openshift4&quot;</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+<span class="err">$</span> <span class="s s-Atom">curl</span> <span class="o">-</span><span class="s s-Atom">u</span> <span class="nn">root</span><span class="p">:</span><span class="s s-Atom">password</span> <span class="nn">https</span><span class="p">:</span><span class="o">//</span><span class="mf">192.0.2.100</span><span class="s s-Atom">:</span><span class="mi">5000</span><span class="o">/</span><span class="s s-Atom">v2</span><span class="o">/</span><span class="s s-Atom">ocp4</span><span class="o">/</span><span class="s s-Atom">openshift4</span><span class="o">/</span><span class="s s-Atom">tags</span><span class="o">/</span><span class="s s-Atom">list</span> <span class="p">|</span> <span class="s s-Atom">jq</span>
+  <span class="c1">% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current</span>
+                                 <span class="nv">Dload</span>  <span class="nv">Upload</span>   <span class="nv">Total</span>   <span class="nv">Spent</span>    <span class="nv">Left</span>  <span class="nv">Speed</span>
+<span class="mi">100</span>  <span class="mi">3241</span>  <span class="mi">100</span>  <span class="mi">3241</span>    <span class="mi">0</span>     <span class="mi">0</span>   <span class="mi">102</span><span class="s s-Atom">k</span>      <span class="mi">0</span> <span class="s s-Atom">--:--:--</span> <span class="s s-Atom">--:--:--</span> <span class="s s-Atom">--:--:--</span>  <span class="mi">102</span><span class="s s-Atom">k</span>
+<span class="p">{</span>
+  <span class="s2">&quot;name&quot;</span><span class="s s-Atom">:</span> <span class="s2">&quot;ocp4/openshift4&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;tags&quot;</span><span class="s s-Atom">:</span> <span class="p">[</span>
+    <span class="s2">&quot;4.5.9-kube-storage-version-migrator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-csi-snapshot-controller&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-kube-apiserver-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-grafana&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-update-keys&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-hyperkube&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-container-networking-plugins&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-etcd&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-baremetal-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-jenkins-agent-nodejs&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-monitoring-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-installer&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-aws-machine-controllers&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-kube-etcd-signer-server&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-kuryr-controller&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-oauth-server&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-authentication-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-operator-lifecycle-manager&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-haproxy-router&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-node-tuning-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-openshift-state-metrics&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-prom-label-proxy&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-kube-scheduler-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-machine-os-content&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cli-artifacts&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-kube-controller-manager-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-libvirt-machine-controllers&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-console-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-prometheus-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-openshift-apiserver&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-x86_64&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-console&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-operator-marketplace&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-etcd-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-k8s-prometheus-adapter&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-ironic-inspector&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-kube-rbac-proxy&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-machine-config-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-ovirt-machine-controllers&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-dns-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-aws-pod-identity-webhook&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-ironic-machine-os-downloader&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-csi-snapshot-controller-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-image-registry-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-kube-proxy&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-autoscaler-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-multus-whereabouts-ipam-cni&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-bootstrap&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-insights-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-keepalived-ipfailover&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-machine-api-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-azure-machine-controllers&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-policy-controller&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-machine-approver&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-deployer&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-installer-artifacts&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-gcp-machine-controllers&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-service-ca-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-prometheus-config-reloader&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-oauth-proxy&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-ovn-kubernetes&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-prometheus&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-sdn&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-ironic-hardware-inventory-recorder&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-baremetal-runtimecfg&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-baremetal-installer&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-ironic-ipa-downloader&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-operator-registry&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-pod&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-multus-cni&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cloud-credential-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-kuryr-cni&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-kube-storage-version-migrator-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-docker-builder&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-telemeter&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-tools&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-docker-registry&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-baremetal-machine-controllers&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-tests&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-svcat-controller-manager-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-ingress-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-kube-client-agent&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cli&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-ironic-static-ip-manager&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-jenkins&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-node-tuned&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-storage-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-prometheus-node-exporter&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-openstack-machine-controllers&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-openshift-apiserver-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-ironic&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-version-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-local-storage-static-provisioner&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-mdns-publisher&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-multus-route-override-cni&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-thanos&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-config-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-jenkins-agent-maven&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-openshift-controller-manager&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-prometheus-alertmanager&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-autoscaler&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-configmap-reloader&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-multus-admission-controller&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-kube-state-metrics&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-coredns&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-openshift-controller-manager-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-samples-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-svcat-apiserver-operator&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-must-gather&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4.5.9-cluster-network-operator&quot;</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Now, extract the new <code class="highlight">openshift-install</code> command:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc adm -a <span class="si">${</span><span class="nv">LOCAL_SECRET_JSON</span><span class="si">}</span> release extract --command<span class="o">=</span>openshift-install <span class="s2">&quot;</span><span class="si">${</span><span class="nv">LOCAL_REGISTRY</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">LOCAL_REPOSITORY</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">OCP_RELEASE</span><span class="si">}</span><span class="s2">-</span><span class="si">${</span><span class="nv">ARCHITECTURE</span><span class="si">}</span><span class="s2"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p>The resulting file can be found in the current working directory:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ ls openshift-install
 openshift-install
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
 <h2 id="installing-a-disconnected-cluster">Installing a disconnected cluster</h2>
 <p>Once the new openshift-install client was created, continue with the actual cluster installation.</p>
 <p>For example, on AWS, use <a href="https://docs.openshift.com/container-platform/4.5/installing/installing_aws/installing-restricted-networks-aws.html#installing-restricted-networks-aws">https://docs.openshift.com/container-platform/4.5/installing/installing_aws/installing-restricted-networks-aws.html#installing-restricted-networks-aws</a></p>
-<p>Create and then modify the <code>install-config.yaml</code> file on the installation server. Make sure to add <code>imageContentSources</code> (from the output of the last command) and also add the rootCA to the <code>additionalTrustBundle</code>:</p>
-<pre><code>cat install-config.yaml
-(...)
-imageContentSources:
-- mirrors:
-  - 10.10.181.198:5000/ocp4/openshift4
-  source: quay.io/openshift-release-dev/ocp-release
-- mirrors:
-  - 10.10.181.198:5000/ocp4/openshift4
-  source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
-additionalTrustBundle: |
-  -----BEGIN CERTIFICATE-----
-  MIIFxjCCA66gAwIBAgIJAOpJf+VRkKHUMA0GCSqGSIb3DQEBCwUAMIGKMQswCQYD
-  VQQGEwJVUzEXMBUGA1UECAwOTm9ydGggQ2Fyb2xpbmExEDAOBgNVBAcMB1JhbGVp
-  (... contents of CA/rootCA.crt ...)
-  oxmeuWzlWvcOCb4Usxa9m0rO95fa5Af2QoA4qxlvi7JoTypRR/zAskqHmcsaTfJN
-  k4p3g3YK5u5tvbzERBTfl8bfbd/eIwBLNMDwmKk2z42bcP1OAAHHqCfChvc1Zasr
-  TFVS2yQvfvvYSzW6tQE9UphVIiXeQhGhl7+TQ1wgoHRQL3pZRwxX9PrT
-  -----END CERTIFICATE-----
-(...)
-</code></pre>
-<p>Also, make sure to modify the <code>pullSecret</code> section in install-config.yaml to include the credentials for the custom registry:</p>
-<pre><code>pullSecret: '(... contents of pull-secret-merged.json ...)'
-</code></pre>
-<p>Steps for modifying <code>install-config.yaml</code> can be found in <a href="https://docs.openshift.com/container-platform/4.5/installing/installing_aws/installing-restricted-networks-aws.html#installation-generate-aws-user-infra-install-config_installing-restricted-networks-aws">https://docs.openshift.com/container-platform/4.5/installing/installing_aws/installing-restricted-networks-aws.html#installation-generate-aws-user-infra-install-config_installing-restricted-networks-aws</a></p>
-<p>Follow any further steps from the restricted installation documentation. Finally, run the installation. Use the custom <code>openshift-install</code> binary that was generated earlier:</p>
-<pre><code> ./openshift-install create cluster --dir=install-config/ --log-level=debug
-</code></pre>
+<p>Create and then modify the <code class="highlight">install-config.yaml</code> file on the installation server. Make sure to add <code class="highlight">imageContentSources</code> (from the output of the last command) and also add the rootCA to the <code class="highlight">additionalTrustBundle</code>:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">cat</span> <span class="n">install</span><span class="o">-</span><span class="n">config</span><span class="p">.</span><span class="n">yaml</span>
+<span class="p">(...)</span>
+<span class="n">imageContentSources</span><span class="p">:</span>
+<span class="o">-</span> <span class="n">mirrors</span><span class="p">:</span>
+  <span class="o">-</span> <span class="mf">10.10</span><span class="p">.</span><span class="mf">181.198</span><span class="p">:</span><span class="mi">5000</span><span class="o">/</span><span class="n">ocp4</span><span class="o">/</span><span class="n">openshift4</span>
+  <span class="n">source</span><span class="p">:</span> <span class="n">quay</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">openshift</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="n">dev</span><span class="o">/</span><span class="n">ocp</span><span class="o">-</span><span class="n">release</span>
+<span class="o">-</span> <span class="n">mirrors</span><span class="p">:</span>
+  <span class="o">-</span> <span class="mf">10.10</span><span class="p">.</span><span class="mf">181.198</span><span class="p">:</span><span class="mi">5000</span><span class="o">/</span><span class="n">ocp4</span><span class="o">/</span><span class="n">openshift4</span>
+  <span class="n">source</span><span class="p">:</span> <span class="n">quay</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">openshift</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="n">dev</span><span class="o">/</span><span class="n">ocp</span><span class="o">-</span><span class="n">v4</span><span class="p">.</span><span class="mi">0</span><span class="o">-</span><span class="n">art</span><span class="o">-</span><span class="n">dev</span>
+<span class="n">additionalTrustBundle</span><span class="p">:</span> <span class="p">|</span>
+  <span class="o">-----</span><span class="kr">BEGIN</span> <span class="n">CERTIFICATE</span><span class="o">-----</span>
+  <span class="n">MIIFxjCCA66gAwIBAgIJAOpJf</span><span class="o">+</span><span class="n">VRkKHUMA0GCSqGSIb3DQEBCwUAMIGKMQswCQYD</span>
+  <span class="n">VQQGEwJVUzEXMBUGA1UECAwOTm9ydGggQ2Fyb2xpbmExEDAOBgNVBAcMB1JhbGVp</span>
+  <span class="p">(...</span> <span class="n">contents</span> <span class="n">of</span> <span class="n">CA</span><span class="o">/</span><span class="n">rootCA</span><span class="p">.</span><span class="n">crt</span> <span class="p">...)</span>
+  <span class="n">oxmeuWzlWvcOCb4Usxa9m0rO95fa5Af2QoA4qxlvi7JoTypRR</span><span class="o">/</span><span class="n">zAskqHmcsaTfJN</span>
+  <span class="n">k4p3g3YK5u5tvbzERBTfl8bfbd</span><span class="o">/</span><span class="n">eIwBLNMDwmKk2z42bcP1OAAHHqCfChvc1Zasr</span>
+  <span class="n">TFVS2yQvfvvYSzW6tQE9UphVIiXeQhGhl7</span><span class="o">+</span><span class="n">TQ1wgoHRQL3pZRwxX9PrT</span>
+  <span class="o">-----</span><span class="kr">END</span> <span class="n">CERTIFICATE</span><span class="o">-----</span>
+<span class="p">(...)</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Also, make sure to modify the <code class="highlight">pullSecret</code> section in install-config.yaml to include the credentials for the custom registry:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>pullSecret: &#39;(... contents of pull-secret-merged.json ...)&#39;
+</code></pre></div>
+</td></tr></table></p>
+<p>Steps for modifying <code class="highlight">install-config.yaml</code> can be found in <a href="https://docs.openshift.com/container-platform/4.5/installing/installing_aws/installing-restricted-networks-aws.html#installation-generate-aws-user-infra-install-config_installing-restricted-networks-aws">https://docs.openshift.com/container-platform/4.5/installing/installing_aws/installing-restricted-networks-aws.html#installation-generate-aws-user-infra-install-config_installing-restricted-networks-aws</a></p>
+<p>Follow any further steps from the restricted installation documentation. Finally, run the installation. Use the custom <code class="highlight">openshift-install</code> binary that was generated earlier:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code> ./openshift-install create cluster --dir=install-config/ --log-level=debug
+</code></pre></div>
+</td></tr></table></p>
                 
                   
                     

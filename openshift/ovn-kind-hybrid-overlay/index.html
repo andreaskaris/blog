@@ -1217,82 +1217,141 @@
                 <h1 id="kind-with-ovn-kubernetes-hybrid-overlay">Kind with OVN Kubernetes Hybrid Overlay</h1>
 <blockquote>
 <blockquote>
-<p><strong>NOTE:</strong> This feature was removed from upstream <code>ovn-kubernetes</code> in December 2020.</p>
+<p><strong>NOTE:</strong> This feature was removed from upstream <code class="highlight">ovn-kubernetes</code> in December 2020.</p>
 </blockquote>
 </blockquote>
 <p>If you are interested in playing around with OVN Kubernetes' Hybrid Overlay feature, then one of the easiest ways to test this is by creating a kind setup and by installing the OVN Kubernetes parts.</p>
 <h2 id="prerequisites">Prerequisites</h2>
-<p>Spawn a RHEL 7.8 or above virtual machine and install:</p>
-<pre><code>yum install docker -y
-yum install python3 -y
-yum install git -y
-yum install python3-pip -y
-python3 -m pip install j2cli
-sudo update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
-curl -O https://golang.org/dl/go1.14.6.linux-amd64.tar.gz -L
-tar -C /usr/local -xzf go1.14.6.linux-amd64.tar.gz
-cat &lt;&lt;'EOF' | tee /etc/profile.d/go.sh
-#!/bin/bash
+<p>Spawn a RHEL 7.8 or above virtual machine and install:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">yum</span> <span class="n">install</span> <span class="n">docker</span> <span class="o">-</span><span class="n">y</span>
+<span class="n">yum</span> <span class="n">install</span> <span class="n">python3</span> <span class="o">-</span><span class="n">y</span>
+<span class="n">yum</span> <span class="n">install</span> <span class="n">git</span> <span class="o">-</span><span class="n">y</span>
+<span class="n">yum</span> <span class="n">install</span> <span class="n">python3</span><span class="o">-</span><span class="n">pip</span> <span class="o">-</span><span class="n">y</span>
+<span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">j2cli</span>
+<span class="n">sudo</span> <span class="n">update</span><span class="o">-</span><span class="n">alternatives</span> <span class="o">--</span><span class="n">install</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">pip</span> <span class="n">pip</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">pip3</span> <span class="mi">1</span>
+<span class="n">curl</span> <span class="o">-</span><span class="n">O</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">golang</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">go1</span><span class="o">.</span><span class="mf">14.6</span><span class="o">.</span><span class="n">linux</span><span class="o">-</span><span class="n">amd64</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span> <span class="o">-</span><span class="n">L</span>
+<span class="n">tar</span> <span class="o">-</span><span class="n">C</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span> <span class="o">-</span><span class="n">xzf</span> <span class="n">go1</span><span class="o">.</span><span class="mf">14.6</span><span class="o">.</span><span class="n">linux</span><span class="o">-</span><span class="n">amd64</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">cat</span> <span class="o">&lt;&lt;</span><span class="s1">&#39;EOF&#39;</span> <span class="o">|</span> <span class="n">tee</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">profile</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">go</span><span class="o">.</span><span class="n">sh</span>
+<span class="c1">#!/bin/bash</span>
 
-export PATH=$PATH:/usr/local/go/bin
-EOF
-chmod +x /etc/profile.d/go.sh
-source  /etc/profile.d/go.sh
-</code></pre>
-<p>Download kind:</p>
-<pre><code>curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-linux-amd64
+<span class="k">export</span> <span class="n">PATH</span><span class="o">=$</span><span class="n">PATH</span><span class="p">:</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">go</span><span class="o">/</span><span class="n">bin</span>
+<span class="n">EOF</span>
+<span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">profile</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">go</span><span class="o">.</span><span class="n">sh</span>
+<span class="n">source</span>  <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">profile</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">go</span><span class="o">.</span><span class="n">sh</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Download kind:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-linux-amd64
 chmod +x ./kind
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
 <blockquote>
 <p>For further details, see https://kind.sigs.k8s.io/docs/user/quick-start/</p>
 </blockquote>
-<p>Download ovn-kubernetes:</p>
-<pre><code>git clone https://github.com/ovn-org/ovn-kubernetes
+<p>Download ovn-kubernetes:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>git clone https://github.com/ovn-org/ovn-kubernetes
 cd ovn-kubernetes/contrib/
-</code></pre>
-<p>Now, run:</p>
-<pre><code>./kind.sh -ho
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
+<p>Now, run:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>./kind.sh -ho
+</code></pre></div>
+</td></tr></table></p>
 <p>Wait until it finishes.</p>
-<p>Now, go to the home folder and generate kubeconfig:</p>
-<pre><code>cd ~
+<p>Now, go to the home folder and generate kubeconfig:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>cd ~
 kind get kubeconfig --name ovn &gt; .kube/config
-</code></pre>
-<p>Verify:</p>
-<pre><code> kubectl  get nodes
+</code></pre></div>
+</td></tr></table></p>
+<p>Verify:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code> kubectl  get nodes
 NAME                STATUS   ROLES    AGE   VERSION
 ovn-control-plane   Ready    master   15m   v1.18.2
 ovn-worker          Ready    &lt;none&gt;   14m   v1.18.2
 ovn-worker2         Ready    &lt;none&gt;   14m   v1.18.2
-</code></pre>
-<p>Get your Worker node IPs:</p>
-<pre><code># kubectl  get nodes -o wide
+</code></pre></div>
+</td></tr></table></p>
+<p>Get your Worker node IPs:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code># kubectl  get nodes -o wide
 NAME                STATUS   ROLES    AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE           KERNEL-VERSION                 CONTAINER-RUNTIME
 ovn-control-plane   Ready    master   15m   v1.18.2   172.18.0.4    &lt;none&gt;        Ubuntu 20.04 LTS   4.18.0-193.13.2.el8_2.x86_64   containerd://1.3.3-14-g449e9269
 ovn-worker          Ready    &lt;none&gt;   15m   v1.18.2   172.18.0.3    &lt;none&gt;        Ubuntu 20.04 LTS   4.18.0-193.13.2.el8_2.x86_64   containerd://1.3.3-14-g449e9269
 ovn-worker2         Ready    &lt;none&gt;   15m   v1.18.2   172.18.0.2    &lt;none&gt;        Ubuntu 20.04 LTS   4.18.0-193.13.2.el8_2.x86_64   containerd://1.3.3-14-g449e9269
-</code></pre>
-<p>Get the worker pod subnets:</p>
-<pre><code>[root@kind ~]# kubectl get nodes | tail -n +2 | awk '{print $1}' | while read node; do echo === $node === ; kubectl describe node $node | grep PodCIDR ; done
-=== ovn-control-plane ===
-PodCIDR:                      10.244.0.0/24
-PodCIDRs:                     10.244.0.0/24
-=== ovn-worker ===
-PodCIDR:                      10.244.1.0/24
-PodCIDRs:                     10.244.1.0/24
-=== ovn-worker2 ===
-PodCIDR:                      10.244.2.0/24
-PodCIDRs:                     10.244.2.0/24
-</code></pre>
-<p>Create CentOS to act as GW:</p>
-<pre><code>docker run --name gw -d --privileged --network kind -it centos /bin/bash
-</code></pre>
-<p>Now connecto to the GW node:</p>
-<pre><code>docker exec -it gw /bin/bash
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
+<p>Get the worker pod subnets:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@kind ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">kubectl</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">nodes</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">tail</span><span class="w"> </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="mi">2</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">awk</span><span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">while</span><span class="w"> </span><span class="k">read</span><span class="w"> </span><span class="n">node</span><span class="p">;</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="err">$</span><span class="n">node</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="n">kubectl</span><span class="w"> </span><span class="k">describe</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="err">$</span><span class="n">node</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">PodCIDR</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="n">done</span><span class="w"></span>
+<span class="o">===</span><span class="w"> </span><span class="n">ovn</span><span class="o">-</span><span class="n">control</span><span class="o">-</span><span class="n">plane</span><span class="w"> </span><span class="o">===</span><span class="w"></span>
+<span class="nl">PodCIDR</span><span class="p">:</span><span class="w">                      </span><span class="mf">10.244.0.0</span><span class="o">/</span><span class="mi">24</span><span class="w"></span>
+<span class="nl">PodCIDRs</span><span class="p">:</span><span class="w">                     </span><span class="mf">10.244.0.0</span><span class="o">/</span><span class="mi">24</span><span class="w"></span>
+<span class="o">===</span><span class="w"> </span><span class="n">ovn</span><span class="o">-</span><span class="n">worker</span><span class="w"> </span><span class="o">===</span><span class="w"></span>
+<span class="nl">PodCIDR</span><span class="p">:</span><span class="w">                      </span><span class="mf">10.244.1.0</span><span class="o">/</span><span class="mi">24</span><span class="w"></span>
+<span class="nl">PodCIDRs</span><span class="p">:</span><span class="w">                     </span><span class="mf">10.244.1.0</span><span class="o">/</span><span class="mi">24</span><span class="w"></span>
+<span class="o">===</span><span class="w"> </span><span class="n">ovn</span><span class="o">-</span><span class="n">worker2</span><span class="w"> </span><span class="o">===</span><span class="w"></span>
+<span class="nl">PodCIDR</span><span class="p">:</span><span class="w">                      </span><span class="mf">10.244.2.0</span><span class="o">/</span><span class="mi">24</span><span class="w"></span>
+<span class="nl">PodCIDRs</span><span class="p">:</span><span class="w">                     </span><span class="mf">10.244.2.0</span><span class="o">/</span><span class="mi">24</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Create CentOS to act as GW:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>docker run --name gw -d --privileged --network kind -it centos /bin/bash
+</code></pre></div>
+</td></tr></table></p>
+<p>Now connecto to the GW node:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">docker</span> <span class="k">exec</span> <span class="o">-</span><span class="nv">it</span> <span class="nv">gw</span> <span class="o">/</span><span class="nv">bin</span><span class="o">/</span><span class="nv">bash</span>
+</code></pre></div>
+</td></tr></table></p>
 <p>If your worker node IPs and pod subnets are different from what was listed above, make sure to adjust the following.
-It's important to route traffic for the node's pod subnet via the node's internal IP.</p>
-<pre><code>cat &lt;&lt;'EOF' | tee vxlan.sh
+It's important to route traffic for the node's pod subnet via the node's internal IP.
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>cat &lt;&lt;&#39;EOF&#39; | tee vxlan.sh
 #!/bin/bash
 
 echo &quot;VIP&quot;
@@ -1308,9 +1367,23 @@ ip route add 10.244.0.0/16 dev vxlan0
 EOF
 chmod +x vxlan.sh
 ./vxlan.sh
-</code></pre>
-<p>Alternatively, something like this should also work and would actually be easier to understand and more elegant:</p>
-<pre><code>cat &lt;&lt;'EOF' | tee vxlan.sh
+</code></pre></div>
+</td></tr></table></p>
+<p>Alternatively, something like this should also work and would actually be easier to understand and more elegant:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>cat &lt;&lt;&#39;EOF&#39; | tee vxlan.sh
 #!/bin/bash
 dnf install centos-release-nfv-openvswitch
 yum install openvswitch2.13.x86_64 -y
@@ -1324,21 +1397,62 @@ ip route add 10.244.0.0/16 dev br-vxlan
 EOF
 chmod +x vxlan.sh
 ./vxlan.sh
-</code></pre>
-<p>Now create a namespace with annotations like:</p>
-<pre><code>apiVersion: v1
-kind: Namespace
-metadata:
-  name: exgw2
-  annotations:
-    k8s.ovn.org/hybrid-overlay-external-gw: 9.0.0.1
-    k8s.ovn.org/hybrid-overlay-vtep: 172.18.0.5 #replace this with your simulated  ip
-</code></pre>
-<p>Execute:</p>
-<pre><code>kubectl apply -f file.yaml
-</code></pre>
-<p>Now create pods on each worker node in the namespace:</p>
-<pre><code>cat &lt;&lt;'EOF' | oc apply -f -
+</code></pre></div>
+</td></tr></table></p>
+<p>Now create a namespace with annotations like:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">apiVersion</span><span class="o">:</span> <span class="n">v1</span>
+<span class="n">kind</span><span class="o">:</span> <span class="n">Namespace</span>
+<span class="n">metadata</span><span class="o">:</span>
+  <span class="n">name</span><span class="o">:</span> <span class="n">exgw2</span>
+  <span class="n">annotations</span><span class="o">:</span>
+    <span class="n">k8s</span><span class="o">.</span><span class="na">ovn</span><span class="o">.</span><span class="na">org</span><span class="o">/</span><span class="n">hybrid</span><span class="o">-</span><span class="n">overlay</span><span class="o">-</span><span class="n">external</span><span class="o">-</span><span class="n">gw</span><span class="o">:</span> <span class="mf">9.0</span><span class="o">.</span><span class="mf">0.1</span>
+    <span class="n">k8s</span><span class="o">.</span><span class="na">ovn</span><span class="o">.</span><span class="na">org</span><span class="o">/</span><span class="n">hybrid</span><span class="o">-</span><span class="n">overlay</span><span class="o">-</span><span class="n">vtep</span><span class="o">:</span> <span class="mf">172.18</span><span class="o">.</span><span class="mf">0.5</span> <span class="err">#</span><span class="n">replace</span> <span class="k">this</span> <span class="k">with</span> <span class="n">your</span> <span class="n">simulated</span>  <span class="n">ip</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Execute:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>kubectl apply -f file.yaml
+</code></pre></div>
+</td></tr></table></p>
+<p>Now create pods on each worker node in the namespace:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>cat &lt;&lt;&#39;EOF&#39; | oc apply -f -
 apiVersion: v1
 kind: Pod
 metadata:
@@ -1371,46 +1485,79 @@ spec:
   restartPolicy: Always
   nodeName: ovn-worker2
 EOF
-</code></pre>
-<p>Execute:</p>
-<pre><code>[root@kind ~]# kubectl  get pods -n exgw2 -o wide
-NAME         READY   STATUS    RESTARTS   AGE   IP           NODE          NOMINATED NODE   READINESS GATES
-dnsutils     1/1     Running   0          20m   10.244.0.7   ovn-worker    &lt;none&gt;           &lt;none&gt;
-dnsutils02   1/1     Running   0          20m   10.244.2.6   ovn-worker2   &lt;none&gt;           &lt;none&gt;
-</code></pre>
-<p>Verify from the pods:</p>
-<pre><code>[root@kind ~]# kubectl exec -it dnsutils02 /bin/sh
-kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl kubectl exec [POD] -- [COMMAND] instead.
-/ # ping 9.0.0.1
-PING 9.0.0.1 (9.0.0.1): 56 data bytes
-64 bytes from 9.0.0.1: seq=0 ttl=64 time=0.998 ms
-^C
---- 9.0.0.1 ping statistics ---
-1 packets transmitted, 1 packets received, 0% packet loss
-round-trip min/avg/max = 0.998/0.998/0.998 ms
-/ # 
-</code></pre>
-<pre><code>[root@kind ~]# kubectl exec -it dnsutils /bin/sh
-kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl kubectl exec [POD] -- [COMMAND] instead.
-/ # ping 9.0.0.1
-PING 9.0.0.1 (9.0.0.1): 56 data bytes
-64 bytes from 9.0.0.1: seq=0 ttl=64 time=1.686 ms
-64 bytes from 9.0.0.1: seq=1 ttl=64 time=0.667 ms
-^C
---- 9.0.0.1 ping statistics ---
-2 packets transmitted, 2 packets received, 0% packet loss
-round-trip min/avg/max = 0.667/1.176/1.686 ms
-/ # 
-</code></pre>
-<p>Verify the HybridOverlay is enabled in NS:</p>
-<pre><code># kubectl get ns exgw2 -o yaml
+</code></pre></div>
+</td></tr></table></p>
+<p>Execute:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@kind ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">kubectl</span><span class="w">  </span><span class="k">get</span><span class="w"> </span><span class="n">pods</span><span class="w"> </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="n">exgw2</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">wide</span><span class="w"></span>
+<span class="n">NAME</span><span class="w">         </span><span class="n">READY</span><span class="w">   </span><span class="n">STATUS</span><span class="w">    </span><span class="n">RESTARTS</span><span class="w">   </span><span class="n">AGE</span><span class="w">   </span><span class="n">IP</span><span class="w">           </span><span class="n">NODE</span><span class="w">          </span><span class="n">NOMINATED</span><span class="w"> </span><span class="n">NODE</span><span class="w">   </span><span class="n">READINESS</span><span class="w"> </span><span class="n">GATES</span><span class="w"></span>
+<span class="n">dnsutils</span><span class="w">     </span><span class="mi">1</span><span class="o">/</span><span class="mi">1</span><span class="w">     </span><span class="n">Running</span><span class="w">   </span><span class="mi">0</span><span class="w">          </span><span class="mi">20</span><span class="n">m</span><span class="w">   </span><span class="mf">10.244.0.7</span><span class="w">   </span><span class="n">ovn</span><span class="o">-</span><span class="n">worker</span><span class="w">    </span><span class="o">&lt;</span><span class="k">none</span><span class="o">&gt;</span><span class="w">           </span><span class="o">&lt;</span><span class="k">none</span><span class="o">&gt;</span><span class="w"></span>
+<span class="n">dnsutils02</span><span class="w">   </span><span class="mi">1</span><span class="o">/</span><span class="mi">1</span><span class="w">     </span><span class="n">Running</span><span class="w">   </span><span class="mi">0</span><span class="w">          </span><span class="mi">20</span><span class="n">m</span><span class="w">   </span><span class="mf">10.244.2.6</span><span class="w">   </span><span class="n">ovn</span><span class="o">-</span><span class="n">worker2</span><span class="w">   </span><span class="o">&lt;</span><span class="k">none</span><span class="o">&gt;</span><span class="w">           </span><span class="o">&lt;</span><span class="k">none</span><span class="o">&gt;</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Verify from the pods:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@kind ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">kubectl</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="o">-</span><span class="n">it</span><span class="w"> </span><span class="n">dnsutils02</span><span class="w"> </span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">sh</span><span class="w"></span>
+<span class="n">kubectl</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="o">[</span><span class="n">POD</span><span class="o">]</span><span class="w"> </span><span class="o">[</span><span class="n">COMMAND</span><span class="o">]</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">DEPRECATED</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">removed</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">future</span><span class="w"> </span><span class="n">version</span><span class="p">.</span><span class="w"> </span><span class="k">Use</span><span class="w"> </span><span class="n">kubectl</span><span class="w"> </span><span class="n">kubectl</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="o">[</span><span class="n">POD</span><span class="o">]</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="o">[</span><span class="n">COMMAND</span><span class="o">]</span><span class="w"> </span><span class="n">instead</span><span class="p">.</span><span class="w"></span>
+<span class="o">/</span><span class="w"> </span><span class="err">#</span><span class="w"> </span><span class="n">ping</span><span class="w"> </span><span class="mf">9.0.0.1</span><span class="w"></span>
+<span class="n">PING</span><span class="w"> </span><span class="mf">9.0.0.1</span><span class="w"> </span><span class="p">(</span><span class="mf">9.0.0.1</span><span class="p">)</span><span class="err">:</span><span class="w"> </span><span class="mi">56</span><span class="w"> </span><span class="k">data</span><span class="w"> </span><span class="n">bytes</span><span class="w"></span>
+<span class="mi">64</span><span class="w"> </span><span class="n">bytes</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="mf">9.0.0.1</span><span class="err">:</span><span class="w"> </span><span class="n">seq</span><span class="o">=</span><span class="mi">0</span><span class="w"> </span><span class="n">ttl</span><span class="o">=</span><span class="mi">64</span><span class="w"> </span><span class="nc">time</span><span class="o">=</span><span class="mf">0.998</span><span class="w"> </span><span class="n">ms</span><span class="w"></span>
+<span class="o">^</span><span class="n">C</span><span class="w"></span>
+<span class="o">---</span><span class="w"> </span><span class="mf">9.0.0.1</span><span class="w"> </span><span class="n">ping</span><span class="w"> </span><span class="k">statistics</span><span class="w"> </span><span class="o">---</span><span class="w"></span>
+<span class="mi">1</span><span class="w"> </span><span class="n">packets</span><span class="w"> </span><span class="n">transmitted</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">packets</span><span class="w"> </span><span class="n">received</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="o">%</span><span class="w"> </span><span class="n">packet</span><span class="w"> </span><span class="n">loss</span><span class="w"></span>
+<span class="nf">round</span><span class="o">-</span><span class="n">trip</span><span class="w"> </span><span class="nf">min</span><span class="o">/</span><span class="nf">avg</span><span class="o">/</span><span class="nf">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.998</span><span class="o">/</span><span class="mf">0.998</span><span class="o">/</span><span class="mf">0.998</span><span class="w"> </span><span class="n">ms</span><span class="w"></span>
+<span class="o">/</span><span class="w"> </span><span class="err">#</span><span class="w"> </span>
+</code></pre></div>
+</td></tr></table></p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@kind ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">kubectl</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="o">-</span><span class="n">it</span><span class="w"> </span><span class="n">dnsutils</span><span class="w"> </span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">sh</span><span class="w"></span>
+<span class="n">kubectl</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="o">[</span><span class="n">POD</span><span class="o">]</span><span class="w"> </span><span class="o">[</span><span class="n">COMMAND</span><span class="o">]</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">DEPRECATED</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">removed</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">future</span><span class="w"> </span><span class="n">version</span><span class="p">.</span><span class="w"> </span><span class="k">Use</span><span class="w"> </span><span class="n">kubectl</span><span class="w"> </span><span class="n">kubectl</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="o">[</span><span class="n">POD</span><span class="o">]</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="o">[</span><span class="n">COMMAND</span><span class="o">]</span><span class="w"> </span><span class="n">instead</span><span class="p">.</span><span class="w"></span>
+<span class="o">/</span><span class="w"> </span><span class="err">#</span><span class="w"> </span><span class="n">ping</span><span class="w"> </span><span class="mf">9.0.0.1</span><span class="w"></span>
+<span class="n">PING</span><span class="w"> </span><span class="mf">9.0.0.1</span><span class="w"> </span><span class="p">(</span><span class="mf">9.0.0.1</span><span class="p">)</span><span class="err">:</span><span class="w"> </span><span class="mi">56</span><span class="w"> </span><span class="k">data</span><span class="w"> </span><span class="n">bytes</span><span class="w"></span>
+<span class="mi">64</span><span class="w"> </span><span class="n">bytes</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="mf">9.0.0.1</span><span class="err">:</span><span class="w"> </span><span class="n">seq</span><span class="o">=</span><span class="mi">0</span><span class="w"> </span><span class="n">ttl</span><span class="o">=</span><span class="mi">64</span><span class="w"> </span><span class="nc">time</span><span class="o">=</span><span class="mf">1.686</span><span class="w"> </span><span class="n">ms</span><span class="w"></span>
+<span class="mi">64</span><span class="w"> </span><span class="n">bytes</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="mf">9.0.0.1</span><span class="err">:</span><span class="w"> </span><span class="n">seq</span><span class="o">=</span><span class="mi">1</span><span class="w"> </span><span class="n">ttl</span><span class="o">=</span><span class="mi">64</span><span class="w"> </span><span class="nc">time</span><span class="o">=</span><span class="mf">0.667</span><span class="w"> </span><span class="n">ms</span><span class="w"></span>
+<span class="o">^</span><span class="n">C</span><span class="w"></span>
+<span class="o">---</span><span class="w"> </span><span class="mf">9.0.0.1</span><span class="w"> </span><span class="n">ping</span><span class="w"> </span><span class="k">statistics</span><span class="w"> </span><span class="o">---</span><span class="w"></span>
+<span class="mi">2</span><span class="w"> </span><span class="n">packets</span><span class="w"> </span><span class="n">transmitted</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">packets</span><span class="w"> </span><span class="n">received</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="o">%</span><span class="w"> </span><span class="n">packet</span><span class="w"> </span><span class="n">loss</span><span class="w"></span>
+<span class="nf">round</span><span class="o">-</span><span class="n">trip</span><span class="w"> </span><span class="nf">min</span><span class="o">/</span><span class="nf">avg</span><span class="o">/</span><span class="nf">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.667</span><span class="o">/</span><span class="mf">1.176</span><span class="o">/</span><span class="mf">1.686</span><span class="w"> </span><span class="n">ms</span><span class="w"></span>
+<span class="o">/</span><span class="w"> </span><span class="err">#</span><span class="w"> </span>
+</code></pre></div>
+</td></tr></table>
+<p>Verify the HybridOverlay is enabled in NS:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code># kubectl get ns exgw2 -o yaml
 apiVersion: v1
 kind: Namespace
 metadata:
   annotations:
     k8s.ovn.org/hybrid-overlay-external-gw: 9.0.0.1
     k8s.ovn.org/hybrid-overlay-vtep: 172.18.0.5
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
 <h2 id="sources">Sources</h2>
 <p>Based on:</p>
 <ul>

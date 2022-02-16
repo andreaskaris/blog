@@ -1306,14 +1306,26 @@
                 <h1 id="how-security-context-constraints-sccs-work-in-openshift">How Security Context Constraints (SCCs) work in OpenShift</h1>
 <p>How SCCs work in OpenShift by example. The following tests were run in Red Hat OpenShift Platform 3.11. Depending on the version in use, the cluster's behavior may be slightly different.</p>
 <h2 id="impact-of-the-default-restricted-scc">Impact of the default restricted SCC</h2>
-<p>The following example spawns a statefulset with a pod as user 65000. This user falls not into the <code>supplemental-groups</code> of the project and can hence not be used by the <code>restricted</code> SCC. The deployment will fail:</p>
-<pre><code>$ oc describe project test  | grep scc
-            openshift.io/sa.scc.mcs=s0:c10,c0
-            openshift.io/sa.scc.supplemental-groups=1000090000/10000
-            openshift.io/sa.scc.uid-range=1000090000/10000
-</code></pre>
-<p>Storage class is a local provisioner with 4 100MB local mounts, set up with <a href="https://github.com/andreaskaris/kubernetes/tree/master/localvolume">https://github.com/andreaskaris/kubernetes/tree/master/localvolume</a>:</p>
-<pre><code>$ oc get storageclass
+<p>The following example spawns a statefulset with a pod as user 65000. This user falls not into the <code class="highlight">supplemental-groups</code> of the project and can hence not be used by the <code class="highlight">restricted</code> SCC. The deployment will fail:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc describe project <span class="nb">test</span>  <span class="p">|</span> grep scc
+            openshift.io/sa.scc.mcs<span class="o">=</span>s0:c10,c0
+            openshift.io/sa.scc.supplemental-groups<span class="o">=</span><span class="m">1000090000</span>/10000
+            openshift.io/sa.scc.uid-range<span class="o">=</span><span class="m">1000090000</span>/10000
+</code></pre></div>
+</td></tr></table></p>
+<p>Storage class is a local provisioner with 4 100MB local mounts, set up with <a href="https://github.com/andreaskaris/kubernetes/tree/master/localvolume">https://github.com/andreaskaris/kubernetes/tree/master/localvolume</a>:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc get storageclass
 NAME              PROVISIONER                    AGE
 local-loopbacks   kubernetes.io/no-provisioner   3d
 $ oc get pv
@@ -1322,543 +1334,1019 @@ local-pv-18dc9ec0   92Mi       RWO            Delete           Available        
 local-pv-89b778f1   92Mi       RWO            Delete           Available             local-loopbacks             19m
 local-pv-9e67e7d6   92Mi       RWO            Delete           Available             local-loopbacks             28m
 local-pv-b6a7cd37   92Mi       RWO            Delete           Available             local-loopbacks             3d
-</code></pre>
-<p><code>statefulset.yaml</code>:</p>
-<pre><code>kind: Service
-apiVersion: v1
-metadata:
-  name: &quot;test&quot;
-spec:
-  clusterIP: None
-  # the list of ports that are exposed by this service
-  ports:
-    - name: http
-      port: 80
-  # will route traffic to pods having labels matching this selector
-  selector:
-    name: &quot;test&quot;
----
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: test
-spec:
-  selector:
-    matchLabels:
-       app: test
-  serviceName: test
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: test
-    spec:
-      securityContext:
-        runAsUser: 65000
-      containers:
-        - image: gcr.io/google_containers/busybox
-          command:
-            - &quot;/bin/sh&quot;
-            - &quot;-c&quot;
-            - &quot;while true; do date; sleep 1; done&quot;
-          name: busybox
-          volumeMounts:
-            - name: vol
-              mountPath: /mnt
-  volumeClaimTemplates:
-    - metadata:
-        name: vol
-      spec:
-        accessModes: [&quot;ReadWriteOnce&quot;]
-        storageClassName: local-loopbacks
-        resources:
-          requests:
-            storage: 90Mi
-</code></pre>
-<pre><code>$ oc apply -f statefulset.yaml
-</code></pre>
-<p>OpenShift's admission controller will complain that the range is not correct:</p>
-<pre><code>$ oc get pods
-No resources found.
-$ oc describe statefulset test | tail
-  StorageClass:  local-loopbacks
-  Labels:        &lt;none&gt;
-  Annotations:   &lt;none&gt;
-  Capacity:      90Mi
-  Access Modes:  [ReadWriteOnce]
-Events:
-  Type     Reason            Age                 From                    Message
-  ----     ------            ----                ----                    -------
-  Normal   SuccessfulCreate  40s                 statefulset-controller  create Claim vol-test-0 Pod test-0 in StatefulSet test success
-  Warning  FailedCreate      19s (x14 over 40s)  statefulset-controller  create Pod test-0 in StatefulSet test failed error: pods &quot;test-0&quot; is forbidden: unable to validate against any security context constraint: [spec.containers[0].securityContext.securityContext.runAsUser: Invalid value: 65000: must be in the ranges: [1000090000, 1000099999]]
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
+<p><code class="highlight">statefulset.yaml</code>:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">kind</span><span class="o">:</span> <span class="n">Service</span>
+<span class="n">apiVersion</span><span class="o">:</span> <span class="n">v1</span>
+<span class="n">metadata</span><span class="o">:</span>
+  <span class="n">name</span><span class="o">:</span> <span class="s2">&quot;test&quot;</span>
+<span class="n">spec</span><span class="o">:</span>
+  <span class="n">clusterIP</span><span class="o">:</span> <span class="n">None</span>
+  <span class="err">#</span> <span class="n">the</span> <span class="n">list</span> <span class="n">of</span> <span class="n">ports</span> <span class="n">that</span> <span class="n">are</span> <span class="n">exposed</span> <span class="n">by</span> <span class="k">this</span> <span class="n">service</span>
+  <span class="n">ports</span><span class="o">:</span>
+    <span class="o">-</span> <span class="n">name</span><span class="o">:</span> <span class="n">http</span>
+      <span class="n">port</span><span class="o">:</span> <span class="mi">80</span>
+  <span class="err">#</span> <span class="n">will</span> <span class="n">route</span> <span class="n">traffic</span> <span class="n">to</span> <span class="n">pods</span> <span class="n">having</span> <span class="n">labels</span> <span class="n">matching</span> <span class="k">this</span> <span class="n">selector</span>
+  <span class="n">selector</span><span class="o">:</span>
+    <span class="n">name</span><span class="o">:</span> <span class="s2">&quot;test&quot;</span>
+<span class="o">---</span>
+<span class="n">apiVersion</span><span class="o">:</span> <span class="n">apps</span><span class="o">/</span><span class="n">v1</span>
+<span class="n">kind</span><span class="o">:</span> <span class="n">StatefulSet</span>
+<span class="n">metadata</span><span class="o">:</span>
+  <span class="n">name</span><span class="o">:</span> <span class="n">test</span>
+<span class="n">spec</span><span class="o">:</span>
+  <span class="n">selector</span><span class="o">:</span>
+    <span class="n">matchLabels</span><span class="o">:</span>
+       <span class="n">app</span><span class="o">:</span> <span class="n">test</span>
+  <span class="n">serviceName</span><span class="o">:</span> <span class="n">test</span>
+  <span class="n">replicas</span><span class="o">:</span> <span class="mi">1</span>
+  <span class="n">template</span><span class="o">:</span>
+    <span class="n">metadata</span><span class="o">:</span>
+      <span class="n">labels</span><span class="o">:</span>
+        <span class="n">app</span><span class="o">:</span> <span class="n">test</span>
+    <span class="n">spec</span><span class="o">:</span>
+      <span class="n">securityContext</span><span class="o">:</span>
+        <span class="n">runAsUser</span><span class="o">:</span> <span class="mi">65000</span>
+      <span class="n">containers</span><span class="o">:</span>
+        <span class="o">-</span> <span class="n">image</span><span class="o">:</span> <span class="n">gcr</span><span class="o">.</span><span class="na">io</span><span class="sr">/google_containers/</span><span class="n">busybox</span>
+          <span class="n">command</span><span class="o">:</span>
+            <span class="o">-</span> <span class="s2">&quot;/bin/sh&quot;</span>
+            <span class="o">-</span> <span class="s2">&quot;-c&quot;</span>
+            <span class="o">-</span> <span class="s2">&quot;while true; do date; sleep 1; done&quot;</span>
+          <span class="n">name</span><span class="o">:</span> <span class="n">busybox</span>
+          <span class="n">volumeMounts</span><span class="o">:</span>
+            <span class="o">-</span> <span class="n">name</span><span class="o">:</span> <span class="n">vol</span>
+              <span class="n">mountPath</span><span class="o">:</span> <span class="o">/</span><span class="n">mnt</span>
+  <span class="n">volumeClaimTemplates</span><span class="o">:</span>
+    <span class="o">-</span> <span class="n">metadata</span><span class="o">:</span>
+        <span class="n">name</span><span class="o">:</span> <span class="n">vol</span>
+      <span class="n">spec</span><span class="o">:</span>
+        <span class="n">accessModes</span><span class="o">:</span> <span class="o">[</span><span class="s2">&quot;ReadWriteOnce&quot;</span><span class="o">]</span>
+        <span class="n">storageClassName</span><span class="o">:</span> <span class="n">local</span><span class="o">-</span><span class="n">loopbacks</span>
+        <span class="n">resources</span><span class="o">:</span>
+          <span class="n">requests</span><span class="o">:</span>
+            <span class="n">storage</span><span class="o">:</span> <span class="mi">90</span><span class="n">Mi</span>
+</code></pre></div>
+</td></tr></table></p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc apply -f statefulset.yaml
+</code></pre></div>
+</td></tr></table>
+<p>OpenShift's admission controller will complain that the range is not correct:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">pods</span><span class="w"></span>
+<span class="k">No</span><span class="w"> </span><span class="n">resources</span><span class="w"> </span><span class="k">found</span><span class="p">.</span><span class="w"></span>
+<span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="k">describe</span><span class="w"> </span><span class="n">statefulset</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">tail</span><span class="w"></span>
+<span class="w">  </span><span class="nl">StorageClass</span><span class="p">:</span><span class="w">  </span><span class="k">local</span><span class="o">-</span><span class="n">loopbacks</span><span class="w"></span>
+<span class="w">  </span><span class="nl">Labels</span><span class="p">:</span><span class="w">        </span><span class="o">&lt;</span><span class="k">none</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">  </span><span class="nl">Annotations</span><span class="p">:</span><span class="w">   </span><span class="o">&lt;</span><span class="k">none</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">  </span><span class="nl">Capacity</span><span class="p">:</span><span class="w">      </span><span class="mi">90</span><span class="n">Mi</span><span class="w"></span>
+<span class="w">  </span><span class="n">Access</span><span class="w"> </span><span class="nl">Modes</span><span class="p">:</span><span class="w">  </span><span class="o">[</span><span class="n">ReadWriteOnce</span><span class="o">]</span><span class="w"></span>
+<span class="nl">Events</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="n">Type</span><span class="w">     </span><span class="n">Reason</span><span class="w">            </span><span class="n">Age</span><span class="w">                 </span><span class="k">From</span><span class="w">                    </span><span class="n">Message</span><span class="w"></span>
+<span class="w">  </span><span class="o">----</span><span class="w">     </span><span class="o">------</span><span class="w">            </span><span class="o">----</span><span class="w">                </span><span class="o">----</span><span class="w">                    </span><span class="o">-------</span><span class="w"></span>
+<span class="w">  </span><span class="n">Normal</span><span class="w">   </span><span class="n">SuccessfulCreate</span><span class="w">  </span><span class="mi">40</span><span class="n">s</span><span class="w">                 </span><span class="n">statefulset</span><span class="o">-</span><span class="n">controller</span><span class="w">  </span><span class="k">create</span><span class="w"> </span><span class="n">Claim</span><span class="w"> </span><span class="n">vol</span><span class="o">-</span><span class="n">test</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="n">Pod</span><span class="w"> </span><span class="n">test</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">StatefulSet</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="n">success</span><span class="w"></span>
+<span class="w">  </span><span class="n">Warning</span><span class="w">  </span><span class="n">FailedCreate</span><span class="w">      </span><span class="mi">19</span><span class="n">s</span><span class="w"> </span><span class="p">(</span><span class="n">x14</span><span class="w"> </span><span class="k">over</span><span class="w"> </span><span class="mi">40</span><span class="n">s</span><span class="p">)</span><span class="w">  </span><span class="n">statefulset</span><span class="o">-</span><span class="n">controller</span><span class="w">  </span><span class="k">create</span><span class="w"> </span><span class="n">Pod</span><span class="w"> </span><span class="n">test</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">StatefulSet</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="n">failed</span><span class="w"> </span><span class="nl">error</span><span class="p">:</span><span class="w"> </span><span class="n">pods</span><span class="w"> </span><span class="ss">&quot;test-0&quot;</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="nl">forbidden</span><span class="p">:</span><span class="w"> </span><span class="n">unable</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">validate</span><span class="w"> </span><span class="n">against</span><span class="w"> </span><span class="ow">any</span><span class="w"> </span><span class="n">security</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="k">constraint</span><span class="err">:</span><span class="w"> </span><span class="o">[</span><span class="n">spec.containers[0</span><span class="o">]</span><span class="p">.</span><span class="n">securityContext</span><span class="p">.</span><span class="n">securityContext</span><span class="p">.</span><span class="nl">runAsUser</span><span class="p">:</span><span class="w"> </span><span class="n">Invalid</span><span class="w"> </span><span class="k">value</span><span class="err">:</span><span class="w"> </span><span class="mi">65000</span><span class="err">:</span><span class="w"> </span><span class="n">must</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="nl">ranges</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="n">1000090000, 1000099999</span><span class="o">]</span><span class="err">]</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
 <h2 id="fixing-failed-validation-of-security-context-constraints">Fixing failed validation of security context constraints</h2>
 <p>There are 3 solutions to this. Either:</p>
 <ul>
 <li>create a new SCC (or modify the restricted policy which is not recommended) or </li>
-<li>modify the runAsUser field to run the pod as a user inside range <code>1000090000, 1000099999</code> or </li>
-<li>change the namespace's <code>openshift.io/sa.scc.uid-range</code>.</li>
+<li>modify the runAsUser field to run the pod as a user inside range <code class="highlight"><span class="mf">1000090000</span><span class="p">,</span> <span class="mf">1000099999</span></code> or </li>
+<li>change the namespace's <code class="highlight">openshift.io/sa.scc.uid-range</code>.</li>
 </ul>
 <h3 id="resetting-the-lab">Resetting the lab</h3>
-<p>First, delete the statefulSet, PVC, etc. Continue once all is deleted:</p>
-<pre><code>$ oc get statefulset
+<p>First, delete the statefulSet, PVC, etc. Continue once all is deleted:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc get statefulset
 No resources found.
 $ oc get pods
 No resources found.
 $ oc get pvc
 No resources found.
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
 <h3 id="changing-the-namespaces-openshiftiosasccuid-range">Changing the namespace's openshift.io/sa.scc.uid-range</h3>
-<p>Let's change the namespace's <code>uid-range</code>:</p>
-<pre><code>$ oc edit namespace test
+<p>Let's change the namespace's <code class="highlight">uid-range</code>:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc edit namespace <span class="nb">test</span>
 namespace/test edited
-$ oc describe project test  | grep scc
-            openshift.io/sa.scc.mcs=s0:c10,c0
-            openshift.io/sa.scc.supplemental-groups=1000090000/10000
-            openshift.io/sa.scc.uid-range=65000/1000
-</code></pre>
-<pre><code>$ oc apply -f statefulset.yaml
+$ oc describe project <span class="nb">test</span>  <span class="p">|</span> grep scc
+            openshift.io/sa.scc.mcs<span class="o">=</span>s0:c10,c0
+            openshift.io/sa.scc.supplemental-groups<span class="o">=</span><span class="m">1000090000</span>/10000
+            openshift.io/sa.scc.uid-range<span class="o">=</span><span class="m">65000</span>/1000
+</code></pre></div>
+</td></tr></table></p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc apply -f statefulset.yaml
 service/test created
 statefulset.apps/test created
-</code></pre>
-<pre><code>$ oc get statefulset
+</code></pre></div>
+</td></tr></table>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc get statefulset
 NAME      DESIRED   CURRENT   AGE
-test      1         1         24s
+<span class="nb">test</span>      <span class="m">1</span>         <span class="m">1</span>         24s
 $ oc get pods
 NAME      READY     STATUS    RESTARTS   AGE
-test-0    1/1       Running   0          26s
+test-0    <span class="m">1</span>/1       Running   <span class="m">0</span>          26s
 $ oc get pvc
 NAME         STATUS    VOLUME              CAPACITY   ACCESS MODES   STORAGECLASS      AGE
 vol-test-0   Bound     local-pv-9e67e7d6   92Mi       RWO            local-loopbacks   30s
-</code></pre>
-<p>The pod was assigned to the restricted SCC:</p>
-<pre><code>$ oc get pod test-0 -o yaml | grep scc
+</code></pre></div>
+</td></tr></table>
+<p>The pod was assigned to the restricted SCC:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc get pod test-0 -o yaml <span class="p">|</span> grep scc
     openshift.io/scc: restricted
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
 <p>This is because the restricted SCC is the default. If other SCCs were assigned to the default serviceaccount of the project, then SCC priorization would come into play. </p>
 <p>For more about SCC priorization, see: <a href="https://docs.openshift.com/container-platform/3.11/architecture/additional_concepts/authorization.html#scc-prioritization">https://docs.openshift.com/container-platform/3.11/architecture/additional_concepts/authorization.html#scc-prioritization</a></p>
-<p>On the worker that the pod runs at, verify the container's and processes' UID:</p>
-<pre><code>[root@node-0 ~]# docker ps  | grep test
-47b2d7df970c        gcr.io/google_containers/busybox@sha256:d8d3bc2c183ed2f9f10e7258f84971202325ee6011ba137112e01e30f206de67                          &quot;/bin/sh -c 'while...&quot;   About a minute ago   Up About a minute                       k8s_busybox_test-0_test_6dfbf91e-d5a1-11ea-a312-fa163e8752f1_0
-8b3ef77e9213        registry.redhat.io/openshift3/ose-pod:v3.11.248                                                                                   &quot;/usr/bin/pod&quot;           About a minute ago   Up About a minute                       k8s_POD_test-0_test_6dfbf91e-d5a1-11ea-a312-fa163e8752f1_0
-[root@node-0 ~]# docker inspect 47b2d7df970c | grep -i user
-            &quot;UsernsMode&quot;: &quot;&quot;,
-            &quot;User&quot;: &quot;65000&quot;,
-[root@node-0 ~]# ps aux | grep 'date; sleep 1'
-65000      5172  0.0  0.0   3164   352 ?        Ss   11:53   0:00 /bin/sh -c while true; do date; sleep 1; done
-root       6616  0.0  0.0 112808   972 pts/0    R+   11:55   0:00 grep --color=auto date; sleep 1
-</code></pre>
-<p>Also note that the FsGroupID was set automatically for the filesystem:</p>
-<pre><code>[root@node-0 ~]# ls /mnt/local-storage/loopbacks/ -al
-total 8
-drwxr-xr-x. 6 root root         42 Jul 30 13:30 .
-drwxr-xr-x. 3 root root         23 Jul 30 13:28 ..
-drwxrwsr-x. 2 root root       1024 Aug  3 10:06 a
-drwxrwsr-x. 2 root root       1024 Aug  3 09:55 b
-drwxrwsr-x. 2 root 1000090000 1024 Aug  3 09:55 c
-drwxr-xr-x. 3 root root       1024 Jul 30 13:30 d
-</code></pre>
-<p>And it was assigned as GID to the user inside the pod:</p>
-<pre><code>$ oc rsh test-0
+<p>On the worker that the pod runs at, verify the container's and processes' UID:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@node-0 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">docker</span><span class="w"> </span><span class="n">ps</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">test</span><span class="w"></span>
+<span class="mi">47</span><span class="n">b2d7df970c</span><span class="w">        </span><span class="n">gcr</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">google_containers</span><span class="o">/</span><span class="n">busybox</span><span class="nv">@sha256</span><span class="err">:</span><span class="n">d8d3bc2c183ed2f9f10e7258f84971202325ee6011ba137112e01e30f206de67</span><span class="w">                          </span><span class="ss">&quot;/bin/sh -c &#39;while...&quot;</span><span class="w">   </span><span class="n">About</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">minute</span><span class="w"> </span><span class="n">ago</span><span class="w">   </span><span class="n">Up</span><span class="w"> </span><span class="n">About</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">minute</span><span class="w">                       </span><span class="n">k8s_busybox_test</span><span class="o">-</span><span class="mi">0</span><span class="n">_test_6dfbf91e</span><span class="o">-</span><span class="n">d5a1</span><span class="o">-</span><span class="mi">11</span><span class="n">ea</span><span class="o">-</span><span class="n">a312</span><span class="o">-</span><span class="n">fa163e8752f1_0</span><span class="w"></span>
+<span class="mi">8</span><span class="n">b3ef77e9213</span><span class="w">        </span><span class="n">registry</span><span class="p">.</span><span class="n">redhat</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">openshift3</span><span class="o">/</span><span class="n">ose</span><span class="o">-</span><span class="nl">pod</span><span class="p">:</span><span class="n">v3</span><span class="mf">.11.248</span><span class="w">                                                                                   </span><span class="ss">&quot;/usr/bin/pod&quot;</span><span class="w">           </span><span class="n">About</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">minute</span><span class="w"> </span><span class="n">ago</span><span class="w">   </span><span class="n">Up</span><span class="w"> </span><span class="n">About</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">minute</span><span class="w">                       </span><span class="n">k8s_POD_test</span><span class="o">-</span><span class="mi">0</span><span class="n">_test_6dfbf91e</span><span class="o">-</span><span class="n">d5a1</span><span class="o">-</span><span class="mi">11</span><span class="n">ea</span><span class="o">-</span><span class="n">a312</span><span class="o">-</span><span class="n">fa163e8752f1_0</span><span class="w"></span>
+<span class="o">[</span><span class="n">root@node-0 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">docker</span><span class="w"> </span><span class="n">inspect</span><span class="w"> </span><span class="mi">47</span><span class="n">b2d7df970c</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="k">user</span><span class="w"></span>
+<span class="w">            </span><span class="ss">&quot;UsernsMode&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="ss">&quot;User&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;65000&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="o">[</span><span class="n">root@node-0 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">ps</span><span class="w"> </span><span class="n">aux</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="s1">&#39;date; sleep 1&#39;</span><span class="w"></span>
+<span class="mi">65000</span><span class="w">      </span><span class="mi">5172</span><span class="w">  </span><span class="mf">0.0</span><span class="w">  </span><span class="mf">0.0</span><span class="w">   </span><span class="mi">3164</span><span class="w">   </span><span class="mi">352</span><span class="w"> </span><span class="vm">?</span><span class="w">        </span><span class="n">Ss</span><span class="w">   </span><span class="mi">11</span><span class="err">:</span><span class="mi">53</span><span class="w">   </span><span class="mi">0</span><span class="err">:</span><span class="mi">00</span><span class="w"> </span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">sh</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="k">while</span><span class="w"> </span><span class="k">true</span><span class="p">;</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="nc">date</span><span class="p">;</span><span class="w"> </span><span class="n">sleep</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">done</span><span class="w"></span>
+<span class="n">root</span><span class="w">       </span><span class="mi">6616</span><span class="w">  </span><span class="mf">0.0</span><span class="w">  </span><span class="mf">0.0</span><span class="w"> </span><span class="mi">112808</span><span class="w">   </span><span class="mi">972</span><span class="w"> </span><span class="n">pts</span><span class="o">/</span><span class="mi">0</span><span class="w">    </span><span class="n">R</span><span class="o">+</span><span class="w">   </span><span class="mi">11</span><span class="err">:</span><span class="mi">55</span><span class="w">   </span><span class="mi">0</span><span class="err">:</span><span class="mi">00</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="c1">--color=auto date; sleep 1</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Also note that the FsGroupID was set automatically for the filesystem:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@node-0 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">ls</span><span class="w"> </span><span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="k">local</span><span class="o">-</span><span class="n">storage</span><span class="o">/</span><span class="n">loopbacks</span><span class="o">/</span><span class="w"> </span><span class="o">-</span><span class="n">al</span><span class="w"></span>
+<span class="n">total</span><span class="w"> </span><span class="mi">8</span><span class="w"></span>
+<span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w">         </span><span class="mi">42</span><span class="w"> </span><span class="n">Jul</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="mi">13</span><span class="err">:</span><span class="mi">30</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+<span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w">         </span><span class="mi">23</span><span class="w"> </span><span class="n">Jul</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="mi">13</span><span class="err">:</span><span class="mi">28</span><span class="w"> </span><span class="p">..</span><span class="w"></span>
+<span class="n">drwxrwsr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w">       </span><span class="mi">1024</span><span class="w"> </span><span class="n">Aug</span><span class="w">  </span><span class="mi">3</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">06</span><span class="w"> </span><span class="n">a</span><span class="w"></span>
+<span class="n">drwxrwsr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w">       </span><span class="mi">1024</span><span class="w"> </span><span class="n">Aug</span><span class="w">  </span><span class="mi">3</span><span class="w"> </span><span class="mi">09</span><span class="err">:</span><span class="mi">55</span><span class="w"> </span><span class="n">b</span><span class="w"></span>
+<span class="n">drwxrwsr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="mi">1000090000</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="n">Aug</span><span class="w">  </span><span class="mi">3</span><span class="w"> </span><span class="mi">09</span><span class="err">:</span><span class="mi">55</span><span class="w"> </span><span class="n">c</span><span class="w"></span>
+<span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w">       </span><span class="mi">1024</span><span class="w"> </span><span class="n">Jul</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="mi">13</span><span class="err">:</span><span class="mi">30</span><span class="w"> </span><span class="n">d</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p>And it was assigned as GID to the user inside the pod:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc rsh test-0
 / $ id
-uid=65000 gid=0(root) groups=1000090000
-</code></pre>
+<span class="nv">uid</span><span class="o">=</span><span class="m">65000</span> <span class="nv">gid</span><span class="o">=</span><span class="m">0</span><span class="o">(</span>root<span class="o">)</span> <span class="nv">groups</span><span class="o">=</span><span class="m">1000090000</span>
+</code></pre></div>
+</td></tr></table></p>
 <h3 id="resetting-the-lab_1">Resetting the lab</h3>
-<p>Delete the statefulSet, PVC, etc again. Continue once all is deleted:</p>
-<pre><code>$ oc get statefulset
+<p>Delete the statefulSet, PVC, etc again. Continue once all is deleted:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc get statefulset
 No resources found.
 $ oc get pods
 No resources found.
 $ oc get pvc
 No resources found.
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
 <h3 id="creating-a-custom-scc">Creating a custom SCC</h3>
-<p>Let's now modify <code>pod.spec.securityContext</code> and set fsGroup:</p>
-<pre><code>kind: Service
-apiVersion: v1
-metadata:
-  name: &quot;test&quot;
-spec:
-  clusterIP: None
-  # the list of ports that are exposed by this service
-  ports:
-    - name: http
-      port: 80
-  # will route traffic to pods having labels matching this selector
-  selector:
-    name: &quot;test&quot;
----
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: test
-spec:
-  selector:
-    matchLabels:
-       app: test
-  serviceName: test
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: test
-    spec:
-      securityContext:
-        runAsUser: 65000
-        fsGroup: 65000
-      containers:
-        - image: gcr.io/google_containers/busybox
-          command:
-            - &quot;/bin/sh&quot;
-            - &quot;-c&quot;
-            - &quot;while true; do date; sleep 1; done&quot;
-          name: busybox
-          volumeMounts:
-            - name: vol
-              mountPath: /mnt
-  volumeClaimTemplates:
-    - metadata:
-        name: vol
-      spec:
-        accessModes: [&quot;ReadWriteOnce&quot;]
-        storageClassName: local-loopbacks
-        resources:
-          requests:
-            storage: 90Mi
-</code></pre>
-<p>This of course must fail:</p>
-<pre><code> oc apply -f statefulset.yaml 
-service/test created
-statefulset.apps/test created
-$ oc describe statefulset test | tail
-  StorageClass:  local-loopbacks
-  Labels:        &lt;none&gt;
-  Annotations:   &lt;none&gt;
-  Capacity:      90Mi
-  Access Modes:  [ReadWriteOnce]
-Events:
-  Type     Reason            Age               From                    Message
-  ----     ------            ----              ----                    -------
-  Normal   SuccessfulCreate  7s                statefulset-controller  create Claim vol-test-0 Pod test-0 in StatefulSet test success
-  Warning  FailedCreate      2s (x11 over 7s)  statefulset-controller  create Pod test-0 in StatefulSet test failed error: pods &quot;test-0&quot; is forbidden: unable to validate against any security context constraint: [fsGroup: Invalid value: []int64{65000}: 65000 is not an allowed group]
-</code></pre>
-<p>Let's create a custom SCC to change this. The following group was created by inspecting the <code>restricted</code> SCC with <code>oc get scc restricted -o yaml</code> and then by changing the name, the fsGroup ranges and by removing some of the metadata.</p>
-<p><code>restricted-fsgroup.yaml</code>:</p>
-<pre><code>allowHostDirVolumePlugin: false
-allowHostIPC: false
-allowHostNetwork: false
-allowHostPID: false
-allowHostPorts: false
-allowPrivilegeEscalation: true
-allowPrivilegedContainer: false
-allowedCapabilities: null
-apiVersion: security.openshift.io/v1
-defaultAddCapabilities: null
-fsGroup:
-  type: MustRunAs
-  ranges:
-    - min: 65000
-      max: 66000
-kind: SecurityContextConstraints
-metadata:
-  name: restricted-fsgroup
-# priority: 10  # it's possible to prioritize this SCC - we are not doing this here
-readOnlyRootFilesystem: false
-requiredDropCapabilities:
-- KILL
-- MKNOD
-- SETUID
-- SETGID
-runAsUser:
-  type: MustRunAsRange
-seLinuxContext:
-  type: MustRunAs
-supplementalGroups:
-  type: RunAsAny
-users: []
-volumes:
-- configMap
-- downwardAPI
-- emptyDir
-- persistentVolumeClaim
-- projected
-- secret
-</code></pre>
-<pre><code>$ oc apply -f restricted-fsgroup.yaml 
+<p>Let's now modify <code class="highlight">pod.spec.securityContext</code> and set fsGroup:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">kind</span><span class="o">:</span> <span class="n">Service</span>
+<span class="n">apiVersion</span><span class="o">:</span> <span class="n">v1</span>
+<span class="n">metadata</span><span class="o">:</span>
+  <span class="n">name</span><span class="o">:</span> <span class="s2">&quot;test&quot;</span>
+<span class="n">spec</span><span class="o">:</span>
+  <span class="n">clusterIP</span><span class="o">:</span> <span class="n">None</span>
+  <span class="err">#</span> <span class="n">the</span> <span class="n">list</span> <span class="n">of</span> <span class="n">ports</span> <span class="n">that</span> <span class="n">are</span> <span class="n">exposed</span> <span class="n">by</span> <span class="k">this</span> <span class="n">service</span>
+  <span class="n">ports</span><span class="o">:</span>
+    <span class="o">-</span> <span class="n">name</span><span class="o">:</span> <span class="n">http</span>
+      <span class="n">port</span><span class="o">:</span> <span class="mi">80</span>
+  <span class="err">#</span> <span class="n">will</span> <span class="n">route</span> <span class="n">traffic</span> <span class="n">to</span> <span class="n">pods</span> <span class="n">having</span> <span class="n">labels</span> <span class="n">matching</span> <span class="k">this</span> <span class="n">selector</span>
+  <span class="n">selector</span><span class="o">:</span>
+    <span class="n">name</span><span class="o">:</span> <span class="s2">&quot;test&quot;</span>
+<span class="o">---</span>
+<span class="n">apiVersion</span><span class="o">:</span> <span class="n">apps</span><span class="o">/</span><span class="n">v1</span>
+<span class="n">kind</span><span class="o">:</span> <span class="n">StatefulSet</span>
+<span class="n">metadata</span><span class="o">:</span>
+  <span class="n">name</span><span class="o">:</span> <span class="n">test</span>
+<span class="n">spec</span><span class="o">:</span>
+  <span class="n">selector</span><span class="o">:</span>
+    <span class="n">matchLabels</span><span class="o">:</span>
+       <span class="n">app</span><span class="o">:</span> <span class="n">test</span>
+  <span class="n">serviceName</span><span class="o">:</span> <span class="n">test</span>
+  <span class="n">replicas</span><span class="o">:</span> <span class="mi">1</span>
+  <span class="n">template</span><span class="o">:</span>
+    <span class="n">metadata</span><span class="o">:</span>
+      <span class="n">labels</span><span class="o">:</span>
+        <span class="n">app</span><span class="o">:</span> <span class="n">test</span>
+    <span class="n">spec</span><span class="o">:</span>
+      <span class="n">securityContext</span><span class="o">:</span>
+        <span class="n">runAsUser</span><span class="o">:</span> <span class="mi">65000</span>
+        <span class="n">fsGroup</span><span class="o">:</span> <span class="mi">65000</span>
+      <span class="n">containers</span><span class="o">:</span>
+        <span class="o">-</span> <span class="n">image</span><span class="o">:</span> <span class="n">gcr</span><span class="o">.</span><span class="na">io</span><span class="sr">/google_containers/</span><span class="n">busybox</span>
+          <span class="n">command</span><span class="o">:</span>
+            <span class="o">-</span> <span class="s2">&quot;/bin/sh&quot;</span>
+            <span class="o">-</span> <span class="s2">&quot;-c&quot;</span>
+            <span class="o">-</span> <span class="s2">&quot;while true; do date; sleep 1; done&quot;</span>
+          <span class="n">name</span><span class="o">:</span> <span class="n">busybox</span>
+          <span class="n">volumeMounts</span><span class="o">:</span>
+            <span class="o">-</span> <span class="n">name</span><span class="o">:</span> <span class="n">vol</span>
+              <span class="n">mountPath</span><span class="o">:</span> <span class="o">/</span><span class="n">mnt</span>
+  <span class="n">volumeClaimTemplates</span><span class="o">:</span>
+    <span class="o">-</span> <span class="n">metadata</span><span class="o">:</span>
+        <span class="n">name</span><span class="o">:</span> <span class="n">vol</span>
+      <span class="n">spec</span><span class="o">:</span>
+        <span class="n">accessModes</span><span class="o">:</span> <span class="o">[</span><span class="s2">&quot;ReadWriteOnce&quot;</span><span class="o">]</span>
+        <span class="n">storageClassName</span><span class="o">:</span> <span class="n">local</span><span class="o">-</span><span class="n">loopbacks</span>
+        <span class="n">resources</span><span class="o">:</span>
+          <span class="n">requests</span><span class="o">:</span>
+            <span class="n">storage</span><span class="o">:</span> <span class="mi">90</span><span class="n">Mi</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>This of course must fail:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="n">apply</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="n">statefulset</span><span class="p">.</span><span class="n">yaml</span><span class="w"> </span>
+<span class="n">service</span><span class="o">/</span><span class="n">test</span><span class="w"> </span><span class="n">created</span><span class="w"></span>
+<span class="n">statefulset</span><span class="p">.</span><span class="n">apps</span><span class="o">/</span><span class="n">test</span><span class="w"> </span><span class="n">created</span><span class="w"></span>
+<span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="k">describe</span><span class="w"> </span><span class="n">statefulset</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">tail</span><span class="w"></span>
+<span class="w">  </span><span class="nl">StorageClass</span><span class="p">:</span><span class="w">  </span><span class="k">local</span><span class="o">-</span><span class="n">loopbacks</span><span class="w"></span>
+<span class="w">  </span><span class="nl">Labels</span><span class="p">:</span><span class="w">        </span><span class="o">&lt;</span><span class="k">none</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">  </span><span class="nl">Annotations</span><span class="p">:</span><span class="w">   </span><span class="o">&lt;</span><span class="k">none</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">  </span><span class="nl">Capacity</span><span class="p">:</span><span class="w">      </span><span class="mi">90</span><span class="n">Mi</span><span class="w"></span>
+<span class="w">  </span><span class="n">Access</span><span class="w"> </span><span class="nl">Modes</span><span class="p">:</span><span class="w">  </span><span class="o">[</span><span class="n">ReadWriteOnce</span><span class="o">]</span><span class="w"></span>
+<span class="nl">Events</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="n">Type</span><span class="w">     </span><span class="n">Reason</span><span class="w">            </span><span class="n">Age</span><span class="w">               </span><span class="k">From</span><span class="w">                    </span><span class="n">Message</span><span class="w"></span>
+<span class="w">  </span><span class="o">----</span><span class="w">     </span><span class="o">------</span><span class="w">            </span><span class="o">----</span><span class="w">              </span><span class="o">----</span><span class="w">                    </span><span class="o">-------</span><span class="w"></span>
+<span class="w">  </span><span class="n">Normal</span><span class="w">   </span><span class="n">SuccessfulCreate</span><span class="w">  </span><span class="mi">7</span><span class="n">s</span><span class="w">                </span><span class="n">statefulset</span><span class="o">-</span><span class="n">controller</span><span class="w">  </span><span class="k">create</span><span class="w"> </span><span class="n">Claim</span><span class="w"> </span><span class="n">vol</span><span class="o">-</span><span class="n">test</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="n">Pod</span><span class="w"> </span><span class="n">test</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">StatefulSet</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="n">success</span><span class="w"></span>
+<span class="w">  </span><span class="n">Warning</span><span class="w">  </span><span class="n">FailedCreate</span><span class="w">      </span><span class="mi">2</span><span class="n">s</span><span class="w"> </span><span class="p">(</span><span class="n">x11</span><span class="w"> </span><span class="k">over</span><span class="w"> </span><span class="mi">7</span><span class="n">s</span><span class="p">)</span><span class="w">  </span><span class="n">statefulset</span><span class="o">-</span><span class="n">controller</span><span class="w">  </span><span class="k">create</span><span class="w"> </span><span class="n">Pod</span><span class="w"> </span><span class="n">test</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">StatefulSet</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="n">failed</span><span class="w"> </span><span class="nl">error</span><span class="p">:</span><span class="w"> </span><span class="n">pods</span><span class="w"> </span><span class="ss">&quot;test-0&quot;</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="nl">forbidden</span><span class="p">:</span><span class="w"> </span><span class="n">unable</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">validate</span><span class="w"> </span><span class="n">against</span><span class="w"> </span><span class="ow">any</span><span class="w"> </span><span class="n">security</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="k">constraint</span><span class="err">:</span><span class="w"> </span><span class="o">[</span><span class="n">fsGroup: Invalid value: [</span><span class="o">]</span><span class="n">int64</span><span class="err">{</span><span class="mi">65000</span><span class="err">}:</span><span class="w"> </span><span class="mi">65000</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">allowed</span><span class="w"> </span><span class="k">group</span><span class="err">]</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Let's create a custom SCC to change this. The following group was created by inspecting the <code class="highlight">restricted</code> SCC with <code class="highlight">oc get scc restricted -o yaml</code> and then by changing the name, the fsGroup ranges and by removing some of the metadata.</p>
+<p><code class="highlight">restricted-fsgroup.yaml</code>:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">allowHostDirVolumePlugin</span><span class="o">:</span> <span class="kc">false</span>
+<span class="n">allowHostIPC</span><span class="o">:</span> <span class="kc">false</span>
+<span class="n">allowHostNetwork</span><span class="o">:</span> <span class="kc">false</span>
+<span class="n">allowHostPID</span><span class="o">:</span> <span class="kc">false</span>
+<span class="n">allowHostPorts</span><span class="o">:</span> <span class="kc">false</span>
+<span class="n">allowPrivilegeEscalation</span><span class="o">:</span> <span class="kc">true</span>
+<span class="n">allowPrivilegedContainer</span><span class="o">:</span> <span class="kc">false</span>
+<span class="n">allowedCapabilities</span><span class="o">:</span> <span class="kc">null</span>
+<span class="n">apiVersion</span><span class="o">:</span> <span class="n">security</span><span class="o">.</span><span class="na">openshift</span><span class="o">.</span><span class="na">io</span><span class="o">/</span><span class="n">v1</span>
+<span class="n">defaultAddCapabilities</span><span class="o">:</span> <span class="kc">null</span>
+<span class="n">fsGroup</span><span class="o">:</span>
+  <span class="n">type</span><span class="o">:</span> <span class="n">MustRunAs</span>
+  <span class="n">ranges</span><span class="o">:</span>
+    <span class="o">-</span> <span class="n">min</span><span class="o">:</span> <span class="mi">65000</span>
+      <span class="n">max</span><span class="o">:</span> <span class="mi">66000</span>
+<span class="n">kind</span><span class="o">:</span> <span class="n">SecurityContextConstraints</span>
+<span class="n">metadata</span><span class="o">:</span>
+  <span class="n">name</span><span class="o">:</span> <span class="n">restricted</span><span class="o">-</span><span class="n">fsgroup</span>
+<span class="err">#</span> <span class="n">priority</span><span class="o">:</span> <span class="mi">10</span>  <span class="err">#</span> <span class="n">it</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">possible</span> <span class="n">to</span> <span class="n">prioritize</span> <span class="k">this</span> <span class="n">SCC</span> <span class="o">-</span> <span class="n">we</span> <span class="n">are</span> <span class="n">not</span> <span class="n">doing</span> <span class="k">this</span> <span class="n">here</span>
+<span class="n">readOnlyRootFilesystem</span><span class="o">:</span> <span class="kc">false</span>
+<span class="n">requiredDropCapabilities</span><span class="o">:</span>
+<span class="o">-</span> <span class="n">KILL</span>
+<span class="o">-</span> <span class="n">MKNOD</span>
+<span class="o">-</span> <span class="n">SETUID</span>
+<span class="o">-</span> <span class="n">SETGID</span>
+<span class="n">runAsUser</span><span class="o">:</span>
+  <span class="n">type</span><span class="o">:</span> <span class="n">MustRunAsRange</span>
+<span class="n">seLinuxContext</span><span class="o">:</span>
+  <span class="n">type</span><span class="o">:</span> <span class="n">MustRunAs</span>
+<span class="n">supplementalGroups</span><span class="o">:</span>
+  <span class="n">type</span><span class="o">:</span> <span class="n">RunAsAny</span>
+<span class="n">users</span><span class="o">:</span> <span class="o">[]</span>
+<span class="n">volumes</span><span class="o">:</span>
+<span class="o">-</span> <span class="n">configMap</span>
+<span class="o">-</span> <span class="n">downwardAPI</span>
+<span class="o">-</span> <span class="n">emptyDir</span>
+<span class="o">-</span> <span class="n">persistentVolumeClaim</span>
+<span class="o">-</span> <span class="n">projected</span>
+<span class="o">-</span> <span class="n">secret</span>
+</code></pre></div>
+</td></tr></table></p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc apply -f restricted-fsgroup.yaml 
 securitycontextconstraints.security.openshift.io/restricted-fsgroup created
 $ oc get scc
 NAME                 PRIV      CAPS      SELINUX     RUNASUSER          FSGROUP     SUPGROUP    PRIORITY   READONLYROOTFS   VOLUMES
-anyuid               false     []        MustRunAs   RunAsAny           RunAsAny    RunAsAny    10         false            [configMap downwardAPI emptyDir persistentVolumeClaim projected secret]
-hostaccess           false     []        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    &lt;none&gt;     false            [configMap downwardAPI emptyDir hostPath persistentVolumeClaim projected secret]
-hostmount-anyuid     false     []        MustRunAs   RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     false            [configMap downwardAPI emptyDir hostPath nfs persistentVolumeClaim projected secret]
-hostnetwork          false     []        MustRunAs   MustRunAsRange     MustRunAs   MustRunAs   &lt;none&gt;     false            [configMap downwardAPI emptyDir persistentVolumeClaim projected secret]
-kube-state-metrics   false     []        RunAsAny    RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     false            [*]
-node-exporter        false     []        RunAsAny    RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     false            [*]
-nonroot              false     []        MustRunAs   MustRunAsNonRoot   RunAsAny    RunAsAny    &lt;none&gt;     false            [configMap downwardAPI emptyDir persistentVolumeClaim projected secret]
-privileged           true      [*]       RunAsAny    RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     false            [*]
-restricted           false     []        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    &lt;none&gt;     false            [configMap downwardAPI emptyDir persistentVolumeClaim projected secret]
-restricted-fsgroup   false     []        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    &lt;none&gt;     false            [configMap downwardAPI emptyDir persistentVolumeClaim projected secret]
-</code></pre>
-<p>Add this restricted-fsgroup to the default service account's SCCs:</p>
-<pre><code>$ oc adm policy add-scc-to-user restricted-fsgroup -z default
-scc &quot;restricted-fsgroup&quot; added to: [&quot;system:serviceaccount:test:default&quot;]
-$ oc get scc restricted-fsgroup -o yaml | grep users -A1
-(...)
+anyuid               <span class="nb">false</span>     <span class="o">[]</span>        MustRunAs   RunAsAny           RunAsAny    RunAsAny    <span class="m">10</span>         <span class="nb">false</span>            <span class="o">[</span>configMap downwardAPI emptyDir persistentVolumeClaim projected secret<span class="o">]</span>
+hostaccess           <span class="nb">false</span>     <span class="o">[]</span>        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>configMap downwardAPI emptyDir hostPath persistentVolumeClaim projected secret<span class="o">]</span>
+hostmount-anyuid     <span class="nb">false</span>     <span class="o">[]</span>        MustRunAs   RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>configMap downwardAPI emptyDir hostPath nfs persistentVolumeClaim projected secret<span class="o">]</span>
+hostnetwork          <span class="nb">false</span>     <span class="o">[]</span>        MustRunAs   MustRunAsRange     MustRunAs   MustRunAs   &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>configMap downwardAPI emptyDir persistentVolumeClaim projected secret<span class="o">]</span>
+kube-state-metrics   <span class="nb">false</span>     <span class="o">[]</span>        RunAsAny    RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>*<span class="o">]</span>
+node-exporter        <span class="nb">false</span>     <span class="o">[]</span>        RunAsAny    RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>*<span class="o">]</span>
+nonroot              <span class="nb">false</span>     <span class="o">[]</span>        MustRunAs   MustRunAsNonRoot   RunAsAny    RunAsAny    &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>configMap downwardAPI emptyDir persistentVolumeClaim projected secret<span class="o">]</span>
+privileged           <span class="nb">true</span>      <span class="o">[</span>*<span class="o">]</span>       RunAsAny    RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>*<span class="o">]</span>
+restricted           <span class="nb">false</span>     <span class="o">[]</span>        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>configMap downwardAPI emptyDir persistentVolumeClaim projected secret<span class="o">]</span>
+restricted-fsgroup   <span class="nb">false</span>     <span class="o">[]</span>        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>configMap downwardAPI emptyDir persistentVolumeClaim projected secret<span class="o">]</span>
+</code></pre></div>
+</td></tr></table>
+<p>Add this restricted-fsgroup to the default service account's SCCs:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc adm policy add-scc-to-user restricted-fsgroup -z default
+scc <span class="s2">&quot;restricted-fsgroup&quot;</span> added to: <span class="o">[</span><span class="s2">&quot;system:serviceaccount:test:default&quot;</span><span class="o">]</span>
+$ oc get scc restricted-fsgroup -o yaml <span class="p">|</span> grep users -A1
+<span class="o">(</span>...<span class="o">)</span>
 users:
 - system:serviceaccount:test:default
-(...)
-</code></pre>
-<p>Delete the statefulSet, PVC, etc again. Continue once all is deleted:</p>
-<pre><code>$ oc get statefulset
+<span class="o">(</span>...<span class="o">)</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Delete the statefulSet, PVC, etc again. Continue once all is deleted:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc get statefulset
 No resources found.
 $ oc get pods
 No resources found.
 $ oc get pvc
 No resources found.
-</code></pre>
-<p>The statefulSet can now spawn the pod and the pod is assigned to SCC <code>restricted-fsgroup</code>:</p>
-<pre><code>$ oc apply -f statefulset.yaml
-$ oc get pods
-NAME      READY     STATUS    RESTARTS   AGE
-test-0    1/1       Running   0          17s
-$ oc describe statefulset test | tail
-  StorageClass:  local-loopbacks
-  Labels:        &lt;none&gt;
-  Annotations:   &lt;none&gt;
-  Capacity:      90Mi
-  Access Modes:  [ReadWriteOnce]
-Events:
-  Type    Reason            Age   From                    Message
-  ----    ------            ----  ----                    -------
-  Normal  SuccessfulCreate  30s   statefulset-controller  create Claim vol-test-0 Pod test-0 in StatefulSet test success
-  Normal  SuccessfulCreate  30s   statefulset-controller  create Pod test-0 in StatefulSet test successful
-$ oc get pod test-0 -o yaml | grep scc
-    openshift.io/scc: restricted-fsgroup
-</code></pre>
-<p>The pod now runs with group ID 65000:</p>
-<pre><code>$ oc rsh test-0
+</code></pre></div>
+</td></tr></table></p>
+<p>The statefulSet can now spawn the pod and the pod is assigned to SCC <code class="highlight">restricted-fsgroup</code>:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="n">apply</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="n">statefulset</span><span class="p">.</span><span class="n">yaml</span><span class="w"></span>
+<span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">pods</span><span class="w"></span>
+<span class="n">NAME</span><span class="w">      </span><span class="n">READY</span><span class="w">     </span><span class="n">STATUS</span><span class="w">    </span><span class="n">RESTARTS</span><span class="w">   </span><span class="n">AGE</span><span class="w"></span>
+<span class="n">test</span><span class="o">-</span><span class="mi">0</span><span class="w">    </span><span class="mi">1</span><span class="o">/</span><span class="mi">1</span><span class="w">       </span><span class="n">Running</span><span class="w">   </span><span class="mi">0</span><span class="w">          </span><span class="mi">17</span><span class="n">s</span><span class="w"></span>
+<span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="k">describe</span><span class="w"> </span><span class="n">statefulset</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">tail</span><span class="w"></span>
+<span class="w">  </span><span class="nl">StorageClass</span><span class="p">:</span><span class="w">  </span><span class="k">local</span><span class="o">-</span><span class="n">loopbacks</span><span class="w"></span>
+<span class="w">  </span><span class="nl">Labels</span><span class="p">:</span><span class="w">        </span><span class="o">&lt;</span><span class="k">none</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">  </span><span class="nl">Annotations</span><span class="p">:</span><span class="w">   </span><span class="o">&lt;</span><span class="k">none</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">  </span><span class="nl">Capacity</span><span class="p">:</span><span class="w">      </span><span class="mi">90</span><span class="n">Mi</span><span class="w"></span>
+<span class="w">  </span><span class="n">Access</span><span class="w"> </span><span class="nl">Modes</span><span class="p">:</span><span class="w">  </span><span class="o">[</span><span class="n">ReadWriteOnce</span><span class="o">]</span><span class="w"></span>
+<span class="nl">Events</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="n">Type</span><span class="w">    </span><span class="n">Reason</span><span class="w">            </span><span class="n">Age</span><span class="w">   </span><span class="k">From</span><span class="w">                    </span><span class="n">Message</span><span class="w"></span>
+<span class="w">  </span><span class="o">----</span><span class="w">    </span><span class="o">------</span><span class="w">            </span><span class="o">----</span><span class="w">  </span><span class="o">----</span><span class="w">                    </span><span class="o">-------</span><span class="w"></span>
+<span class="w">  </span><span class="n">Normal</span><span class="w">  </span><span class="n">SuccessfulCreate</span><span class="w">  </span><span class="mi">30</span><span class="n">s</span><span class="w">   </span><span class="n">statefulset</span><span class="o">-</span><span class="n">controller</span><span class="w">  </span><span class="k">create</span><span class="w"> </span><span class="n">Claim</span><span class="w"> </span><span class="n">vol</span><span class="o">-</span><span class="n">test</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="n">Pod</span><span class="w"> </span><span class="n">test</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">StatefulSet</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="n">success</span><span class="w"></span>
+<span class="w">  </span><span class="n">Normal</span><span class="w">  </span><span class="n">SuccessfulCreate</span><span class="w">  </span><span class="mi">30</span><span class="n">s</span><span class="w">   </span><span class="n">statefulset</span><span class="o">-</span><span class="n">controller</span><span class="w">  </span><span class="k">create</span><span class="w"> </span><span class="n">Pod</span><span class="w"> </span><span class="n">test</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">StatefulSet</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="n">successful</span><span class="w"></span>
+<span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">pod</span><span class="w"> </span><span class="n">test</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">yaml</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">scc</span><span class="w"></span>
+<span class="w">    </span><span class="n">openshift</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="nl">scc</span><span class="p">:</span><span class="w"> </span><span class="n">restricted</span><span class="o">-</span><span class="n">fsgroup</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p>The pod now runs with group ID 65000:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc rsh test-0
 / $ id
-uid=65000 gid=0(root) groups=65000
-</code></pre>
-<p>And that matches the group ID of the mount's directory:</p>
-<pre><code>[root@node-0 ~]# ls /mnt/local-storage/loopbacks/ -al
-total 8
-drwxr-xr-x. 6 root root    42 Jul 30 13:30 .
-drwxr-xr-x. 3 root root    23 Jul 30 13:28 ..
-drwxrwsr-x. 2 root root  1024 Aug  3 10:06 a
-drwxrwsr-x. 2 root 65000 1024 Aug  3 09:55 b
-drwxrwsr-x. 2 root root  1024 Aug  3 09:55 c
-drwxr-xr-x. 3 root root  1024 Jul 30 13:30 d
-</code></pre>
+<span class="nv">uid</span><span class="o">=</span><span class="m">65000</span> <span class="nv">gid</span><span class="o">=</span><span class="m">0</span><span class="o">(</span>root<span class="o">)</span> <span class="nv">groups</span><span class="o">=</span><span class="m">65000</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>And that matches the group ID of the mount's directory:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@node-0 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">ls</span><span class="w"> </span><span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="k">local</span><span class="o">-</span><span class="n">storage</span><span class="o">/</span><span class="n">loopbacks</span><span class="o">/</span><span class="w"> </span><span class="o">-</span><span class="n">al</span><span class="w"></span>
+<span class="n">total</span><span class="w"> </span><span class="mi">8</span><span class="w"></span>
+<span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w">    </span><span class="mi">42</span><span class="w"> </span><span class="n">Jul</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="mi">13</span><span class="err">:</span><span class="mi">30</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+<span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w">    </span><span class="mi">23</span><span class="w"> </span><span class="n">Jul</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="mi">13</span><span class="err">:</span><span class="mi">28</span><span class="w"> </span><span class="p">..</span><span class="w"></span>
+<span class="n">drwxrwsr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w">  </span><span class="mi">1024</span><span class="w"> </span><span class="n">Aug</span><span class="w">  </span><span class="mi">3</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">06</span><span class="w"> </span><span class="n">a</span><span class="w"></span>
+<span class="n">drwxrwsr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="mi">65000</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="n">Aug</span><span class="w">  </span><span class="mi">3</span><span class="w"> </span><span class="mi">09</span><span class="err">:</span><span class="mi">55</span><span class="w"> </span><span class="n">b</span><span class="w"></span>
+<span class="n">drwxrwsr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w">  </span><span class="mi">1024</span><span class="w"> </span><span class="n">Aug</span><span class="w">  </span><span class="mi">3</span><span class="w"> </span><span class="mi">09</span><span class="err">:</span><span class="mi">55</span><span class="w"> </span><span class="n">c</span><span class="w"></span>
+<span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w">  </span><span class="mi">1024</span><span class="w"> </span><span class="n">Jul</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="mi">13</span><span class="err">:</span><span class="mi">30</span><span class="w"> </span><span class="n">d</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
 <h2 id="scc-matching-and-priority">SCC matching and priority</h2>
 <p>Keep in mind that both SCCs are active at the same time - and will be selected depending on which SCC is matched by the requested pod.</p>
 <h3 id="matching-based-on-allowed-security-context">Matching based on allowed security context</h3>
-<p>Let's change <code>fsGroup: 65000</code> to <code>fsGroup: 1000090000</code>:</p>
-<pre><code>kind: Service
-apiVersion: v1
-metadata:
-  name: &quot;test&quot;
-spec:
-  clusterIP: None
-  # the list of ports that are exposed by this service
-  ports:
-    - name: http
-      port: 80
-  # will route traffic to pods having labels matching this selector
-  selector:
-    name: &quot;test&quot;
----
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: test
-spec:
-  selector:
-    matchLabels:
-       app: test
-  serviceName: test
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: test
-    spec:
-      securityContext:
-        runAsUser: 65000
-        fsGroup: 1000090000
-      containers:
-        - image: gcr.io/google_containers/busybox
-          command:
-            - &quot;/bin/sh&quot;
-            - &quot;-c&quot;
-            - &quot;while true; do date; sleep 1; done&quot;
-          name: busybox
-          volumeMounts:
-            - name: vol
-              mountPath: /mnt
-  volumeClaimTemplates:
-    - metadata:
-        name: vol
-      spec:
-        accessModes: [&quot;ReadWriteOnce&quot;]
-        storageClassName: local-loopbacks
-        resources:
-          requests:
-            storage: 90Mi
-</code></pre>
+<p>Let's change <code class="highlight"><span class="n">fsGroup</span><span class="o">:</span> <span class="mi">65000</span></code> to <code class="highlight"><span class="n">fsGroup</span><span class="o">:</span> <span class="mi">1000090000</span></code>:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">kind</span><span class="o">:</span> <span class="n">Service</span>
+<span class="n">apiVersion</span><span class="o">:</span> <span class="n">v1</span>
+<span class="n">metadata</span><span class="o">:</span>
+  <span class="n">name</span><span class="o">:</span> <span class="s2">&quot;test&quot;</span>
+<span class="n">spec</span><span class="o">:</span>
+  <span class="n">clusterIP</span><span class="o">:</span> <span class="n">None</span>
+  <span class="err">#</span> <span class="n">the</span> <span class="n">list</span> <span class="n">of</span> <span class="n">ports</span> <span class="n">that</span> <span class="n">are</span> <span class="n">exposed</span> <span class="n">by</span> <span class="k">this</span> <span class="n">service</span>
+  <span class="n">ports</span><span class="o">:</span>
+    <span class="o">-</span> <span class="n">name</span><span class="o">:</span> <span class="n">http</span>
+      <span class="n">port</span><span class="o">:</span> <span class="mi">80</span>
+  <span class="err">#</span> <span class="n">will</span> <span class="n">route</span> <span class="n">traffic</span> <span class="n">to</span> <span class="n">pods</span> <span class="n">having</span> <span class="n">labels</span> <span class="n">matching</span> <span class="k">this</span> <span class="n">selector</span>
+  <span class="n">selector</span><span class="o">:</span>
+    <span class="n">name</span><span class="o">:</span> <span class="s2">&quot;test&quot;</span>
+<span class="o">---</span>
+<span class="n">apiVersion</span><span class="o">:</span> <span class="n">apps</span><span class="o">/</span><span class="n">v1</span>
+<span class="n">kind</span><span class="o">:</span> <span class="n">StatefulSet</span>
+<span class="n">metadata</span><span class="o">:</span>
+  <span class="n">name</span><span class="o">:</span> <span class="n">test</span>
+<span class="n">spec</span><span class="o">:</span>
+  <span class="n">selector</span><span class="o">:</span>
+    <span class="n">matchLabels</span><span class="o">:</span>
+       <span class="n">app</span><span class="o">:</span> <span class="n">test</span>
+  <span class="n">serviceName</span><span class="o">:</span> <span class="n">test</span>
+  <span class="n">replicas</span><span class="o">:</span> <span class="mi">1</span>
+  <span class="n">template</span><span class="o">:</span>
+    <span class="n">metadata</span><span class="o">:</span>
+      <span class="n">labels</span><span class="o">:</span>
+        <span class="n">app</span><span class="o">:</span> <span class="n">test</span>
+    <span class="n">spec</span><span class="o">:</span>
+      <span class="n">securityContext</span><span class="o">:</span>
+        <span class="n">runAsUser</span><span class="o">:</span> <span class="mi">65000</span>
+        <span class="n">fsGroup</span><span class="o">:</span> <span class="mi">1000090000</span>
+      <span class="n">containers</span><span class="o">:</span>
+        <span class="o">-</span> <span class="n">image</span><span class="o">:</span> <span class="n">gcr</span><span class="o">.</span><span class="na">io</span><span class="sr">/google_containers/</span><span class="n">busybox</span>
+          <span class="n">command</span><span class="o">:</span>
+            <span class="o">-</span> <span class="s2">&quot;/bin/sh&quot;</span>
+            <span class="o">-</span> <span class="s2">&quot;-c&quot;</span>
+            <span class="o">-</span> <span class="s2">&quot;while true; do date; sleep 1; done&quot;</span>
+          <span class="n">name</span><span class="o">:</span> <span class="n">busybox</span>
+          <span class="n">volumeMounts</span><span class="o">:</span>
+            <span class="o">-</span> <span class="n">name</span><span class="o">:</span> <span class="n">vol</span>
+              <span class="n">mountPath</span><span class="o">:</span> <span class="o">/</span><span class="n">mnt</span>
+  <span class="n">volumeClaimTemplates</span><span class="o">:</span>
+    <span class="o">-</span> <span class="n">metadata</span><span class="o">:</span>
+        <span class="n">name</span><span class="o">:</span> <span class="n">vol</span>
+      <span class="n">spec</span><span class="o">:</span>
+        <span class="n">accessModes</span><span class="o">:</span> <span class="o">[</span><span class="s2">&quot;ReadWriteOnce&quot;</span><span class="o">]</span>
+        <span class="n">storageClassName</span><span class="o">:</span> <span class="n">local</span><span class="o">-</span><span class="n">loopbacks</span>
+        <span class="n">resources</span><span class="o">:</span>
+          <span class="n">requests</span><span class="o">:</span>
+            <span class="n">storage</span><span class="o">:</span> <span class="mi">90</span><span class="n">Mi</span>
+</code></pre></div>
+</td></tr></table></p>
 <p>Reset the lab again, then deploy the modified deployment.</p>
-<p>Now, the pod's SCC is <code>restricted</code> because the requested GID only matches the restricted but not the restricted-fsgroup SCC:</p>
-<pre><code>$ oc apply -f statefulset.yaml
+<p>Now, the pod's SCC is <code class="highlight">restricted</code> because the requested GID only matches the restricted but not the restricted-fsgroup SCC:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc apply -f statefulset.yaml
 service/test created
-$ oc get pod test-0 -o yaml | grep scc
+$ oc get pod test-0 -o yaml <span class="p">|</span> grep scc
     openshift.io/scc: restricted
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
 <h3 id="name-as-tiebreaker">Name as tiebreaker</h3>
-<p>Now, what happens if we remove the request for a specific fsGroup from the pod?</p>
-<pre><code>kind: Service
-apiVersion: v1
-metadata:
-  name: &quot;test&quot;
-spec:
-  clusterIP: None
-  # the list of ports that are exposed by this service
-  ports:
-    - name: http
-      port: 80
-  # will route traffic to pods having labels matching this selector
-  selector:
-    name: &quot;test&quot;
----
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: test
-spec:
-  selector:
-    matchLabels:
-       app: test
-  serviceName: test
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: test
-    spec:
-      securityContext:
-        runAsUser: 65000
-      containers:
-        - image: gcr.io/google_containers/busybox
-          command:
-            - &quot;/bin/sh&quot;
-            - &quot;-c&quot;
-            - &quot;while true; do date; sleep 1; done&quot;
-          name: busybox
-          volumeMounts:
-            - name: vol
-              mountPath: /mnt
-  volumeClaimTemplates:
-    - metadata:
-        name: vol
-      spec:
-        accessModes: [&quot;ReadWriteOnce&quot;]
-        storageClassName: local-loopbacks
-        resources:
-          requests:
-            storage: 90Mi
-</code></pre>
+<p>Now, what happens if we remove the request for a specific fsGroup from the pod?
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">kind</span><span class="o">:</span> <span class="n">Service</span>
+<span class="n">apiVersion</span><span class="o">:</span> <span class="n">v1</span>
+<span class="n">metadata</span><span class="o">:</span>
+  <span class="n">name</span><span class="o">:</span> <span class="s2">&quot;test&quot;</span>
+<span class="n">spec</span><span class="o">:</span>
+  <span class="n">clusterIP</span><span class="o">:</span> <span class="n">None</span>
+  <span class="err">#</span> <span class="n">the</span> <span class="n">list</span> <span class="n">of</span> <span class="n">ports</span> <span class="n">that</span> <span class="n">are</span> <span class="n">exposed</span> <span class="n">by</span> <span class="k">this</span> <span class="n">service</span>
+  <span class="n">ports</span><span class="o">:</span>
+    <span class="o">-</span> <span class="n">name</span><span class="o">:</span> <span class="n">http</span>
+      <span class="n">port</span><span class="o">:</span> <span class="mi">80</span>
+  <span class="err">#</span> <span class="n">will</span> <span class="n">route</span> <span class="n">traffic</span> <span class="n">to</span> <span class="n">pods</span> <span class="n">having</span> <span class="n">labels</span> <span class="n">matching</span> <span class="k">this</span> <span class="n">selector</span>
+  <span class="n">selector</span><span class="o">:</span>
+    <span class="n">name</span><span class="o">:</span> <span class="s2">&quot;test&quot;</span>
+<span class="o">---</span>
+<span class="n">apiVersion</span><span class="o">:</span> <span class="n">apps</span><span class="o">/</span><span class="n">v1</span>
+<span class="n">kind</span><span class="o">:</span> <span class="n">StatefulSet</span>
+<span class="n">metadata</span><span class="o">:</span>
+  <span class="n">name</span><span class="o">:</span> <span class="n">test</span>
+<span class="n">spec</span><span class="o">:</span>
+  <span class="n">selector</span><span class="o">:</span>
+    <span class="n">matchLabels</span><span class="o">:</span>
+       <span class="n">app</span><span class="o">:</span> <span class="n">test</span>
+  <span class="n">serviceName</span><span class="o">:</span> <span class="n">test</span>
+  <span class="n">replicas</span><span class="o">:</span> <span class="mi">1</span>
+  <span class="n">template</span><span class="o">:</span>
+    <span class="n">metadata</span><span class="o">:</span>
+      <span class="n">labels</span><span class="o">:</span>
+        <span class="n">app</span><span class="o">:</span> <span class="n">test</span>
+    <span class="n">spec</span><span class="o">:</span>
+      <span class="n">securityContext</span><span class="o">:</span>
+        <span class="n">runAsUser</span><span class="o">:</span> <span class="mi">65000</span>
+      <span class="n">containers</span><span class="o">:</span>
+        <span class="o">-</span> <span class="n">image</span><span class="o">:</span> <span class="n">gcr</span><span class="o">.</span><span class="na">io</span><span class="sr">/google_containers/</span><span class="n">busybox</span>
+          <span class="n">command</span><span class="o">:</span>
+            <span class="o">-</span> <span class="s2">&quot;/bin/sh&quot;</span>
+            <span class="o">-</span> <span class="s2">&quot;-c&quot;</span>
+            <span class="o">-</span> <span class="s2">&quot;while true; do date; sleep 1; done&quot;</span>
+          <span class="n">name</span><span class="o">:</span> <span class="n">busybox</span>
+          <span class="n">volumeMounts</span><span class="o">:</span>
+            <span class="o">-</span> <span class="n">name</span><span class="o">:</span> <span class="n">vol</span>
+              <span class="n">mountPath</span><span class="o">:</span> <span class="o">/</span><span class="n">mnt</span>
+  <span class="n">volumeClaimTemplates</span><span class="o">:</span>
+    <span class="o">-</span> <span class="n">metadata</span><span class="o">:</span>
+        <span class="n">name</span><span class="o">:</span> <span class="n">vol</span>
+      <span class="n">spec</span><span class="o">:</span>
+        <span class="n">accessModes</span><span class="o">:</span> <span class="o">[</span><span class="s2">&quot;ReadWriteOnce&quot;</span><span class="o">]</span>
+        <span class="n">storageClassName</span><span class="o">:</span> <span class="n">local</span><span class="o">-</span><span class="n">loopbacks</span>
+        <span class="n">resources</span><span class="o">:</span>
+          <span class="n">requests</span><span class="o">:</span>
+            <span class="n">storage</span><span class="o">:</span> <span class="mi">90</span><span class="n">Mi</span>
+</code></pre></div>
+</td></tr></table></p>
 <p>Reset the lab again, then apply the statefulset.</p>
-<pre><code>$ oc apply -f statefulset.yaml 
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc apply -f statefulset.yaml 
 service/test created
 statefulset.apps/test created
-$ oc get pod test-0 -o yaml | grep scc
+$ oc get pod test-0 -o yaml <span class="p">|</span> grep scc
     openshift.io/scc: restricted
-</code></pre>
-<pre><code>$ oc rsh test-0
+</code></pre></div>
+</td></tr></table>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc rsh test-0
 / $ id
-uid=65000 gid=0(root) groups=1000090000
-</code></pre>
-<pre><code>[root@node-0 ~]# ls /mnt/local-storage/loopbacks/ -al
-total 8
-drwxr-xr-x. 6 root root         42 Jul 30 13:30 .
-drwxr-xr-x. 3 root root         23 Jul 30 13:28 ..
-drwxrwsr-x. 2 root 1000090000 1024 Aug  3 10:06 a
-drwxrwsr-x. 2 root root       1024 Aug  3 09:55 b
-drwxrwsr-x. 2 root root       1024 Aug  3 09:55 c
-drwxr-xr-x. 3 root root       1024 Jul 30 13:30 d
-</code></pre>
+<span class="nv">uid</span><span class="o">=</span><span class="m">65000</span> <span class="nv">gid</span><span class="o">=</span><span class="m">0</span><span class="o">(</span>root<span class="o">)</span> <span class="nv">groups</span><span class="o">=</span><span class="m">1000090000</span>
+</code></pre></div>
+</td></tr></table>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@node-0 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">ls</span><span class="w"> </span><span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="k">local</span><span class="o">-</span><span class="n">storage</span><span class="o">/</span><span class="n">loopbacks</span><span class="o">/</span><span class="w"> </span><span class="o">-</span><span class="n">al</span><span class="w"></span>
+<span class="n">total</span><span class="w"> </span><span class="mi">8</span><span class="w"></span>
+<span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w">         </span><span class="mi">42</span><span class="w"> </span><span class="n">Jul</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="mi">13</span><span class="err">:</span><span class="mi">30</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+<span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w">         </span><span class="mi">23</span><span class="w"> </span><span class="n">Jul</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="mi">13</span><span class="err">:</span><span class="mi">28</span><span class="w"> </span><span class="p">..</span><span class="w"></span>
+<span class="n">drwxrwsr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="mi">1000090000</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="n">Aug</span><span class="w">  </span><span class="mi">3</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">06</span><span class="w"> </span><span class="n">a</span><span class="w"></span>
+<span class="n">drwxrwsr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w">       </span><span class="mi">1024</span><span class="w"> </span><span class="n">Aug</span><span class="w">  </span><span class="mi">3</span><span class="w"> </span><span class="mi">09</span><span class="err">:</span><span class="mi">55</span><span class="w"> </span><span class="n">b</span><span class="w"></span>
+<span class="n">drwxrwsr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w">       </span><span class="mi">1024</span><span class="w"> </span><span class="n">Aug</span><span class="w">  </span><span class="mi">3</span><span class="w"> </span><span class="mi">09</span><span class="err">:</span><span class="mi">55</span><span class="w"> </span><span class="n">c</span><span class="w"></span>
+<span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w">       </span><span class="mi">1024</span><span class="w"> </span><span class="n">Jul</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="mi">13</span><span class="err">:</span><span class="mi">30</span><span class="w"> </span><span class="n">d</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
 <p>Both SCCs have the same priority, are equally restrictive. So the tiebreaker is the name:</p>
 <ul>
-<li><a href="https://docs.openshift.com/container-platform/3.11/architecture/additional_concepts/authorization.html#scc-prioritization">https://docs.openshift.com/container-platform/3.11/architecture/additional_concepts/authorization.html#scc-prioritization</a></li>
+<li><a href="https://docs.openshift.com/container-platform/3.11/architecture/additional_concepts/authorization.html#scc-prioritization">https://docs.openshift.com/container-platform/3.11/architecture/additional_concepts/authorization.html#scc-prioritization</a>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>    <span class="nv">Highest</span> <span class="nv">priority</span> <span class="nv">first</span>, <span class="nv">nil</span> <span class="nv">is</span> <span class="nv">considered</span> <span class="nv">a</span> <span class="mi">0</span> <span class="nv">priority</span>
+
+    <span class="k">If</span> <span class="nv">priorities</span> <span class="nv">are</span> <span class="nv">equal</span>, <span class="nv">the</span> <span class="nv">SCCs</span> <span class="nv">will</span> <span class="nv">be</span> <span class="nv">sorted</span> <span class="nv">from</span> <span class="nv">most</span> <span class="nv">restrictive</span> <span class="nv">to</span> <span class="nv">least</span> <span class="nv">restrictive</span>
+
+    <span class="k">If</span> <span class="nv">both</span> <span class="nv">priorities</span> <span class="nv">and</span> <span class="nv">restrictions</span> <span class="nv">are</span> <span class="nv">equal</span> <span class="nv">the</span> <span class="nv">SCCs</span> <span class="nv">will</span> <span class="nv">be</span> <span class="nv">sorted</span> <span class="nv">by</span> <span class="nv">name</span>
+</code></pre></div>
+</td></tr></table></li>
 </ul>
-<pre><code>    Highest priority first, nil is considered a 0 priority
-
-    If priorities are equal, the SCCs will be sorted from most restrictive to least restrictive
-
-    If both priorities and restrictions are equal the SCCs will be sorted by name
-</code></pre>
-<p>Let's suppose this had a different name:</p>
-<pre><code>$ oc delete -f restricted-fsgroup.yaml
-securitycontextconstraints.security.openshift.io &quot;restricted-fsgroup&quot; deleted
+<p>Let's suppose this had a different name:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc delete -f restricted-fsgroup.yaml
+securitycontextconstraints.security.openshift.io <span class="s2">&quot;restricted-fsgroup&quot;</span> deleted
 $ oc apply -f fsgroup.yaml 
 securitycontextconstraints.security.openshift.io/fsgroup created
 $ oc adm policy add-scc-to-user fsgroup -z default
-scc &quot;fsgroup&quot; added to: [&quot;system:serviceaccount:test:default&quot;]
+scc <span class="s2">&quot;fsgroup&quot;</span> added to: <span class="o">[</span><span class="s2">&quot;system:serviceaccount:test:default&quot;</span><span class="o">]</span>
 $ oc get scc
 NAME                 PRIV      CAPS      SELINUX     RUNASUSER          FSGROUP     SUPGROUP    PRIORITY   READONLYROOTFS   VOLUMES
-anyuid               false     []        MustRunAs   RunAsAny           RunAsAny    RunAsAny    10         false            [configMap downwardAPI emptyDir persistentVolumeClaim projected secret]
-fsgroup              false     []        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    &lt;none&gt;     false            [configMap downwardAPI emptyDir persistentVolumeClaim projected secret]
-hostaccess           false     []        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    &lt;none&gt;     false            [configMap downwardAPI emptyDir hostPath persistentVolumeClaim projected secret]
-hostmount-anyuid     false     []        MustRunAs   RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     false            [configMap downwardAPI emptyDir hostPath nfs persistentVolumeClaim projected secret]
-hostnetwork          false     []        MustRunAs   MustRunAsRange     MustRunAs   MustRunAs   &lt;none&gt;     false            [configMap downwardAPI emptyDir persistentVolumeClaim projected secret]
-kube-state-metrics   false     []        RunAsAny    RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     false            [*]
-node-exporter        false     []        RunAsAny    RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     false            [*]
-nonroot              false     []        MustRunAs   MustRunAsNonRoot   RunAsAny    RunAsAny    &lt;none&gt;     false            [configMap downwardAPI emptyDir persistentVolumeClaim projected secret]
-privileged           true      [*]       RunAsAny    RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     false            [*]
-restricted           false     []        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    &lt;none&gt;     false            [configMap downwardAPI emptyDir persistentVolumeClaim projected secret]
-</code></pre>
-<p>Then we'd use the <code>fsgroup</code> SCC:</p>
-<pre><code>$ oc apply -f statefulset.yaml 
+anyuid               <span class="nb">false</span>     <span class="o">[]</span>        MustRunAs   RunAsAny           RunAsAny    RunAsAny    <span class="m">10</span>         <span class="nb">false</span>            <span class="o">[</span>configMap downwardAPI emptyDir persistentVolumeClaim projected secret<span class="o">]</span>
+fsgroup              <span class="nb">false</span>     <span class="o">[]</span>        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>configMap downwardAPI emptyDir persistentVolumeClaim projected secret<span class="o">]</span>
+hostaccess           <span class="nb">false</span>     <span class="o">[]</span>        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>configMap downwardAPI emptyDir hostPath persistentVolumeClaim projected secret<span class="o">]</span>
+hostmount-anyuid     <span class="nb">false</span>     <span class="o">[]</span>        MustRunAs   RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>configMap downwardAPI emptyDir hostPath nfs persistentVolumeClaim projected secret<span class="o">]</span>
+hostnetwork          <span class="nb">false</span>     <span class="o">[]</span>        MustRunAs   MustRunAsRange     MustRunAs   MustRunAs   &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>configMap downwardAPI emptyDir persistentVolumeClaim projected secret<span class="o">]</span>
+kube-state-metrics   <span class="nb">false</span>     <span class="o">[]</span>        RunAsAny    RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>*<span class="o">]</span>
+node-exporter        <span class="nb">false</span>     <span class="o">[]</span>        RunAsAny    RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>*<span class="o">]</span>
+nonroot              <span class="nb">false</span>     <span class="o">[]</span>        MustRunAs   MustRunAsNonRoot   RunAsAny    RunAsAny    &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>configMap downwardAPI emptyDir persistentVolumeClaim projected secret<span class="o">]</span>
+privileged           <span class="nb">true</span>      <span class="o">[</span>*<span class="o">]</span>       RunAsAny    RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>*<span class="o">]</span>
+restricted           <span class="nb">false</span>     <span class="o">[]</span>        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>configMap downwardAPI emptyDir persistentVolumeClaim projected secret<span class="o">]</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Then we'd use the <code class="highlight">fsgroup</code> SCC:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc apply -f statefulset.yaml 
 service/test created
 statefulset.apps/test created
-$ oc get pod test-0 -o yaml | grep scc
+$ oc get pod test-0 -o yaml <span class="p">|</span> grep scc
     openshift.io/scc: fsgroup
-</code></pre>
-<pre><code>$ oc rsh test-0
+</code></pre></div>
+</td></tr></table></p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc rsh test-0
 id
 / $ id
-uid=65000 gid=0(root) groups=65000
-</code></pre>
-<pre><code>[root@node-0 ~]# ls /mnt/local-storage/loopbacks/ -al
-total 8
-drwxr-xr-x. 6 root root         42 Jul 30 13:30 .
-drwxr-xr-x. 3 root root         23 Jul 30 13:28 ..
-drwxrwsr-x. 2 root      65000 1024 Aug  3 10:06 a
-drwxrwsr-x. 2 root root       1024 Aug  3 09:55 b
-drwxrwsr-x. 2 root root       1024 Aug  3 09:55 c
-drwxr-xr-x. 3 root root       1024 Jul 30 13:30 d
-</code></pre>
+<span class="nv">uid</span><span class="o">=</span><span class="m">65000</span> <span class="nv">gid</span><span class="o">=</span><span class="m">0</span><span class="o">(</span>root<span class="o">)</span> <span class="nv">groups</span><span class="o">=</span><span class="m">65000</span>
+</code></pre></div>
+</td></tr></table>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@node-0 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">ls</span><span class="w"> </span><span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="k">local</span><span class="o">-</span><span class="n">storage</span><span class="o">/</span><span class="n">loopbacks</span><span class="o">/</span><span class="w"> </span><span class="o">-</span><span class="n">al</span><span class="w"></span>
+<span class="n">total</span><span class="w"> </span><span class="mi">8</span><span class="w"></span>
+<span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w">         </span><span class="mi">42</span><span class="w"> </span><span class="n">Jul</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="mi">13</span><span class="err">:</span><span class="mi">30</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+<span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w">         </span><span class="mi">23</span><span class="w"> </span><span class="n">Jul</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="mi">13</span><span class="err">:</span><span class="mi">28</span><span class="w"> </span><span class="p">..</span><span class="w"></span>
+<span class="n">drwxrwsr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">root</span><span class="w">      </span><span class="mi">65000</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="n">Aug</span><span class="w">  </span><span class="mi">3</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">06</span><span class="w"> </span><span class="n">a</span><span class="w"></span>
+<span class="n">drwxrwsr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w">       </span><span class="mi">1024</span><span class="w"> </span><span class="n">Aug</span><span class="w">  </span><span class="mi">3</span><span class="w"> </span><span class="mi">09</span><span class="err">:</span><span class="mi">55</span><span class="w"> </span><span class="n">b</span><span class="w"></span>
+<span class="n">drwxrwsr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w">       </span><span class="mi">1024</span><span class="w"> </span><span class="n">Aug</span><span class="w">  </span><span class="mi">3</span><span class="w"> </span><span class="mi">09</span><span class="err">:</span><span class="mi">55</span><span class="w"> </span><span class="n">c</span><span class="w"></span>
+<span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w">       </span><span class="mi">1024</span><span class="w"> </span><span class="n">Jul</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="mi">13</span><span class="err">:</span><span class="mi">30</span><span class="w"> </span><span class="n">d</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
 <h3 id="using-the-priority-field-as-a-tiebreaker">Using the priority field as a tiebreaker</h3>
-<p>And is there a way to prioritize our policy without changing the name? Yes, with the priority field. Change the SCC's name again to <code>restricted-fsgroup</code>. So based on the name, it would lose against <code>restricted</code>. But also set the priority to <code>1</code> which is higher than <code>restricted</code>s priority of <code>0</code>:</p>
-<pre><code>$ cat restricted-fsgroup.yaml 
-allowHostDirVolumePlugin: false
-allowHostIPC: false
-allowHostNetwork: false
-allowHostPID: false
-allowHostPorts: false
-allowPrivilegeEscalation: true
-allowPrivilegedContainer: false
+<p>And is there a way to prioritize our policy without changing the name? Yes, with the priority field. Change the SCC's name again to <code class="highlight">restricted-fsgroup</code>. So based on the name, it would lose against <code class="highlight">restricted</code>. But also set the priority to <code class="highlight"><span class="mf">1</span></code> which is higher than <code class="highlight">restricted</code>s priority of <code class="highlight"><span class="mf">0</span></code>:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ cat restricted-fsgroup.yaml 
+allowHostDirVolumePlugin: <span class="nb">false</span>
+allowHostIPC: <span class="nb">false</span>
+allowHostNetwork: <span class="nb">false</span>
+allowHostPID: <span class="nb">false</span>
+allowHostPorts: <span class="nb">false</span>
+allowPrivilegeEscalation: <span class="nb">true</span>
+allowPrivilegedContainer: <span class="nb">false</span>
 allowedCapabilities: null
 apiVersion: security.openshift.io/v1
 defaultAddCapabilities: null
 fsGroup:
   type: MustRunAs
   ranges:
-    - min: 65000
-      max: 66000
+    - min: <span class="m">65000</span>
+      max: <span class="m">66000</span>
 kind: SecurityContextConstraints
 metadata:
   name: restricted-fsgroup
-readOnlyRootFilesystem: false
+readOnlyRootFilesystem: <span class="nb">false</span>
 requiredDropCapabilities:
 - KILL
 - MKNOD
@@ -1870,7 +2358,7 @@ seLinuxContext:
   type: MustRunAs
 supplementalGroups:
   type: RunAsAny
-users: []
+users: <span class="o">[]</span>
 volumes:
 - configMap
 - downwardAPI
@@ -1878,88 +2366,159 @@ volumes:
 - persistentVolumeClaim
 - projected
 - secret
-priority: 1
-</code></pre>
-<p>After applying this, we see:</p>
-<pre><code>$ oc get scc
+priority: <span class="m">1</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>After applying this, we see:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc get scc
 NAME                 PRIV      CAPS      SELINUX     RUNASUSER          FSGROUP     SUPGROUP    PRIORITY   READONLYROOTFS   VOLUMES
-anyuid               false     []        MustRunAs   RunAsAny           RunAsAny    RunAsAny    10         false            [configMap downwardAPI emptyDir persistentVolumeClaim projected secret]
-hostaccess           false     []        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    &lt;none&gt;     false            [configMap downwardAPI emptyDir hostPath persistentVolumeClaim projected secret]
-hostmount-anyuid     false     []        MustRunAs   RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     false            [configMap downwardAPI emptyDir hostPath nfs persistentVolumeClaim projected secret]
-hostnetwork          false     []        MustRunAs   MustRunAsRange     MustRunAs   MustRunAs   &lt;none&gt;     false            [configMap downwardAPI emptyDir persistentVolumeClaim projected secret]
-kube-state-metrics   false     []        RunAsAny    RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     false            [*]
-node-exporter        false     []        RunAsAny    RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     false            [*]
-nonroot              false     []        MustRunAs   MustRunAsNonRoot   RunAsAny    RunAsAny    &lt;none&gt;     false            [configMap downwardAPI emptyDir persistentVolumeClaim projected secret]
-privileged           true      [*]       RunAsAny    RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     false            [*]
-restricted           false     []        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    &lt;none&gt;     false            [configMap downwardAPI emptyDir persistentVolumeClaim projected secret]
-restricted-fsgroup   false     []        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    1          false            [configMap downwardAPI emptyDir persistentVolumeClaim projected secret]
-</code></pre>
-<pre><code>$ oc get pod test-0 -o yaml | grep scc
+anyuid               <span class="nb">false</span>     <span class="o">[]</span>        MustRunAs   RunAsAny           RunAsAny    RunAsAny    <span class="m">10</span>         <span class="nb">false</span>            <span class="o">[</span>configMap downwardAPI emptyDir persistentVolumeClaim projected secret<span class="o">]</span>
+hostaccess           <span class="nb">false</span>     <span class="o">[]</span>        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>configMap downwardAPI emptyDir hostPath persistentVolumeClaim projected secret<span class="o">]</span>
+hostmount-anyuid     <span class="nb">false</span>     <span class="o">[]</span>        MustRunAs   RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>configMap downwardAPI emptyDir hostPath nfs persistentVolumeClaim projected secret<span class="o">]</span>
+hostnetwork          <span class="nb">false</span>     <span class="o">[]</span>        MustRunAs   MustRunAsRange     MustRunAs   MustRunAs   &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>configMap downwardAPI emptyDir persistentVolumeClaim projected secret<span class="o">]</span>
+kube-state-metrics   <span class="nb">false</span>     <span class="o">[]</span>        RunAsAny    RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>*<span class="o">]</span>
+node-exporter        <span class="nb">false</span>     <span class="o">[]</span>        RunAsAny    RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>*<span class="o">]</span>
+nonroot              <span class="nb">false</span>     <span class="o">[]</span>        MustRunAs   MustRunAsNonRoot   RunAsAny    RunAsAny    &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>configMap downwardAPI emptyDir persistentVolumeClaim projected secret<span class="o">]</span>
+privileged           <span class="nb">true</span>      <span class="o">[</span>*<span class="o">]</span>       RunAsAny    RunAsAny           RunAsAny    RunAsAny    &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>*<span class="o">]</span>
+restricted           <span class="nb">false</span>     <span class="o">[]</span>        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    &lt;none&gt;     <span class="nb">false</span>            <span class="o">[</span>configMap downwardAPI emptyDir persistentVolumeClaim projected secret<span class="o">]</span>
+restricted-fsgroup   <span class="nb">false</span>     <span class="o">[]</span>        MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    <span class="m">1</span>          <span class="nb">false</span>            <span class="o">[</span>configMap downwardAPI emptyDir persistentVolumeClaim projected secret<span class="o">]</span>
+</code></pre></div>
+</td></tr></table></p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc get pod test-0 -o yaml <span class="p">|</span> grep scc
     openshift.io/scc: restricted-fsgroup
-</code></pre>
+</code></pre></div>
+</td></tr></table>
 <h3 id="demonstrating-that-priority-only-comes-into-play-if-sccs-overlap">Demonstrating that priority only comes into play if SCCs overlap</h3>
-<p>But should we decide that we not like  a fsGroup within 65000-65999, we can request the namespace's default and still use <code>restricted</code>, even though we changed the priority:</p>
-<pre><code>kind: Service
-apiVersion: v1
-metadata:
-  name: &quot;test&quot;
-spec:
-  clusterIP: None
-  # the list of ports that are exposed by this service
-  ports:
-    - name: http
-      port: 80
-  # will route traffic to pods having labels matching this selector
-  selector:
-    name: &quot;test&quot;
----
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: test
-spec:
-  selector:
-    matchLabels:
-       app: test
-  serviceName: test
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: test
-    spec:
-      securityContext:
-        runAsUser: 65000
-        fsGroup: 1000090000
-      containers:
-        - image: gcr.io/google_containers/busybox
-          command:
-            - &quot;/bin/sh&quot;
-            - &quot;-c&quot;
-            - &quot;while true; do date; sleep 1; done&quot;
-          name: busybox
-          volumeMounts:
-            - name: vol
-              mountPath: /mnt
-  volumeClaimTemplates:
-    - metadata:
-        name: vol
-      spec:
-        accessModes: [&quot;ReadWriteOnce&quot;]
-        storageClassName: local-loopbacks
-        resources:
-          requests:
-            storage: 90Mi
-</code></pre>
-<p>See this:</p>
-<pre><code>$ oc apply -f statefulset.yaml 
+<p>But should we decide that we not like  a fsGroup within 65000-65999, we can request the namespace's default and still use <code class="highlight">restricted</code>, even though we changed the priority:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">kind</span><span class="o">:</span> <span class="n">Service</span>
+<span class="n">apiVersion</span><span class="o">:</span> <span class="n">v1</span>
+<span class="n">metadata</span><span class="o">:</span>
+  <span class="n">name</span><span class="o">:</span> <span class="s2">&quot;test&quot;</span>
+<span class="n">spec</span><span class="o">:</span>
+  <span class="n">clusterIP</span><span class="o">:</span> <span class="n">None</span>
+  <span class="err">#</span> <span class="n">the</span> <span class="n">list</span> <span class="n">of</span> <span class="n">ports</span> <span class="n">that</span> <span class="n">are</span> <span class="n">exposed</span> <span class="n">by</span> <span class="k">this</span> <span class="n">service</span>
+  <span class="n">ports</span><span class="o">:</span>
+    <span class="o">-</span> <span class="n">name</span><span class="o">:</span> <span class="n">http</span>
+      <span class="n">port</span><span class="o">:</span> <span class="mi">80</span>
+  <span class="err">#</span> <span class="n">will</span> <span class="n">route</span> <span class="n">traffic</span> <span class="n">to</span> <span class="n">pods</span> <span class="n">having</span> <span class="n">labels</span> <span class="n">matching</span> <span class="k">this</span> <span class="n">selector</span>
+  <span class="n">selector</span><span class="o">:</span>
+    <span class="n">name</span><span class="o">:</span> <span class="s2">&quot;test&quot;</span>
+<span class="o">---</span>
+<span class="n">apiVersion</span><span class="o">:</span> <span class="n">apps</span><span class="o">/</span><span class="n">v1</span>
+<span class="n">kind</span><span class="o">:</span> <span class="n">StatefulSet</span>
+<span class="n">metadata</span><span class="o">:</span>
+  <span class="n">name</span><span class="o">:</span> <span class="n">test</span>
+<span class="n">spec</span><span class="o">:</span>
+  <span class="n">selector</span><span class="o">:</span>
+    <span class="n">matchLabels</span><span class="o">:</span>
+       <span class="n">app</span><span class="o">:</span> <span class="n">test</span>
+  <span class="n">serviceName</span><span class="o">:</span> <span class="n">test</span>
+  <span class="n">replicas</span><span class="o">:</span> <span class="mi">1</span>
+  <span class="n">template</span><span class="o">:</span>
+    <span class="n">metadata</span><span class="o">:</span>
+      <span class="n">labels</span><span class="o">:</span>
+        <span class="n">app</span><span class="o">:</span> <span class="n">test</span>
+    <span class="n">spec</span><span class="o">:</span>
+      <span class="n">securityContext</span><span class="o">:</span>
+        <span class="n">runAsUser</span><span class="o">:</span> <span class="mi">65000</span>
+        <span class="n">fsGroup</span><span class="o">:</span> <span class="mi">1000090000</span>
+      <span class="n">containers</span><span class="o">:</span>
+        <span class="o">-</span> <span class="n">image</span><span class="o">:</span> <span class="n">gcr</span><span class="o">.</span><span class="na">io</span><span class="sr">/google_containers/</span><span class="n">busybox</span>
+          <span class="n">command</span><span class="o">:</span>
+            <span class="o">-</span> <span class="s2">&quot;/bin/sh&quot;</span>
+            <span class="o">-</span> <span class="s2">&quot;-c&quot;</span>
+            <span class="o">-</span> <span class="s2">&quot;while true; do date; sleep 1; done&quot;</span>
+          <span class="n">name</span><span class="o">:</span> <span class="n">busybox</span>
+          <span class="n">volumeMounts</span><span class="o">:</span>
+            <span class="o">-</span> <span class="n">name</span><span class="o">:</span> <span class="n">vol</span>
+              <span class="n">mountPath</span><span class="o">:</span> <span class="o">/</span><span class="n">mnt</span>
+  <span class="n">volumeClaimTemplates</span><span class="o">:</span>
+    <span class="o">-</span> <span class="n">metadata</span><span class="o">:</span>
+        <span class="n">name</span><span class="o">:</span> <span class="n">vol</span>
+      <span class="n">spec</span><span class="o">:</span>
+        <span class="n">accessModes</span><span class="o">:</span> <span class="o">[</span><span class="s2">&quot;ReadWriteOnce&quot;</span><span class="o">]</span>
+        <span class="n">storageClassName</span><span class="o">:</span> <span class="n">local</span><span class="o">-</span><span class="n">loopbacks</span>
+        <span class="n">resources</span><span class="o">:</span>
+          <span class="n">requests</span><span class="o">:</span>
+            <span class="n">storage</span><span class="o">:</span> <span class="mi">90</span><span class="n">Mi</span>
+</code></pre></div>
+</td></tr></table>
+<p>See this:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc apply -f statefulset.yaml 
 service/test created
 statefulset.apps/test created
-$ oc get pod test-0 -o yaml | grep scc
+$ oc get pod test-0 -o yaml <span class="p">|</span> grep scc
     openshift.io/scc: restricted
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
 <h2 id="summary">Summary</h2>
-<p>Lessons learned: we can apply multiple SCCs to a ServiceAccount. The default SCC is always <code>restricted</code>. The matching goes by priority first, then most restrictive policy, then by name. And if a policy does not match a specific request, another one might "jump in" and "help out". </p>
+<p>Lessons learned: we can apply multiple SCCs to a ServiceAccount. The default SCC is always <code class="highlight">restricted</code>. The matching goes by priority first, then most restrictive policy, then by name. And if a policy does not match a specific request, another one might "jump in" and "help out". </p>
 <h2 id="resources">Resources</h2>
 <ul>
 <li><a href="https://www.openshift.com/blog/managing-sccs-in-openshift">https://www.openshift.com/blog/managing-sccs-in-openshift</a></li>

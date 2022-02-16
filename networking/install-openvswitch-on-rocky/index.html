@@ -1209,37 +1209,65 @@
                 
                 <h1 id="install-open-vswitch-on-rocky-linux-8">Install Open vSwitch on Rocky Linux 8</h1>
 <p>Required RPMs can be found at <a href="http://ftp.redhat.com/pub/redhat/linux/enterprise/8Base/en/Fast-Datapath/SRPMS/">http://ftp.redhat.com/pub/redhat/linux/enterprise/8Base/en/Fast-Datapath/SRPMS/</a></p>
-<pre><code>yum install '@Development Tools'
-yum install desktop-file-utils libcap-ng-devel libmnl-devel numactl-devel openssl-devel python3-devel python3-pyOpenSSL python3-setuptools python3-sphinx rdma-core-devel unbound-devel -y
-rpmbuild --rebuild  http://ftp.redhat.com/pub/redhat/linux/enterprise/8Base/en/Fast-Datapath/SRPMS/openvswitch2.13-2.13.0-79.el8fdp.src.rpm
-yum install selinux-policy-devel -y
-rpmbuild --rebuild http://ftp.redhat.com/pub/redhat/linux/enterprise/8Base/en/Fast-Datapath/SRPMS/openvswitch-selinux-extra-policy-1.0-28.el8fdp.src.rpm
-yum localinstall /root/rpmbuild/RPMS/noarch/openvswitch-selinux-extra-policy-1.0-28.el8.noarch.rpm /root/rpmbuild/RPMS/x86_64/openvswitch2.13-2.13.0-79.el8.x86_64.rpm -y
-systemctl enable --now openvswitch
-</code></pre>
-<p>Then, set up Open vSwitch with NetworkManager:</p>
-<pre><code>yum install NetworkManager-ovs.x86_64 -y
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">yum</span> <span class="n">install</span> <span class="s1">&#39;@Development Tools&#39;</span>
+<span class="n">yum</span> <span class="n">install</span> <span class="n">desktop</span><span class="o">-</span><span class="n">file</span><span class="o">-</span><span class="n">utils</span> <span class="n">libcap</span><span class="o">-</span><span class="n">ng</span><span class="o">-</span><span class="n">devel</span> <span class="n">libmnl</span><span class="o">-</span><span class="n">devel</span> <span class="n">numactl</span><span class="o">-</span><span class="n">devel</span> <span class="n">openssl</span><span class="o">-</span><span class="n">devel</span> <span class="n">python3</span><span class="o">-</span><span class="n">devel</span> <span class="n">python3</span><span class="o">-</span><span class="n">pyOpenSSL</span> <span class="n">python3</span><span class="o">-</span><span class="n">setuptools</span> <span class="n">python3</span><span class="o">-</span><span class="n">sphinx</span> <span class="n">rdma</span><span class="o">-</span><span class="n">core</span><span class="o">-</span><span class="n">devel</span> <span class="n">unbound</span><span class="o">-</span><span class="n">devel</span> <span class="o">-</span><span class="n">y</span>
+<span class="n">rpmbuild</span> <span class="o">--</span><span class="n">rebuild</span>  <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">ftp</span><span class="o">.</span><span class="n">redhat</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">pub</span><span class="o">/</span><span class="n">redhat</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">enterprise</span><span class="o">/</span><span class="mi">8</span><span class="n">Base</span><span class="o">/</span><span class="n">en</span><span class="o">/</span><span class="n">Fast</span><span class="o">-</span><span class="n">Datapath</span><span class="o">/</span><span class="n">SRPMS</span><span class="o">/</span><span class="n">openvswitch2</span><span class="o">.</span><span class="mi">13</span><span class="o">-</span><span class="mf">2.13</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="mf">79.</span><span class="n">el8fdp</span><span class="o">.</span><span class="n">src</span><span class="o">.</span><span class="n">rpm</span>
+<span class="n">yum</span> <span class="n">install</span> <span class="n">selinux</span><span class="o">-</span><span class="n">policy</span><span class="o">-</span><span class="n">devel</span> <span class="o">-</span><span class="n">y</span>
+<span class="n">rpmbuild</span> <span class="o">--</span><span class="n">rebuild</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">ftp</span><span class="o">.</span><span class="n">redhat</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">pub</span><span class="o">/</span><span class="n">redhat</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">enterprise</span><span class="o">/</span><span class="mi">8</span><span class="n">Base</span><span class="o">/</span><span class="n">en</span><span class="o">/</span><span class="n">Fast</span><span class="o">-</span><span class="n">Datapath</span><span class="o">/</span><span class="n">SRPMS</span><span class="o">/</span><span class="n">openvswitch</span><span class="o">-</span><span class="n">selinux</span><span class="o">-</span><span class="n">extra</span><span class="o">-</span><span class="n">policy</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mf">28.</span><span class="n">el8fdp</span><span class="o">.</span><span class="n">src</span><span class="o">.</span><span class="n">rpm</span>
+<span class="n">yum</span> <span class="n">localinstall</span> <span class="o">/</span><span class="n">root</span><span class="o">/</span><span class="n">rpmbuild</span><span class="o">/</span><span class="n">RPMS</span><span class="o">/</span><span class="n">noarch</span><span class="o">/</span><span class="n">openvswitch</span><span class="o">-</span><span class="n">selinux</span><span class="o">-</span><span class="n">extra</span><span class="o">-</span><span class="n">policy</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mf">28.</span><span class="n">el8</span><span class="o">.</span><span class="n">noarch</span><span class="o">.</span><span class="n">rpm</span> <span class="o">/</span><span class="n">root</span><span class="o">/</span><span class="n">rpmbuild</span><span class="o">/</span><span class="n">RPMS</span><span class="o">/</span><span class="n">x86_64</span><span class="o">/</span><span class="n">openvswitch2</span><span class="o">.</span><span class="mi">13</span><span class="o">-</span><span class="mf">2.13</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="mf">79.</span><span class="n">el8</span><span class="o">.</span><span class="n">x86_64</span><span class="o">.</span><span class="n">rpm</span> <span class="o">-</span><span class="n">y</span>
+<span class="n">systemctl</span> <span class="n">enable</span> <span class="o">--</span><span class="n">now</span> <span class="n">openvswitch</span>
+</code></pre></div>
+</td></tr></table>
+<p>Then, set up Open vSwitch with NetworkManager:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>yum install NetworkManager-ovs.x86_64 -y
 
 BRIDGE_NAME=br-ex
 INTERFACE_NAME=enp7s0
 IP_ADDRESS=192.168.123.3/24
 
-nmcli c add type ovs-bridge conn.interface ${BRIDGE_NAME} con-name ${BRIDGE_NAME}
-nmcli c add type ovs-port conn.interface ${BRIDGE_NAME} master ${BRIDGE_NAME} con-name ovs-port-${BRIDGE_NAME}
-nmcli c add type ovs-interface slave-type ovs-port conn.interface ${BRIDGE_NAME} master ovs-port-${BRIDGE_NAME}  con-name ovs-if-${BRIDGE_NAME}
-nmcli c add type ovs-port conn.interface ${INTERFACE_NAME} master ${BRIDGE_NAME} con-name ovs-port-${INTERFACE_NAME}
-nmcli c add type ethernet conn.interface ${INTERFACE_NAME} master ovs-port-${INTERFACE_NAME} con-name ovs-if-${INTERFACE_NAME}
-nmcli conn delete ${INTERFACE_NAME}
-nmcli conn mod ${BRIDGE_NAME} connection.autoconnect yes
-nmcli conn mod ovs-if-${BRIDGE_NAME} connection.autoconnect yes
-nmcli conn mod ovs-if-${INTERFACE_NAME} connection.autoconnect yes
-nmcli conn mod ovs-port-${INTERFACE_NAME} connection.autoconnect yes
-nmcli conn mod ovs-port-${BRIDGE_NAME} connection.autoconnect yes
-nmcli conn m ovs-if-${BRIDGE_NAME} ipv4.address ${IP_ADDRESS}
-nmcli conn m ovs-if-${BRIDGE_NAME} ipv4.method static
+nmcli c add type ovs-bridge conn.interface <span class="cp">${</span><span class="n">BRIDGE_NAME</span><span class="cp">}</span> con-name <span class="cp">${</span><span class="n">BRIDGE_NAME</span><span class="cp">}</span>
+nmcli c add type ovs-port conn.interface <span class="cp">${</span><span class="n">BRIDGE_NAME</span><span class="cp">}</span> master <span class="cp">${</span><span class="n">BRIDGE_NAME</span><span class="cp">}</span> con-name ovs-port-<span class="cp">${</span><span class="n">BRIDGE_NAME</span><span class="cp">}</span>
+nmcli c add type ovs-interface slave-type ovs-port conn.interface <span class="cp">${</span><span class="n">BRIDGE_NAME</span><span class="cp">}</span> master ovs-port-<span class="cp">${</span><span class="n">BRIDGE_NAME</span><span class="cp">}</span>  con-name ovs-if-<span class="cp">${</span><span class="n">BRIDGE_NAME</span><span class="cp">}</span>
+nmcli c add type ovs-port conn.interface <span class="cp">${</span><span class="n">INTERFACE_NAME</span><span class="cp">}</span> master <span class="cp">${</span><span class="n">BRIDGE_NAME</span><span class="cp">}</span> con-name ovs-port-<span class="cp">${</span><span class="n">INTERFACE_NAME</span><span class="cp">}</span>
+nmcli c add type ethernet conn.interface <span class="cp">${</span><span class="n">INTERFACE_NAME</span><span class="cp">}</span> master ovs-port-<span class="cp">${</span><span class="n">INTERFACE_NAME</span><span class="cp">}</span> con-name ovs-if-<span class="cp">${</span><span class="n">INTERFACE_NAME</span><span class="cp">}</span>
+nmcli conn delete <span class="cp">${</span><span class="n">INTERFACE_NAME</span><span class="cp">}</span>
+nmcli conn mod <span class="cp">${</span><span class="n">BRIDGE_NAME</span><span class="cp">}</span> connection.autoconnect yes
+nmcli conn mod ovs-if-<span class="cp">${</span><span class="n">BRIDGE_NAME</span><span class="cp">}</span> connection.autoconnect yes
+nmcli conn mod ovs-if-<span class="cp">${</span><span class="n">INTERFACE_NAME</span><span class="cp">}</span> connection.autoconnect yes
+nmcli conn mod ovs-port-<span class="cp">${</span><span class="n">INTERFACE_NAME</span><span class="cp">}</span> connection.autoconnect yes
+nmcli conn mod ovs-port-<span class="cp">${</span><span class="n">BRIDGE_NAME</span><span class="cp">}</span> connection.autoconnect yes
+nmcli conn m ovs-if-<span class="cp">${</span><span class="n">BRIDGE_NAME</span><span class="cp">}</span> ipv4.address <span class="cp">${</span><span class="n">IP_ADDRESS</span><span class="cp">}</span>
+nmcli conn m ovs-if-<span class="cp">${</span><span class="n">BRIDGE_NAME</span><span class="cp">}</span> ipv4.method static
 
 systemctl restart NetworkManager
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
 <h3 id="sources">Sources</h3>
 <p>Partially adapted from:
 * <a href="https://blog.oddbit.com/post/2020-02-15-configuring-open-vswitch-with/">https://blog.oddbit.com/post/2020-02-15-configuring-open-vswitch-with/</a></p>

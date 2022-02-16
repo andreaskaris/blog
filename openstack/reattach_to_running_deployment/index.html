@@ -1179,13 +1179,15 @@
                 
                 
                 <h1 id="reattaching-to-a-running-overcloud-deployment">Reattaching to a running overcloud deployment</h1>
-<p>How to re-attach to a running <code>openstack overcloud deploy</code> deployment in tripleo / Red Hat OpenStack</p>
-<p>One may inadvertently cancel ...</p>
-<pre><code>openstack overcloud deploy (...)
-</code></pre>
-<p>... with CTRL-C. In order to reattach to the live event list, one can use this handy command.</p>
-<pre><code>openstack stack event list overcloud --follow
-</code></pre>
+<p>How to re-attach to a running <code class="highlight">openstack overcloud deploy</code> deployment in tripleo / Red Hat OpenStack</p>
+<p>One may inadvertently cancel ...
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>openstack overcloud deploy (...)
+</code></pre></div>
+</td></tr></table>
+... with CTRL-C. In order to reattach to the live event list, one can use this handy command.
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>openstack stack event list overcloud --follow
+</code></pre></div>
+</td></tr></table></p>
                 
                   
                     

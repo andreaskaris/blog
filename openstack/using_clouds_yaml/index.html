@@ -1253,106 +1253,188 @@
 <p>The easiest way to get the file is opening horizon and going to Project -&gt; Project -&gt; API Access. 
 Then, click on "Download OpenStack RC File" and select to download the "clouds.yaml" file. </p>
 <p><img alt="Download clouds.yaml file" src="/src/clouds_yaml.png" /></p>
-<p>Then, copy this file into the current Director as <code>clouds.yaml</code>. </p>
-<p>This file will need one minor modification, as the password needs to be added to:</p>
-<pre><code>clouds:
+<p>Then, copy this file into the current Director as <code class="highlight">clouds.yaml</code>. </p>
+<p>This file will need one minor modification, as the password needs to be added to:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>clouds:
   &lt;cloud identifier&gt;:
     auth:
 (...)
       password: VrcxVu7RmZAzpzKUaHmcMv22q
-</code></pre>
-<p>Test it with:</p>
-<pre><code>openstack --os-cloud &lt;cloud identifier&gt; token issue
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
+<p>Test it with:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>openstack --os-cloud &lt;cloud identifier&gt; token issue
+</code></pre></div>
+</td></tr></table></p>
 <h3 id="manually-creating-the-file">Manually creating the file</h3>
-<p>Use the following script:</p>
-<pre><code>#!/bin/bash
+<p>Use the following script:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
 
-source /home/stack/overcloudrc
+<span class="nb">source</span> /home/stack/overcloudrc
 
-PROJECT_ID=$(openstack project list | grep $OS_PROJECT_NAME | awk '{print $2}')
+<span class="nv">PROJECT_ID</span><span class="o">=</span><span class="k">$(</span>openstack project list <span class="p">|</span> grep <span class="nv">$OS_PROJECT_NAME</span> <span class="p">|</span> awk <span class="s1">&#39;{print $2}&#39;</span><span class="k">)</span>
 
-cat &lt;&lt; EOF &gt; clouds.yaml
-clouds:
-  openstack:
-    auth:
-      auth_url: $OS_AUTH_URL
-      username: &quot;$OS_USERNAME&quot;
-      password: &quot;$OS_PASSWORD&quot;
-      project_name: &quot;$OS_PROJECT_NAME&quot;
-      project_id: &quot;$PROJECT_ID&quot;
-      user_domain_name: &quot;$OS_USER_DOMAIN_NAME&quot;
-    region_name: &quot;$OS_REGION_NAME&quot;
-    interface: &quot;public&quot;
-    identity_api_version: $OS_IDENTITY_API_VERSION
-EOF
-</code></pre>
+cat <span class="s">&lt;&lt; EOF &gt; clouds.yaml</span>
+<span class="s">clouds:</span>
+<span class="s">  openstack:</span>
+<span class="s">    auth:</span>
+<span class="s">      auth_url: $OS_AUTH_URL</span>
+<span class="s">      username: &quot;$OS_USERNAME&quot;</span>
+<span class="s">      password: &quot;$OS_PASSWORD&quot;</span>
+<span class="s">      project_name: &quot;$OS_PROJECT_NAME&quot;</span>
+<span class="s">      project_id: &quot;$PROJECT_ID&quot;</span>
+<span class="s">      user_domain_name: &quot;$OS_USER_DOMAIN_NAME&quot;</span>
+<span class="s">    region_name: &quot;$OS_REGION_NAME&quot;</span>
+<span class="s">    interface: &quot;public&quot;</span>
+<span class="s">    identity_api_version: $OS_IDENTITY_API_VERSION</span>
+<span class="s">EOF</span>
+</code></pre></div>
+</td></tr></table></p>
 <h4 id="further-details">Further details</h4>
-<p>Look at <code>overcloudrc</code>:</p>
-<pre><code>[stack@undercloud-0 ~]$ cat overcloudrc 
-# Clear any old environment that may conflict.
-for key in $( set | awk '{FS=&quot;=&quot;}  /^OS_/ {print $1}' ); do unset $key ; done
-export OS_NO_CACHE=True
-export COMPUTE_API_VERSION=1.1
-export OS_USERNAME=admin
-export no_proxy=,172.16.0.199,192.168.24.12
-export OS_USER_DOMAIN_NAME=Default
-export OS_VOLUME_API_VERSION=3
-export OS_CLOUDNAME=overcloud
-export OS_AUTH_URL=http://172.16.0.199:5000//v3
-export NOVA_VERSION=1.1
-export OS_IMAGE_API_VERSION=2
-export OS_PASSWORD=VrcxVu7RmZAzpzKUaHmcMv22q
-export OS_PROJECT_DOMAIN_NAME=Default
-export OS_IDENTITY_API_VERSION=3
-export OS_PROJECT_NAME=admin
-export OS_AUTH_TYPE=password
-export PYTHONWARNINGS=&quot;ignore:Certificate has no, ignore:A true SSLContext object is not available&quot;
+<p>Look at <code class="highlight">overcloudrc</code>:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="s s-Atom">stack@undercloud</span><span class="o">-</span><span class="mi">0</span> <span class="s s-Atom">~</span><span class="p">]</span><span class="err">$</span> <span class="s s-Atom">cat</span> <span class="s s-Atom">overcloudrc</span> 
+<span class="s s-Atom">#</span> <span class="nv">Clear</span> <span class="s s-Atom">any</span> <span class="s s-Atom">old</span> <span class="s s-Atom">environment</span> <span class="s s-Atom">that</span> <span class="s s-Atom">may</span> <span class="s s-Atom">conflict</span><span class="p">.</span>
+<span class="s s-Atom">for</span> <span class="s s-Atom">key</span> <span class="s s-Atom">in</span> <span class="err">$</span><span class="p">(</span> <span class="s s-Atom">set</span> <span class="p">|</span> <span class="s s-Atom">awk</span> <span class="s s-Atom">&#39;{FS=&quot;=&quot;}  /^OS_/ {print $1}&#39;</span> <span class="p">);</span> <span class="s s-Atom">do</span> <span class="s s-Atom">unset</span> <span class="err">$</span><span class="s s-Atom">key</span> <span class="p">;</span> <span class="s s-Atom">done</span>
+<span class="s s-Atom">export</span> <span class="nv">OS_NO_CACHE</span><span class="o">=</span><span class="nv">True</span>
+<span class="s s-Atom">export</span> <span class="nv">COMPUTE_API_VERSION</span><span class="o">=</span><span class="mf">1.1</span>
+<span class="s s-Atom">export</span> <span class="nv">OS_USERNAME</span><span class="o">=</span><span class="s s-Atom">admin</span>
+<span class="s s-Atom">export</span> <span class="s s-Atom">no_proxy=</span><span class="p">,</span><span class="mf">172.16.0.199</span><span class="p">,</span><span class="mf">192.168.24.12</span>
+<span class="s s-Atom">export</span> <span class="nv">OS_USER_DOMAIN_NAME</span><span class="o">=</span><span class="nv">Default</span>
+<span class="s s-Atom">export</span> <span class="nv">OS_VOLUME_API_VERSION</span><span class="o">=</span><span class="mi">3</span>
+<span class="s s-Atom">export</span> <span class="nv">OS_CLOUDNAME</span><span class="o">=</span><span class="s s-Atom">overcloud</span>
+<span class="s s-Atom">export</span> <span class="nv">OS_AUTH_URL</span><span class="o">=</span><span class="nn">http</span><span class="p">:</span><span class="o">//</span><span class="mf">172.16.0.199</span><span class="s s-Atom">:</span><span class="mi">5000</span><span class="o">//</span><span class="s s-Atom">v3</span>
+<span class="s s-Atom">export</span> <span class="nv">NOVA_VERSION</span><span class="o">=</span><span class="mf">1.1</span>
+<span class="s s-Atom">export</span> <span class="nv">OS_IMAGE_API_VERSION</span><span class="o">=</span><span class="mi">2</span>
+<span class="s s-Atom">export</span> <span class="nv">OS_PASSWORD</span><span class="o">=</span><span class="nv">VrcxVu7RmZAzpzKUaHmcMv22q</span>
+<span class="s s-Atom">export</span> <span class="nv">OS_PROJECT_DOMAIN_NAME</span><span class="o">=</span><span class="nv">Default</span>
+<span class="s s-Atom">export</span> <span class="nv">OS_IDENTITY_API_VERSION</span><span class="o">=</span><span class="mi">3</span>
+<span class="s s-Atom">export</span> <span class="nv">OS_PROJECT_NAME</span><span class="o">=</span><span class="s s-Atom">admin</span>
+<span class="s s-Atom">export</span> <span class="nv">OS_AUTH_TYPE</span><span class="o">=</span><span class="s s-Atom">password</span>
+<span class="s s-Atom">export</span> <span class="nv">PYTHONWARNINGS</span><span class="s s-Atom">=</span><span class="s2">&quot;ignore:Certificate has no, ignore:A true SSLContext object is not available&quot;</span>
 
-# Add OS_CLOUDNAME to PS1
-if [ -z &quot;${CLOUDPROMPT_ENABLED:-}&quot; ]; then
-    export PS1=${PS1:-&quot;&quot;}
-    export PS1=\${OS_CLOUDNAME:+&quot;(\$OS_CLOUDNAME)&quot;}\ $PS1
-    export CLOUDPROMPT_ENABLED=1
-fi
-</code></pre>
-<p>Get the project id with:</p>
-<pre><code>openstack project list | grep $OS_PROJECT_NAME | awk '{print $2}'
-</code></pre>
-<p>Generate clouds.yaml with the above credentials. Adjust this to use the actual configuration and credentials as obtained from overcloudrc:</p>
-<pre><code>cat &lt;&lt;'EOF' &gt; clouds.yaml
-clouds:
-  openstack:
-    auth:
-      auth_url: http://172.16.0.199:5000//v3
-      username: &quot;admin&quot;
-      password: VrcxVu7RmZAzpzKUaHmcMv22q
-      project_name: &quot;admin&quot;
-      project_id: &quot;a416f556938f454f849da42faa317cd3&quot;
-      user_domain_name: &quot;Default&quot;
-    region_name: &quot;regionOne&quot;
-    interface: &quot;public&quot;
-    identity_api_version: 3
-EOF
-</code></pre>
+<span class="s s-Atom">#</span> <span class="nv">Add</span> <span class="nv">OS_CLOUDNAME</span> <span class="s s-Atom">to</span> <span class="nv">PS1</span>
+<span class="s s-Atom">if</span> <span class="p">[</span> <span class="o">-</span><span class="s s-Atom">z</span> <span class="s2">&quot;${CLOUDPROMPT_ENABLED:-}&quot;</span> <span class="p">];</span> <span class="s s-Atom">then</span>
+    <span class="s s-Atom">export</span> <span class="nv">PS1</span><span class="s s-Atom">=</span><span class="err">$</span><span class="p">{</span><span class="nv">PS1</span><span class="p">:-</span><span class="s2">&quot;&quot;</span><span class="p">}</span>
+    <span class="s s-Atom">export</span> <span class="nv">PS1</span><span class="s s-Atom">=\</span><span class="err">$</span><span class="p">{</span><span class="nv">OS_CLOUDNAME</span><span class="s s-Atom">:+</span><span class="err">&quot;</span><span class="p">(</span><span class="s s-Atom">\</span><span class="err">$</span><span class="nv">OS_CLOUDNAME</span><span class="p">)</span><span class="err">&quot;</span><span class="p">}</span><span class="s s-Atom">\</span> <span class="err">$</span><span class="nv">PS1</span>
+    <span class="s s-Atom">export</span> <span class="nv">CLOUDPROMPT_ENABLED</span><span class="o">=</span><span class="mi">1</span>
+<span class="s s-Atom">fi</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Get the project id with:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>openstack project list | grep $OS_PROJECT_NAME | awk &#39;{print $2}&#39;
+</code></pre></div>
+</td></tr></table></p>
+<p>Generate clouds.yaml with the above credentials. Adjust this to use the actual configuration and credentials as obtained from overcloudrc:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">cat</span> <span class="o">&lt;&lt;</span><span class="p">&#39;</span><span class="n">EOF</span><span class="p">&#39;</span> <span class="o">&gt;</span> <span class="n">clouds</span><span class="p">.</span><span class="n">yaml</span>
+<span class="nl">clouds:</span>
+  <span class="nl">openstack:</span>
+    <span class="nl">auth:</span>
+      <span class="nl">auth_url:</span> <span class="nl">http:</span><span class="c1">//172.16.0.199:5000//v3</span>
+      <span class="nl">username:</span> <span class="s">&quot;admin&quot;</span>
+      <span class="nl">password:</span> <span class="n">VrcxVu7RmZAzpzKUaHmcMv22q</span>
+      <span class="nl">project_name:</span> <span class="s">&quot;admin&quot;</span>
+      <span class="nl">project_id:</span> <span class="s">&quot;a416f556938f454f849da42faa317cd3&quot;</span>
+      <span class="nl">user_domain_name:</span> <span class="s">&quot;Default&quot;</span>
+    <span class="nl">region_name:</span> <span class="s">&quot;regionOne&quot;</span>
+    <span class="nl">interface:</span> <span class="s">&quot;public&quot;</span>
+    <span class="nl">identity_api_version:</span> <span class="mh">3</span>
+<span class="n">EOF</span>
+</code></pre></div>
+</td></tr></table></p>
 <h2 id="using-cloudsyaml">Using clouds.yaml</h2>
-<p>With the <code>openstack</code> CLI, use clouds.yaml by providing <code>--os-cloud &lt;cloud identifier from YAML file&gt;</code>:</p>
-<pre><code>[stack@undercloud-0 ~]$ openstack --os-cloud openstack token issue
-+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Field      | Value                                                                                                                                                                                   |
-+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| expires    | 2019-10-26T11:18:10+0000                                                                                                                                                                |
-| id         | gAAAAABdtB1i8wnsh-pkN6fGMFD5vX7bcvxWms__01c9FFeDp3U-iG6NB31NJc9QhVxVB7WB9_D5J9gwGX91TIdMEiqmhTuI66Wz8eGkw-jxoiAR81y1UYskPrORlAj4Vl0u2L7bifalN7VnPoWu6ISgDCIhd1vF6BZwtU1NrLpfT0KBqMX83_Q |
-| project_id | a40944973ca8466cb30faeb669646359                                                                                                                                                        |
-| user_id    | f41f1e1433744957985eef31d5d64309                                                                                                                                                        |
-+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-[stack@undercloud-0 ~]$ openstack --os-cloud openstack network list
-+--------------------------------------+----------+---------+
-| ID                                   | Name     | Subnets |
-+--------------------------------------+----------+---------+
-| a01c429e-9095-4838-8ff9-c14ed0683025 | private1 |         |
-+--------------------------------------+----------+---------+
-</code></pre>
+<p>With the <code class="highlight">openstack</code> CLI, use clouds.yaml by providing <code class="highlight">--os-cloud &lt;cloud identifier from YAML file&gt;</code>:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">[</span><span class="c">stack@undercloud</span><span class="nb">-</span><span class="c">0 ~</span><span class="k">]</span><span class="c">$ openstack </span><span class="nb">--</span><span class="c">os</span><span class="nb">-</span><span class="c">cloud openstack token issue</span>
+<span class="nb">+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+</span><span class="c"></span>
+<span class="c">| Field      | Value                                                                                                                                                                                   |</span>
+<span class="nb">+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+</span><span class="c"></span>
+<span class="c">| expires    | 2019</span><span class="nb">-</span><span class="c">10</span><span class="nb">-</span><span class="c">26T11:18:10</span><span class="nb">+</span><span class="c">0000                                                                                                                                                                |</span>
+<span class="c">| id         | gAAAAABdtB1i8wnsh</span><span class="nb">-</span><span class="c">pkN6fGMFD5vX7bcvxWms__01c9FFeDp3U</span><span class="nb">-</span><span class="c">iG6NB31NJc9QhVxVB7WB9_D5J9gwGX91TIdMEiqmhTuI66Wz8eGkw</span><span class="nb">-</span><span class="c">jxoiAR81y1UYskPrORlAj4Vl0u2L7bifalN7VnPoWu6ISgDCIhd1vF6BZwtU1NrLpfT0KBqMX83_Q |</span>
+<span class="c">| project_id | a40944973ca8466cb30faeb669646359                                                                                                                                                        |</span>
+<span class="c">| user_id    | f41f1e1433744957985eef31d5d64309                                                                                                                                                        |</span>
+<span class="nb">+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+</span><span class="c"></span>
+<span class="k">[</span><span class="c">stack@undercloud</span><span class="nb">-</span><span class="c">0 ~</span><span class="k">]</span><span class="c">$ openstack </span><span class="nb">--</span><span class="c">os</span><span class="nb">-</span><span class="c">cloud openstack network list</span>
+<span class="nb">+--------------------------------------+----------+---------+</span><span class="c"></span>
+<span class="c">| ID                                   | Name     | Subnets |</span>
+<span class="nb">+--------------------------------------+----------+---------+</span><span class="c"></span>
+<span class="c">| a01c429e</span><span class="nb">-</span><span class="c">9095</span><span class="nb">-</span><span class="c">4838</span><span class="nb">-</span><span class="c">8ff9</span><span class="nb">-</span><span class="c">c14ed0683025 | private1 |         |</span>
+<span class="nb">+--------------------------------------+----------+---------+</span><span class="c"></span>
+</code></pre></div>
+</td></tr></table></p>
                 
                   
                     

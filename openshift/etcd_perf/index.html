@@ -1238,13 +1238,14 @@
 <p>Also see: <a href="https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/performance.md">https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/performance.md</a></p>
 <p>For etcd cluster hardware recommendations, see: <a href="https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/hardware.md#example-hardware-configurations">https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/hardware.md#example-hardware-configurations</a></p>
 <h3 id="etcdctl-check-perf-how-it-works">etcdctl check perf - how it works</h3>
-<p>The above hardware configuration table has slightly different definitions of size compared to <code>etcdctl check perf</code>.</p>
-<p>The <code>etcdctl check perf</code> command will simulate specific workload scenarios for small(50 clients), medium (200 clients), large (500 clients) and extra large clusters (1000 clients). It will always run for 60 seconds.</p>
+<p>The above hardware configuration table has slightly different definitions of size compared to <code class="highlight">etcdctl check perf</code>.</p>
+<p>The <code class="highlight">etcdctl check perf</code> command will simulate specific workload scenarios for small(50 clients), medium (200 clients), large (500 clients) and extra large clusters (1000 clients). It will always run for 60 seconds.</p>
 <p>You can also check the code here:
-<a href="https://github.com/etcd-io/etcd/blob/master/etcdctl/ctlv3/command/check.go#L127">https://github.com/etcd-io/etcd/blob/master/etcdctl/ctlv3/command/check.go#L127</a></p>
-<pre><code>The performance check's workload model. Accepted workloads: s(small), m(medium), l(large), xl(xLarge)
-</code></pre>
-<p>The tests run by <code>etcdctl check perf</code> will report PASS/FAIL depending on if they are within the following bounds:</p>
+<a href="https://github.com/etcd-io/etcd/blob/master/etcdctl/ctlv3/command/check.go#L127">https://github.com/etcd-io/etcd/blob/master/etcdctl/ctlv3/command/check.go#L127</a>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">The</span> <span class="n">performance</span> <span class="n">check</span><span class="s1">&#39;s workload model. Accepted workloads: s(small), m(medium), l(large), xl(xLarge)</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>The tests run by <code class="highlight">etcdctl check perf</code> will report PASS/FAIL depending on if they are within the following bounds:</p>
 <table>
 <thead>
 <tr>
@@ -1268,122 +1269,217 @@
 </tbody>
 </table>
 <p>Additionally, etcd checks if there are any errors.</p>
-<p><a href="https://github.com/etcd-io/etcd/blob/6e800b9b0161ef874784fc6c679325acd67e2452/etcdctl/ctlv3/command/check.go#L51">https://github.com/etcd-io/etcd/blob/6e800b9b0161ef874784fc6c679325acd67e2452/etcdctl/ctlv3/command/check.go#L51</a></p>
-<pre><code>(...)
-var checkPerfCfgMap = map[string]checkPerfCfg{
-    // TODO: support read limit
-    &quot;s&quot;: {
-        limit:    150,
-        clients:  50,
-        duration: 60,
-    },
-    &quot;m&quot;: {
-        limit:    1000,
-        clients:  200,
-        duration: 60,
-    },
-    &quot;l&quot;: {
-        limit:    8000,
-        clients:  500,
-        duration: 60,
-    },
-    &quot;xl&quot;: {
-        limit:    15000,
-        clients:  1000,
-        duration: 60,
-    },
-}
-(...)
-</code></pre>
-<p><a href="https://github.com/etcd-io/etcd/blob/6e800b9b0161ef874784fc6c679325acd67e2452/etcdctl/ctlv3/command/check.go#L232">https://github.com/etcd-io/etcd/blob/6e800b9b0161ef874784fc6c679325acd67e2452/etcdctl/ctlv3/command/check.go#L232</a></p>
-<pre><code>(...)
-    ok = true
-    if len(s.ErrorDist) != 0 {
-        fmt.Println(&quot;FAIL: too many errors&quot;)
-        for k, v := range s.ErrorDist {
-            fmt.Printf(&quot;FAIL: ERROR(%v) -&gt; %d\n&quot;, k, v)
-        }
-        ok = false
-    }
+<p><a href="https://github.com/etcd-io/etcd/blob/6e800b9b0161ef874784fc6c679325acd67e2452/etcdctl/ctlv3/command/check.go#L51">https://github.com/etcd-io/etcd/blob/6e800b9b0161ef874784fc6c679325acd67e2452/etcdctl/ctlv3/command/check.go#L51</a>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">(...)</span><span class="w"></span>
+<span class="nf">var</span><span class="w"> </span><span class="n">checkPerfCfgMap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">map</span><span class="o">[</span><span class="n">string</span><span class="o">]</span><span class="n">checkPerfCfg</span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="nl">TODO</span><span class="p">:</span><span class="w"> </span><span class="n">support</span><span class="w"> </span><span class="k">read</span><span class="w"> </span><span class="k">limit</span><span class="w"></span>
+<span class="w">    </span><span class="ss">&quot;s&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">limit</span><span class="err">:</span><span class="w">    </span><span class="mi">150</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nl">clients</span><span class="p">:</span><span class="w">  </span><span class="mi">50</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nl">duration</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="ss">&quot;m&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">limit</span><span class="err">:</span><span class="w">    </span><span class="mi">1000</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nl">clients</span><span class="p">:</span><span class="w">  </span><span class="mi">200</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nl">duration</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="ss">&quot;l&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">limit</span><span class="err">:</span><span class="w">    </span><span class="mi">8000</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nl">clients</span><span class="p">:</span><span class="w">  </span><span class="mi">500</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nl">duration</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="ss">&quot;xl&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">limit</span><span class="err">:</span><span class="w">    </span><span class="mi">15000</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nl">clients</span><span class="p">:</span><span class="w">  </span><span class="mi">1000</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nl">duration</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="err">}</span><span class="w"></span>
+<span class="p">(...)</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p><a href="https://github.com/etcd-io/etcd/blob/6e800b9b0161ef874784fc6c679325acd67e2452/etcdctl/ctlv3/command/check.go#L232">https://github.com/etcd-io/etcd/blob/6e800b9b0161ef874784fc6c679325acd67e2452/etcdctl/ctlv3/command/check.go#L232</a>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">(...)</span>
+    <span class="n">ok</span> <span class="o">=</span> <span class="kr">true</span>
+    <span class="nf">if</span> <span class="n">len</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">ErrorDist</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
+        <span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="s">&quot;FAIL: too many errors&quot;</span><span class="p">)</span>
+        <span class="n">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="o">:=</span> <span class="nf">range</span> <span class="n">s</span><span class="p">.</span><span class="n">ErrorDist</span> <span class="p">{</span>
+            <span class="n">fmt</span><span class="p">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">&quot;FAIL: ERROR(%v) -&gt; %d\n&quot;</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="n">ok</span> <span class="o">=</span> <span class="kr">false</span>
+    <span class="p">}</span>
 
-    if s.RPS/float64(cfg.limit) &lt;= 0.9 {
-        fmt.Printf(&quot;FAIL: Throughput too low: %d writes/s\n&quot;, int(s.RPS)+1)
-        ok = false
-    } else {
-        fmt.Printf(&quot;PASS: Throughput is %d writes/s\n&quot;, int(s.RPS)+1)
-    }
-    if s.Slowest &gt; 0.5 { // slowest request &gt; 500ms
-        fmt.Printf(&quot;Slowest request took too long: %fs\n&quot;, s.Slowest)
-        ok = false
-    } else {
-        fmt.Printf(&quot;PASS: Slowest request took %fs\n&quot;, s.Slowest)
-    }
-    if s.Stddev &gt; 0.1 { // stddev &gt; 100ms
-        fmt.Printf(&quot;Stddev too high: %fs\n&quot;, s.Stddev)
-        ok = false
-    } else {
-        fmt.Printf(&quot;PASS: Stddev is %fs\n&quot;, s.Stddev)
-    }
+    <span class="nf">if</span> <span class="n">s</span><span class="p">.</span><span class="n">RPS</span><span class="o">/</span><span class="n">float64</span><span class="p">(</span><span class="n">cfg</span><span class="p">.</span><span class="kr">limit</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.9</span> <span class="p">{</span>
+        <span class="n">fmt</span><span class="p">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">&quot;FAIL: Throughput too low: %d writes/s\n&quot;</span><span class="p">,</span> <span class="n">int</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">RPS</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ok</span> <span class="o">=</span> <span class="kr">false</span>
+    <span class="p">}</span> <span class="n">else</span> <span class="p">{</span>
+        <span class="n">fmt</span><span class="p">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">&quot;PASS: Throughput is %d writes/s\n&quot;</span><span class="p">,</span> <span class="n">int</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">RPS</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="nf">if</span> <span class="n">s</span><span class="p">.</span><span class="n">Slowest</span> <span class="o">&gt;</span> <span class="mf">0.5</span> <span class="p">{</span> <span class="c1">// slowest request &gt; 500ms</span>
+        <span class="n">fmt</span><span class="p">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">&quot;Slowest request took too long: %fs\n&quot;</span><span class="p">,</span> <span class="n">s</span><span class="p">.</span><span class="n">Slowest</span><span class="p">)</span>
+        <span class="n">ok</span> <span class="o">=</span> <span class="kr">false</span>
+    <span class="p">}</span> <span class="n">else</span> <span class="p">{</span>
+        <span class="n">fmt</span><span class="p">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">&quot;PASS: Slowest request took %fs\n&quot;</span><span class="p">,</span> <span class="n">s</span><span class="p">.</span><span class="n">Slowest</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="nf">if</span> <span class="n">s</span><span class="p">.</span><span class="n">Stddev</span> <span class="o">&gt;</span> <span class="mf">0.1</span> <span class="p">{</span> <span class="c1">// stddev &gt; 100ms</span>
+        <span class="n">fmt</span><span class="p">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">&quot;Stddev too high: %fs\n&quot;</span><span class="p">,</span> <span class="n">s</span><span class="p">.</span><span class="n">Stddev</span><span class="p">)</span>
+        <span class="n">ok</span> <span class="o">=</span> <span class="kr">false</span>
+    <span class="p">}</span> <span class="n">else</span> <span class="p">{</span>
+        <span class="n">fmt</span><span class="p">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">&quot;PASS: Stddev is %fs\n&quot;</span><span class="p">,</span> <span class="n">s</span><span class="p">.</span><span class="n">Stddev</span><span class="p">)</span>
+    <span class="p">}</span>
 
-    if ok {
-        fmt.Println(&quot;PASS&quot;)
-    } else {
-        fmt.Println(&quot;FAIL&quot;)
-        os.Exit(ExitError)
-    }
-(...)
-</code></pre>
+    <span class="nf">if</span> <span class="n">ok</span> <span class="p">{</span>
+        <span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="s">&quot;PASS&quot;</span><span class="p">)</span>
+    <span class="p">}</span> <span class="n">else</span> <span class="p">{</span>
+        <span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="s">&quot;FAIL&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="p">.</span><span class="n">Exit</span><span class="p">(</span><span class="n">ExitError</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">(...)</span>
+</code></pre></div>
+</td></tr></table></p>
 <p>The processing of a run's metrics is done here:
-<a href="https://github.com/etcd-io/etcd/blob/6e800b9b0161ef874784fc6c679325acd67e2452/pkg/report/report.go#L185">https://github.com/etcd-io/etcd/blob/6e800b9b0161ef874784fc6c679325acd67e2452/pkg/report/report.go#L185</a></p>
-<pre><code>(...)
-func (r *report) processResults() {
-    st := time.Now()
-    for res := range r.results {
-        r.processResult(&amp;res)
-    }
-    r.stats.Total = time.Since(st)
+<a href="https://github.com/etcd-io/etcd/blob/6e800b9b0161ef874784fc6c679325acd67e2452/pkg/report/report.go#L185">https://github.com/etcd-io/etcd/blob/6e800b9b0161ef874784fc6c679325acd67e2452/pkg/report/report.go#L185</a>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">(...)</span><span class="w"></span>
+<span class="n">func</span><span class="w"> </span><span class="p">(</span><span class="n">r</span><span class="w"> </span><span class="o">*</span><span class="n">report</span><span class="p">)</span><span class="w"> </span><span class="n">processResults</span><span class="p">()</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">st</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="nc">time</span><span class="p">.</span><span class="n">Now</span><span class="p">()</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">results</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">r</span><span class="p">.</span><span class="n">processResult</span><span class="p">(</span><span class="o">&amp;</span><span class="n">res</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">time</span><span class="p">.</span><span class="n">Since</span><span class="p">(</span><span class="n">st</span><span class="p">)</span><span class="w"></span>
 
-    r.stats.RPS = float64(len(r.stats.Lats)) / r.stats.Total.Seconds()
-    r.stats.Average = r.stats.AvgTotal / float64(len(r.stats.Lats))
-    for i := range r.stats.Lats {
-        dev := r.stats.Lats[i] - r.stats.Average
-        r.stats.Stddev += dev * dev
-    }
-    r.stats.Stddev = math.Sqrt(r.stats.Stddev / float64(len(r.stats.Lats)))
-    sort.Float64s(r.stats.Lats)
-    if len(r.stats.Lats) &gt; 0 {
-        r.stats.Fastest = r.stats.Lats[0]
-        r.stats.Slowest = r.stats.Lats[len(r.stats.Lats)-1]
-    }
-}
-(...)
-</code></pre>
+<span class="w">    </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">RPS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">float64</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Total</span><span class="p">.</span><span class="n">Seconds</span><span class="p">()</span><span class="w"></span>
+<span class="w">    </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Average</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">AvgTotal</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">float64</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="p">))</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">dev</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Average</span><span class="w"></span>
+<span class="w">        </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Stddev</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dev</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Stddev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">math</span><span class="p">.</span><span class="nf">Sqrt</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Stddev</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">float64</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="p">)))</span><span class="w"></span>
+<span class="w">    </span><span class="n">sort</span><span class="p">.</span><span class="n">Float64s</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nf">len</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Fastest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="o">[</span><span class="n">0</span><span class="o">]</span><span class="w"></span>
+<span class="w">        </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Slowest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="o">[</span><span class="n">len(r.stats.Lats)-1</span><span class="o">]</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
+<span class="err">}</span><span class="w"></span>
+<span class="p">(...)</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
 <h3 id="running-etcdctl-check-perf">Running etcdctl check perf</h3>
 <p>The following illustrated how to test etcd performance in OpenShift 4.5</p>
-<p>Get the name of one of the etcd pods:</p>
-<pre><code>ETCD_POD=$(oc -n openshift-etcd get pods -l app=etcd -o name | head -1)
-</code></pre>
-<p>Run a normal test:</p>
-<pre><code>oc exec  -n openshift-etcd -it -c etcd $ETCD_POD -- etcdctl check perf
-</code></pre>
-<p>Run a medium test:</p>
-<pre><code>oc exec  -n openshift-etcd -it -c etcd $ETCD_POD -- etcdctl check perf --load='m'
-</code></pre>
-<p>Run a large test:</p>
-<pre><code>oc exec  -n openshift-etcd -it -c etcd $ETCD_POD -- etcdctl check perf --load='l'
-</code></pre>
-<p>Run an extra large test:</p>
-<pre><code>oc exec  -n openshift-etcd -it -c etcd $ETCD_POD -- etcdctl check perf --load='xl'
-</code></pre>
-<p>Here's the output of a failed run:</p>
-<pre><code># oc exec  -n openshift-etcd -it -c etcd $ETCD_POD -- etcdctl check perf --load='m'
- 60 / 60 Boooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo! 100.00% 1m0s
-FAIL: Throughput too low: 898 writes/s
-Slowest request took too long: 2.483523s
-Stddev too high: 0.170017s
-FAIL
-command terminated with exit code 1
-</code></pre>
+<p>Get the name of one of the etcd pods:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>ETCD_POD=$(oc -n openshift-etcd get pods -l app=etcd -o name | head -1)
+</code></pre></div>
+</td></tr></table></p>
+<p>Run a normal test:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">oc</span> <span class="k">exec</span>  <span class="o">-</span><span class="nv">n</span> <span class="nv">openshift</span><span class="o">-</span><span class="nv">etcd</span> <span class="o">-</span><span class="nv">it</span> <span class="o">-</span><span class="nv">c</span> <span class="nv">etcd</span> <span class="mh">$E</span><span class="nv">TCD_POD</span> <span class="o">--</span> <span class="nv">etcdctl</span> <span class="nv">check</span> <span class="nv">perf</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Run a medium test:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">oc</span> <span class="n">exec</span>  <span class="o">-</span><span class="n">n</span> <span class="n">openshift</span><span class="o">-</span><span class="n">etcd</span> <span class="o">-</span><span class="n">it</span> <span class="o">-</span><span class="n">c</span> <span class="n">etcd</span> <span class="o">$</span><span class="n">ETCD_POD</span> <span class="o">--</span> <span class="n">etcdctl</span> <span class="n">check</span> <span class="n">perf</span> <span class="o">--</span><span class="nb">load</span><span class="o">=</span><span class="s1">&#39;m&#39;</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Run a large test:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">oc</span> <span class="n">exec</span>  <span class="o">-</span><span class="n">n</span> <span class="n">openshift</span><span class="o">-</span><span class="n">etcd</span> <span class="o">-</span><span class="n">it</span> <span class="o">-</span><span class="n">c</span> <span class="n">etcd</span> <span class="o">$</span><span class="n">ETCD_POD</span> <span class="o">--</span> <span class="n">etcdctl</span> <span class="n">check</span> <span class="n">perf</span> <span class="o">--</span><span class="nb">load</span><span class="o">=</span><span class="s1">&#39;l&#39;</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Run an extra large test:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">oc</span> <span class="n">exec</span>  <span class="o">-</span><span class="n">n</span> <span class="n">openshift</span><span class="o">-</span><span class="n">etcd</span> <span class="o">-</span><span class="n">it</span> <span class="o">-</span><span class="n">c</span> <span class="n">etcd</span> <span class="o">$</span><span class="n">ETCD_POD</span> <span class="o">--</span> <span class="n">etcdctl</span> <span class="n">check</span> <span class="n">perf</span> <span class="o">--</span><span class="nb">load</span><span class="o">=</span><span class="s1">&#39;xl&#39;</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Here's the output of a failed run:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="c1"># oc exec  -n openshift-etcd -it -c etcd $ETCD_POD -- etcdctl check perf --load=&#39;m&#39;</span>
+ <span class="mi">60</span> <span class="o">/</span> <span class="mi">60</span> <span class="n">Boooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo</span><span class="o">!</span> <span class="mf">100.00</span><span class="o">%</span> <span class="mi">1</span><span class="n">m0s</span>
+<span class="n">FAIL</span><span class="p">:</span> <span class="n">Throughput</span> <span class="n">too</span> <span class="n">low</span><span class="p">:</span> <span class="mi">898</span> <span class="n">writes</span><span class="o">/</span><span class="n">s</span>
+<span class="n">Slowest</span> <span class="n">request</span> <span class="n">took</span> <span class="n">too</span> <span class="n">long</span><span class="p">:</span> <span class="mf">2.483523</span><span class="n">s</span>
+<span class="n">Stddev</span> <span class="n">too</span> <span class="n">high</span><span class="p">:</span> <span class="mf">0.170017</span><span class="n">s</span>
+<span class="n">FAIL</span>
+<span class="n">command</span> <span class="n">terminated</span> <span class="n">with</span> <span class="n">exit</span> <span class="n">code</span> <span class="mi">1</span>
+</code></pre></div>
+</td></tr></table></p>
                 
                   
                     

@@ -1229,55 +1229,82 @@
 <p>Use the official guide: 
 <a href="https://access.redhat.com/documentation/en-us/openshift_container_platform/4.5/html/installing/installing-on-openstack">https://access.redhat.com/documentation/en-us/openshift_container_platform/4.5/html/installing/installing-on-openstack</a></p>
 <h4 id="prerequisites">Prerequisites</h4>
-<p>Create working directory:</p>
-<pre><code>mkdir clouds
+<p>Create working directory:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>mkdir clouds
 cd clouds
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
 <p>Generate clouds.yaml:
 * <a href="https://andreaskaris.github.io/blog/openstack/using_clouds_yaml/">https://andreaskaris.github.io/blog/openstack/using_clouds_yaml/</a></p>
-<p>Update quotas:</p>
-<pre><code>project=$(openstack project list | awk '/admin/ {print $2}')
+<p>Update quotas:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>project=$(openstack project list | awk &#39;/admin/ {print $2}&#39;)
 openstack --os-cloud openstack quota set \
   --secgroups 20 --secgroup-rules 120 --ports 200 --routers 40 \
   --ram 307200 --cores 100 --gigabytes 500 \
   $project
-</code></pre>
-<p>Or consider disabling quotas altogether:</p>
-<pre><code>openstack quota set --secgroups -1 --secgroup-rules -1 --cores -1 --ram -1 --gigabytes -1 $project
-</code></pre>
-<p>Also if it's necessary to spawn a higher number of workers:</p>
-<pre><code>nova quota-class-update default --instances -1 --ram -1 --cores -1
-</code></pre>
-<p>Create flavor:</p>
-<pre><code>openstack --os-cloud openstack flavor create --disk 25 --ram 32768 --vcpus 8 m1.openshift
-# If using hugepages for instances:
-# openstack flavor set --property hw:cpu_policy=dedicated  --property hw:mem_page_size=large m1.openshift
-</code></pre>
-<p>Download the installer and client, for example:</p>
-<pre><code>curl -O https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.5/openshift-install-linux.tar.gz
+</code></pre></div>
+</td></tr></table></p>
+<p>Or consider disabling quotas altogether:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>openstack quota set --secgroups -1 --secgroup-rules -1 --cores -1 --ram -1 --gigabytes -1 $project
+</code></pre></div>
+</td></tr></table></p>
+<p>Also if it's necessary to spawn a higher number of workers:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>nova quota-class-update default --instances -1 --ram -1 --cores -1
+</code></pre></div>
+</td></tr></table></p>
+<p>Create flavor:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">openstack</span> <span class="o">--</span><span class="nv">os</span><span class="o">-</span><span class="nv">cloud</span> <span class="nv">openstack</span> <span class="nv">flavor</span> <span class="nv">create</span> <span class="o">--</span><span class="nv">disk</span> <span class="mi">25</span> <span class="o">--</span><span class="nv">ram</span> <span class="mi">32768</span> <span class="o">--</span><span class="nv">vcpus</span> <span class="mi">8</span> <span class="nv">m1</span>.<span class="nv">openshift</span>
+# <span class="k">If</span> <span class="nv">using</span> <span class="nv">hugepages</span> <span class="k">for</span> <span class="nv">instances</span>:
+# <span class="nv">openstack</span> <span class="nv">flavor</span> <span class="nv">set</span> <span class="o">--</span><span class="nv">property</span> <span class="nv">hw</span>:<span class="nv">cpu_policy</span><span class="o">=</span><span class="nv">dedicated</span>  <span class="o">--</span><span class="nv">property</span> <span class="nv">hw</span>:<span class="nv">mem_page_size</span><span class="o">=</span><span class="nv">large</span> <span class="nv">m1</span>.<span class="nv">openshift</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Download the installer and client, for example:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>curl -O https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.5/openshift-install-linux.tar.gz
 curl -O https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.5/openshift-client-linux.tar.gz
 sudo tar -xf openshift-install-linux.tar.gz -C /usr/local/bin
 sudo tar -xf openshift-client-linux.tar.gz -C /usr/local/bin
-</code></pre>
-<p>Create the pull-secret in <code>pull-secret.txt</code>:</p>
-<pre><code>cat &lt;&lt;'EOF' &gt; pull-secret.txt
+</code></pre></div>
+</td></tr></table></p>
+<p>Create the pull-secret in <code class="highlight">pull-secret.txt</code>:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>cat &lt;&lt;&#39;EOF&#39; &gt; pull-secret.txt
 (... pull-secret here ...)
 EOF
-</code></pre>
-<p>Create the install-config:</p>
-<pre><code>openshift-install create install-config --dir=install-config
-</code></pre>
-<p>Make sure to update <code>/etc/hosts</code> with the API endpoint (<code>api.&lt;cluster name&gt;.&lt;domain&gt;</code>):</p>
-<pre><code>(overcloud) [stack@undercloud-0 clouds]$ grep api /etc/hosts
-172.16.0.231 api.cluster.example.com
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
+<p>Create the install-config:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>openshift-install create install-config --dir=install-config
+</code></pre></div>
+</td></tr></table></p>
+<p>Make sure to update <code class="highlight">/etc/hosts</code> with the API endpoint (<code class="highlight">api.&lt;cluster name&gt;.&lt;domain&gt;</code>):
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">(</span><span class="n">overcloud</span><span class="p">)</span><span class="w"> </span><span class="o">[</span><span class="n">stack@undercloud-0 clouds</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">api</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">hosts</span><span class="w"></span>
+<span class="mf">172.16.0.231</span><span class="w"> </span><span class="n">api</span><span class="p">.</span><span class="n">cluster</span><span class="p">.</span><span class="n">example</span><span class="p">.</span><span class="n">com</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
 <h4 id="deleting-and-recreating-a-cluster-when-something-went-wrong">Deleting and recreating a cluster when something went wrong</h4>
-<pre><code>openshift-install destroy cluster  --dir install-config/  --log-level=info
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>openshift-install destroy cluster  --dir install-config/  --log-level=info
 rm -Rf install-config
 cp -a install-backup installconfig
 cp -a install-backup install-config/
 openshift-install create cluster --dir=install-config/ --log-level=info
-</code></pre>
+</code></pre></div>
+</td></tr></table>
                 
                   
                     

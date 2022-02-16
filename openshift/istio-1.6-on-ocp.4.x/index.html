@@ -1230,229 +1230,416 @@
 <p>Install the bookinfo application:
 <a href="https://istio.io/latest/docs/examples/bookinfo/">https://istio.io/latest/docs/examples/bookinfo/</a></p>
 <h2 id="installation-instructions">Installation instructions</h2>
-<p>Make sure the cluster was correctly installed:</p>
-<pre><code>[akaris@linux upi]$ oc get clusterversion
-NAME      VERSION   AVAILABLE   PROGRESSING   SINCE   STATUS
-version   4.4.16    True        False         2d1h    Cluster version is 4.4.16
-</code></pre>
-<pre><code>[akaris@linux upi]$ oc new-project istio-system
-Now using project &quot;istio-system&quot; on server &quot;https://api.akaris-upi.focused-solutions.support:6443&quot;.
+<p>Make sure the cluster was correctly installed:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">akaris@linux upi</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">clusterversion</span><span class="w"></span>
+<span class="n">NAME</span><span class="w">      </span><span class="n">VERSION</span><span class="w">   </span><span class="n">AVAILABLE</span><span class="w">   </span><span class="n">PROGRESSING</span><span class="w">   </span><span class="n">SINCE</span><span class="w">   </span><span class="n">STATUS</span><span class="w"></span>
+<span class="n">version</span><span class="w">   </span><span class="mf">4.4.16</span><span class="w">    </span><span class="k">True</span><span class="w">        </span><span class="k">False</span><span class="w">         </span><span class="mi">2</span><span class="n">d1h</span><span class="w">    </span><span class="n">Cluster</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="mf">4.4.16</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">akaris@linux upi</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="k">new</span><span class="o">-</span><span class="n">project</span><span class="w"> </span><span class="n">istio</span><span class="o">-</span><span class="k">system</span><span class="w"></span>
+<span class="n">Now</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="n">project</span><span class="w"> </span><span class="ss">&quot;istio-system&quot;</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">server</span><span class="w"> </span><span class="ss">&quot;https://api.akaris-upi.focused-solutions.support:6443&quot;</span><span class="p">.</span><span class="w"></span>
 
-You can add applications to this project with the 'new-app' command. For example, try:
+<span class="n">You</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="k">add</span><span class="w"> </span><span class="n">applications</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">project</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="s1">&#39;new-app&#39;</span><span class="w"> </span><span class="n">command</span><span class="p">.</span><span class="w"> </span><span class="k">For</span><span class="w"> </span><span class="n">example</span><span class="p">,</span><span class="w"> </span><span class="k">try</span><span class="err">:</span><span class="w"></span>
 
-    oc new-app django-psql-example
+<span class="w">    </span><span class="n">oc</span><span class="w"> </span><span class="k">new</span><span class="o">-</span><span class="n">app</span><span class="w"> </span><span class="n">django</span><span class="o">-</span><span class="n">psql</span><span class="o">-</span><span class="n">example</span><span class="w"></span>
 
-to build a new example application in Python. Or use kubectl to deploy a simple Kubernetes application:
+<span class="k">to</span><span class="w"> </span><span class="n">build</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">example</span><span class="w"> </span><span class="n">application</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">Python</span><span class="p">.</span><span class="w"> </span><span class="ow">Or</span><span class="w"> </span><span class="k">use</span><span class="w"> </span><span class="n">kubectl</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">deploy</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">simple</span><span class="w"> </span><span class="n">Kubernetes</span><span class="w"> </span><span class="nl">application</span><span class="p">:</span><span class="w"></span>
 
-    kubectl create deployment hello-node --image=gcr.io/hello-minikube-zero-install/hello-node
-</code></pre>
-<pre><code>[akaris@linux upi]$ oc adm policy add-scc-to-group anyuid system:serviceaccounts:istio-system
-securitycontextconstraints.security.openshift.io/anyuid added to groups: [&quot;system:serviceaccounts:istio-system&quot;]
-</code></pre>
-<p>Install istiocli:</p>
-<pre><code>[akaris@linux upi]$  curl -sL https://istio.io/downloadIstioctl | sh -
-Downloading istioctl-1.6.8 from https://github.com/istio/istio/releases/download/1.6.8/istioctl-1.6.8-linux.tar.gz ... 
-Failed. 
+<span class="w">    </span><span class="n">kubectl</span><span class="w"> </span><span class="k">create</span><span class="w"> </span><span class="n">deployment</span><span class="w"> </span><span class="n">hello</span><span class="o">-</span><span class="n">node</span><span class="w"> </span><span class="c1">--image=gcr.io/hello-minikube-zero-install/hello-node</span>
+</code></pre></div>
+</td></tr></table>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">linux</span> <span class="n">upi</span><span class="p">]</span><span class="o">$</span> <span class="n">oc</span> <span class="n">adm</span> <span class="n">policy</span> <span class="n">add</span><span class="o">-</span><span class="n">scc</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">group</span> <span class="n">anyuid</span> <span class="n">system</span><span class="p">:</span><span class="n">serviceaccounts</span><span class="p">:</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span>
+<span class="n">securitycontextconstraints</span><span class="o">.</span><span class="n">security</span><span class="o">.</span><span class="n">openshift</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">anyuid</span> <span class="n">added</span> <span class="n">to</span> <span class="n">groups</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;system:serviceaccounts:istio-system&quot;</span><span class="p">]</span>
+</code></pre></div>
+</td></tr></table>
+<p>Install istiocli:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">linux</span> <span class="n">upi</span><span class="p">]</span><span class="o">$</span>  <span class="n">curl</span> <span class="o">-</span><span class="n">sL</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">downloadIstioctl</span> <span class="o">|</span> <span class="n">sh</span> <span class="o">-</span>
+<span class="n">Downloading</span> <span class="n">istioctl</span><span class="o">-</span><span class="mf">1.6</span><span class="o">.</span><span class="mi">8</span> <span class="n">from</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">istio</span><span class="o">/</span><span class="n">istio</span><span class="o">/</span><span class="n">releases</span><span class="o">/</span><span class="n">download</span><span class="o">/</span><span class="mf">1.6</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">istioctl</span><span class="o">-</span><span class="mf">1.6</span><span class="o">.</span><span class="mi">8</span><span class="o">-</span><span class="n">linux</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span> <span class="o">...</span> 
+<span class="n">Failed</span><span class="o">.</span> 
 
-Trying with TARGET_ARCH. Downloading istioctl-1.6.8 from https://github.com/istio/istio/releases/download/1.6.8/istioctl-1.6.8-linux-amd64.tar.gz ...
-istioctl-1.6.8-linux-amd64.tar.gz download complete!
+<span class="n">Trying</span> <span class="n">with</span> <span class="n">TARGET_ARCH</span><span class="o">.</span> <span class="n">Downloading</span> <span class="n">istioctl</span><span class="o">-</span><span class="mf">1.6</span><span class="o">.</span><span class="mi">8</span> <span class="n">from</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">istio</span><span class="o">/</span><span class="n">istio</span><span class="o">/</span><span class="n">releases</span><span class="o">/</span><span class="n">download</span><span class="o">/</span><span class="mf">1.6</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">istioctl</span><span class="o">-</span><span class="mf">1.6</span><span class="o">.</span><span class="mi">8</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">amd64</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span> <span class="o">...</span>
+<span class="n">istioctl</span><span class="o">-</span><span class="mf">1.6</span><span class="o">.</span><span class="mi">8</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">amd64</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span> <span class="n">download</span> <span class="n">complete</span><span class="o">!</span>
 
-Add the istioctl to your path with:
-  export PATH=$PATH:$HOME/.istioctl/bin 
+<span class="n">Add</span> <span class="n">the</span> <span class="n">istioctl</span> <span class="n">to</span> <span class="n">your</span> <span class="n">path</span> <span class="n">with</span><span class="p">:</span>
+  <span class="k">export</span> <span class="n">PATH</span><span class="o">=$</span><span class="n">PATH</span><span class="p">:</span><span class="o">$</span><span class="n">HOME</span><span class="o">/.</span><span class="n">istioctl</span><span class="o">/</span><span class="n">bin</span> 
 
-Begin the Istio pre-installation verification check by running:
-     istioctl verify-install 
+<span class="n">Begin</span> <span class="n">the</span> <span class="n">Istio</span> <span class="n">pre</span><span class="o">-</span><span class="n">installation</span> <span class="n">verification</span> <span class="n">check</span> <span class="n">by</span> <span class="n">running</span><span class="p">:</span>
+     <span class="n">istioctl</span> <span class="n">verify</span><span class="o">-</span><span class="n">install</span> 
 
-Need more information? Visit https://istio.io/docs/reference/commands/istioctl/ 
-[akaris@linux upi]$ export PATH=$PATH:$HOME/.istioctl/bin^C
-[akaris@linux upi]$ export PATH=$PATH:$HOME/.istioctl/bin
-[akaris@linux upi]$ istioctl verify-install
-Error: could not load IstioOperator from cluster: the server could not find the requested resource.  Use --filename 
-</code></pre>
+<span class="n">Need</span> <span class="n">more</span> <span class="n">information</span><span class="err">?</span> <span class="n">Visit</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">reference</span><span class="o">/</span><span class="n">commands</span><span class="o">/</span><span class="n">istioctl</span><span class="o">/</span> 
+<span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">linux</span> <span class="n">upi</span><span class="p">]</span><span class="o">$</span> <span class="k">export</span> <span class="n">PATH</span><span class="o">=$</span><span class="n">PATH</span><span class="p">:</span><span class="o">$</span><span class="n">HOME</span><span class="o">/.</span><span class="n">istioctl</span><span class="o">/</span><span class="n">bin</span><span class="o">^</span><span class="n">C</span>
+<span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">linux</span> <span class="n">upi</span><span class="p">]</span><span class="o">$</span> <span class="k">export</span> <span class="n">PATH</span><span class="o">=$</span><span class="n">PATH</span><span class="p">:</span><span class="o">$</span><span class="n">HOME</span><span class="o">/.</span><span class="n">istioctl</span><span class="o">/</span><span class="n">bin</span>
+<span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">linux</span> <span class="n">upi</span><span class="p">]</span><span class="o">$</span> <span class="n">istioctl</span> <span class="n">verify</span><span class="o">-</span><span class="n">install</span>
+<span class="n">Error</span><span class="p">:</span> <span class="n">could</span> <span class="ow">not</span> <span class="nb">load</span> <span class="n">IstioOperator</span> <span class="n">from</span> <span class="n">cluster</span><span class="p">:</span> <span class="n">the</span> <span class="n">server</span> <span class="n">could</span> <span class="ow">not</span> <span class="n">find</span> <span class="n">the</span> <span class="n">requested</span> <span class="n">resource</span><span class="o">.</span>  <span class="n">Use</span> <span class="o">--</span><span class="n">filename</span> 
+</code></pre></div>
+</td></tr></table></p>
 <p>The above error is normal. Nothing was installed yet.</p>
-<p>Follow <a href="https://istio.io/latest/docs/setup/additional-setup/cni/">https://istio.io/latest/docs/setup/additional-setup/cni/</a>:</p>
-<pre><code>$ cat &lt;&lt;EOF &gt; istio-cni.yaml
-apiVersion: install.istio.io/v1alpha1
-kind: IstioOperator
-spec:
-  components:
-    cni:
-      enabled: true
-  values:
-    cni:
-      excludeNamespaces:
-       - istio-system
-       - kube-system
-      logLevel: info
-EOF
-</code></pre>
+<p>Follow <a href="https://istio.io/latest/docs/setup/additional-setup/cni/">https://istio.io/latest/docs/setup/additional-setup/cni/</a>:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ cat <span class="s">&lt;&lt;EOF &gt; istio-cni.yaml</span>
+<span class="s">apiVersion: install.istio.io/v1alpha1</span>
+<span class="s">kind: IstioOperator</span>
+<span class="s">spec:</span>
+<span class="s">  components:</span>
+<span class="s">    cni:</span>
+<span class="s">      enabled: true</span>
+<span class="s">  values:</span>
+<span class="s">    cni:</span>
+<span class="s">      excludeNamespaces:</span>
+<span class="s">       - istio-system</span>
+<span class="s">       - kube-system</span>
+<span class="s">      logLevel: info</span>
+<span class="s">EOF</span>
+</code></pre></div>
+</td></tr></table></p>
 <p>For OpenShift, then follow: <a href="https://istio.io/latest/docs/setup/additional-setup/cni/#hosted-kubernetes-settings">https://istio.io/latest/docs/setup/additional-setup/cni/#hosted-kubernetes-settings</a>:</p>
-<p>Therefore, run:</p>
-<pre><code>[akaris@linux upi]$ istioctl install -f istio-cni.yaml --set components.cni.namespace=kube-system --set values.cni.cniBinDir=/var/lib/cni/bin --set values.cni.cniConfDir=/etc/cni/multus/net.d --set values.cni.chained=false --set values.cni.cniConfFileName=&quot;istio-cni.conf&quot; --set values.sidecarInjectorWebhook.injectedAnnotations.&quot;k8s\.v1\.cni\.cncf\.io/networks&quot;=istio-cni
-✔ Istio core installed                                                                                                
-✔ Istiod installed                                                                                                    
-✔ Addons installed                                                                                                    
-✔ Ingress gateways installed                                                                                          
-✔ CNI installed                                                                                                       
-- Pruning removed resources                                                                                             Pruned object DaemonSet:istio-system:istio-cni-node.
-  Pruned object ConfigMap:istio-system:istio-cni-config.
-  Pruned object ServiceAccount:istio-system:istio-cni.
-✔ Installation complete  
-</code></pre>
-<p>Verify the installation:</p>
-<pre><code>[akaris@linux upi]$ istioctl verify-install 
-ClusterRole: istio-cni.default checked successfully
-ClusterRole: istio-cni-repair-role.default checked successfully
-ClusterRoleBinding: istio-cni.default checked successfully
-ClusterRoleBinding: istio-cni-repair-rolebinding.default checked successfully
-ConfigMap: istio-cni-config.kube-system checked successfully
-DaemonSet: istio-cni-node.kube-system checked successfully
-ServiceAccount: istio-cni.kube-system checked successfully
-HorizontalPodAutoscaler: istio-ingressgateway.istio-system checked successfully
-Deployment: istio-ingressgateway.istio-system checked successfully
-PodDisruptionBudget: istio-ingressgateway.istio-system checked successfully
-Role: istio-ingressgateway-sds.istio-system checked successfully
-RoleBinding: istio-ingressgateway-sds.istio-system checked successfully
-Service: istio-ingressgateway.istio-system checked successfully
-ServiceAccount: istio-ingressgateway-service-account.istio-system checked successfully
-ClusterRole: prometheus-istio-system.default checked successfully
-ClusterRoleBinding: prometheus-istio-system.default checked successfully
-ConfigMap: prometheus.istio-system checked successfully
-Deployment: prometheus.istio-system checked successfully
-Service: prometheus.istio-system checked successfully
-ServiceAccount: prometheus.istio-system checked successfully
-HorizontalPodAutoscaler: istiod.istio-system checked successfully
-ConfigMap: istio.istio-system checked successfully
-Deployment: istiod.istio-system checked successfully
-ConfigMap: istio-sidecar-injector.istio-system checked successfully
-MutatingWebhookConfiguration: istio-sidecar-injector.default checked successfully
-PodDisruptionBudget: istiod.istio-system checked successfully
-Service: istiod.istio-system checked successfully
-EnvoyFilter: metadata-exchange-1.4.istio-system checked successfully
-EnvoyFilter: stats-filter-1.4.istio-system checked successfully
-EnvoyFilter: metadata-exchange-1.5.istio-system checked successfully
-EnvoyFilter: tcp-metadata-exchange-1.5.istio-system checked successfully
-EnvoyFilter: stats-filter-1.5.istio-system checked successfully
-EnvoyFilter: tcp-stats-filter-1.5.istio-system checked successfully
-EnvoyFilter: metadata-exchange-1.6.istio-system checked successfully
-EnvoyFilter: tcp-metadata-exchange-1.6.istio-system checked successfully
-EnvoyFilter: stats-filter-1.6.istio-system checked successfully
-EnvoyFilter: tcp-stats-filter-1.6.istio-system checked successfully
-ClusterRole: istiod-istio-system.default checked successfully
-ClusterRole: istio-reader-istio-system.default checked successfully
-ClusterRoleBinding: istio-reader-istio-system.default checked successfully
-ClusterRoleBinding: istiod-pilot-istio-system.default checked successfully
-ServiceAccount: istio-reader-service-account.istio-system checked successfully
-ServiceAccount: istiod-service-account.istio-system checked successfully
-ValidatingWebhookConfiguration: istiod-istio-system.default checked successfully
-CustomResourceDefinition: httpapispecs.config.istio.io.default checked successfully
-CustomResourceDefinition: httpapispecbindings.config.istio.io.default checked successfully
-CustomResourceDefinition: quotaspecs.config.istio.io.default checked successfully
-CustomResourceDefinition: quotaspecbindings.config.istio.io.default checked successfully
-CustomResourceDefinition: destinationrules.networking.istio.io.default checked successfully
-CustomResourceDefinition: envoyfilters.networking.istio.io.default checked successfully
-CustomResourceDefinition: gateways.networking.istio.io.default checked successfully
-CustomResourceDefinition: serviceentries.networking.istio.io.default checked successfully
-CustomResourceDefinition: sidecars.networking.istio.io.default checked successfully
-CustomResourceDefinition: virtualservices.networking.istio.io.default checked successfully
-CustomResourceDefinition: workloadentries.networking.istio.io.default checked successfully
-CustomResourceDefinition: attributemanifests.config.istio.io.default checked successfully
-CustomResourceDefinition: handlers.config.istio.io.default checked successfully
-CustomResourceDefinition: instances.config.istio.io.default checked successfully
-CustomResourceDefinition: rules.config.istio.io.default checked successfully
-CustomResourceDefinition: clusterrbacconfigs.rbac.istio.io.default checked successfully
-CustomResourceDefinition: rbacconfigs.rbac.istio.io.default checked successfully
-CustomResourceDefinition: serviceroles.rbac.istio.io.default checked successfully
-CustomResourceDefinition: servicerolebindings.rbac.istio.io.default checked successfully
-CustomResourceDefinition: authorizationpolicies.security.istio.io.default checked successfully
-CustomResourceDefinition: peerauthentications.security.istio.io.default checked successfully
-CustomResourceDefinition: requestauthentications.security.istio.io.default checked successfully
-CustomResourceDefinition: adapters.config.istio.io.default checked successfully
-CustomResourceDefinition: templates.config.istio.io.default checked successfully
-CustomResourceDefinition: istiooperators.install.istio.io.default checked successfully
-Checked 25 custom resource definitions
-Checked 1 Istio Deployments
-Istio is installed successfully
-[akaris@linux upi]$ 
-</code></pre>
-<p>That will create the istio pods that are needed for the CNI plugin:</p>
-<pre><code>[akaris@linux upi]$ oc get pods -A | grep istio
-istio-system                                            istio-ingressgateway-6c77d7f498-d58gx                                1/1     Running     0          33m
-istio-system                                            istiod-58f84ffddc-r2bj9                                              1/1     Running     0          33m
-istio-system                                            prometheus-5db67458fb-5m67n                                          2/2     Running     0          33m
-kube-system                                             istio-cni-node-52ktn                                                 2/2     Running     0          56s
-kube-system                                             istio-cni-node-794mr                                                 2/2     Running     0          56s
-kube-system                                             istio-cni-node-gggvm                                                 2/2     Running     0          56s
-kube-system                                             istio-cni-node-nd72d                                                 2/2     Running     0          56s
-kube-system                                             istio-cni-node-p2w5f                                                 2/2     Running     0          56s
-kube-system                                             istio-cni-node-vqjkb                                                 2/2     Running     0          56s
-</code></pre>
-<p>Create the bookinfo app according to <a href="https://istio.io/latest/docs/examples/bookinfo/">https://istio.io/latest/docs/examples/bookinfo/</a>:</p>
-<pre><code>[akaris@linux upi]$ oc new-project bookinfo
-Now using project &quot;bookinfo&quot; on server &quot;https://api.akaris-upi.focused-solutions.support:6443&quot;.
+<p>Therefore, run:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">linux</span> <span class="n">upi</span><span class="p">]</span><span class="o">$</span> <span class="n">istioctl</span> <span class="n">install</span> <span class="o">-</span><span class="n">f</span> <span class="n">istio</span><span class="o">-</span><span class="n">cni</span><span class="o">.</span><span class="n">yaml</span> <span class="o">--</span><span class="n">set</span> <span class="n">components</span><span class="o">.</span><span class="n">cni</span><span class="o">.</span><span class="n">namespace</span><span class="o">=</span><span class="n">kube</span><span class="o">-</span><span class="n">system</span> <span class="o">--</span><span class="n">set</span> <span class="n">values</span><span class="o">.</span><span class="n">cni</span><span class="o">.</span><span class="n">cniBinDir</span><span class="o">=/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">cni</span><span class="o">/</span><span class="n">bin</span> <span class="o">--</span><span class="n">set</span> <span class="n">values</span><span class="o">.</span><span class="n">cni</span><span class="o">.</span><span class="n">cniConfDir</span><span class="o">=/</span><span class="n">etc</span><span class="o">/</span><span class="n">cni</span><span class="o">/</span><span class="n">multus</span><span class="o">/</span><span class="n">net</span><span class="o">.</span><span class="n">d</span> <span class="o">--</span><span class="n">set</span> <span class="n">values</span><span class="o">.</span><span class="n">cni</span><span class="o">.</span><span class="n">chained</span><span class="o">=</span><span class="bp">false</span> <span class="o">--</span><span class="n">set</span> <span class="n">values</span><span class="o">.</span><span class="n">cni</span><span class="o">.</span><span class="n">cniConfFileName</span><span class="o">=</span><span class="s2">&quot;istio-cni.conf&quot;</span> <span class="o">--</span><span class="n">set</span> <span class="n">values</span><span class="o">.</span><span class="n">sidecarInjectorWebhook</span><span class="o">.</span><span class="n">injectedAnnotations</span><span class="o">.</span><span class="s2">&quot;k8s\.v1\.cni\.cncf\.io/networks&quot;</span><span class="o">=</span><span class="n">istio</span><span class="o">-</span><span class="n">cni</span>
+<span class="err">✔</span> <span class="n">Istio</span> <span class="n">core</span> <span class="n">installed</span>                                                                                                
+<span class="err">✔</span> <span class="n">Istiod</span> <span class="n">installed</span>                                                                                                    
+<span class="err">✔</span> <span class="n">Addons</span> <span class="n">installed</span>                                                                                                    
+<span class="err">✔</span> <span class="n">Ingress</span> <span class="n">gateways</span> <span class="n">installed</span>                                                                                          
+<span class="err">✔</span> <span class="n">CNI</span> <span class="n">installed</span>                                                                                                       
+<span class="o">-</span> <span class="n">Pruning</span> <span class="n">removed</span> <span class="n">resources</span>                                                                                             <span class="n">Pruned</span> <span class="n">object</span> <span class="n">DaemonSet</span><span class="p">:</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span><span class="p">:</span><span class="n">istio</span><span class="o">-</span><span class="n">cni</span><span class="o">-</span><span class="n">node</span><span class="o">.</span>
+  <span class="n">Pruned</span> <span class="n">object</span> <span class="n">ConfigMap</span><span class="p">:</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span><span class="p">:</span><span class="n">istio</span><span class="o">-</span><span class="n">cni</span><span class="o">-</span><span class="n">config</span><span class="o">.</span>
+  <span class="n">Pruned</span> <span class="n">object</span> <span class="n">ServiceAccount</span><span class="p">:</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span><span class="p">:</span><span class="n">istio</span><span class="o">-</span><span class="n">cni</span><span class="o">.</span>
+<span class="err">✔</span> <span class="n">Installation</span> <span class="n">complete</span>  
+</code></pre></div>
+</td></tr></table></p>
+<p>Verify the installation:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">linux</span> <span class="n">upi</span><span class="p">]</span><span class="o">$</span> <span class="n">istioctl</span> <span class="n">verify</span><span class="o">-</span><span class="n">install</span> 
+<span class="n">ClusterRole</span><span class="p">:</span> <span class="n">istio</span><span class="o">-</span><span class="n">cni</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">ClusterRole</span><span class="p">:</span> <span class="n">istio</span><span class="o">-</span><span class="n">cni</span><span class="o">-</span><span class="n">repair</span><span class="o">-</span><span class="n">role</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">ClusterRoleBinding</span><span class="p">:</span> <span class="n">istio</span><span class="o">-</span><span class="n">cni</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">ClusterRoleBinding</span><span class="p">:</span> <span class="n">istio</span><span class="o">-</span><span class="n">cni</span><span class="o">-</span><span class="n">repair</span><span class="o">-</span><span class="n">rolebinding</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">ConfigMap</span><span class="p">:</span> <span class="n">istio</span><span class="o">-</span><span class="n">cni</span><span class="o">-</span><span class="n">config</span><span class="o">.</span><span class="n">kube</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">DaemonSet</span><span class="p">:</span> <span class="n">istio</span><span class="o">-</span><span class="n">cni</span><span class="o">-</span><span class="n">node</span><span class="o">.</span><span class="n">kube</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">ServiceAccount</span><span class="p">:</span> <span class="n">istio</span><span class="o">-</span><span class="n">cni</span><span class="o">.</span><span class="n">kube</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">HorizontalPodAutoscaler</span><span class="p">:</span> <span class="n">istio</span><span class="o">-</span><span class="n">ingressgateway</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">Deployment</span><span class="p">:</span> <span class="n">istio</span><span class="o">-</span><span class="n">ingressgateway</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">PodDisruptionBudget</span><span class="p">:</span> <span class="n">istio</span><span class="o">-</span><span class="n">ingressgateway</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">Role</span><span class="p">:</span> <span class="n">istio</span><span class="o">-</span><span class="n">ingressgateway</span><span class="o">-</span><span class="n">sds</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">RoleBinding</span><span class="p">:</span> <span class="n">istio</span><span class="o">-</span><span class="n">ingressgateway</span><span class="o">-</span><span class="n">sds</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">Service</span><span class="p">:</span> <span class="n">istio</span><span class="o">-</span><span class="n">ingressgateway</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">ServiceAccount</span><span class="p">:</span> <span class="n">istio</span><span class="o">-</span><span class="n">ingressgateway</span><span class="o">-</span><span class="n">service</span><span class="o">-</span><span class="n">account</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">ClusterRole</span><span class="p">:</span> <span class="n">prometheus</span><span class="o">-</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">ClusterRoleBinding</span><span class="p">:</span> <span class="n">prometheus</span><span class="o">-</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">ConfigMap</span><span class="p">:</span> <span class="n">prometheus</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">Deployment</span><span class="p">:</span> <span class="n">prometheus</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">Service</span><span class="p">:</span> <span class="n">prometheus</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">ServiceAccount</span><span class="p">:</span> <span class="n">prometheus</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">HorizontalPodAutoscaler</span><span class="p">:</span> <span class="n">istiod</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">ConfigMap</span><span class="p">:</span> <span class="n">istio</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">Deployment</span><span class="p">:</span> <span class="n">istiod</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">ConfigMap</span><span class="p">:</span> <span class="n">istio</span><span class="o">-</span><span class="n">sidecar</span><span class="o">-</span><span class="n">injector</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">MutatingWebhookConfiguration</span><span class="p">:</span> <span class="n">istio</span><span class="o">-</span><span class="n">sidecar</span><span class="o">-</span><span class="n">injector</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">PodDisruptionBudget</span><span class="p">:</span> <span class="n">istiod</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">Service</span><span class="p">:</span> <span class="n">istiod</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">EnvoyFilter</span><span class="p">:</span> <span class="n">metadata</span><span class="o">-</span><span class="n">exchange</span><span class="o">-</span><span class="mf">1.4</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">EnvoyFilter</span><span class="p">:</span> <span class="n">stats</span><span class="o">-</span><span class="n">filter</span><span class="o">-</span><span class="mf">1.4</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">EnvoyFilter</span><span class="p">:</span> <span class="n">metadata</span><span class="o">-</span><span class="n">exchange</span><span class="o">-</span><span class="mf">1.5</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">EnvoyFilter</span><span class="p">:</span> <span class="n">tcp</span><span class="o">-</span><span class="n">metadata</span><span class="o">-</span><span class="n">exchange</span><span class="o">-</span><span class="mf">1.5</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">EnvoyFilter</span><span class="p">:</span> <span class="n">stats</span><span class="o">-</span><span class="n">filter</span><span class="o">-</span><span class="mf">1.5</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">EnvoyFilter</span><span class="p">:</span> <span class="n">tcp</span><span class="o">-</span><span class="n">stats</span><span class="o">-</span><span class="n">filter</span><span class="o">-</span><span class="mf">1.5</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">EnvoyFilter</span><span class="p">:</span> <span class="n">metadata</span><span class="o">-</span><span class="n">exchange</span><span class="o">-</span><span class="mf">1.6</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">EnvoyFilter</span><span class="p">:</span> <span class="n">tcp</span><span class="o">-</span><span class="n">metadata</span><span class="o">-</span><span class="n">exchange</span><span class="o">-</span><span class="mf">1.6</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">EnvoyFilter</span><span class="p">:</span> <span class="n">stats</span><span class="o">-</span><span class="n">filter</span><span class="o">-</span><span class="mf">1.6</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">EnvoyFilter</span><span class="p">:</span> <span class="n">tcp</span><span class="o">-</span><span class="n">stats</span><span class="o">-</span><span class="n">filter</span><span class="o">-</span><span class="mf">1.6</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">ClusterRole</span><span class="p">:</span> <span class="n">istiod</span><span class="o">-</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">ClusterRole</span><span class="p">:</span> <span class="n">istio</span><span class="o">-</span><span class="n">reader</span><span class="o">-</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">ClusterRoleBinding</span><span class="p">:</span> <span class="n">istio</span><span class="o">-</span><span class="n">reader</span><span class="o">-</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">ClusterRoleBinding</span><span class="p">:</span> <span class="n">istiod</span><span class="o">-</span><span class="n">pilot</span><span class="o">-</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">ServiceAccount</span><span class="p">:</span> <span class="n">istio</span><span class="o">-</span><span class="n">reader</span><span class="o">-</span><span class="n">service</span><span class="o">-</span><span class="n">account</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">ServiceAccount</span><span class="p">:</span> <span class="n">istiod</span><span class="o">-</span><span class="n">service</span><span class="o">-</span><span class="n">account</span><span class="o">.</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">ValidatingWebhookConfiguration</span><span class="p">:</span> <span class="n">istiod</span><span class="o">-</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">httpapispecs</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">httpapispecbindings</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">quotaspecs</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">quotaspecbindings</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">destinationrules</span><span class="o">.</span><span class="n">networking</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">envoyfilters</span><span class="o">.</span><span class="n">networking</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">gateways</span><span class="o">.</span><span class="n">networking</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">serviceentries</span><span class="o">.</span><span class="n">networking</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">sidecars</span><span class="o">.</span><span class="n">networking</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">virtualservices</span><span class="o">.</span><span class="n">networking</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">workloadentries</span><span class="o">.</span><span class="n">networking</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">attributemanifests</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">instances</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">rules</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">clusterrbacconfigs</span><span class="o">.</span><span class="n">rbac</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">rbacconfigs</span><span class="o">.</span><span class="n">rbac</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">serviceroles</span><span class="o">.</span><span class="n">rbac</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">servicerolebindings</span><span class="o">.</span><span class="n">rbac</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">authorizationpolicies</span><span class="o">.</span><span class="n">security</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">peerauthentications</span><span class="o">.</span><span class="n">security</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">requestauthentications</span><span class="o">.</span><span class="n">security</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">adapters</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">templates</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">CustomResourceDefinition</span><span class="p">:</span> <span class="n">istiooperators</span><span class="o">.</span><span class="n">install</span><span class="o">.</span><span class="n">istio</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">default</span> <span class="n">checked</span> <span class="n">successfully</span>
+<span class="n">Checked</span> <span class="mi">25</span> <span class="n">custom</span> <span class="n">resource</span> <span class="n">definitions</span>
+<span class="n">Checked</span> <span class="mi">1</span> <span class="n">Istio</span> <span class="n">Deployments</span>
+<span class="n">Istio</span> <span class="k">is</span> <span class="n">installed</span> <span class="n">successfully</span>
+<span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">linux</span> <span class="n">upi</span><span class="p">]</span><span class="o">$</span> 
+</code></pre></div>
+</td></tr></table></p>
+<p>That will create the istio pods that are needed for the CNI plugin:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">akaris@linux upi</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">pods</span><span class="w"> </span><span class="o">-</span><span class="n">A</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">istio</span><span class="w"></span>
+<span class="n">istio</span><span class="o">-</span><span class="k">system</span><span class="w">                                            </span><span class="n">istio</span><span class="o">-</span><span class="n">ingressgateway</span><span class="o">-</span><span class="mi">6</span><span class="n">c77d7f498</span><span class="o">-</span><span class="n">d58gx</span><span class="w">                                </span><span class="mi">1</span><span class="o">/</span><span class="mi">1</span><span class="w">     </span><span class="n">Running</span><span class="w">     </span><span class="mi">0</span><span class="w">          </span><span class="mi">33</span><span class="n">m</span><span class="w"></span>
+<span class="n">istio</span><span class="o">-</span><span class="k">system</span><span class="w">                                            </span><span class="n">istiod</span><span class="o">-</span><span class="mi">58</span><span class="n">f84ffddc</span><span class="o">-</span><span class="n">r2bj9</span><span class="w">                                              </span><span class="mi">1</span><span class="o">/</span><span class="mi">1</span><span class="w">     </span><span class="n">Running</span><span class="w">     </span><span class="mi">0</span><span class="w">          </span><span class="mi">33</span><span class="n">m</span><span class="w"></span>
+<span class="n">istio</span><span class="o">-</span><span class="k">system</span><span class="w">                                            </span><span class="n">prometheus</span><span class="o">-</span><span class="mi">5</span><span class="n">db67458fb</span><span class="o">-</span><span class="mi">5</span><span class="n">m67n</span><span class="w">                                          </span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="w">     </span><span class="n">Running</span><span class="w">     </span><span class="mi">0</span><span class="w">          </span><span class="mi">33</span><span class="n">m</span><span class="w"></span>
+<span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="w">                                             </span><span class="n">istio</span><span class="o">-</span><span class="n">cni</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="mi">52</span><span class="n">ktn</span><span class="w">                                                 </span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="w">     </span><span class="n">Running</span><span class="w">     </span><span class="mi">0</span><span class="w">          </span><span class="mi">56</span><span class="n">s</span><span class="w"></span>
+<span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="w">                                             </span><span class="n">istio</span><span class="o">-</span><span class="n">cni</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="mi">794</span><span class="n">mr</span><span class="w">                                                 </span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="w">     </span><span class="n">Running</span><span class="w">     </span><span class="mi">0</span><span class="w">          </span><span class="mi">56</span><span class="n">s</span><span class="w"></span>
+<span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="w">                                             </span><span class="n">istio</span><span class="o">-</span><span class="n">cni</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="n">gggvm</span><span class="w">                                                 </span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="w">     </span><span class="n">Running</span><span class="w">     </span><span class="mi">0</span><span class="w">          </span><span class="mi">56</span><span class="n">s</span><span class="w"></span>
+<span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="w">                                             </span><span class="n">istio</span><span class="o">-</span><span class="n">cni</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="n">nd72d</span><span class="w">                                                 </span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="w">     </span><span class="n">Running</span><span class="w">     </span><span class="mi">0</span><span class="w">          </span><span class="mi">56</span><span class="n">s</span><span class="w"></span>
+<span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="w">                                             </span><span class="n">istio</span><span class="o">-</span><span class="n">cni</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="n">p2w5f</span><span class="w">                                                 </span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="w">     </span><span class="n">Running</span><span class="w">     </span><span class="mi">0</span><span class="w">          </span><span class="mi">56</span><span class="n">s</span><span class="w"></span>
+<span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="w">                                             </span><span class="n">istio</span><span class="o">-</span><span class="n">cni</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="n">vqjkb</span><span class="w">                                                 </span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="w">     </span><span class="n">Running</span><span class="w">     </span><span class="mi">0</span><span class="w">          </span><span class="mi">56</span><span class="n">s</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Create the bookinfo app according to <a href="https://istio.io/latest/docs/examples/bookinfo/">https://istio.io/latest/docs/examples/bookinfo/</a>:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">akaris@linux upi</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="k">new</span><span class="o">-</span><span class="n">project</span><span class="w"> </span><span class="n">bookinfo</span><span class="w"></span>
+<span class="n">Now</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="n">project</span><span class="w"> </span><span class="ss">&quot;bookinfo&quot;</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">server</span><span class="w"> </span><span class="ss">&quot;https://api.akaris-upi.focused-solutions.support:6443&quot;</span><span class="p">.</span><span class="w"></span>
 
-You can add applications to this project with the 'new-app' command. For example, try:
+<span class="n">You</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="k">add</span><span class="w"> </span><span class="n">applications</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">project</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="s1">&#39;new-app&#39;</span><span class="w"> </span><span class="n">command</span><span class="p">.</span><span class="w"> </span><span class="k">For</span><span class="w"> </span><span class="n">example</span><span class="p">,</span><span class="w"> </span><span class="k">try</span><span class="err">:</span><span class="w"></span>
 
-    oc new-app django-psql-example
+<span class="w">    </span><span class="n">oc</span><span class="w"> </span><span class="k">new</span><span class="o">-</span><span class="n">app</span><span class="w"> </span><span class="n">django</span><span class="o">-</span><span class="n">psql</span><span class="o">-</span><span class="n">example</span><span class="w"></span>
 
-to build a new example application in Python. Or use kubectl to deploy a simple Kubernetes application:
+<span class="k">to</span><span class="w"> </span><span class="n">build</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">example</span><span class="w"> </span><span class="n">application</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">Python</span><span class="p">.</span><span class="w"> </span><span class="ow">Or</span><span class="w"> </span><span class="k">use</span><span class="w"> </span><span class="n">kubectl</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">deploy</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">simple</span><span class="w"> </span><span class="n">Kubernetes</span><span class="w"> </span><span class="nl">application</span><span class="p">:</span><span class="w"></span>
 
-    kubectl create deployment hello-node --image=gcr.io/hello-minikube-zero-install/hello-node
-</code></pre>
-<p>Adjust SCCs according to <a href="https://istio.io/latest/docs/setup/platform-setup/openshift/#privileged-security-context-constraints-for-application-sidecars">https://istio.io/latest/docs/setup/platform-setup/openshift/#privileged-security-context-constraints-for-application-sidecars</a>:</p>
-<pre><code>The Istio sidecar injected into each application pod runs with user ID 1337, 
+<span class="w">    </span><span class="n">kubectl</span><span class="w"> </span><span class="k">create</span><span class="w"> </span><span class="n">deployment</span><span class="w"> </span><span class="n">hello</span><span class="o">-</span><span class="n">node</span><span class="w"> </span><span class="c1">--image=gcr.io/hello-minikube-zero-install/hello-node</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Adjust SCCs according to <a href="https://istio.io/latest/docs/setup/platform-setup/openshift/#privileged-security-context-constraints-for-application-sidecars">https://istio.io/latest/docs/setup/platform-setup/openshift/#privileged-security-context-constraints-for-application-sidecars</a>:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>The Istio sidecar injected into each application pod runs with user ID 1337, 
 which is not allowed by default in OpenShift. To allow this user ID to be used, 
 execute the following commands. Replace &lt;target-namespace&gt; with the appropriate namespace.
-</code></pre>
-<p>So execute:</p>
-<pre><code>[akaris@linux upi]$ oc adm policy add-scc-to-group privileged system:serviceaccounts:bookinfo
-securitycontextconstraints.security.openshift.io/privileged added to groups: [&quot;system:serviceaccounts:bookinfo&quot;]
-[akaris@linux upi]$ oc adm policy add-scc-to-group anyuid system:serviceaccounts:bookinfo
-securitycontextconstraints.security.openshift.io/anyuid added to groups: [&quot;system:serviceaccounts:bookinfo&quot;]
-</code></pre>
-<p>Verify SCC configuration - in SCC 4.5, check <code>oc get clusterrolebindings | grep scc</code> instead.</p>
-<pre><code>[akaris@linux upi]$ oc get scc anyuid -o yaml | grep serv -C3
-  type: RunAsAny
-groups:
-- system:cluster-admins
-- system:serviceaccounts:istio-system
-kind: SecurityContextConstraints
-metadata:
-  annotations:
-</code></pre>
-<p>Now, create the application:</p>
-<pre><code>oc apply -f https://raw.githubusercontent.com/istio/istio/release-1.6/samples/bookinfo/platform/kube/bookinfo.yaml
-</code></pre>
-<pre><code>[akaris@linux upi]$ oc get pods
-NAME                              READY   STATUS    RESTARTS   AGE
-details-v1-5974b67c8-nd7kl        2/2     Running   0          83s
-productpage-v1-64794f5db4-gl7c9   2/2     Running   0          83s
-ratings-v1-c6cdf8d98-z987h        2/2     Running   0          83s
-reviews-v1-7f6558b974-6z84q       2/2     Running   0          83s
-reviews-v2-6cb6ccd848-l8s56       2/2     Running   0          83s
-reviews-v3-cc56b578-9vvqv         2/2     Running   0          83s
-</code></pre>
-<p>Now, create the gateway:</p>
-<pre><code>[akaris@linux upi]$ oc apply -f https://raw.githubusercontent.com/istio/istio/release-1.6/samples/bookinfo/networking/bookinfo-gateway.yaml
-gateway.networking.istio.io/bookinfo-gateway created
-</code></pre>
-<pre><code>[akaris@linux upi]$ oc  get svc istio-ingressgateway -n istio-system
-NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP                                                               PORT(S)                                                      AGE
-istio-ingressgateway   LoadBalancer   172.30.44.45   af0e3e39e3f544f55a59da6578212ff5-1911792852.eu-west-3.elb.amazonaws.com   15021:31538/TCP,80:31367/TCP,443:31276/TCP,15443:30398/TCP   47m
-</code></pre>
+</code></pre></div>
+</td></tr></table></p>
+<p>So execute:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">linux</span> <span class="n">upi</span><span class="p">]</span><span class="o">$</span> <span class="n">oc</span> <span class="n">adm</span> <span class="n">policy</span> <span class="n">add</span><span class="o">-</span><span class="n">scc</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">group</span> <span class="n">privileged</span> <span class="n">system</span><span class="p">:</span><span class="n">serviceaccounts</span><span class="p">:</span><span class="n">bookinfo</span>
+<span class="n">securitycontextconstraints</span><span class="o">.</span><span class="n">security</span><span class="o">.</span><span class="n">openshift</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">privileged</span> <span class="n">added</span> <span class="n">to</span> <span class="n">groups</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;system:serviceaccounts:bookinfo&quot;</span><span class="p">]</span>
+<span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">linux</span> <span class="n">upi</span><span class="p">]</span><span class="o">$</span> <span class="n">oc</span> <span class="n">adm</span> <span class="n">policy</span> <span class="n">add</span><span class="o">-</span><span class="n">scc</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">group</span> <span class="n">anyuid</span> <span class="n">system</span><span class="p">:</span><span class="n">serviceaccounts</span><span class="p">:</span><span class="n">bookinfo</span>
+<span class="n">securitycontextconstraints</span><span class="o">.</span><span class="n">security</span><span class="o">.</span><span class="n">openshift</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">anyuid</span> <span class="n">added</span> <span class="n">to</span> <span class="n">groups</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;system:serviceaccounts:bookinfo&quot;</span><span class="p">]</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Verify SCC configuration - in SCC 4.5, check <code class="highlight">oc get clusterrolebindings | grep scc</code> instead.
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">akaris@linux upi</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">scc</span><span class="w"> </span><span class="n">anyuid</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">yaml</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">serv</span><span class="w"> </span><span class="o">-</span><span class="n">C3</span><span class="w"></span>
+<span class="w">  </span><span class="nl">type</span><span class="p">:</span><span class="w"> </span><span class="n">RunAsAny</span><span class="w"></span>
+<span class="nl">groups</span><span class="p">:</span><span class="w"></span>
+<span class="o">-</span><span class="w"> </span><span class="k">system</span><span class="err">:</span><span class="n">cluster</span><span class="o">-</span><span class="n">admins</span><span class="w"></span>
+<span class="o">-</span><span class="w"> </span><span class="k">system</span><span class="err">:</span><span class="nl">serviceaccounts</span><span class="p">:</span><span class="n">istio</span><span class="o">-</span><span class="k">system</span><span class="w"></span>
+<span class="nl">kind</span><span class="p">:</span><span class="w"> </span><span class="n">SecurityContextConstraints</span><span class="w"></span>
+<span class="nl">metadata</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nl">annotations</span><span class="p">:</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Now, create the application:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>oc apply -f https://raw.githubusercontent.com/istio/istio/release-1.6/samples/bookinfo/platform/kube/bookinfo.yaml
+</code></pre></div>
+</td></tr></table></p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">akaris@linux upi</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">pods</span><span class="w"></span>
+<span class="n">NAME</span><span class="w">                              </span><span class="n">READY</span><span class="w">   </span><span class="n">STATUS</span><span class="w">    </span><span class="n">RESTARTS</span><span class="w">   </span><span class="n">AGE</span><span class="w"></span>
+<span class="n">details</span><span class="o">-</span><span class="n">v1</span><span class="o">-</span><span class="mi">5974</span><span class="n">b67c8</span><span class="o">-</span><span class="n">nd7kl</span><span class="w">        </span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="w">     </span><span class="n">Running</span><span class="w">   </span><span class="mi">0</span><span class="w">          </span><span class="mi">83</span><span class="n">s</span><span class="w"></span>
+<span class="n">productpage</span><span class="o">-</span><span class="n">v1</span><span class="o">-</span><span class="mi">64794</span><span class="n">f5db4</span><span class="o">-</span><span class="n">gl7c9</span><span class="w">   </span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="w">     </span><span class="n">Running</span><span class="w">   </span><span class="mi">0</span><span class="w">          </span><span class="mi">83</span><span class="n">s</span><span class="w"></span>
+<span class="n">ratings</span><span class="o">-</span><span class="n">v1</span><span class="o">-</span><span class="n">c6cdf8d98</span><span class="o">-</span><span class="n">z987h</span><span class="w">        </span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="w">     </span><span class="n">Running</span><span class="w">   </span><span class="mi">0</span><span class="w">          </span><span class="mi">83</span><span class="n">s</span><span class="w"></span>
+<span class="n">reviews</span><span class="o">-</span><span class="n">v1</span><span class="o">-</span><span class="mi">7</span><span class="n">f6558b974</span><span class="o">-</span><span class="mi">6</span><span class="n">z84q</span><span class="w">       </span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="w">     </span><span class="n">Running</span><span class="w">   </span><span class="mi">0</span><span class="w">          </span><span class="mi">83</span><span class="n">s</span><span class="w"></span>
+<span class="n">reviews</span><span class="o">-</span><span class="n">v2</span><span class="o">-</span><span class="mi">6</span><span class="n">cb6ccd848</span><span class="o">-</span><span class="n">l8s56</span><span class="w">       </span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="w">     </span><span class="n">Running</span><span class="w">   </span><span class="mi">0</span><span class="w">          </span><span class="mi">83</span><span class="n">s</span><span class="w"></span>
+<span class="n">reviews</span><span class="o">-</span><span class="n">v3</span><span class="o">-</span><span class="n">cc56b578</span><span class="o">-</span><span class="mi">9</span><span class="n">vvqv</span><span class="w">         </span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="w">     </span><span class="n">Running</span><span class="w">   </span><span class="mi">0</span><span class="w">          </span><span class="mi">83</span><span class="n">s</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
+<p>Now, create the gateway:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">akaris@linux upi</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="n">apply</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="p">.</span><span class="n">githubusercontent</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">istio</span><span class="o">/</span><span class="n">istio</span><span class="o">/</span><span class="k">release</span><span class="o">-</span><span class="mf">1.6</span><span class="o">/</span><span class="n">samples</span><span class="o">/</span><span class="n">bookinfo</span><span class="o">/</span><span class="n">networking</span><span class="o">/</span><span class="n">bookinfo</span><span class="o">-</span><span class="n">gateway</span><span class="p">.</span><span class="n">yaml</span><span class="w"></span>
+<span class="n">gateway</span><span class="p">.</span><span class="n">networking</span><span class="p">.</span><span class="n">istio</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">bookinfo</span><span class="o">-</span><span class="n">gateway</span><span class="w"> </span><span class="n">created</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">akaris@linux upi</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w">  </span><span class="k">get</span><span class="w"> </span><span class="n">svc</span><span class="w"> </span><span class="n">istio</span><span class="o">-</span><span class="n">ingressgateway</span><span class="w"> </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="n">istio</span><span class="o">-</span><span class="k">system</span><span class="w"></span>
+<span class="n">NAME</span><span class="w">                   </span><span class="n">TYPE</span><span class="w">           </span><span class="n">CLUSTER</span><span class="o">-</span><span class="n">IP</span><span class="w">     </span><span class="k">EXTERNAL</span><span class="o">-</span><span class="n">IP</span><span class="w">                                                               </span><span class="n">PORT</span><span class="p">(</span><span class="n">S</span><span class="p">)</span><span class="w">                                                      </span><span class="n">AGE</span><span class="w"></span>
+<span class="n">istio</span><span class="o">-</span><span class="n">ingressgateway</span><span class="w">   </span><span class="n">LoadBalancer</span><span class="w">   </span><span class="mf">172.30.44.45</span><span class="w">   </span><span class="n">af0e3e39e3f544f55a59da6578212ff5</span><span class="o">-</span><span class="mf">1911792852.</span><span class="n">eu</span><span class="o">-</span><span class="n">west</span><span class="o">-</span><span class="mf">3.</span><span class="n">elb</span><span class="p">.</span><span class="n">amazonaws</span><span class="p">.</span><span class="n">com</span><span class="w">   </span><span class="mi">15021</span><span class="err">:</span><span class="mi">31538</span><span class="o">/</span><span class="n">TCP</span><span class="p">,</span><span class="mi">80</span><span class="err">:</span><span class="mi">31367</span><span class="o">/</span><span class="n">TCP</span><span class="p">,</span><span class="mi">443</span><span class="err">:</span><span class="mi">31276</span><span class="o">/</span><span class="n">TCP</span><span class="p">,</span><span class="mi">15443</span><span class="err">:</span><span class="mi">30398</span><span class="o">/</span><span class="n">TCP</span><span class="w">   </span><span class="mi">47</span><span class="n">m</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
 <p>Get variables to connect to the gateway:
 <a href="https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/#determining-the-ingress-ip-and-ports">https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/#determining-the-ingress-ip-and-ports</a></p>
-<p>There's an issue in the instructions for the <code>INGRESS_HOST</code>. With AWS, it needs to be <code>.status.loadBalancer.ingress[0].hostname</code> and not <code>.status.loadBalancer.ingress[0].ip</code>:</p>
-<pre><code>[akaris@linux upi]$ export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-[akaris@linux upi]$ export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name==&quot;http2&quot;)].port}')
-[akaris@linux upi]$ export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name==&quot;https&quot;)].port}')
-[akaris@linux upi]$ export TCP_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name==&quot;tcp&quot;)].port}')
-[akaris@linux upi]$ export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
-</code></pre>
-<p>Now, connect to the application with curl:</p>
-<pre><code>[akaris@linux upi]$ curl -s &quot;http://${GATEWAY_URL}/productpage&quot; | grep -o &quot;&lt;title&gt;.*&lt;/title&gt;&quot;
-&lt;title&gt;Simple Bookstore App&lt;/title&gt;
-</code></pre>
+<p>There's an issue in the instructions for the <code class="highlight">INGRESS_HOST</code>. With AWS, it needs to be <code class="highlight"><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">loadBalancer</span><span class="o">.</span><span class="n">ingress</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">hostname</span></code> and not <code class="highlight"><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">loadBalancer</span><span class="o">.</span><span class="n">ingress</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ip</span></code>:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">linux</span> <span class="n">upi</span><span class="p">]</span><span class="o">$</span> <span class="k">export</span> <span class="n">INGRESS_HOST</span><span class="o">=$</span><span class="p">(</span><span class="n">kubectl</span> <span class="o">-</span><span class="n">n</span> <span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">get</span> <span class="n">service</span> <span class="n">istio</span><span class="o">-</span><span class="n">ingressgateway</span> <span class="o">-</span><span class="n">o</span> <span class="n">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.status.loadBalancer.ingress[0].hostname}&#39;</span><span class="p">)</span>
+<span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">linux</span> <span class="n">upi</span><span class="p">]</span><span class="o">$</span> <span class="k">export</span> <span class="n">INGRESS_PORT</span><span class="o">=$</span><span class="p">(</span><span class="n">kubectl</span> <span class="o">-</span><span class="n">n</span> <span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">get</span> <span class="n">service</span> <span class="n">istio</span><span class="o">-</span><span class="n">ingressgateway</span> <span class="o">-</span><span class="n">o</span> <span class="n">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.spec.ports[?(@.name==&quot;http2&quot;)].port}&#39;</span><span class="p">)</span>
+<span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">linux</span> <span class="n">upi</span><span class="p">]</span><span class="o">$</span> <span class="k">export</span> <span class="n">SECURE_INGRESS_PORT</span><span class="o">=$</span><span class="p">(</span><span class="n">kubectl</span> <span class="o">-</span><span class="n">n</span> <span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">get</span> <span class="n">service</span> <span class="n">istio</span><span class="o">-</span><span class="n">ingressgateway</span> <span class="o">-</span><span class="n">o</span> <span class="n">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.spec.ports[?(@.name==&quot;https&quot;)].port}&#39;</span><span class="p">)</span>
+<span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">linux</span> <span class="n">upi</span><span class="p">]</span><span class="o">$</span> <span class="k">export</span> <span class="n">TCP_INGRESS_PORT</span><span class="o">=$</span><span class="p">(</span><span class="n">kubectl</span> <span class="o">-</span><span class="n">n</span> <span class="n">istio</span><span class="o">-</span><span class="n">system</span> <span class="n">get</span> <span class="n">service</span> <span class="n">istio</span><span class="o">-</span><span class="n">ingressgateway</span> <span class="o">-</span><span class="n">o</span> <span class="n">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.spec.ports[?(@.name==&quot;tcp&quot;)].port}&#39;</span><span class="p">)</span>
+<span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">linux</span> <span class="n">upi</span><span class="p">]</span><span class="o">$</span> <span class="k">export</span> <span class="n">GATEWAY_URL</span><span class="o">=$</span><span class="n">INGRESS_HOST</span><span class="p">:</span><span class="o">$</span><span class="n">INGRESS_PORT</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>Now, connect to the application with curl:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>[akaris@linux upi]$ curl -s &quot;http://<span class="cp">${</span><span class="n">GATEWAY_URL</span><span class="cp">}</span>/productpage&quot; | grep -o &quot;<span class="nt">&lt;title&gt;</span>.*<span class="nt">&lt;/title&gt;</span>&quot;
+<span class="nt">&lt;title&gt;</span>Simple Bookstore App<span class="nt">&lt;/title&gt;</span>
+</code></pre></div>
+</td></tr></table></p>
                 
                   
                     

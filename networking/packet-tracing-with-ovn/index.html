@@ -2838,10 +2838,8 @@ Datapath: <span class="s2">&quot;GR_ovn-worker&quot;</span> <span class="o">(</s
       treated as a no-op.  On a distributed router, it is treated the same way
       as <span class="nt">&lt;code&gt;</span>ct_dnat;<span class="nt">&lt;/code&gt;</span>.
 </code></pre></div>
-</td></tr></table></p>
-<blockquote>
-<p><a href="https://github.com/ovn-org/ovn/blob/ed81be75e8b3b33745eeb9b6ce2686b87ef72cd0/utilities/ovn-trace.8.xml#L242">https://github.com/ovn-org/ovn/blob/ed81be75e8b3b33745eeb9b6ce2686b87ef72cd0/utilities/ovn-trace.8.xml#L242</a></p>
-</blockquote>
+</td></tr></table>
+From: <a href="https://github.com/ovn-org/ovn/blob/ed81be75e8b3b33745eeb9b6ce2686b87ef72cd0/utilities/ovn-trace.8.xml#L242">https://github.com/ovn-org/ovn/blob/ed81be75e8b3b33745eeb9b6ce2686b87ef72cd0/utilities/ovn-trace.8.xml#L242</a></p>
 <p>For our example, this means that the processing stops here, and that we have to figure out ourselves what would happen here. We know that the loadbalancer should rewrite the DNAT and SNAT that was done initially, and we can simply run a new trace. First, though, we have to find out from where.</p>
 <p>We know that the packet will go out of <code class="highlight">GR_ovn-worker</code> and from port <code class="highlight">rtoe-GR_ovn-worker</code>:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>

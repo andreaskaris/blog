@@ -10,6 +10,12 @@ plugins:
   - git-revision-date-localized
 hide:
   - toc
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
 nav:
 - Home: index.md
 - Ceph:

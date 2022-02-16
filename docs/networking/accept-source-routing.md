@@ -5,7 +5,7 @@
 ## IPv4
 
 On RHEL, the default settings for IPv4 will look something like this:
-~~~
+```
 # sysctl -a | grep source_route | grep ipv4
 net.ipv4.conf.all.accept_source_route = 0
 net.ipv4.conf.br-ext.accept_source_route = 1
@@ -17,20 +17,20 @@ net.ipv4.conf.eth1.accept_source_route = 1
 net.ipv4.conf.lo.accept_source_route = 1
 net.ipv4.conf.ovs-system.accept_source_route = 1
 net.ipv4.conf.vxlan_sys_4789.accept_source_route = 1
-~~~
+```
 
 `net.ipv4.conf.all.accept_source_route = 0` will override anything else.
 
 The documentation clearly states that this is a logical AND relationship:
 [https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt](https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt)
-~~~
+```
 accept_source_route - BOOLEAN
 	Accept packets with SRR option.
 	conf/all/accept_source_route must also be set to TRUE to accept packets
 	with SRR option on the interface
 	default TRUE (router)
 		FALSE (host)
-~~~
+```
 
 Having a look at the kernel code:
 
@@ -49,7 +49,7 @@ We should be able to see what's happening if we enable martian logging:
 ### Test setup
 
 I tested with forwarding on:
-~~~
+```
 [root@centos84 ~]# sysctl -a | grep ip_forward
 net.ipv4.ip_forward = 1
 net.ipv4.ip_forward_update_priority = 1
@@ -60,10 +60,10 @@ net.ipv4.conf.eth0.forwarding = 1
 net.ipv4.conf.eth0.mc_forwarding = 0
 net.ipv6.conf.eth0.forwarding = 0
 net.ipv6.conf.eth0.mc_forwarding = 0
-~~~
+```
 
 The traceroute command `traceroute -I 192.168.122.6 -g 192.168.122.6` that I'm using below yields the following IPv4 header + ICMP message:
-~~~
+```
 (...)
 Internet Protocol Version 4, Src: 192.168.122.1, Dst: 192.168.122.6, Via: 192.168.122.6
     0100 .... = Version: 4
@@ -114,12 +114,12 @@ Internet Control Message Protocol
 0010  58 59 5a 5b 5c 5d 5e 5f 60 61 62 63 64 65 66 67   XYZ[\]^_`abcdefg
         Data: 48494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f...
         [Length: 32]
-~~~
+```
 
 ### Testing in a live system - source routing disabled
 
 Here's how this can be tested, on my CentOS 8.4 system:
-~~~
+```
 [root@centos84 ~]# ip a | grep 192.168.122.6
     inet 192.168.122.6/24 brd 192.168.122.255 scope global dynamic noprefixroute eth0
 [root@centos84 ~]# sysctl -a | grep source_route | grep ipv4
@@ -140,10 +140,10 @@ Enabling monitoring...
 Kernel monitoring activated.
 Issue Ctrl-C to stop monitoring
 (...)
-~~~
+```
 
 Now, go to a second CLI, and run:
-~~~
+```
 [akaris@linux ~]$ traceroute -I 192.168.122.6 -g 192.168.122.6
 traceroute to 192.168.122.6 (192.168.122.6), 30 hops max, 72 byte packets^C
 [akaris@linux ~]$ timeout 5 traceroute -I 192.168.122.6 -g 192.168.122.6
@@ -152,11 +152,11 @@ traceroute to 192.168.122.6 (192.168.122.6), 30 hops max, 72 byte packets
 [akaris@linux ~]$ timeout 5 traceroute -I 192.168.122.6 -g 192.168.122.6
 traceroute to 192.168.122.6 (192.168.122.6), 30 hops max, 72 byte packets
 [akaris@linux ~]$ 
-~~~
+```
 
 As you can see, the traceroute will fail, and dropwatch on the first CLI will report 16 drops
 from the traceroute in ip_rcv_finish:
-~~~
+```
 (...)
 2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
 16 drops at ip_rcv_finish+20d (0xffffffff8625274d)
@@ -175,20 +175,20 @@ from the traceroute in ip_rcv_finish:
 2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
 ^CGot a stop message
 dropwatch> stop
-~~~
+```
 
 You can also enable log martians (yes, *this* one is OR'ed, ironically) ...
 [https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt](https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt)
-~~~
+```
 log_martians - BOOLEAN
 	Log packets with impossible addresses to kernel log.
 	log_martians for the interface will be enabled if at least one of
 	conf/{all,interface}/log_martians is set to TRUE,
 	it will be disabled otherwise
-~~~
+```
 
 And upon source route drop, one will be able to see messages containing string `IPv4: source route option` in the logs:
-~~~
+```
 [root@centos84 ~]# sysctl -w net.ipv4.conf.all.log_martians=1
 net.ipv4.conf.all.log_martians = 1
 [root@centos84 ~]# sysctl -a | grep martians
@@ -248,12 +248,12 @@ Jan 21 10:01:08 centos84 kernel: IPv4: source route option 192.168.122.1 -> 192.
 Jan 21 10:01:08 centos84 kernel: IPv4: source route option 192.168.122.1 -> 192.168.122.6
 Jan 21 10:01:08 centos84 kernel: IPv4: source route option 192.168.122.1 -> 192.168.122.6
 ^C
-~~~
+```
 
 ### Testing in a live system - source routing enabled
 
 Now, I tested enabling source routing with `net.ipv4.conf.all.accept_source_route = 1`:
-~~~
+```
 [root@centos84 ~]# sysctl -w net.ipv4.conf.all.accept_source_route=1
 net.ipv4.conf.all.accept_source_route = 1
 [root@centos84 ~]# sysctl -a | grep source_route | grep ipv4
@@ -274,10 +274,10 @@ Enabling monitoring...
 Kernel monitoring activated.
 Issue Ctrl-C to stop monitoring
 (...)
-~~~
+```
 
 Now, my traceroute with the source route option set works:
-~~~
+```
 [akaris@linux ~]$ timeout 5 traceroute -I 192.168.122.6 -g 192.168.122.6
 traceroute to 192.168.122.6 (192.168.122.6), 30 hops max, 72 byte packets
  1  centos84 (192.168.122.6)  0.526 ms  0.509 ms  0.494 ms
@@ -294,10 +294,10 @@ traceroute to 192.168.122.6 (192.168.122.6), 30 hops max, 72 byte packets
 traceroute to 192.168.122.6 (192.168.122.6), 30 hops max, 72 byte packets
  1  centos84 (192.168.122.6)  0.571 ms  0.546 ms  0.538 ms
 [akaris@linux ~]$ 
-~~~
+```
 
 And dropwatch only shows unrelated drops elsewhere:
-~~~
+```
 (...)
 2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
 2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
@@ -308,14 +308,14 @@ And dropwatch only shows unrelated drops elsewhere:
 2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
 ^CGot a stop message
 dropwatch> 
-~~~
+```
 
 And the kernel with martian logging on does not report anything.
 
 ## IPv6
 
 For IPv6, the default settings on RHEL for source routing will yield something like this:
-~~~
+```
 # sysctl -a | grep source_route | grep ipv6
 net.ipv6.conf.all.accept_source_route = 0
 net.ipv6.conf.br-ext.accept_source_route = 0
@@ -327,11 +327,11 @@ net.ipv6.conf.eth1.accept_source_route = 0
 net.ipv6.conf.lo.accept_source_route = 0
 net.ipv6.conf.ovs-system.accept_source_route = 0
 net.ipv6.conf.vxlan_sys_4789.accept_source_route = 0
-~~~
+```
 
 For IPv6, I tried crafting RH0 type packets, but failed miserably at the task. With that said, the kernel only ever accepts RH2 and the default is off, anyway: 
 [https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt](https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt):
-~~~
+```
 accept_source_route - INTEGER
 	Accept source routing (routing extension header).
 
@@ -339,7 +339,7 @@ accept_source_route - INTEGER
 	< 0: Do not accept routing header.
 
 	Default: 0
-~~~
+```
 It looks like this was merged 14 years ago, so we should be good ;-) [https://github.com/torvalds/linux/commit/bb4dbf9e61d0801927e7df2569bb3dd8287ea301](https://github.com/torvalds/linux/commit/bb4dbf9e61d0801927e7df2569bb3dd8287ea301)
 The following article on LWN might be of interest, too: [https://lwn.net/Articles/232781/](https://lwn.net/Articles/232781/)
 

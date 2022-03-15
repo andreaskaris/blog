@@ -48,6 +48,7 @@ nav:
   - haproxy and HTTP/2: networking/haproxy-and-h2c.md
   - Install Open vSwitch on Rocky Linux 8: networking/install-openvswitch-on-rocky.md
   - Geneve tunneling: networking/geneve_tunneling.md
+  - Golang IP address conversion: networking/golang-ip-conversion.md
   - Netlink: networking/netlink.md  
   - OVN standalone on Fedora 31: networking/ovn_standalone_on_fedora31.md
   - OVS packet recirculation: networking/ovs_recirculation.md

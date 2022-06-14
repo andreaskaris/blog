@@ -13,7 +13,7 @@
     
     
       
-        <title>Ceph manual test with qemu - Andreas Karis Blog</title>
+        <title>My vimrc - Andreas Karis Blog</title>
       
     
     
@@ -63,7 +63,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#using-ceph-with-qemu-kvm-manually" class="md-skip">
+        <a href="#my-vimrc" class="md-skip">
           Skip to content
         </a>
       
@@ -96,7 +96,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Ceph manual test with qemu
+              My vimrc
             
           </span>
         </div>
@@ -164,14 +164,12 @@
 
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
       
       
       
@@ -192,100 +190,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Ceph manual test with qemu
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../ceph/ceph-manual-test/" class="md-nav__link">
         Ceph manual test with qemu
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#install-ceph" class="md-nav__link">
-    Install Ceph
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installing-ceph-credentials-to-etcceph" class="md-nav__link">
-    Installing ceph credentials to /etc/ceph
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#creating-a-pool" class="md-nav__link">
-    Creating a pool
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#downloading-and-customizing-rhel-qcow2" class="md-nav__link">
-    Downloading and customizing RHEL qcow2
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#converting-and-uploading-image-into-ceph-pool" class="md-nav__link">
-    Converting and uploading image into Ceph pool
-  </a>
-  
-    <nav class="md-nav" aria-label="Converting and uploading image into Ceph pool">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#booting-a-vm-from-the-raw-ceph-image-with-qemu-kvm" class="md-nav__link">
-    Booting a VM from the raw Ceph image with QEMU-KVM
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#booting-a-vm-from-the-raw-ceph-image-with-libvirt" class="md-nav__link">
-    Booting a VM from the raw Ceph image with libvirt
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -345,7 +254,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/cgroups/" class="md-nav__link">
+      <a href="../cgroups/" class="md-nav__link">
         cgroups
       </a>
     </li>
@@ -359,7 +268,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/containers/" class="md-nav__link">
+      <a href="../containers/" class="md-nav__link">
         Containers in Linux
       </a>
     </li>
@@ -387,7 +296,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/namespaces/" class="md-nav__link">
+      <a href="../namespaces/" class="md-nav__link">
         namespaces
       </a>
     </li>
@@ -407,12 +316,14 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
       
       
       
@@ -435,7 +346,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/cgroups/" class="md-nav__link">
+      <a href="../cgroups/" class="md-nav__link">
         cgroups
       </a>
     </li>
@@ -449,7 +360,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/containers/" class="md-nav__link">
+      <a href="../containers/" class="md-nav__link">
         Containers in Linux
       </a>
     </li>
@@ -463,7 +374,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/hugepages/" class="md-nav__link">
+      <a href="../hugepages/" class="md-nav__link">
         Hugepages
       </a>
     </li>
@@ -477,7 +388,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/ipxe-boot-environment/" class="md-nav__link">
+      <a href="../ipxe-boot-environment/" class="md-nav__link">
         iPXE boot environment on Fedora
       </a>
     </li>
@@ -491,7 +402,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/java-idrac-issues/" class="md-nav__link">
+      <a href="../java-idrac-issues/" class="md-nav__link">
         Java Idrac Issues
       </a>
     </li>
@@ -505,7 +416,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/meson/" class="md-nav__link">
+      <a href="../meson/" class="md-nav__link">
         meson
       </a>
     </li>
@@ -517,11 +428,21 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../../linux/vimrc/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         My vimrc
       </a>
+      
     </li>
   
 
@@ -533,7 +454,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/namespaces/" class="md-nav__link">
+      <a href="../namespaces/" class="md-nav__link">
         namespaces
       </a>
     </li>
@@ -547,7 +468,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/old_java_version_with_xorgs_in_container/" class="md-nav__link">
+      <a href="../old_java_version_with_xorgs_in_container/" class="md-nav__link">
         Old Java inside a container with xorgs
       </a>
     </li>
@@ -561,7 +482,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/get-process-cgroup-info-and-limits/" class="md-nav__link">
+      <a href="../get-process-cgroup-info-and-limits/" class="md-nav__link">
         Retrieving process cgroup resource usage and limit info
       </a>
     </li>
@@ -575,7 +496,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/libvirt-uefi-without-secureboot/" class="md-nav__link">
+      <a href="../libvirt-uefi-without-secureboot/" class="md-nav__link">
         RHEL Booting a virtual machine with UEFI but without secure boot
       </a>
     </li>
@@ -589,7 +510,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/setting-journalctl-limits/" class="md-nav__link">
+      <a href="../setting-journalctl-limits/" class="md-nav__link">
         Setting journalctl limits
       </a>
     </li>
@@ -1453,62 +1374,172 @@
                 
 
 
-<h1 id="using-ceph-with-qemu-kvm-manually">Using Ceph with qemu-kvm manually</h1>
-<h2 id="install-ceph">Install Ceph</h2>
-<p>Create a Ceph cluster according to: 
-<a href="https://access.redhat.com/documentation/en-us/red_hat_ceph_storage/3/html/container_guide/deploying-red-hat-ceph-storage-in-containers">https://access.redhat.com/documentation/en-us/red_hat_ceph_storage/3/html/container_guide/deploying-red-hat-ceph-storage-in-containers</a></p>
-<h2 id="installing-ceph-credentials-to-etcceph">Installing ceph credentials to /etc/ceph</h2>
-<p>Make sure that all required ceph credentials are in /etc/ceph. In this case, I copied them directly from /etc/ceph on one of my monitor nodes.</p>
-<h2 id="creating-a-pool">Creating a pool</h2>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>ceph osd pool create rbd-pool 128
-rbd pool init rbd-pool
-</code></pre></div>
-</td></tr></table>
-<h2 id="downloading-and-customizing-rhel-qcow2">Downloading and customizing RHEL qcow2</h2>
-<p>Download the RHEL qcow2 from <a href="https://access.redhat.com">https://access.redhat.com</a>, e.g.: <a href="https://access.redhat.com/downloads/content/69/ver=/rhel---7/7.7/x86_64/product-software">https://access.redhat.com/downloads/content/69/ver=/rhel---7/7.7/x86_64/product-software</a></p>
-<p>Install libguestfs-tools:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">yum</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">libguestfs</span><span class="o">-</span><span class="n">tools</span><span class="w"> </span><span class="o">-</span><span class="n">y</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
-<p>Change the root password of the image:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">virt</span><span class="o">-</span><span class="n">customize</span><span class="w"> </span><span class="o">-</span><span class="n">a</span><span class="w"> </span><span class="n">rhel</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="mf">7.8</span><span class="o">-</span><span class="n">beta</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">x86_64</span><span class="o">-</span><span class="n">kvm</span><span class="o">.</span><span class="n">qcow2</span><span class="w"> </span><span class="o">--</span><span class="n">password</span><span class="w"> </span><span class="n">root</span><span class="p">:</span><span class="n">password</span><span class="w"></span>
-<span class="c1"># or, if needed:</span><span class="w"></span>
-<span class="c1"># export LIBGUESTFS_BACKEND=direct ; virt-customize -a rhel-server-7.8-beta-1-x86_64-kvm.qcow2 --password root:password</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
-<h2 id="converting-and-uploading-image-into-ceph-pool">Converting and uploading image into Ceph pool</h2>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>qemu-img convert -f qcow2 -O raw rhel-server-7.8-beta-1-x86_64-kvm.qcow2 rbd:rbd-pool/rhel-server
-</code></pre></div>
-</td></tr></table>
-<h4 id="booting-a-vm-from-the-raw-ceph-image-with-qemu-kvm">Booting a VM from the raw Ceph image with QEMU-KVM</h4>
-<p>Start a VM that directly uses the uploaded image from the Ceph pool:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>/usr/libexec/qemu-kvm -drive file=rbd:rbd-pool/rhel-server -nographic -m 1024
-</code></pre></div>
-</td></tr></table></p>
-<p>To get out of qemu-kvm, type <code class="highlight">CTRL-a x</code></p>
-<p>You should be able to log into the image with credentials: <code class="highlight">root</code> / <code class="highlight">password</code></p>
-<blockquote>
-<p><strong>Note:</strong> With the RHEL cloud image, the screen will show grub, then go blank for a while. This is normal, just wait for a few seconds.</p>
-</blockquote>
-<h2 id="booting-a-vm-from-the-raw-ceph-image-with-libvirt">Booting a VM from the raw Ceph image with libvirt</h2>
-<p>See:
-<a href="https://blog.modest-destiny.com/posts/kvm-libvirt-add-ceph-rbd-pool/">https://blog.modest-destiny.com/posts/kvm-libvirt-add-ceph-rbd-pool/</a></p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span>
-<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">undercloud</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># DISK_SIZE=$(qemu-img  info rhel-server-7.8-beta-1-x86_64-kvm.raw | awk -F &#39;[(|)]&#39; &#39;/virtual size/ {print $(NF-1)}&#39; | awk &#39;{print $1}&#39;)</span><span class="w"></span>
-<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">undercloud</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># virsh vol-create-as $CEPH_POOL rhel $DISK_SIZE --format raw</span><span class="w"></span>
-<span class="n">Vol</span><span class="w"> </span><span class="n">rhel</span><span class="w"> </span><span class="n">created</span><span class="w"></span>
+<h1 id="my-vimrc">My vimrc</h1>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">call</span><span class="w"> </span><span class="n">plug</span><span class="c1">#begin()</span><span class="w"></span>
+<span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;vim-airline/vim-airline&#39;</span><span class="w"></span>
+<span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;fatih/vim-go&#39;</span><span class="w"></span>
+<span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;preservim/nerdtree&#39;</span><span class="w"></span>
+<span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;jistr/vim-nerdtree-tabs&#39;</span><span class="w"></span>
+<span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;tpope/vim-fugitive&#39;</span><span class="w"></span>
+<span class="k">if</span><span class="w"> </span><span class="n">has</span><span class="p">(</span><span class="s1">&#39;nvim&#39;</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;Shougo/deoplete.nvim&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;:UpdateRemotePlugins&#39;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="k">else</span><span class="w"></span>
+<span class="w">  </span><span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;Shougo/deoplete.nvim&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;roxma/nvim-yarp&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;roxma/vim-hug-neovim-rpc&#39;</span><span class="w"></span>
+<span class="n">endif</span><span class="w"></span>
+<span class="n">call</span><span class="w"> </span><span class="n">plug</span><span class="c1">#end()</span><span class="w"></span>
 
-<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">undercloud</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># virsh vol-upload --pool $CEPH_POOL rhel rhel-server-7.8-beta-1-x86_64-kvm.raw</span><span class="w"></span>
-<span class="n">error</span><span class="p">:</span><span class="w"> </span><span class="n">cannot</span><span class="w"> </span><span class="n">upload</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">volume</span><span class="w"> </span><span class="n">rhel</span><span class="w"></span>
-<span class="n">error</span><span class="p">:</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">function</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">supported</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">connection</span><span class="w"> </span><span class="n">driver</span><span class="p">:</span><span class="w"> </span><span class="n">storage</span><span class="w"> </span><span class="n">pool</span><span class="w"> </span><span class="n">doesn</span><span class="s1">&#39;t support volume upload</span>
+<span class="n">function</span><span class="o">!</span><span class="w"> </span><span class="n">Toggles</span><span class="p">()</span><span class="w"></span>
+<span class="w">  </span><span class="p">:</span><span class="n">nnoremap</span><span class="w"> </span><span class="o">&lt;</span><span class="n">C</span><span class="o">-</span><span class="n">g</span><span class="o">&gt;</span><span class="w"> </span><span class="p">:</span><span class="n">NERDTreeTabsToggle</span><span class="o">&lt;</span><span class="n">CR</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">  </span><span class="p">:</span><span class="n">nnoremap</span><span class="w"> </span><span class="o">&lt;</span><span class="n">C</span><span class="o">-</span><span class="n">l</span><span class="o">&gt;</span><span class="w"> </span><span class="p">:</span><span class="n">tabn</span><span class="o">&lt;</span><span class="n">CR</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">  </span><span class="p">:</span><span class="n">nnoremap</span><span class="w"> </span><span class="o">&lt;</span><span class="n">C</span><span class="o">-</span><span class="n">h</span><span class="o">&gt;</span><span class="w"> </span><span class="p">:</span><span class="n">tabp</span><span class="o">&lt;</span><span class="n">CR</span><span class="o">&gt;</span><span class="w"></span>
+<span class="n">endfunction</span><span class="w"></span>
+
+<span class="n">function</span><span class="o">!</span><span class="w"> </span><span class="n">GenericSetup</span><span class="p">()</span><span class="w"></span>
+<span class="w">  </span><span class="n">set</span><span class="w"> </span><span class="n">background</span><span class="o">=</span><span class="n">light</span><span class="w"></span>
+<span class="w">  </span><span class="n">set</span><span class="w"> </span><span class="n">tabstop</span><span class="o">=</span><span class="mi">4</span><span class="w"></span>
+<span class="w">  </span><span class="n">set</span><span class="w"> </span><span class="n">shiftwidth</span><span class="o">=</span><span class="mi">4</span><span class="w"></span>
+<span class="w">  </span><span class="n">set</span><span class="w"> </span><span class="n">expandtab</span><span class="w"></span>
+<span class="w">  </span><span class="n">set</span><span class="w"> </span><span class="n">termwinsize</span><span class="o">=</span><span class="mi">4</span><span class="n">x0</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot; The vim-go autocomplete popup</span>
+<span class="w">  </span><span class="s2">&quot; will show up below and with only a single line</span>
+<span class="w">  </span><span class="n">set</span><span class="w"> </span><span class="n">splitbelow</span><span class="w"></span>
+<span class="w">  </span><span class="n">set</span><span class="w"> </span><span class="n">previewheight</span><span class="o">=</span><span class="mi">1</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot; Set VIM&#39;s working directory always to the current open file.</span>
+<span class="w">  </span><span class="n">autocmd</span><span class="w"> </span><span class="n">BufEnter</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">lcd</span><span class="w"> </span><span class="o">%</span><span class="p">:</span><span class="n">p</span><span class="p">:</span><span class="n">h</span><span class="w"></span>
+<span class="w">  </span><span class="n">set</span><span class="w"> </span><span class="n">listchars</span><span class="o">=</span><span class="n">tab</span><span class="p">:</span><span class="err">▸</span>\<span class="w"> </span><span class="p">,</span><span class="n">eol</span><span class="p">:</span><span class="err">¬</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot; set invlist</span>
+<span class="w">  </span><span class="n">set</span><span class="w"> </span><span class="n">number</span><span class="w"></span>
+<span class="w">  </span><span class="n">set</span><span class="w"> </span><span class="n">encoding</span><span class="o">=</span><span class="n">utf</span><span class="o">-</span><span class="mi">8</span><span class="w"></span>
+<span class="n">endfunction</span><span class="w"></span>
+
+<span class="n">function</span><span class="o">!</span><span class="w"> </span><span class="n">DeopleteSetup</span><span class="p">()</span><span class="w"></span>
+<span class="w">  </span><span class="n">let</span><span class="w"> </span><span class="n">g</span><span class="p">:</span><span class="n">deoplete</span><span class="c1">#enable_at_startup = 1</span><span class="w"></span>
+<span class="w">  </span><span class="n">let</span><span class="w"> </span><span class="n">g</span><span class="p">:</span><span class="n">deoplete</span><span class="c1">#complete_method = &quot;omnifunc&quot;</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">call</span><span class="w"> </span><span class="n">deoplete</span><span class="c1">#custom#option(&#39;omni_patterns&#39;, {</span><span class="w"></span>
+\<span class="w"> </span><span class="s1">&#39;go&#39;</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;[^. *</span><span class="se">\t</span><span class="s1">]\.\w*&#39;</span><span class="p">,</span><span class="w"></span>
+\<span class="p">})</span><span class="w"></span>
+<span class="n">endfunction</span><span class="w"></span>
+
+<span class="n">function</span><span class="o">!</span><span class="w"> </span><span class="n">AirlineSetup</span><span class="p">()</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot; Set full path for vim-airline</span>
+<span class="w">  </span><span class="n">let</span><span class="w"> </span><span class="n">g</span><span class="p">:</span><span class="n">airline_section_c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;</span><span class="si">%F</span><span class="s1">&#39;</span><span class="w"></span>
+<span class="n">endfunction</span><span class="w"></span>
+
+<span class="n">function</span><span class="o">!</span><span class="w"> </span><span class="n">VimGoSetup</span><span class="p">()</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot; vim-go related mappings</span>
+<span class="w">  </span><span class="n">au</span><span class="w"> </span><span class="n">FileType</span><span class="w"> </span><span class="n">go</span><span class="w"> </span><span class="n">nmap</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Leader</span><span class="o">&gt;</span><span class="n">gi</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Plug</span><span class="o">&gt;</span><span class="p">(</span><span class="n">go</span><span class="o">-</span><span class="n">info</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">au</span><span class="w"> </span><span class="n">FileType</span><span class="w"> </span><span class="n">go</span><span class="w"> </span><span class="n">nmap</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Leader</span><span class="o">&gt;</span><span class="n">gI</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Plug</span><span class="o">&gt;</span><span class="p">(</span><span class="n">go</span><span class="o">-</span><span class="n">install</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">au</span><span class="w"> </span><span class="n">FileType</span><span class="w"> </span><span class="n">go</span><span class="w"> </span><span class="n">nmap</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Leader</span><span class="o">&gt;</span><span class="n">gs</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Plug</span><span class="o">&gt;</span><span class="p">(</span><span class="n">go</span><span class="o">-</span><span class="n">implements</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">au</span><span class="w"> </span><span class="n">FileType</span><span class="w"> </span><span class="n">go</span><span class="w"> </span><span class="n">nmap</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Leader</span><span class="o">&gt;</span><span class="n">gr</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Plug</span><span class="o">&gt;</span><span class="p">(</span><span class="n">go</span><span class="o">-</span><span class="n">run</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">au</span><span class="w"> </span><span class="n">FileType</span><span class="w"> </span><span class="n">go</span><span class="w"> </span><span class="n">nmap</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Leader</span><span class="o">&gt;</span><span class="n">gb</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Plug</span><span class="o">&gt;</span><span class="p">(</span><span class="n">go</span><span class="o">-</span><span class="n">build</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">au</span><span class="w"> </span><span class="n">FileType</span><span class="w"> </span><span class="n">go</span><span class="w"> </span><span class="n">nmap</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Leader</span><span class="o">&gt;</span><span class="n">gt</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Plug</span><span class="o">&gt;</span><span class="p">(</span><span class="n">go</span><span class="o">-</span><span class="n">test</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">au</span><span class="w"> </span><span class="n">FileType</span><span class="w"> </span><span class="n">go</span><span class="w"> </span><span class="n">nmap</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Leader</span><span class="o">&gt;</span><span class="n">gc</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Plug</span><span class="o">&gt;</span><span class="p">(</span><span class="n">go</span><span class="o">-</span><span class="n">coverage</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">au</span><span class="w"> </span><span class="n">FileType</span><span class="w"> </span><span class="n">go</span><span class="w"> </span><span class="n">nmap</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Leader</span><span class="o">&gt;</span><span class="n">ge</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Plug</span><span class="o">&gt;</span><span class="p">(</span><span class="n">go</span><span class="o">-</span><span class="n">rename</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">au</span><span class="w"> </span><span class="n">FileType</span><span class="w"> </span><span class="n">go</span><span class="w"> </span><span class="n">nmap</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Leader</span><span class="o">&gt;</span><span class="n">gd</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Plug</span><span class="o">&gt;</span><span class="p">(</span><span class="n">go</span><span class="o">-</span><span class="n">doc</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">au</span><span class="w"> </span><span class="n">FileType</span><span class="w"> </span><span class="n">go</span><span class="w"> </span><span class="n">nmap</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Leader</span><span class="o">&gt;</span><span class="n">gv</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Plug</span><span class="o">&gt;</span><span class="p">(</span><span class="n">go</span><span class="o">-</span><span class="n">doc</span><span class="o">-</span><span class="n">vertical</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">au</span><span class="w"> </span><span class="n">FileType</span><span class="w"> </span><span class="n">go</span><span class="w"> </span><span class="n">nmap</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Leader</span><span class="o">&gt;</span><span class="n">gB</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Plug</span><span class="o">&gt;</span><span class="p">(</span><span class="n">go</span><span class="o">-</span><span class="n">doc</span><span class="o">-</span><span class="n">browser</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">au</span><span class="w"> </span><span class="n">FileType</span><span class="w"> </span><span class="n">go</span><span class="w"> </span><span class="n">nmap</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Leader</span><span class="o">&gt;</span><span class="n">gd</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Plug</span><span class="o">&gt;</span><span class="p">(</span><span class="n">go</span><span class="o">-</span><span class="n">def</span><span class="o">-</span><span class="n">vertical</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">au</span><span class="w"> </span><span class="n">FileType</span><span class="w"> </span><span class="n">go</span><span class="w"> </span><span class="n">nmap</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Leader</span><span class="o">&gt;</span><span class="n">ds</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Plug</span><span class="o">&gt;</span><span class="p">(</span><span class="n">go</span><span class="o">-</span><span class="n">def</span><span class="o">-</span><span class="n">split</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">au</span><span class="w"> </span><span class="n">FileType</span><span class="w"> </span><span class="n">go</span><span class="w"> </span><span class="n">nmap</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Leader</span><span class="o">&gt;</span><span class="n">dv</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Plug</span><span class="o">&gt;</span><span class="p">(</span><span class="n">go</span><span class="o">-</span><span class="n">def</span><span class="o">-</span><span class="n">vertical</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">au</span><span class="w"> </span><span class="n">FileType</span><span class="w"> </span><span class="n">go</span><span class="w"> </span><span class="n">nmap</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Leader</span><span class="o">&gt;</span><span class="n">dt</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Plug</span><span class="o">&gt;</span><span class="p">(</span><span class="n">go</span><span class="o">-</span><span class="n">def</span><span class="o">-</span><span class="n">tab</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">let</span><span class="w"> </span><span class="n">g</span><span class="p">:</span><span class="n">go_highlight_functions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">  </span><span class="n">let</span><span class="w"> </span><span class="n">g</span><span class="p">:</span><span class="n">go_highlight_methods</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">  </span><span class="n">let</span><span class="w"> </span><span class="n">g</span><span class="p">:</span><span class="n">go_highlight_structs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">  </span><span class="n">let</span><span class="w"> </span><span class="n">g</span><span class="p">:</span><span class="n">go_highlight_interfaces</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">  </span><span class="n">let</span><span class="w"> </span><span class="n">g</span><span class="p">:</span><span class="n">go_highlight_operators</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">  </span><span class="n">let</span><span class="w"> </span><span class="n">g</span><span class="p">:</span><span class="n">go_highlight_build_constraints</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="n">endfunction</span><span class="w"></span>
+
+<span class="n">call</span><span class="w"> </span><span class="n">GenericSetup</span><span class="p">()</span><span class="w"></span>
+<span class="n">call</span><span class="w"> </span><span class="n">Toggles</span><span class="p">()</span><span class="w"></span>
+<span class="n">call</span><span class="w"> </span><span class="n">VimGoSetup</span><span class="p">()</span><span class="w"></span>
+<span class="n">call</span><span class="w"> </span><span class="n">DeopleteSetup</span><span class="p">()</span><span class="w"></span>
+<span class="n">call</span><span class="w"> </span><span class="n">AirlineSetup</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 </td></tr></table>
 
@@ -1517,7 +1548,7 @@ rbd pool init rbd-pool
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">September 13, 2020</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">June 14, 2022</span>
       
     
   </small>
@@ -1535,7 +1566,7 @@ rbd pool init rbd-pool
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../.." class="md-footer__link md-footer__link--prev" aria-label="Previous: Home" rel="prev">
+        <a href="../meson/" class="md-footer__link md-footer__link--prev" aria-label="Previous: meson" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -1544,20 +1575,20 @@ rbd pool init rbd-pool
               <span class="md-footer__direction">
                 Previous
               </span>
-              Home
+              meson
             </div>
           </div>
         </a>
       
       
         
-        <a href="../../openshift/analyzing-cni/" class="md-footer__link md-footer__link--next" aria-label="Next: Analyzing CNI calls" rel="next">
+        <a href="../namespaces/" class="md-footer__link md-footer__link--next" aria-label="Next: namespaces" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Analyzing CNI calls
+              namespaces
             </div>
           </div>
           <div class="md-footer__button md-icon">

@@ -34,6 +34,7 @@ nav:
   - iPXE boot environment on Fedora: linux/ipxe-boot-environment.md
   - Java Idrac Issues: linux/java-idrac-issues.md
   - meson: linux/meson.md
+  - My vimrc: linux/vimrc.md
   - namespaces: linux/namespaces.md
   - Old Java inside a container with xorgs: linux/old_java_version_with_xorgs_in_container.md
   - Retrieving process cgroup resource usage and limit info: linux/get-process-cgroup-info-and-limits.md
@@ -50,7 +51,7 @@ nav:
   - Geneve tunneling: networking/geneve_tunneling.md
   - Golang IP address conversion: networking/golang-ip-conversion.md
   - Netlink: networking/netlink.md  
-  - OVN standalone on Fedora 31: networking/ovn_standalone_on_fedora31.md
+  - OVN standalone on Fedora: networking/ovn_standalone_on_fedora.md
   - OVS packet recirculation: networking/ovs_recirculation.md
   - OVS VXLAN tunnels and DSCP: networking/ovs-vxlan-tunnels-and-dscp.md
   - OVS with GDB: networking/ovs_with_gdb.md

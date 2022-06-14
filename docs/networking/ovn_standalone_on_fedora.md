@@ -1,4 +1,7 @@
-# OVN standalone on Fedora 31 #
+# OVN standalone on Fedora  #
+
+For instruction to build OVN and OVS from source, see: https://docs.ovn.org/en/latest/intro/install/fedora.html#fedora-rhel-7-x-packaging-for-ovn
+Otherwise, use the RPMs that ship with the Fedora repos.
 
 ## Base setup ##
 

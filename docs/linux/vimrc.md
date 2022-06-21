@@ -1,5 +1,6 @@
 # My vimrc
 
+Below my configuration for vim which I use for my daily go development:
 ~~~
 call plug#begin()
 Plug 'vim-airline/vim-airline'
@@ -15,6 +16,7 @@ else
   Plug 'roxma/nvim-yarp'
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
+Plug 'jnurmine/Zenburn'
 call plug#end()
 
 
@@ -26,7 +28,6 @@ function! Toggles()
 endfunction
 
 function! GenericSetup()
-  set background=light
   set tabstop=4
   set shiftwidth=4
   set expandtab
@@ -35,11 +36,14 @@ function! GenericSetup()
   set splitbelow
   set previewheight=1
   " Set VIM's working directory always to the current open file.
-  autocmd BufEnter * lcd %:p:h
+  " autocmd BufEnter * lcd %:p:h
   set listchars=tab:▸\ ,eol:¬
   " set invlist
   set number
   set encoding=utf-8
+  " set autochdir
+  " color scheme
+  colorscheme zenburn
 endfunction
 
 function! DeopleteSetup()
@@ -54,31 +58,6 @@ endfunction
 function! AirlineSetup()
   " Set full path for vim-airline
   let g:airline_section_c = '%F'
-endfunction
-
-function! VimGoSetup()
-  " vim-go related mappings
-  au FileType go nmap <Leader>gi <Plug>(go-info)
-  au FileType go nmap <Leader>gI <Plug>(go-install)
-  au FileType go nmap <Leader>gs <Plug>(go-implements)
-  au FileType go nmap <Leader>gr <Plug>(go-run)
-  au FileType go nmap <Leader>gb <Plug>(go-build)
-  au FileType go nmap <Leader>gt <Plug>(go-test)
-  au FileType go nmap <Leader>gc <Plug>(go-coverage)
-  au FileType go nmap <Leader>ge <Plug>(go-rename)
-  au FileType go nmap <Leader>gd <Plug>(go-doc)
-  au FileType go nmap <Leader>gv <Plug>(go-doc-vertical)
-  au FileType go nmap <Leader>gB <Plug>(go-doc-browser)
-  au FileType go nmap <Leader>gd <Plug>(go-def-vertical)
-  au FileType go nmap <Leader>ds <Plug>(go-def-split)
-  au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
-  au FileType go nmap <Leader>dt <Plug>(go-def-tab)
-  let g:go_highlight_functions = 1
-  let g:go_highlight_methods = 1
-  let g:go_highlight_structs = 1
-  let g:go_highlight_interfaces = 1
-  let g:go_highlight_operators = 1
-  let g:go_highlight_build_constraints = 1
 endfunction
 
 function! GoVimSetup()
@@ -103,10 +82,8 @@ function! GoVimSetup()
     set completeopt+=popup
     set completepopup=align:menu,border:off,highlight:Pmenu
   endif
-  " :nnoremap <C-j> :call GOVIMHover()<CR>
-  nmap <silent> <buffer> <Leader>h : <C-u>call GOVIMHover()<CR>
-  " nmap <silent> <buffer> <Leader>f :GOVIMFillStruct<CR>
-  nmap <silent> <buffer> <Leader>r :GOVIMReferences<CR>
+  :nnoremap <C-j> :call GOVIMHover()<CR>
+  :nnoremap <C-k> :GOVIMReferences<CR>
   :inoremap <C-f> <C-o>:GOVIMFillStruct<CR>
   :inoremap <C-j> <C-o>:GOVIMExperimentalSignatureHelp<CR>
 

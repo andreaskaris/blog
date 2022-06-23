@@ -73,7 +73,7 @@ function! GoVimSetup()
   set signcolumn=yes
   autocmd! BufEnter,BufNewFile *.go,go.mod syntax on
   autocmd! BufLeave *.go,go.mod syntax off
-  autocmd! BufWritePost *go !golangci-lint run --fast %
+  autocmd! BufWritePost *go !golangci-lint run --no-config --fast %
   set autoindent
   set smartindent
   filetype indent on

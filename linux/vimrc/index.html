@@ -1544,7 +1544,7 @@
 <span class="w">  </span><span class="k">set</span><span class="w"> </span><span class="n">signcolumn</span><span class="o">=</span><span class="n">yes</span><span class="w"></span>
 <span class="w">  </span><span class="n">autocmd</span><span class="err">!</span><span class="w"> </span><span class="n">BufEnter</span><span class="p">,</span><span class="n">BufNewFile</span><span class="w"> </span><span class="o">*</span><span class="p">.</span><span class="k">go</span><span class="p">,</span><span class="k">go</span><span class="p">.</span><span class="k">mod</span><span class="w"> </span><span class="n">syntax</span><span class="w"> </span><span class="k">on</span><span class="w"></span>
 <span class="w">  </span><span class="n">autocmd</span><span class="err">!</span><span class="w"> </span><span class="n">BufLeave</span><span class="w"> </span><span class="o">*</span><span class="p">.</span><span class="k">go</span><span class="p">,</span><span class="k">go</span><span class="p">.</span><span class="k">mod</span><span class="w"> </span><span class="n">syntax</span><span class="w"> </span><span class="k">off</span><span class="w"></span>
-<span class="w">  </span><span class="n">autocmd</span><span class="err">!</span><span class="w"> </span><span class="n">BufWritePost</span><span class="w"> </span><span class="o">*</span><span class="k">go</span><span class="w"> </span><span class="err">!</span><span class="n">golangci</span><span class="o">-</span><span class="n">lint</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="o">--</span><span class="n">fast</span><span class="w"> </span><span class="o">%</span><span class="w"></span>
+<span class="w">  </span><span class="n">autocmd</span><span class="err">!</span><span class="w"> </span><span class="n">BufWritePost</span><span class="w"> </span><span class="o">*</span><span class="k">go</span><span class="w"> </span><span class="err">!</span><span class="n">golangci</span><span class="o">-</span><span class="n">lint</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="o">--</span><span class="k">no</span><span class="o">-</span><span class="n">config</span><span class="w"> </span><span class="o">--</span><span class="n">fast</span><span class="w"> </span><span class="o">%</span><span class="w"></span>
 <span class="w">  </span><span class="k">set</span><span class="w"> </span><span class="n">autoindent</span><span class="w"></span>
 <span class="w">  </span><span class="k">set</span><span class="w"> </span><span class="n">smartindent</span><span class="w"></span>
 <span class="w">  </span><span class="n">filetype</span><span class="w"> </span><span class="n">indent</span><span class="w"> </span><span class="k">on</span><span class="w"></span>
@@ -1579,7 +1579,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">June 21, 2022</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">June 23, 2022</span>
       
     
   </small>

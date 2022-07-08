@@ -2,9 +2,10 @@
 
 Below my configuration for vim which I use for my daily go development:
 ~~~
+autocmd BufNewFile,BufRead *.go setf go
 call plug#begin()
 Plug 'vim-airline/vim-airline'
-Plug 'govim/govim'
+Plug 'govim/govim', { 'for': 'go' }
 Plug 'preservim/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
 Plug 'tpope/vim-fugitive'
@@ -86,6 +87,7 @@ function! GoVimSetup()
   :nnoremap <C-k> :GOVIMReferences<CR>
   :inoremap <C-f> <C-o>:GOVIMFillStruct<CR>
   :inoremap <C-j> <C-o>:GOVIMExperimentalSignatureHelp<CR>
+  " let $GOVIM_GOPLS_FLAGS="-remote=auto; -remote.listen.timeout=12h"
 
   " mappings:
   " gd: godef

@@ -45,6 +45,7 @@ function! GenericSetup()
   " set autochdir
   " color scheme
   colorscheme zenburn
+  set colorcolumn=120
 endfunction
 
 function! DeopleteSetup()

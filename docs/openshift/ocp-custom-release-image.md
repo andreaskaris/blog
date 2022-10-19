@@ -7,6 +7,7 @@ The following example builds a custom `baremetal-runtimecfg` image and deploys i
 ### Prerequisite: quay.io repositories
 
 I created 2 repositories for this example:
+
 * Custom component image: quay.io/akaris/baremetal-runtimecfg
 * Custom release image locatio: quay.io/akaris/ocp-release
 

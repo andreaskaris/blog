@@ -95,3 +95,43 @@ And install the cluster with the custom release payload:
 #### Using buildah
 
 It is also possible to use buildah to achieve the exact same outcome. TBD.
+
+#### Verification
+
+After installation, you can check the `nodeip-configuration service` on one of your nodes. It will contain a reference to the new image:
+~~~
+$ cat /etc/systemd/system/nodeip-configuration.service
+[Unit]
+Description=Writes IP address configuration so that kubelet and crio services select a valid node IP
+Wants=network-online.target crio-wipe.service
+After=network-online.target ignition-firstboot-complete.service crio-wipe.service
+Before=kubelet.service crio.service
+
+[Service]
+# Need oneshot to delay kubelet
+Type=oneshot
+# Would prefer to do Restart=on-failure instead of this bash retry loop, but
+# the version of systemd we have right now doesn't support it. It should be
+# available in systemd v244 and higher.
+ExecStart=/bin/bash -c " \
+  until \
+  /usr/bin/podman run --rm \
+  --authfile /var/lib/kubelet/config.json \
+  --net=host \
+  --security-opt label=disable \
+  --volume /etc/systemd/system:/etc/systemd/system \
+  quay.io/akaris/baremetal-runtimecfg@sha256:9a83210b0536661a826fbddb6be9dcf5cebf16d91e5fe7687b741166ab69c3c2 \
+  node-ip \
+  set \
+  --retry-on-failure \
+  ${NODEIP_HINT:-${KUBELET_NODEIP_HINT:-}}; \
+  do \
+  sleep 5; \
+  done"
+ExecStart=/bin/systemctl daemon-reload
+
+EnvironmentFile=-/etc/default/nodeip-configuration
+
+[Install]
+RequiredBy=kubelet.service
+~~~

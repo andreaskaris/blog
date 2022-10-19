@@ -928,6 +928,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#verification" class="md-nav__link">
+    Verification
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1572,6 +1579,77 @@ make push IMAGE_REPO=akaris IMAGE_NAME=baremetal-runtimecfg
 </td></tr></table></p>
 <h4 id="using-buildah">Using buildah</h4>
 <p>It is also possible to use buildah to achieve the exact same outcome. TBD.</p>
+<h4 id="verification">Verification</h4>
+<p>After installation, you can check the <code class="highlight">nodeip-configuration service</code> on one of your nodes. It will contain a reference to the new image:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="err">$</span> <span class="s s-Atom">cat</span> <span class="o">/</span><span class="s s-Atom">etc</span><span class="o">/</span><span class="s s-Atom">systemd</span><span class="o">/</span><span class="s s-Atom">system</span><span class="o">/</span><span class="s s-Atom">nodeip</span><span class="o">-</span><span class="s s-Atom">configuration</span><span class="p">.</span><span class="s s-Atom">service</span>
+<span class="p">[</span><span class="nv">Unit</span><span class="p">]</span>
+<span class="nv">Description</span><span class="o">=</span><span class="nv">Writes</span> <span class="nv">IP</span> <span class="s s-Atom">address</span> <span class="s s-Atom">configuration</span> <span class="s s-Atom">so</span> <span class="s s-Atom">that</span> <span class="s s-Atom">kubelet</span> <span class="s s-Atom">and</span> <span class="s s-Atom">crio</span> <span class="s s-Atom">services</span> <span class="s s-Atom">select</span> <span class="s s-Atom">a</span> <span class="s s-Atom">valid</span> <span class="s s-Atom">node</span> <span class="nv">IP</span>
+<span class="nv">Wants</span><span class="o">=</span><span class="s s-Atom">network</span><span class="o">-</span><span class="s s-Atom">online</span><span class="p">.</span><span class="s s-Atom">target</span> <span class="s s-Atom">crio</span><span class="o">-</span><span class="s s-Atom">wipe</span><span class="p">.</span><span class="s s-Atom">service</span>
+<span class="nv">After</span><span class="o">=</span><span class="s s-Atom">network</span><span class="o">-</span><span class="s s-Atom">online</span><span class="p">.</span><span class="s s-Atom">target</span> <span class="s s-Atom">ignition</span><span class="o">-</span><span class="s s-Atom">firstboot</span><span class="o">-</span><span class="s s-Atom">complete</span><span class="p">.</span><span class="s s-Atom">service</span> <span class="s s-Atom">crio</span><span class="o">-</span><span class="s s-Atom">wipe</span><span class="p">.</span><span class="s s-Atom">service</span>
+<span class="nv">Before</span><span class="o">=</span><span class="s s-Atom">kubelet</span><span class="p">.</span><span class="s s-Atom">service</span> <span class="s s-Atom">crio</span><span class="p">.</span><span class="s s-Atom">service</span>
+
+<span class="p">[</span><span class="nv">Service</span><span class="p">]</span>
+<span class="s s-Atom">#</span> <span class="nv">Need</span> <span class="s s-Atom">oneshot</span> <span class="s s-Atom">to</span> <span class="s s-Atom">delay</span> <span class="s s-Atom">kubelet</span>
+<span class="nv">Type</span><span class="o">=</span><span class="s s-Atom">oneshot</span>
+<span class="s s-Atom">#</span> <span class="nv">Would</span> <span class="s s-Atom">prefer</span> <span class="s s-Atom">to</span> <span class="s s-Atom">do</span> <span class="nv">Restart</span><span class="o">=</span><span class="s s-Atom">on</span><span class="o">-</span><span class="s s-Atom">failure</span> <span class="s s-Atom">instead</span> <span class="s s-Atom">of</span> <span class="s s-Atom">this</span> <span class="s s-Atom">bash</span> <span class="s s-Atom">retry</span> <span class="s s-Atom">loop</span><span class="p">,</span> <span class="s s-Atom">but</span>
+<span class="s s-Atom">#</span> <span class="s s-Atom">the</span> <span class="s s-Atom">version</span> <span class="s s-Atom">of</span> <span class="s s-Atom">systemd</span> <span class="s s-Atom">we</span> <span class="s s-Atom">have</span> <span class="s s-Atom">right</span> <span class="s s-Atom">now</span> <span class="s s-Atom">doesn</span><span class="err">&#39;</span><span class="s s-Atom">t</span> <span class="s s-Atom">support</span> <span class="s s-Atom">it</span><span class="p">.</span> <span class="nv">It</span> <span class="s s-Atom">should</span> <span class="s s-Atom">be</span>
+<span class="s s-Atom">#</span> <span class="s s-Atom">available</span> <span class="s s-Atom">in</span> <span class="s s-Atom">systemd</span> <span class="s s-Atom">v244</span> <span class="s s-Atom">and</span> <span class="s s-Atom">higher</span><span class="p">.</span>
+<span class="nv">ExecStart</span><span class="s s-Atom">=/bin</span><span class="o">/</span><span class="s s-Atom">bash</span> <span class="o">-</span><span class="s s-Atom">c</span> <span class="err">&quot;</span> <span class="s s-Atom">\</span>
+  <span class="s s-Atom">until</span> <span class="s s-Atom">\</span>
+  <span class="o">/</span><span class="s s-Atom">usr</span><span class="o">/</span><span class="s s-Atom">bin</span><span class="o">/</span><span class="s s-Atom">podman</span> <span class="s s-Atom">run</span> <span class="s s-Atom">--rm</span> <span class="s s-Atom">\</span>
+  <span class="s s-Atom">--authfile</span> <span class="o">/</span><span class="s s-Atom">var</span><span class="o">/</span><span class="s s-Atom">lib</span><span class="o">/</span><span class="s s-Atom">kubelet</span><span class="o">/</span><span class="s s-Atom">config</span><span class="p">.</span><span class="s s-Atom">json</span> <span class="s s-Atom">\</span>
+  <span class="s s-Atom">--net</span><span class="o">=</span><span class="s s-Atom">host</span> <span class="s s-Atom">\</span>
+  <span class="s s-Atom">--security</span><span class="o">-</span><span class="s s-Atom">opt</span> <span class="s s-Atom">label</span><span class="o">=</span><span class="s s-Atom">disable</span> <span class="s s-Atom">\</span>
+  <span class="s s-Atom">--volume</span> <span class="o">/</span><span class="s s-Atom">etc</span><span class="o">/</span><span class="s s-Atom">systemd</span><span class="o">/</span><span class="nn">system</span><span class="p">:</span><span class="o">/</span><span class="s s-Atom">etc</span><span class="o">/</span><span class="s s-Atom">systemd</span><span class="o">/</span><span class="s s-Atom">system</span> <span class="s s-Atom">\</span>
+  <span class="s s-Atom">quay</span><span class="p">.</span><span class="s s-Atom">io</span><span class="o">/</span><span class="s s-Atom">akaris</span><span class="o">/</span><span class="s s-Atom">baremetal</span><span class="o">-</span><span class="s s-Atom">runtimecfg@sha256:</span><span class="mi">9</span><span class="s s-Atom">a83210b0536661a826fbddb6be9dcf5cebf16d91e5fe7687b741166ab69c3c2</span> <span class="s s-Atom">\</span>
+  <span class="s s-Atom">node</span><span class="o">-</span><span class="s s-Atom">ip</span> <span class="s s-Atom">\</span>
+  <span class="s s-Atom">set</span> <span class="s s-Atom">\</span>
+  <span class="s s-Atom">--retry</span><span class="o">-</span><span class="s s-Atom">on</span><span class="o">-</span><span class="s s-Atom">failure</span> <span class="s s-Atom">\</span>
+  <span class="err">$</span><span class="p">{</span><span class="nv">NODEIP_HINT</span><span class="p">:-</span><span class="err">$</span><span class="p">{</span><span class="nv">KUBELET_NODEIP_HINT</span><span class="p">:-}};</span> <span class="s s-Atom">\</span>
+  <span class="s s-Atom">do</span> <span class="s s-Atom">\</span>
+  <span class="s s-Atom">sleep</span> <span class="mi">5</span><span class="p">;</span> <span class="s s-Atom">\</span>
+  <span class="s s-Atom">done</span><span class="err">&quot;</span>
+<span class="nv">ExecStart</span><span class="s s-Atom">=/bin</span><span class="o">/</span><span class="s s-Atom">systemctl</span> <span class="s s-Atom">daemon</span><span class="o">-</span><span class="s s-Atom">reload</span>
+
+<span class="nv">EnvironmentFile</span><span class="s s-Atom">=-/etc</span><span class="o">/</span><span class="s s-Atom">default</span><span class="o">/</span><span class="s s-Atom">nodeip</span><span class="o">-</span><span class="s s-Atom">configuration</span>
+
+<span class="p">[</span><span class="nv">Install</span><span class="p">]</span>
+<span class="nv">RequiredBy</span><span class="o">=</span><span class="s s-Atom">kubelet</span><span class="p">.</span><span class="s s-Atom">service</span>
+</code></pre></div>
+</td></tr></table></p>
 
   <hr>
 <div class="md-source-file">

@@ -1480,11 +1480,11 @@
 
 <h2 id="building-custom-release-images-for-openshift">Building custom release images for OpenShift</h2>
 <h3 id="using-custom-container-image-for-a-specific-component-operator">Using custom container image for a specific component / operator</h3>
-<p>The following example builds a custom <code class="highlight">baremteal-runtimecfg</code> image and deploys it with <code class="highlight">openshift-install</code> via a custom release image.</p>
+<p>The following example builds a custom <code class="highlight">baremetal-runtimecfg</code> image and deploys it with <code class="highlight">openshift-install</code> via a custom release image.</p>
 <h3 id="prerequisite-quayio-repositories">Prerequisite: quay.io repositories</h3>
 <p>I created 2 repositories for this example:
-a) Custom component image: quay.io/akaris/baremetal-runtimecfg
-b) Custom release image locatio: quay.io/akaris/ocp-release</p>
+* Custom component image: quay.io/akaris/baremetal-runtimecfg
+* Custom release image locatio: quay.io/akaris/ocp-release</p>
 <h3 id="prerequsiste-log-into-all-registries">Prerequsiste: log into all registries</h3>
 <p>For pulling the release image and also for pushing to your own repositories, make sure to log into all repositories as needed. The oc adm release commands let you specify a custom auth file with the <code class="highlight">-a</code> parameter if needed.</p>
 <h4 id="prerequisite-creating-a-custom-component-image">Prerequisite: creating a custom component image</h4>

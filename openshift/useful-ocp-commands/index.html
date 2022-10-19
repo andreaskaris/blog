@@ -1322,6 +1322,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#ocp-release-images" class="md-nav__link">
+    OCP release images
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2050,6 +2057,15 @@ podb                                    privileged
     oc label ns $1 pod-security.kubernetes.io/audit=privileged --overwrite=true
 }
 privileged &lt;namespace name&gt;
+</code></pre></div>
+</td></tr></table></p>
+<h3 id="ocp-release-images">OCP release images</h3>
+<p>Show info about release images:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>oc adm release info --commits quay.io/openshift-release-dev/ocp-release:4.12.0-ec.4-x86_64
+</code></pre></div>
+</td></tr></table></p>
+<p>Extract manifests:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>oc adm release extract --to manifests quay.io/openshift-release-dev/ocp-release:4.12.0-ec.4-x86_64
 </code></pre></div>
 </td></tr></table></p>
 

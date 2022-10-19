@@ -337,3 +337,15 @@ privileged(){
 }
 privileged <namespace name>
 ~~~
+
+### OCP release images
+
+Show info about release images:
+~~~
+oc adm release info --commits quay.io/openshift-release-dev/ocp-release:4.12.0-ec.4-x86_64
+~~~
+
+Extract manifests:
+~~~
+oc adm release extract --to manifests quay.io/openshift-release-dev/ocp-release:4.12.0-ec.4-x86_64
+~~~

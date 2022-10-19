@@ -2,13 +2,13 @@
 
 ### Using custom container image for a specific component / operator
 
-The following example builds a custom `baremteal-runtimecfg` image and deploys it with `openshift-install` via a custom release image.
+The following example builds a custom `baremetal-runtimecfg` image and deploys it with `openshift-install` via a custom release image.
 
 ### Prerequisite: quay.io repositories
 
 I created 2 repositories for this example:
-a) Custom component image: quay.io/akaris/baremetal-runtimecfg
-b) Custom release image locatio: quay.io/akaris/ocp-release
+* Custom component image: quay.io/akaris/baremetal-runtimecfg
+* Custom release image locatio: quay.io/akaris/ocp-release
 
 ### Prerequsiste: log into all registries
 

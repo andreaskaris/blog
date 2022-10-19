@@ -848,6 +848,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../ocp-custom-release-image/" class="md-nav__link">
+        Building custom release images for OpenShift
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../cpu-manager-with-custom-machine-config-pool/" class="md-nav__link">
         CPU manager with custom MachineConfigPool
       </a>
@@ -1297,6 +1311,13 @@
           <li class="md-nav__item">
   <a href="#ovnkubernetes" class="md-nav__link">
     OVNKubernetes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pod-security-admissin" class="md-nav__link">
+    Pod Security Admissin
   </a>
   
 </li>
@@ -2014,13 +2035,30 @@ podb                                    privileged
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">oc</span> <span class="o">-</span><span class="nv">n</span> <span class="nv">openshift</span><span class="o">-</span><span class="nv">ovn</span><span class="o">-</span><span class="nv">kubernetes</span> <span class="k">exec</span> <span class="o">-</span><span class="nv">it</span> $<span class="nv">POD</span> <span class="o">--</span> <span class="nv">ovn</span><span class="o">-</span><span class="nv">nbctl</span> <span class="k">show</span>
 </code></pre></div>
 </td></tr></table></p>
+<h3 id="pod-security-admissin">Pod Security Admissin</h3>
+<p>In order to make a namespace priviledge from a pod security admission, use the following function:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>privileged(){
+    oc label ns $1 security.openshift.io/scc.podSecurityLabelSync=&quot;false&quot; --overwrite=true
+    oc label ns $1 pod-security.kubernetes.io/enforce=privileged --overwrite=true
+    oc label ns $1 pod-security.kubernetes.io/warn=privileged --overwrite=true
+    oc label ns $1 pod-security.kubernetes.io/audit=privileged --overwrite=true
+}
+privileged &lt;namespace name&gt;
+</code></pre></div>
+</td></tr></table></p>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">July 3, 2021</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">October 19, 2022</span>
       
     
   </small>

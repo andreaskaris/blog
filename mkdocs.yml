@@ -61,6 +61,7 @@ nav:
   - Wireguard: networking/wireguard.md
 - OpenShift:
   - AlertManager: openshift/alertmanager.md
+  - Building custom release images for OpenShift: openshift/ocp-custom-release-image.md
   - CPU manager with custom MachineConfigPool: openshift/cpu-manager-with-custom-machine-config-pool.md
   - Crio vs conmon vs runc: openshift/crio-conmon-runc.md  
   - Etcd Performance tests: openshift/etcd_perf.md

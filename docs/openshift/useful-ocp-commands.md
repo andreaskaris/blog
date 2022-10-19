@@ -324,3 +324,16 @@ Then, you can use this to query the database, e.g.:
 ~~~
 oc -n openshift-ovn-kubernetes exec -it $POD -- ovn-nbctl show
 ~~~
+
+### Pod Security Admissin
+
+In order to make a namespace priviledge from a pod security admission, use the following function:
+~~~
+privileged(){
+    oc label ns $1 security.openshift.io/scc.podSecurityLabelSync="false" --overwrite=true
+    oc label ns $1 pod-security.kubernetes.io/enforce=privileged --overwrite=true
+    oc label ns $1 pod-security.kubernetes.io/warn=privileged --overwrite=true
+    oc label ns $1 pod-security.kubernetes.io/audit=privileged --overwrite=true
+}
+privileged <namespace name>
+~~~

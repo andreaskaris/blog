@@ -4,7 +4,8 @@
 
 ### Summary ###
 
-The following describe a setup on OCP 3.11 with:
+The following describe a setup *on OCP 3.11* with:
+
 * a container running httpbin and a sidecar running tshark and filtering for incoming http requests and logging them
 * configuration of Alertmanager so that it sends alerts via webhook to httpbin
 * loading cluster with high number of pods

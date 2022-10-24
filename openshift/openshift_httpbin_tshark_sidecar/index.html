@@ -1470,11 +1470,13 @@
 <h1 id="alertmanager">AlertManager</h1>
 <h2 id="configuring-alertmanager-with-webhooks-and-httpbin-container-with-tshark-sidecar-as-a-consumer">Configuring Alertmanager with webhooks and httpbin container with tshark sidecar as a consumer</h2>
 <h3 id="summary">Summary</h3>
-<p>The following describe a setup on OCP 3.11 with:
-* a container running httpbin and a sidecar running tshark and filtering for incoming http requests and logging them
-* configuration of Alertmanager so that it sends alerts via webhook to httpbin
-* loading cluster with high number of pods
-* analyzing generated alarms</p>
+<p>The following describe a setup <em>on OCP 3.11</em> with:</p>
+<ul>
+<li>a container running httpbin and a sidecar running tshark and filtering for incoming http requests and logging them</li>
+<li>configuration of Alertmanager so that it sends alerts via webhook to httpbin</li>
+<li>loading cluster with high number of pods</li>
+<li>analyzing generated alarms</li>
+</ul>
 <h3 id="prerequisites">Prerequisites</h3>
 <p>Make sure that ocntainers can run as any uid:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
@@ -2722,7 +2724,7 @@ httpbin-deploymentconfig-8-8crvh     2/2       Running   0          1h
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">September 13, 2020</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">October 24, 2022</span>
       
     
   </small>

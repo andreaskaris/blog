@@ -1329,6 +1329,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#ovn-kubernetes-gathering-ts-data-when-mg-fails" class="md-nav__link">
+    OVN Kubernetes - gathering TS data when mg fails
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2068,13 +2075,64 @@ privileged &lt;namespace name&gt;
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>oc adm release extract --to manifests quay.io/openshift-release-dev/ocp-release:4.12.0-ec.4-x86_64
 </code></pre></div>
 </td></tr></table></p>
+<h3 id="ovn-kubernetes-gathering-ts-data-when-mg-fails">OVN Kubernetes - gathering TS data when mg fails</h3>
+<p>Collect OVN databases:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>d=$(mktemp -d);
+pushd <span class="nv">$d</span>;
+for pp in $(oc get pods -n openshift-ovn-kubernetes -l app=ovnkube-master -o name); do
+  p=<span class="cp">${</span><span class="n">pp</span><span class="o">/</span><span class="n">pod</span>\<span class="o">//</span><span class="cp">}</span>;
+  for db in nb sb; do
+    oc exec -it -n openshift-ovn-kubernetes -c <span class="cp">${</span><span class="n">db</span><span class="cp">}</span>db <span class="nv">$p</span> -- cat /etc/ovn/ovn<span class="cp">${</span><span class="n">db</span><span class="cp">}</span>_db.db &gt; ovn<span class="cp">${</span><span class="n">db</span><span class="cp">}</span>_db.db.<span class="cp">${</span><span class="n">p</span><span class="cp">}</span> ;
+  done;
+done;
+popd;
+tar -czf /tmp/ovndbs.tar.gz <span class="nv">$d</span>
+echo &quot;Collected:&quot;
+tar -tf   /tmp/ovndbs.tar.gz
+</code></pre></div>
+</td></tr></table></p>
+<p>Collect pod logs:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>d=$(mktemp -d)
+pushd <span class="nv">$d</span>
+oc get pods -n openshift-ovn-kubernetes | tee oc_get_pods.txt
+for pp in $(oc get pods -n openshift-ovn-kubernetes -o name); do
+  p=<span class="cp">${</span><span class="n">pp</span><span class="o">/</span><span class="n">pod</span>\<span class="o">//</span><span class="cp">}</span>;
+  oc logs -n openshift-ovn-kubernetes <span class="nv">$p</span> --all-containers &gt; <span class="nv">$p.txt</span>; done
+done
+popd
+tar -czf /tmp/ovnlogs.tar.gz <span class="nv">$d</span>
+echo &quot;Collected:&quot;
+tar -tf /tmp/ovnlogs.tar.gz
+</code></pre></div>
+</td></tr></table></p>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">October 19, 2022</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">November 2, 2022</span>
       
     
   </small>

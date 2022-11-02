@@ -349,3 +349,37 @@ Extract manifests:
 ~~~
 oc adm release extract --to manifests quay.io/openshift-release-dev/ocp-release:4.12.0-ec.4-x86_64
 ~~~
+
+### OVN Kubernetes - gathering TS data when mg fails
+
+Collect OVN databases:
+~~~
+d=$(mktemp -d);
+pushd $d;
+for pp in $(oc get pods -n openshift-ovn-kubernetes -l app=ovnkube-master -o name); do
+  p=${pp/pod\//};
+  for db in nb sb; do
+    oc exec -it -n openshift-ovn-kubernetes -c ${db}db $p -- cat /etc/ovn/ovn${db}_db.db > ovn${db}_db.db.${p} ;
+  done;
+done;
+popd;
+tar -czf /tmp/ovndbs.tar.gz $d
+echo "Collected:"
+tar -tf   /tmp/ovndbs.tar.gz
+~~~
+
+Collect pod logs:
+~~~
+d=$(mktemp -d)
+pushd $d
+oc get pods -n openshift-ovn-kubernetes | tee oc_get_pods.txt
+for pp in $(oc get pods -n openshift-ovn-kubernetes -o name); do
+  p=${pp/pod\//};
+  oc logs -n openshift-ovn-kubernetes $p --all-containers > $p.txt; done
+done
+popd
+tar -czf /tmp/ovnlogs.tar.gz $d
+echo "Collected:"
+tar -tf /tmp/ovnlogs.tar.gz
+~~~
+

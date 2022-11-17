@@ -19,7 +19,7 @@ tcpdump: listening on lo, link-type EN10MB (Ethernet), capture size 262144 bytes
 ~~~
 
 Let's look at one of the captured packets. The IP ethertype is 0x800 and can be found in Bytes 12 and 13, the ICMP
-protocol number for ICMP is 01 and can be found in Byte 12:
+protocol number for ICMP is 0x01 and can be found in Byte 12:
 ~~~
 [root@host ~]# tcpdump -r lo.pcap -xx
 reading from file lo.pcap, link-type EN10MB (Ethernet)
@@ -31,8 +31,8 @@ dropped privs to tcpdump
                                             v
 	0x0000:  0000 0000 0000 0000 0000 0000 0800 4500
 	0x0010:  0054 17ee 4000 4001 24b9 7f00 0001 7f00
-                              ^
-                              | --- IP protocol number for ICMP (01)
+                               ^
+                               | --- IP protocol number for ICMP (01)
 
 	0x0020:  0001 0800 947c 0001 0001 4566 7663 0000
 	0x0030:  0000 e2e4 0600 0000 0000 1011 1213 1415
@@ -74,25 +74,24 @@ Depending on the tcpdump version in use, your provided expression might be compi
 
 Earlier, we looked at the `icmp` filter. We will now see what happens when we filter for a VLAN number with the `vlan` filter.
 
-We'd expect to look into Byte 12 of the ethernet header and make sure that we have the ethertype for 802.1q there. So we'd want to see 0x8100 and if we look for Q-in-Q we'd look for 0x88A8 and for double tagging we'd also look for 0x9100:
-
-* [https://en.wikipedia.org/wiki/EtherType](https://en.wikipedia.org/wiki/EtherType)
-
-And if we apply the filter to our previously captured file, this is precisely what happens:
+The [Wikipedia article about EtherTypes](https://en.wikipedia.org/wiki/EtherType) lists the EtherTypes for VLANS: 
+for 802.1q the value is `0x8100`, for Q-in-Q we would expect to see `0x88A8` and for double tagging `0x9100`. We expect
+to find one of these values in Bytes 12 and 13 of the Ethernet header.
+And when we apply the filter to our previously captured file, this is precisely what the expression is compiled to. Tcpdump first loads the halfword at Bytes 12 and 13. Then it sequentially checks if the value matches either of the known EtherTypes for VLAN:
 ~~~
-[root@host ~]# tcpdump -r lo.pcap vlan -d
+[root@host ~]# tcpdump -r lo.pcap -d vlan
 reading from file lo.pcap, link-type EN10MB (Ethernet)
 (000) ldh      [12]
-(001) jeq      #0x8100          jt 4	jf 2
-(002) jeq      #0x88a8          jt 4	jf 3
-(003) jeq      #0x9100          jt 4	jf 5
+(001) jeq      #0x8100          jt 4	jf 2    # <---- ethertype for 802.1q
+(002) jeq      #0x88a8          jt 4	jf 3    # <---- ethertype for Q-in-Q
+(003) jeq      #0x9100          jt 4	jf 5    # <---- ethertype for double tagging
 (004) ret      #262144
 (005) ret      #0
 ~~~
 
-Now, let's look at a live capture from the loopback interface. We should expect the same expression:
+Now, let's look at a live capture from the loopback interface. We should expect the same bytecode, but instead we see the following:
 ~~~
-[root@host ~]# tcpdump -i lo vlan -d
+[root@host ~]# tcpdump -i lo -d vlan
 (000) ldb      [-4048]
 (001) jeq      #0x1             jt 6	jf 2
 (002) ldh      [12]
@@ -103,9 +102,9 @@ Now, let's look at a live capture from the loopback interface. We should expect 
 (007) ret      #0
 ~~~
 
-The expression is different now! Why is that? Well, the kernel has an internal optimization and will actually store VLAN information in a location with negative offset.
+The expression is different now! Why is that? Well, the kernel has an internal optimization and will actually store VLAN and other ancillary information in a location with negative offset.
 
-The reason for this is that the kernel no longer passes vlan tag information as-is to libpcap. See [https://bugs.launchpad.net/ubuntu/+source/tcpdump/+bug/1641429](https://bugs.launchpad.net/ubuntu/+source/tcpdump/+bug/1641429) for further details:
+The reason for this is that the kernel no longer passes specific information as-is to libpcap. See [https://bugs.launchpad.net/ubuntu/+source/tcpdump/+bug/1641429](https://bugs.launchpad.net/ubuntu/+source/tcpdump/+bug/1641429) for further details:
 ~~~
 The kernel now longer passes vlan tag information as-is to libpcap, instead BPF needs to access ancillary data.
 
@@ -123,29 +122,45 @@ And see the kernel documentation as well: [https://github.com/torvalds/linux/blo
    Unlike introduction new instructions, it does not break
    existing compilers/optimizers.
  */
+#define SKF_AD_OFF    (-0x1000)
+ (...)
+#define SKF_AD_VLAN_TAG	44
+#define SKF_AD_VLAN_TAG_PRESENT 48
+ (...)
 ~~~
 
-For example, let's look for VLAN 32 (0x20):
+According to the kernel code, we expect to find an indication that a VLAN tag is present at the following location: 
+
+* `-0x1000 + 48 = - 4096 + 48 = −4048`
+
+The VLAN number is stored at location:
+
+* `-0x1000 + 44 = - 4096 + 44 = −4052`
+
+For example, let's look for VLAN 32 (0x20) in our packet capture file. We first verify if we find a VLAN ethertype in
+Bytes 12 and 13. If so, we load Bytes 14 and 15 and extract the last 12 bits (the VID). We then check if those match 0x20:
 ~~~
-[root@host ~]# tcpdump -r lo.pcap vlan 32 -d
+[root@host ~]# tcpdump -r lo.pcap -d vlan 32
 reading from file lo.pcap, link-type EN10MB (Ethernet)
 (000) ldh      [12]                                  # <---- look for dot1q, etc. at Byte 12
-(001) jeq      #0x8100          jt 4	jf 2
-(002) jeq      #0x88a8          jt 4	jf 3
-(003) jeq      #0x9100          jt 4	jf 8
-(004) ldh      [14]
+(001) jeq      #0x8100          jt 4	jf 2         # <---- ethertype for 802.1q 
+(002) jeq      #0x88a8          jt 4	jf 3         # <---- ethertype for Q-in-Q
+(003) jeq      #0x9100          jt 4	jf 8         # <---- ethertype for double tagging
+(004) ldh      [14]                                  # <---- load Bytes 14 and 15
 (005) and      #0xfff                                # <---- extract the last 12 bits from the field (VID)
 (006) jeq      #0x20            jt 7	jf 8         # <---- check for VLAN 32
 (007) ret      #262144
 (008) ret      #0
 ~~~
 
-That, too, makes sense. But if we do a live capture, the logic becomes more complex:
+That, too, makes sense. But if we do a live capture, the logic becomes more complex. We first check at location
+`SKF_AD_VLAN_TAG_PRESENT` (-4048) to find out if a VLAN is present. If true, we load location `SKF_AD_VLAN_TAG` (-4052) and
+extract the last 12 bits from there and then check if the value equals 0x20. Otherwise, we check Bytes 12 and 14 like above:
 ~~~
 [root@host ~]# tcpdump -i lo vlan 32 -d
-(000) ldb      [-4048]
-(001) jeq      #0x1             jt 6	jf 2       # <---- does the kernel special field report this as a VLAN?
-(002) ldh      [12]                                # <---- otherwise fallback and check the on-wire format as above
+(000) ldb      [-4048]                             # <---- load value at location SKF_AD_VLAN_TAG_PRESENT
+(001) jeq      #0x1             jt 6	jf 2       # <---- if the value is true, check SKF_AD_VLAN_TAG, otherwise read in Byte 12
+(002) ldh      [12]                                # <---- load the content at Byte 12
 (003) jeq      #0x8100          jt 6	jf 4
 (004) jeq      #0x88a8          jt 6	jf 5
 (005) jeq      #0x9100          jt 6	jf 14
@@ -162,8 +177,8 @@ That, too, makes sense. But if we do a live capture, the logic becomes more comp
 
 As a conclusion:
 
-* Data from a `.pcap` file is treated as if everything came directly from the wire, the offsets are the same as we'd see them on the physical layer
-* When we capture data from an interface, libpcap will use kernel ancillary data but it will also add a fallback expression in newer versions
+* Data from a `.pcap` file is treated as if everything came directly from the wire, the offsets are the same as we'd see them on the physical layer.
+* When we capture data from an interface, libpcap will use kernel ancillary data but it will also add a fallback expression in newer versions.
 
 ### How does tcpdump compile user provided expressions - Source code analysis
 

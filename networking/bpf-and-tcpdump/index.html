@@ -621,8 +621,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#compiling-a-basic-bpf-expression" class="md-nav__link">
+    Compiling a basic BPF expression
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#tcpdumps-inconsistent-bpf-expression-compiler" class="md-nav__link">
-    tcpdump's inconsistent BPF expression compiler
+    tcpdump's "inconsistent" BPF expression compiler
   </a>
   
 </li>
@@ -733,8 +740,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#building-byte-code" class="md-nav__link">
-    Building Byte code
+  <a href="#building-bytecode" class="md-nav__link">
+    Building bytecode
   </a>
   
 </li>
@@ -1568,32 +1575,25 @@
 
 <h2 id="tcpdump-expressions-and-bpf">tcpdump expressions and BPF</h2>
 <h3 id="introduction">Introduction</h3>
-<p>For a good introduction into tcpdump's BPF compiler, look at the following blog post, then come back here:</p>
-<ul>
-<li><a href="https://blog.cloudflare.com/bpf-the-forgotten-bytecode/">https://blog.cloudflare.com/bpf-the-forgotten-bytecode/</a></li>
-</ul>
-<h3 id="tcpdumps-inconsistent-bpf-expression-compiler">tcpdump's inconsistent BPF expression compiler</h3>
-<p>Now that you have a good idea about this, let's look at how tcpdump compiles the following filter expression:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>icmp
-</code></pre></div>
-</td></tr></table></p>
-<p>This will be straight forward:
+<p>This article extends upon the introduction into tcpdump's BPF compiler provided in the blog post <a href="https://blog.cloudflare.com/bpf-the-forgotten-bytecode/">BPF - the forgotten bytecode</a>. Before reading on, read through this resource, then come back here. The blog post also links to the paper <a href="https://www.tcpdump.org/papers/bpf-usenix93.pdf">The BSD Packet Filter: A New Architecture for User-level Packet Capture</a> if you want to further deepen your understanding. The <a href="https://www.kernel.org/doc/Documentation/networking/filter.txt">Linux Socket Filtering aka Berkeley Packet Filter (BPF)</a> kernel documentation might come in handy when following the examples below. Please also note that when I refer to BPF in this article, I refer to classic BPF and not to eBPF.</p>
+<h3 id="compiling-a-basic-bpf-expression">Compiling a basic BPF expression</h3>
+<p>After reading through the aforementioned material, you should already have an understanding of tcpdump's BPF compiler. Any expression that you give to tcpdump will be compiled into bytecode which in turn will be given to the kernel's JIT compiler. Let's use an easy example and look at the <code class="highlight">icmp</code> filter.</p>
+<p>First, we will capture on the loopback interface and ping <code class="highlight"><span class="mf">127.0.0.1</span><span class="w"></span></code> at the same time. 
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
-<span class="normal">6</span>
-<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@host ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">tcpdump</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="n">lo</span><span class="w"> </span><span class="n">icmp</span><span class="w"> </span><span class="o">-</span><span class="n">d</span><span class="w"></span>
-<span class="p">(</span><span class="mi">000</span><span class="p">)</span><span class="w"> </span><span class="n">ldh</span><span class="w">      </span><span class="o">[</span><span class="n">12</span><span class="o">]</span><span class="w"></span>
-<span class="p">(</span><span class="mi">001</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x800</span><span class="w">           </span><span class="n">jt</span><span class="w"> </span><span class="mi">2</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">5</span><span class="w"></span>
-<span class="p">(</span><span class="mi">002</span><span class="p">)</span><span class="w"> </span><span class="n">ldb</span><span class="w">      </span><span class="o">[</span><span class="n">23</span><span class="o">]</span><span class="w"></span>
-<span class="p">(</span><span class="mi">003</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x1</span><span class="w">             </span><span class="n">jt</span><span class="w"> </span><span class="mi">4</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">5</span><span class="w"></span>
-<span class="p">(</span><span class="mi">004</span><span class="p">)</span><span class="w"> </span><span class="n">ret</span><span class="w">      </span><span class="n">#262144</span><span class="w"></span>
-<span class="p">(</span><span class="mi">005</span><span class="p">)</span><span class="w"> </span><span class="n">ret</span><span class="w">      </span><span class="n">#0</span><span class="w"></span>
+<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@host ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">timeout</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">tcpdump</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="n">lo</span><span class="w"> </span><span class="o">-</span><span class="n">w</span><span class="w"> </span><span class="n">lo</span><span class="p">.</span><span class="n">pcap</span><span class="w"></span>
+<span class="n">dropped</span><span class="w"> </span><span class="n">privs</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">tcpdump</span><span class="w"></span>
+<span class="nl">tcpdump</span><span class="p">:</span><span class="w"> </span><span class="n">listening</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">lo</span><span class="p">,</span><span class="w"> </span><span class="n">link</span><span class="o">-</span><span class="n">type</span><span class="w"> </span><span class="n">EN10MB</span><span class="w"> </span><span class="p">(</span><span class="n">Ethernet</span><span class="p">),</span><span class="w"> </span><span class="n">capture</span><span class="w"> </span><span class="k">size</span><span class="w"> </span><span class="mi">262144</span><span class="w"> </span><span class="n">bytes</span><span class="w"></span>
+<span class="mi">0</span><span class="w"> </span><span class="n">packets</span><span class="w"> </span><span class="n">captured</span><span class="w"></span>
+<span class="mi">6</span><span class="w"> </span><span class="n">packets</span><span class="w"> </span><span class="n">received</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="k">filter</span><span class="w"></span>
+<span class="mi">0</span><span class="w"> </span><span class="n">packets</span><span class="w"> </span><span class="n">dropped</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">kernel</span><span class="w"></span>
 </code></pre></div>
 </td></tr></table></p>
-<p>We'd also expect this to be the same if we look at a file capture:
+<p>Let's look at one of the captured packets. The IP ethertype is 0x800 and can be found in Bytes 12 and 13, the ICMP
+protocol number for ICMP is 01 and can be found in Byte 12:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -1607,13 +1607,55 @@
 <span class="normal">11</span>
 <span class="normal">12</span>
 <span class="normal">13</span>
-<span class="normal">14</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@host ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">timeout</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">tcpdump</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="n">lo</span><span class="w"> </span><span class="o">-</span><span class="n">w</span><span class="w"> </span><span class="n">lo</span><span class="p">.</span><span class="n">pcap</span><span class="w"></span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@host ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">tcpdump</span><span class="w"> </span><span class="o">-</span><span class="n">r</span><span class="w"> </span><span class="n">lo</span><span class="p">.</span><span class="n">pcap</span><span class="w"> </span><span class="o">-</span><span class="n">xx</span><span class="w"></span>
+<span class="n">reading</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="k">file</span><span class="w"> </span><span class="n">lo</span><span class="p">.</span><span class="n">pcap</span><span class="p">,</span><span class="w"> </span><span class="n">link</span><span class="o">-</span><span class="n">type</span><span class="w"> </span><span class="n">EN10MB</span><span class="w"> </span><span class="p">(</span><span class="n">Ethernet</span><span class="p">)</span><span class="w"></span>
 <span class="n">dropped</span><span class="w"> </span><span class="n">privs</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">tcpdump</span><span class="w"></span>
-<span class="nl">tcpdump</span><span class="p">:</span><span class="w"> </span><span class="n">listening</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">lo</span><span class="p">,</span><span class="w"> </span><span class="n">link</span><span class="o">-</span><span class="n">type</span><span class="w"> </span><span class="n">EN10MB</span><span class="w"> </span><span class="p">(</span><span class="n">Ethernet</span><span class="p">),</span><span class="w"> </span><span class="n">capture</span><span class="w"> </span><span class="k">size</span><span class="w"> </span><span class="mi">262144</span><span class="w"> </span><span class="n">bytes</span><span class="w"></span>
-<span class="mi">0</span><span class="w"> </span><span class="n">packets</span><span class="w"> </span><span class="n">captured</span><span class="w"></span>
-<span class="mi">6</span><span class="w"> </span><span class="n">packets</span><span class="w"> </span><span class="n">received</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="k">filter</span><span class="w"></span>
-<span class="mi">0</span><span class="w"> </span><span class="n">packets</span><span class="w"> </span><span class="n">dropped</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">kernel</span><span class="w"></span>
-<span class="o">[</span><span class="n">root@host ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">tcpdump</span><span class="w"> </span><span class="o">-</span><span class="n">r</span><span class="w"> </span><span class="n">lo</span><span class="p">.</span><span class="n">pcap</span><span class="w"> </span><span class="n">icmp</span><span class="w"> </span><span class="o">-</span><span class="n">d</span><span class="w"></span>
+<span class="mi">11</span><span class="err">:</span><span class="mi">50</span><span class="err">:</span><span class="mf">13.451990</span><span class="w"> </span><span class="n">IP</span><span class="w"> </span><span class="n">localhost</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nl">localhost</span><span class="p">:</span><span class="w"> </span><span class="n">ICMP</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="n">request</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">seq</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">64</span><span class="w"></span>
+
+<span class="w">                                            </span><span class="o">|</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">ethertype</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">IP</span><span class="w"> </span><span class="p">(</span><span class="mi">0800</span><span class="p">)</span><span class="w"></span>
+<span class="w">                                            </span><span class="o">|</span><span class="w"></span>
+<span class="w">                                            </span><span class="n">v</span><span class="w"></span>
+<span class="w">    </span><span class="mh">0x0000</span><span class="err">:</span><span class="w">  </span><span class="mi">0000</span><span class="w"> </span><span class="mi">0000</span><span class="w"> </span><span class="mi">0000</span><span class="w"> </span><span class="mi">0000</span><span class="w"> </span><span class="mi">0000</span><span class="w"> </span><span class="mi">0000</span><span class="w"> </span><span class="mi">0800</span><span class="w"> </span><span class="mi">4500</span><span class="w"></span>
+<span class="w">    </span><span class="mh">0x0010</span><span class="err">:</span><span class="w">  </span><span class="mi">0054</span><span class="w"> </span><span class="mi">17</span><span class="n">ee</span><span class="w"> </span><span class="mi">4000</span><span class="w"> </span><span class="mi">4001</span><span class="w"> </span><span class="mi">24</span><span class="n">b9</span><span class="w"> </span><span class="mi">7</span><span class="n">f00</span><span class="w"> </span><span class="mi">0001</span><span class="w"> </span><span class="mi">7</span><span class="n">f00</span><span class="w"></span>
+<span class="w">                              </span><span class="o">^</span><span class="w"></span>
+<span class="w">                              </span><span class="o">|</span><span class="w"> </span><span class="o">---</span><span class="w"> </span><span class="n">IP</span><span class="w"> </span><span class="n">protocol</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">ICMP</span><span class="w"> </span><span class="p">(</span><span class="mi">01</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="mh">0x0020</span><span class="err">:</span><span class="w">  </span><span class="mi">0001</span><span class="w"> </span><span class="mi">0800</span><span class="w"> </span><span class="mi">947</span><span class="n">c</span><span class="w"> </span><span class="mi">0001</span><span class="w"> </span><span class="mi">0001</span><span class="w"> </span><span class="mi">4566</span><span class="w"> </span><span class="mi">7663</span><span class="w"> </span><span class="mi">0000</span><span class="w"></span>
+<span class="w">    </span><span class="mh">0x0030</span><span class="err">:</span><span class="w">  </span><span class="mi">0000</span><span class="w"> </span><span class="n">e2e4</span><span class="w"> </span><span class="mi">0600</span><span class="w"> </span><span class="mi">0000</span><span class="w"> </span><span class="mi">0000</span><span class="w"> </span><span class="mi">1011</span><span class="w"> </span><span class="mi">1213</span><span class="w"> </span><span class="mi">1415</span><span class="w"></span>
+<span class="w">    </span><span class="mh">0x0040</span><span class="err">:</span><span class="w">  </span><span class="mi">1617</span><span class="w"> </span><span class="mi">1819</span><span class="w"> </span><span class="mi">1</span><span class="n">a1b</span><span class="w"> </span><span class="mi">1</span><span class="n">c1d</span><span class="w"> </span><span class="mf">1e1</span><span class="n">f</span><span class="w"> </span><span class="mi">2021</span><span class="w"> </span><span class="mi">2223</span><span class="w"> </span><span class="mi">2425</span><span class="w"></span>
+<span class="w">    </span><span class="mh">0x0050</span><span class="err">:</span><span class="w">  </span><span class="mi">2627</span><span class="w"> </span><span class="mi">2829</span><span class="w"> </span><span class="mi">2</span><span class="n">a2b</span><span class="w"> </span><span class="mi">2</span><span class="n">c2d</span><span class="w"> </span><span class="mf">2e2</span><span class="n">f</span><span class="w"> </span><span class="mi">3031</span><span class="w"> </span><span class="mi">3233</span><span class="w"> </span><span class="mi">3435</span><span class="w"></span>
+<span class="w">    </span><span class="mh">0x0060</span><span class="err">:</span><span class="w">  </span><span class="mi">3637</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p>And here is how tcpdump compiles the <code class="highlight">icmp</code> filter expression for an interface for a live capture:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@host ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">tcpdump</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="n">lo</span><span class="w"> </span><span class="o">-</span><span class="n">d</span><span class="w"> </span><span class="n">icmp</span><span class="w"></span>
+<span class="p">(</span><span class="mi">000</span><span class="p">)</span><span class="w"> </span><span class="n">ldh</span><span class="w">      </span><span class="o">[</span><span class="n">12</span><span class="o">]</span><span class="w"></span>
+<span class="p">(</span><span class="mi">001</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x800</span><span class="w">           </span><span class="n">jt</span><span class="w"> </span><span class="mi">2</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">5</span><span class="w">             </span><span class="err">#</span><span class="w"> </span><span class="o">&lt;----</span><span class="w"> </span><span class="n">ethertype</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">IP</span><span class="w"></span>
+<span class="p">(</span><span class="mi">002</span><span class="p">)</span><span class="w"> </span><span class="n">ldb</span><span class="w">      </span><span class="o">[</span><span class="n">23</span><span class="o">]</span><span class="w"></span>
+<span class="p">(</span><span class="mi">003</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x1</span><span class="w">             </span><span class="n">jt</span><span class="w"> </span><span class="mi">4</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">5</span><span class="w">             </span><span class="err">#</span><span class="w"> </span><span class="o">&lt;----</span><span class="w"> </span><span class="n">IP</span><span class="w"> </span><span class="n">protocol</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">ICMP</span><span class="w"></span>
+<span class="p">(</span><span class="mi">004</span><span class="p">)</span><span class="w"> </span><span class="n">ret</span><span class="w">      </span><span class="n">#262144</span><span class="w"></span>
+<span class="p">(</span><span class="mi">005</span><span class="p">)</span><span class="w"> </span><span class="n">ret</span><span class="w">      </span><span class="n">#0</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p>We'd also expect this to be the same when we look at our capture file:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@host ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">tcpdump</span><span class="w"> </span><span class="o">-</span><span class="n">r</span><span class="w"> </span><span class="n">lo</span><span class="p">.</span><span class="n">pcap</span><span class="w"> </span><span class="o">-</span><span class="n">d</span><span class="w"> </span><span class="n">icmp</span><span class="w"></span>
 <span class="n">reading</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="k">file</span><span class="w"> </span><span class="n">lo</span><span class="p">.</span><span class="n">pcap</span><span class="p">,</span><span class="w"> </span><span class="n">link</span><span class="o">-</span><span class="n">type</span><span class="w"> </span><span class="n">EN10MB</span><span class="w"> </span><span class="p">(</span><span class="n">Ethernet</span><span class="p">)</span><span class="w"></span>
 <span class="p">(</span><span class="mi">000</span><span class="p">)</span><span class="w"> </span><span class="n">ldh</span><span class="w">      </span><span class="o">[</span><span class="n">12</span><span class="o">]</span><span class="w"></span>
 <span class="p">(</span><span class="mi">001</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x800</span><span class="w">           </span><span class="n">jt</span><span class="w"> </span><span class="mi">2</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">5</span><span class="w">             </span><span class="err">#</span><span class="w"> </span><span class="o">&lt;----</span><span class="w"> </span><span class="n">ethertype</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">IP</span><span class="w"></span>
@@ -1623,12 +1665,12 @@
 <span class="p">(</span><span class="mi">005</span><span class="p">)</span><span class="w"> </span><span class="n">ret</span><span class="w">      </span><span class="n">#0</span><span class="w"></span>
 </code></pre></div>
 </td></tr></table></p>
-<p>So far, so good and straight forward. We look at byte 23 and check if the IP protocol number is 1. Before that, we check the ethernet header in byte 12 and make sure that we are using IP.</p>
-<p>But what happens if we use this expression?
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>vlan
-</code></pre></div>
-</td></tr></table></p>
-<p>We'd expect to look into byte 12 of the ethernet header and make sure that we have the ethertype for 802.1q there. So we'd want to see 0x8100 and if we look for Q-in-Q we'd look for 0x88A8 and for double tagging we'd also look for 0x9100:</p>
+<p>So far, so good and straight forward. We look at Byte 23 and check if the IP protocol number is 1. Before that, we check the ethernet header in Byte 12 and make sure that we are using IP.</p>
+<h3 id="tcpdumps-inconsistent-bpf-expression-compiler">tcpdump's "inconsistent" BPF expression compiler</h3>
+<p>I sometimes find myself in situations where tcpdump's filters do not work the way that I would expect them to. In those situations I often simply run tcpdump in line buffered mode (<code class="highlight">-l</code>) and pipe the output into <code class="highlight">grep</code> to find what I am looking for. Particularly the VLAN filter has quite often given me some headaches in the past.</p>
+<p>Depending on the tcpdump version in use, your provided expression might be compiled slightly differently. What's more, there is a difference between the bytecode that is compiled for live packet captures on interfaces and for the bytecode that is compiled for filtering packet capture files.</p>
+<p>Earlier, we looked at the <code class="highlight">icmp</code> filter. We will now see what happens when we filter for a VLAN number with the <code class="highlight">vlan</code> filter.</p>
+<p>We'd expect to look into Byte 12 of the ethernet header and make sure that we have the ethertype for 802.1q there. So we'd want to see 0x8100 and if we look for Q-in-Q we'd look for 0x88A8 and for double tagging we'd also look for 0x9100:</p>
 <ul>
 <li><a href="https://en.wikipedia.org/wiki/EtherType">https://en.wikipedia.org/wiki/EtherType</a></li>
 </ul>
@@ -1710,7 +1752,7 @@
 <span class="normal">10</span>
 <span class="normal">11</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@host ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">tcpdump</span><span class="w"> </span><span class="o">-</span><span class="n">r</span><span class="w"> </span><span class="n">lo</span><span class="p">.</span><span class="n">pcap</span><span class="w"> </span><span class="n">vlan</span><span class="w"> </span><span class="mi">32</span><span class="w"> </span><span class="o">-</span><span class="n">d</span><span class="w"></span>
 <span class="n">reading</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="k">file</span><span class="w"> </span><span class="n">lo</span><span class="p">.</span><span class="n">pcap</span><span class="p">,</span><span class="w"> </span><span class="n">link</span><span class="o">-</span><span class="n">type</span><span class="w"> </span><span class="n">EN10MB</span><span class="w"> </span><span class="p">(</span><span class="n">Ethernet</span><span class="p">)</span><span class="w"></span>
-<span class="p">(</span><span class="mi">000</span><span class="p">)</span><span class="w"> </span><span class="n">ldh</span><span class="w">      </span><span class="o">[</span><span class="n">12</span><span class="o">]</span><span class="w">                                  </span><span class="err">#</span><span class="w"> </span><span class="o">&lt;----</span><span class="w"> </span><span class="n">look</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">dot1q</span><span class="p">,</span><span class="w"> </span><span class="n">etc</span><span class="p">.</span><span class="w"> </span><span class="k">at</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="mi">12</span><span class="w"></span>
+<span class="p">(</span><span class="mi">000</span><span class="p">)</span><span class="w"> </span><span class="n">ldh</span><span class="w">      </span><span class="o">[</span><span class="n">12</span><span class="o">]</span><span class="w">                                  </span><span class="err">#</span><span class="w"> </span><span class="o">&lt;----</span><span class="w"> </span><span class="n">look</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">dot1q</span><span class="p">,</span><span class="w"> </span><span class="n">etc</span><span class="p">.</span><span class="w"> </span><span class="k">at</span><span class="w"> </span><span class="n">Byte</span><span class="w"> </span><span class="mi">12</span><span class="w"></span>
 <span class="p">(</span><span class="mi">001</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x8100</span><span class="w">          </span><span class="n">jt</span><span class="w"> </span><span class="mi">4</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
 <span class="p">(</span><span class="mi">002</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x88a8</span><span class="w">          </span><span class="n">jt</span><span class="w"> </span><span class="mi">4</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">3</span><span class="w"></span>
 <span class="p">(</span><span class="mi">003</span><span class="p">)</span><span class="w"> </span><span class="n">jeq</span><span class="w">      </span><span class="n">#0x9100</span><span class="w">          </span><span class="n">jt</span><span class="w"> </span><span class="mi">4</span><span class="w">    </span><span class="n">jf</span><span class="w"> </span><span class="mi">8</span><span class="w"></span>
@@ -2514,7 +2556,7 @@ dropped privs to tcpdump
 <span class="n">cp</span><span class="w"> </span><span class="n">bpftool</span><span class="o">/</span><span class="n">bpftool</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/.</span><span class="w"></span>
 </code></pre></div>
 </td></tr></table></p>
-<h5 id="building-byte-code">Building Byte code</h5>
+<h5 id="building-bytecode">Building bytecode</h5>
 <p>Now, create the following ASM like code:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
@@ -2709,7 +2751,7 @@ reading from file test.pcap, link-type EN10MB (Ethernet)
 <span class="nt">Content-Length</span><span class="o">:</span><span class="w"> </span><span class="nt">2272</span><span class="w"></span>
 </code></pre></div>
 </td></tr></table></p>
-<p>Now, let's create an iptables rule that will match on the Byte code and apply it:
+<p>Now, let's create an iptables rule that will match on the bytecode and apply it:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code># iptables -I INPUT -m bpf --bytecode &quot;23,48 0 0 0,84 0 0 240,21 0 6 96,48 0 0 6,21 0 17 6,40 0 0 40,21 14 0 8080,40 0 0 42,21 12 13 8080,48 0 0 0,84 0 0 240,21 0 10 64,48 0 0 9,21 0 8 6,40 0 0 6,69 6 0 8191,177 0 0 0,72 0 0 0,21 2 0 8080,72 0 0 2,21 0 1 8080,6 0 0 65535,6 0 0 0&quot; --j REJECT
 </code></pre></div>
 </td></tr></table></p>
@@ -2738,7 +2780,7 @@ Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 26, 2021</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">November 17, 2022</span>
       
     
   </small>

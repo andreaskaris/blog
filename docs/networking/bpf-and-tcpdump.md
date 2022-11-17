@@ -2,29 +2,13 @@
 
 ### Introduction
 
-For a good introduction into tcpdump's BPF compiler, look at the following blog post, then come back here:
+This article extends upon the introduction into tcpdump's BPF compiler provided in the blog post [BPF - the forgotten bytecode](https://blog.cloudflare.com/bpf-the-forgotten-bytecode/). Before reading on, read through this resource, then come back here. The blog post also links to the paper [The BSD Packet Filter: A New Architecture for User-level Packet Capture](https://www.tcpdump.org/papers/bpf-usenix93.pdf) if you want to further deepen your understanding. The [Linux Socket Filtering aka Berkeley Packet Filter (BPF)](https://www.kernel.org/doc/Documentation/networking/filter.txt) kernel documentation might come in handy when following the examples below. Please also note that when I refer to BPF in this article, I refer to classic BPF and not to eBPF.
 
-* [https://blog.cloudflare.com/bpf-the-forgotten-bytecode/](https://blog.cloudflare.com/bpf-the-forgotten-bytecode/)
+### Compiling a basic BPF expression
 
-### tcpdump's inconsistent BPF expression compiler
+After reading through the aforementioned material, you should already have an understanding of tcpdump's BPF compiler. Any expression that you give to tcpdump will be compiled into bytecode which in turn will be given to the kernel's JIT compiler. Let's use an easy example and look at the `icmp` filter.
 
-Now that you have a good idea about this, let's look at how tcpdump compiles the following filter expression:
-~~~
-icmp
-~~~
-
-This will be straight forward:
-~~~
-[root@host ~]# tcpdump -i lo icmp -d
-(000) ldh      [12]
-(001) jeq      #0x800           jt 2	jf 5
-(002) ldb      [23]
-(003) jeq      #0x1             jt 4	jf 5
-(004) ret      #262144
-(005) ret      #0
-~~~
-
-We'd also expect this to be the same if we look at a file capture:
+First, we will capture on the loopback interface and ping `127.0.0.1` at the same time. 
 ~~~
 [root@host ~]# timeout 1 tcpdump -i lo -w lo.pcap
 dropped privs to tcpdump
@@ -32,7 +16,45 @@ tcpdump: listening on lo, link-type EN10MB (Ethernet), capture size 262144 bytes
 0 packets captured
 6 packets received by filter
 0 packets dropped by kernel
-[root@host ~]# tcpdump -r lo.pcap icmp -d
+~~~
+
+Let's look at one of the captured packets. The IP ethertype is 0x800 and can be found in Bytes 12 and 13, the ICMP
+protocol number for ICMP is 01 and can be found in Byte 12:
+~~~
+[root@host ~]# tcpdump -r lo.pcap -xx
+reading from file lo.pcap, link-type EN10MB (Ethernet)
+dropped privs to tcpdump
+11:50:13.451990 IP localhost > localhost: ICMP echo request, id 1, seq 1, length 64
+
+                                            | -- ethertype for IP (0800)
+                                            |
+                                            v
+	0x0000:  0000 0000 0000 0000 0000 0000 0800 4500
+	0x0010:  0054 17ee 4000 4001 24b9 7f00 0001 7f00
+                              ^
+                              | --- IP protocol number for ICMP (01)
+
+	0x0020:  0001 0800 947c 0001 0001 4566 7663 0000
+	0x0030:  0000 e2e4 0600 0000 0000 1011 1213 1415
+	0x0040:  1617 1819 1a1b 1c1d 1e1f 2021 2223 2425
+	0x0050:  2627 2829 2a2b 2c2d 2e2f 3031 3233 3435
+	0x0060:  3637
+~~~
+
+And here is how tcpdump compiles the `icmp` filter expression for an interface for a live capture:
+~~~
+[root@host ~]# tcpdump -i lo -d icmp
+(000) ldh      [12]
+(001) jeq      #0x800           jt 2	jf 5             # <---- ethertype for IP
+(002) ldb      [23]
+(003) jeq      #0x1             jt 4	jf 5             # <---- IP protocol number for ICMP
+(004) ret      #262144
+(005) ret      #0
+~~~
+
+We'd also expect this to be the same when we look at our capture file:
+~~~
+[root@host ~]# tcpdump -r lo.pcap -d icmp
 reading from file lo.pcap, link-type EN10MB (Ethernet)
 (000) ldh      [12]
 (001) jeq      #0x800           jt 2	jf 5             # <---- ethertype for IP
@@ -42,14 +64,17 @@ reading from file lo.pcap, link-type EN10MB (Ethernet)
 (005) ret      #0
 ~~~
 
-So far, so good and straight forward. We look at byte 23 and check if the IP protocol number is 1. Before that, we check the ethernet header in byte 12 and make sure that we are using IP.
+So far, so good and straight forward. We look at Byte 23 and check if the IP protocol number is 1. Before that, we check the ethernet header in Byte 12 and make sure that we are using IP.
 
-But what happens if we use this expression?
-~~~
-vlan
-~~~
+### tcpdump's "inconsistent" BPF expression compiler
 
-We'd expect to look into byte 12 of the ethernet header and make sure that we have the ethertype for 802.1q there. So we'd want to see 0x8100 and if we look for Q-in-Q we'd look for 0x88A8 and for double tagging we'd also look for 0x9100:
+I sometimes find myself in situations where tcpdump's filters do not work the way that I would expect them to. In those situations I often simply run tcpdump in line buffered mode (`-l`) and pipe the output into `grep` to find what I am looking for. Particularly the VLAN filter has quite often given me some headaches in the past.
+
+Depending on the tcpdump version in use, your provided expression might be compiled slightly differently. What's more, there is a difference between the bytecode that is compiled for live packet captures on interfaces and for the bytecode that is compiled for filtering packet capture files.
+
+Earlier, we looked at the `icmp` filter. We will now see what happens when we filter for a VLAN number with the `vlan` filter.
+
+We'd expect to look into Byte 12 of the ethernet header and make sure that we have the ethertype for 802.1q there. So we'd want to see 0x8100 and if we look for Q-in-Q we'd look for 0x88A8 and for double tagging we'd also look for 0x9100:
 
 * [https://en.wikipedia.org/wiki/EtherType](https://en.wikipedia.org/wiki/EtherType)
 
@@ -104,7 +129,7 @@ For example, let's look for VLAN 32 (0x20):
 ~~~
 [root@host ~]# tcpdump -r lo.pcap vlan 32 -d
 reading from file lo.pcap, link-type EN10MB (Ethernet)
-(000) ldh      [12]                                  # <---- look for dot1q, etc. at byte 12
+(000) ldh      [12]                                  # <---- look for dot1q, etc. at Byte 12
 (001) jeq      #0x8100          jt 4	jf 2
 (002) jeq      #0x88a8          jt 4	jf 3
 (003) jeq      #0x9100          jt 4	jf 8
@@ -616,7 +641,7 @@ cp bpf_jit_disasm /usr/local/bin/.
 cp bpftool/bpftool /usr/local/bin/.
 ~~~
 
-##### Building Byte code
+##### Building bytecode
 
 Now, create the following ASM like code:
 ~~~
@@ -751,7 +776,7 @@ Content-type: text/html; charset=utf-8
 Content-Length: 2272
 ~~~
 
-Now, let's create an iptables rule that will match on the Byte code and apply it:
+Now, let's create an iptables rule that will match on the bytecode and apply it:
 ~~~
 # iptables -I INPUT -m bpf --bytecode "23,48 0 0 0,84 0 0 240,21 0 6 96,48 0 0 6,21 0 17 6,40 0 0 40,21 14 0 8080,40 0 0 42,21 12 13 8080,48 0 0 0,84 0 0 240,21 0 10 64,48 0 0 9,21 0 8 6,40 0 0 6,69 6 0 8191,177 0 0 0,72 0 0 0,21 2 0 8080,72 0 0 2,21 0 1 8080,6 0 0 65535,6 0 0 0" --j REJECT
 ~~~

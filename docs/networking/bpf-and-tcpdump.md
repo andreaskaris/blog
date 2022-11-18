@@ -10,7 +10,7 @@ This article extends upon the introduction into tcpdump's BPF compiler provided 
 
 After reading through the aforementioned material, you should already have an understanding of tcpdump's BPF compiler. Any expression that you give to tcpdump will be compiled into bytecode which in turn will be given to the kernel's JIT compiler. Let's use an easy example and look at the `icmp` filter.
 
-First, we will capture on the loopback interface and ping `127.0.0.1` at the same time. 
+First, we will capture on the loopback interface and ping `127.0.0.1` at the same time:
 ~~~
 [root@host ~]# timeout 1 tcpdump -i lo -w lo.pcap
 dropped privs to tcpdump

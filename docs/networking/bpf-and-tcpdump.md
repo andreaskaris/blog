@@ -691,10 +691,10 @@ num   pkts bytes target     prot opt in     out     source               destina
 1        2   120 REJECT     all  --  *      *       0.0.0.0/0            0.0.0.0/0           match bpf 40 0 0 22,21 0 1 8080,6 0 0 262144,6 0 0 0 reject-with icmp-port-unreachable
 ~~~
 
-### Generating BPF bytecode with nfnpf_compile
+### Generating BPF bytecode with nfbpf_compile
 
 While searching for more resources, I found [BPF: A Bytecode for filtering](https://www.lowendtalk.com/discussion/47469/bpf-a-bytecode-for-filtering){target=_blank}.
-The article links to [nfbpf_compile.c](https://git.netfilter.org/iptables/tree/utils/nfbpf_compile.c){target=_blank} which cat generate iptables -m bpf compatible byte code
+The article links to [nfbpf_compile.c](https://git.netfilter.org/iptables/tree/utils/nfbpf_compile.c){target=_blank} which can generate `iptables -m bpf` compatible bytecode
 by using `DLT_RAW`.
 
 Here's the full script from the above link (just in case the original resource changes):
@@ -788,7 +788,7 @@ You can also choose the low level route and write your own BPF asm instructions 
 
 #### Compiling helper binaries 
 
-First, you will need the bpf_asm binary from the kernel source code. 
+First, you will need the `bpf_asm` binary from the kernel source code. 
 
 Get the kernel source code on RHEL / CentOS:
 ~~~

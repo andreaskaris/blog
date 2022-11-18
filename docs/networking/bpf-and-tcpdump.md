@@ -2,6 +2,8 @@
 
 ### Introduction
 
+I sometimes used to find myself in situations where tcpdump's filters seemingly did not work the way that I expected them to. In those situations I often simply ran tcpdump in line buffered mode (`-l`) and piped the output into `grep` to find what I was looking for. Particularly the VLAN filter used to give me some headaches with older versions of tcpdump and libpcap. In this article, I will try to shed some light at how tcpdump (via libpcap) generates bytecode for filtering packets. Understanding how the bytecode is generated and how it works should help you understand when things go wrong and when a filter expression might not match a specific packet that you are looking for.
+
 This article extends upon the introduction into tcpdump's BPF compiler provided in the blog post [BPF - the forgotten bytecode](https://blog.cloudflare.com/bpf-the-forgotten-bytecode/){target=_blank}. Before reading on, read through this resource, then come back here. The blog post also links to the paper [The BSD Packet Filter: A New Architecture for User-level Packet Capture](https://www.tcpdump.org/papers/bpf-usenix93.pdf){target=_blank} if you want to further deepen your understanding. The [Linux Socket Filtering aka Berkeley Packet Filter (BPF)](https://www.kernel.org/doc/Documentation/networking/filter.txt){target=_blank} kernel documentation might come in handy when following the examples below. Please also note that when I refer to BPF in this article, I refer to classic BPF and not to eBPF.
 
 ### Compiling a basic BPF expression
@@ -66,13 +68,9 @@ reading from file lo.pcap, link-type EN10MB (Ethernet)
 
 So far, so good and straight forward. We look at Byte 23 and check if the IP protocol number is 1. Before that, we check the ethernet header in Byte 12 and make sure that we are using IP.
 
-### tcpdump's "inconsistent" BPF expression compiler
+### Differences when filtering on the wire versus reading from a packet capture file
 
-I sometimes find myself in situations where tcpdump's filters do not work the way that I would expect them to. In those situations I often simply run tcpdump in line buffered mode (`-l`) and pipe the output into `grep` to find what I am looking for. Particularly the VLAN filter has quite often given me some headaches in the past.
-
-Depending on the tcpdump version in use, your provided expression might be compiled slightly differently. What's more, there is a difference between the bytecode that is compiled for live packet captures on interfaces and for the bytecode that is compiled for filtering packet capture files.
-
-Earlier, we looked at the `icmp` filter. We will now see what happens when we filter for a VLAN number with the `vlan` filter.
+Depending on the tcpdump version in use, your provided expression might be compiled slightly differently. What's more, there is a difference between the bytecode that is compiled for live packet captures on interfaces and for the bytecode that is compiled for filtering packet capture files. Earlier, we looked at the `icmp` filter. We will now see what happens when we filter for a VLAN number with the `vlan` filter.
 
 The [Wikipedia article about EtherTypes](https://en.wikipedia.org/wiki/EtherType){target=_blank} lists the EtherTypes for VLANS: 
 for 802.1q the value is `0x8100`, for Q-in-Q we would expect to see `0x88A8` and for double tagging `0x9100`. We expect

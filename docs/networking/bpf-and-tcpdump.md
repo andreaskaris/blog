@@ -197,6 +197,7 @@ The `-r` indicates to read from a file and the parameter is read here:
 ~~~
 
 Opening a file for reading happens here:
+
 * [https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2053](https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2053){target=_blank}
 ~~~
 #ifdef HAVE_PCAP_SET_TSTAMP_PRECISION
@@ -619,7 +620,7 @@ Warning: assuming Ethernet
 You get the bytecode with:
 ~~~
 # tcpdump -y RAW -ddd tcp dst port 8080 | tr '\n' ',' | sed 's/,$//'
-19,48 0 0 0,84 0 0 240,21 0 4 96,48 0 0 6,21 0 13 6,40 0 0 42,21 10 11 8080,48 0 0 0,84 0 0 240,21 0 8 64,48 0 0 9,21 0 6 6,40 0 0 6,69 4 0 8191,177 0 0 0,72 0 0 2,21 0 1 8080,6 0 0 262144,6 0 0 0,
+19,48 0 0 0,84 0 0 240,21 0 4 96,48 0 0 6,21 0 13 6,40 0 0 42,21 10 11 8080,48 0 0 0,84 0 0 240,21 0 8 64,48 0 0 9,21 0 6 6,40 0 0 6,69 4 0 8191,177 0 0 0,72 0 0 2,21 0 1 8080,6 0 0 262144,6 0 0 0
 ~~~
 
 And now, you can use this bytecode with iptables:
@@ -679,7 +680,7 @@ And we can test this again:
 # python3 -m http.server 8080 >/dev/null 2>&1 &
 # curl -s -o /dev/null -w "%{http_code}" 127.0.0.1:8080
 200
-# # iptables -I INPUT -m bpf --bytecode "$(tcpdump -y RAW -ddd ether[22:2] == 0x1f90 | tr '\n' ',' | sed 's/,$//')" -j REJECT
+# iptables -I INPUT -m bpf --bytecode "$(tcpdump -y RAW -ddd ether[22:2] == 0x1f90 | tr '\n' ',' | sed 's/,$//')" -j REJECT
 # curl -s -o /dev/null -w "%{http_code}" 127.0.0.1:8080
 000
 # iptables -L INPUT -nv --line-numbers
@@ -779,9 +780,9 @@ num   pkts bytes target     prot opt in     out     source               destina
 1        2   120 REJECT     all  --  *      *       0.0.0.0/0            0.0.0.0/0           match bpf 48 0 0 0,84 0 0 240,21 0 6 96,48 0 0 6,21 0 17 6,40 0 0 40,21 14 0 8080,40 0 0 42,21 12 13 8080,48 0 0 0,84 0 0 240,21 0 10 64,48 0 0 9,21 0 8 6,40 0 0 6,69 6 0 8191,177 0 0 0,72 0 0 0,21 2 0 8080,72 0 0 2,21 0 1 8080,6 0 0 65535,6 0 0 0 reject-with icmp-port-unreachable
 ~~~
 
-### Using BPF asm-like code
+### Using BPF asm instructions
 
-You can also choose the low level route and write your own BPF asm-like code.
+You can also choose the low level route and write your own BPF asm instructions and convert them into bytecode.
 
 #### Compiling helper binaries 
 
@@ -806,9 +807,9 @@ cp bpf_jit_disasm /usr/local/bin/.
 cp bpftool/bpftool /usr/local/bin/.
 ~~~
 
-##### Building bytecode
+#### Building bytecode
 
-Now, create the following ASM like code:
+Now, create the following bpf asm instructions:
 ~~~
 # cat <<'EOF' > test.bpf 
      ldh [22]

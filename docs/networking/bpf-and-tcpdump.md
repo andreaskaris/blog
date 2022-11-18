@@ -564,7 +564,7 @@ git checkout origin/tcpdump-4.99
 make install
 ~~~
 
-#### Using different DLTs
+#### Comparing link-layer header types (DLTs)
 
 Compare the output of the following commands - the first one, `EN10MB`, accounts for ethernet headers whereas `RAW` starts at the IP headers:
 ~~~
@@ -782,7 +782,7 @@ num   pkts bytes target     prot opt in     out     source               destina
 1        2   120 REJECT     all  --  *      *       0.0.0.0/0            0.0.0.0/0           match bpf 48 0 0 0,84 0 0 240,21 0 6 96,48 0 0 6,21 0 17 6,40 0 0 40,21 14 0 8080,40 0 0 42,21 12 13 8080,48 0 0 0,84 0 0 240,21 0 10 64,48 0 0 9,21 0 8 6,40 0 0 6,69 6 0 8191,177 0 0 0,72 0 0 0,21 2 0 8080,72 0 0 2,21 0 1 8080,6 0 0 65535,6 0 0 0 reject-with icmp-port-unreachable
 ~~~
 
-### Using BPF asm instructions
+### Generating BPF bytecode from BPF asm instructions
 
 You can also choose the low level route and write your own BPF asm instructions and convert them into bytecode.
 

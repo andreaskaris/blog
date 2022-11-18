@@ -751,8 +751,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#generating-bpf-bytecode-with-nfnpf_compile" class="md-nav__link">
-    Generating BPF bytecode with nfnpf_compile
+  <a href="#generating-bpf-bytecode-with-nfbpf_compile" class="md-nav__link">
+    Generating BPF bytecode with nfbpf_compile
   </a>
   
 </li>
@@ -2661,9 +2661,9 @@ num   pkts bytes target     prot opt in     out     source               destina
 1        2   120 REJECT     all  --  *      *       0.0.0.0/0            0.0.0.0/0           match bpf 40 0 0 22,21 0 1 8080,6 0 0 262144,6 0 0 0 reject-with icmp-port-unreachable
 </code></pre></div>
 </td></tr></table></p>
-<h3 id="generating-bpf-bytecode-with-nfnpf_compile">Generating BPF bytecode with nfnpf_compile</h3>
+<h3 id="generating-bpf-bytecode-with-nfbpf_compile">Generating BPF bytecode with nfbpf_compile</h3>
 <p>While searching for more resources, I found <a href="https://www.lowendtalk.com/discussion/47469/bpf-a-bytecode-for-filtering" target="_blank">BPF: A Bytecode for filtering</a>.
-The article links to <a href="https://git.netfilter.org/iptables/tree/utils/nfbpf_compile.c" target="_blank">nfbpf_compile.c</a> which cat generate iptables -m bpf compatible byte code
+The article links to <a href="https://git.netfilter.org/iptables/tree/utils/nfbpf_compile.c" target="_blank">nfbpf_compile.c</a> which can generate <code class="highlight">iptables -m bpf</code> compatible bytecode
 by using <code class="highlight">DLT_RAW</code>.</p>
 <p>Here's the full script from the above link (just in case the original resource changes):
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
@@ -2814,7 +2814,7 @@ num   pkts bytes target     prot opt in     out     source               destina
 <h3 id="using-bpf-asm-instructions">Using BPF asm instructions</h3>
 <p>You can also choose the low level route and write your own BPF asm instructions and convert them into bytecode.</p>
 <h4 id="compiling-helper-binaries">Compiling helper binaries</h4>
-<p>First, you will need the bpf_asm binary from the kernel source code. </p>
+<p>First, you will need the <code class="highlight">bpf_asm</code> binary from the kernel source code. </p>
 <p>Get the kernel source code on RHEL / CentOS:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>

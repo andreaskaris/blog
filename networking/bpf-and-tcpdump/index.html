@@ -725,8 +725,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#using-different-dlts" class="md-nav__link">
-    Using different DLTs
+  <a href="#comparing-link-layer-header-types-dlts" class="md-nav__link">
+    Comparing link-layer header types (DLTs)
   </a>
   
 </li>
@@ -758,11 +758,11 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#using-bpf-asm-instructions" class="md-nav__link">
-    Using BPF asm instructions
+  <a href="#generating-bpf-bytecode-from-bpf-asm-instructions" class="md-nav__link">
+    Generating BPF bytecode from BPF asm instructions
   </a>
   
-    <nav class="md-nav" aria-label="Using BPF asm instructions">
+    <nav class="md-nav" aria-label="Generating BPF bytecode from BPF asm instructions">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2469,7 +2469,7 @@ git checkout origin/tcpdump-4.99
 make install
 </code></pre></div>
 </td></tr></table></p>
-<h4 id="using-different-dlts">Using different DLTs</h4>
+<h4 id="comparing-link-layer-header-types-dlts">Comparing link-layer header types (DLTs)</h4>
 <p>Compare the output of the following commands - the first one, <code class="highlight">EN10MB</code>, accounts for ethernet headers whereas <code class="highlight">RAW</code> starts at the IP headers:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
@@ -2811,7 +2811,7 @@ num   pkts bytes target     prot opt in     out     source               destina
 1        2   120 REJECT     all  --  *      *       0.0.0.0/0            0.0.0.0/0           match bpf 48 0 0 0,84 0 0 240,21 0 6 96,48 0 0 6,21 0 17 6,40 0 0 40,21 14 0 8080,40 0 0 42,21 12 13 8080,48 0 0 0,84 0 0 240,21 0 10 64,48 0 0 9,21 0 8 6,40 0 0 6,69 6 0 8191,177 0 0 0,72 0 0 0,21 2 0 8080,72 0 0 2,21 0 1 8080,6 0 0 65535,6 0 0 0 reject-with icmp-port-unreachable
 </code></pre></div>
 </td></tr></table></p>
-<h3 id="using-bpf-asm-instructions">Using BPF asm instructions</h3>
+<h3 id="generating-bpf-bytecode-from-bpf-asm-instructions">Generating BPF bytecode from BPF asm instructions</h3>
 <p>You can also choose the low level route and write your own BPF asm instructions and convert them into bytecode.</p>
 <h4 id="compiling-helper-binaries">Compiling helper binaries</h4>
 <p>First, you will need the <code class="highlight">bpf_asm</code> binary from the kernel source code. </p>

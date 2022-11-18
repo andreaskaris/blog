@@ -751,11 +751,11 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#using-bpf-asm-like-code" class="md-nav__link">
-    Using BPF asm-like code
+  <a href="#using-bpf-asm-instructions" class="md-nav__link">
+    Using BPF asm instructions
   </a>
   
-    <nav class="md-nav" aria-label="Using BPF asm-like code">
+    <nav class="md-nav" aria-label="Using BPF asm instructions">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -763,18 +763,12 @@
     Compiling helper binaries
   </a>
   
-    <nav class="md-nav" aria-label="Compiling helper binaries">
-      <ul class="md-nav__list">
+</li>
         
           <li class="md-nav__item">
   <a href="#building-bytecode" class="md-nav__link">
     Building bytecode
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -1856,8 +1850,9 @@ extract the last 12 bits from there and then check if the value equals 0x20. Oth
             <span class="k">break</span><span class="c1">;</span>
 </code></pre></div>
 </td></tr></table>
-<p>Opening a file for reading happens here:
-* <a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2053" target="_blank">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2053</a>
+<p>Opening a file for reading happens here:</p>
+<ul>
+<li><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2053" target="_blank">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2053</a>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
@@ -1870,7 +1865,8 @@ extract the last 12 bits from there and then check if the value equals 0x20. Oth
 <span class="w">        </span><span class="n">pd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pcap_open_offline</span><span class="p">(</span><span class="n">RFileName</span><span class="p">,</span><span class="w"> </span><span class="n">ebuf</span><span class="p">);</span><span class="w"></span>
 <span class="cp">#endif</span>
 </code></pre></div>
-</td></tr></table></p>
+</td></tr></table></li>
+</ul>
 <p>If <code class="highlight">-r</code> is not specified, then libpcap will listen on the interface instead:</p>
 <ul>
 <li><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2135" target="_blank">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2135</a>
@@ -2557,7 +2553,7 @@ Warning: assuming Ethernet
 <p>You get the bytecode with:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code># tcpdump -y RAW -ddd tcp dst port 8080 | tr &#39;\n&#39; &#39;,&#39; | sed &#39;s/,$//&#39;
-19,48 0 0 0,84 0 0 240,21 0 4 96,48 0 0 6,21 0 13 6,40 0 0 42,21 10 11 8080,48 0 0 0,84 0 0 240,21 0 8 64,48 0 0 9,21 0 6 6,40 0 0 6,69 4 0 8191,177 0 0 0,72 0 0 2,21 0 1 8080,6 0 0 262144,6 0 0 0,
+19,48 0 0 0,84 0 0 240,21 0 4 96,48 0 0 6,21 0 13 6,40 0 0 42,21 10 11 8080,48 0 0 0,84 0 0 240,21 0 8 64,48 0 0 9,21 0 6 6,40 0 0 6,69 4 0 8191,177 0 0 0,72 0 0 2,21 0 1 8080,6 0 0 262144,6 0 0 0
 </code></pre></div>
 </td></tr></table></p>
 <p>And now, you can use this bytecode with iptables:
@@ -2648,7 +2644,7 @@ Don't be mislead by the <code class="highlight">ether</code> keyword. We are fil
 <span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code># python3 -m http.server 8080 &gt;/dev/null 2&gt;&amp;1 &amp;
 # curl -s -o /dev/null -w &quot;%{http_code}&quot; 127.0.0.1:8080
 200
-# # iptables -I INPUT -m bpf --bytecode &quot;$(tcpdump -y RAW -ddd ether[22:2] == 0x1f90 | tr &#39;\n&#39; &#39;,&#39; | sed &#39;s/,$//&#39;)&quot; -j REJECT
+# iptables -I INPUT -m bpf --bytecode &quot;$(tcpdump -y RAW -ddd ether[22:2] == 0x1f90 | tr &#39;\n&#39; &#39;,&#39; | sed &#39;s/,$//&#39;)&quot; -j REJECT
 # curl -s -o /dev/null -w &quot;%{http_code}&quot; 127.0.0.1:8080
 000
 # iptables -L INPUT -nv --line-numbers
@@ -2807,8 +2803,8 @@ num   pkts bytes target     prot opt in     out     source               destina
 1        2   120 REJECT     all  --  *      *       0.0.0.0/0            0.0.0.0/0           match bpf 48 0 0 0,84 0 0 240,21 0 6 96,48 0 0 6,21 0 17 6,40 0 0 40,21 14 0 8080,40 0 0 42,21 12 13 8080,48 0 0 0,84 0 0 240,21 0 10 64,48 0 0 9,21 0 8 6,40 0 0 6,69 6 0 8191,177 0 0 0,72 0 0 0,21 2 0 8080,72 0 0 2,21 0 1 8080,6 0 0 65535,6 0 0 0 reject-with icmp-port-unreachable
 </code></pre></div>
 </td></tr></table></p>
-<h3 id="using-bpf-asm-like-code">Using BPF asm-like code</h3>
-<p>You can also choose the low level route and write your own BPF asm-like code.</p>
+<h3 id="using-bpf-asm-instructions">Using BPF asm instructions</h3>
+<p>You can also choose the low level route and write your own BPF asm instructions and convert them into bytecode.</p>
 <h4 id="compiling-helper-binaries">Compiling helper binaries</h4>
 <p>First, you will need the bpf_asm binary from the kernel source code. </p>
 <p>Get the kernel source code on RHEL / CentOS:
@@ -2837,8 +2833,8 @@ num   pkts bytes target     prot opt in     out     source               destina
 <span class="n">cp</span><span class="w"> </span><span class="n">bpftool</span><span class="o">/</span><span class="n">bpftool</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/.</span><span class="w"></span>
 </code></pre></div>
 </td></tr></table></p>
-<h5 id="building-bytecode">Building bytecode</h5>
-<p>Now, create the following ASM like code:
+<h4 id="building-bytecode">Building bytecode</h4>
+<p>Now, create the following bpf asm instructions:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>

@@ -20,8 +20,8 @@ tcpdump: listening on lo, link-type EN10MB (Ethernet), capture size 262144 bytes
 0 packets dropped by kernel
 ~~~
 
-Let's look at one of the captured packets. The IP ethertype is 0x800 and can be found in Bytes 12 and 13, the ICMP
-protocol number for ICMP is 0x01 and can be found in Byte 12:
+Let's look at one of the captured packets. Each visual block in the hexdump is a halfword, or 16 bits. Offsets in tcpdump are specified in Bytes, and the dst port field is 2 Bytes in length. 
+The IP ethertype is 0x800 and can be found in Bytes 12 and 13, the ICMP protocol number for ICMP is 0x01 and can be found in Byte 23:
 ~~~
 [root@host ~]# tcpdump -r lo.pcap -xx
 reading from file lo.pcap, link-type EN10MB (Ethernet)
@@ -656,7 +656,7 @@ reading from file test.pcap, link-type EN10MB (Ethernet), snapshot length 262144
 	0x0030:  51b3 2c75
 ~~~
 
-We want to identify all packets with a dst port of `8080` (or `0x1f90` in hex notation). Each visual block in the hexdump is a half word, or 16 bits. Offsets in tcpdump are specified in Bytes, and the dst port field is 2 Bytes in lenght. We are looking for half word 11, or Bytes 22 and 23. The tcpdump expression would hence be:
+We want to identify all packets with a dst port of `8080` (or `0x1f90` in hex notation). We are looking for halfword 11, or Bytes 22 and 23. The tcpdump expression would hence be:
 ~~~
 ether[22:2] == 0x1f90
 ~~~

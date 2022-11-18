@@ -628,8 +628,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#tcpdumps-inconsistent-bpf-expression-compiler" class="md-nav__link">
-    tcpdump's "inconsistent" BPF expression compiler
+  <a href="#differences-when-filtering-on-the-wire-versus-reading-from-a-packet-capture-file" class="md-nav__link">
+    Differences when filtering on the wire versus reading from a packet capture file
   </a>
   
 </li>
@@ -1589,6 +1589,7 @@
 
 <h2 id="tcpdump-expressions-and-bpf">tcpdump expressions and BPF</h2>
 <h3 id="introduction">Introduction</h3>
+<p>I sometimes used to find myself in situations where tcpdump's filters seemingly did not work the way that I expected them to. In those situations I often simply ran tcpdump in line buffered mode (<code class="highlight">-l</code>) and piped the output into <code class="highlight">grep</code> to find what I was looking for. Particularly the VLAN filter used to give me some headaches with older versions of tcpdump and libpcap. In this article, I will try to shed some light at how tcpdump (via libpcap) generates bytecode for filtering packets. Understanding how the bytecode is generated and how it works should help you understand when things go wrong and when a filter expression might not match a specific packet that you are looking for.</p>
 <p>This article extends upon the introduction into tcpdump's BPF compiler provided in the blog post <a href="https://blog.cloudflare.com/bpf-the-forgotten-bytecode/" target="_blank">BPF - the forgotten bytecode</a>. Before reading on, read through this resource, then come back here. The blog post also links to the paper <a href="https://www.tcpdump.org/papers/bpf-usenix93.pdf" target="_blank">The BSD Packet Filter: A New Architecture for User-level Packet Capture</a> if you want to further deepen your understanding. The <a href="https://www.kernel.org/doc/Documentation/networking/filter.txt" target="_blank">Linux Socket Filtering aka Berkeley Packet Filter (BPF)</a> kernel documentation might come in handy when following the examples below. Please also note that when I refer to BPF in this article, I refer to classic BPF and not to eBPF.</p>
 <h3 id="compiling-a-basic-bpf-expression">Compiling a basic BPF expression</h3>
 <p>After reading through the aforementioned material, you should already have an understanding of tcpdump's BPF compiler. Any expression that you give to tcpdump will be compiled into bytecode which in turn will be given to the kernel's JIT compiler. Let's use an easy example and look at the <code class="highlight">icmp</code> filter.</p>
@@ -1680,10 +1681,8 @@ protocol number for ICMP is 0x01 and can be found in Byte 12:
 </code></pre></div>
 </td></tr></table></p>
 <p>So far, so good and straight forward. We look at Byte 23 and check if the IP protocol number is 1. Before that, we check the ethernet header in Byte 12 and make sure that we are using IP.</p>
-<h3 id="tcpdumps-inconsistent-bpf-expression-compiler">tcpdump's "inconsistent" BPF expression compiler</h3>
-<p>I sometimes find myself in situations where tcpdump's filters do not work the way that I would expect them to. In those situations I often simply run tcpdump in line buffered mode (<code class="highlight">-l</code>) and pipe the output into <code class="highlight">grep</code> to find what I am looking for. Particularly the VLAN filter has quite often given me some headaches in the past.</p>
-<p>Depending on the tcpdump version in use, your provided expression might be compiled slightly differently. What's more, there is a difference between the bytecode that is compiled for live packet captures on interfaces and for the bytecode that is compiled for filtering packet capture files.</p>
-<p>Earlier, we looked at the <code class="highlight">icmp</code> filter. We will now see what happens when we filter for a VLAN number with the <code class="highlight">vlan</code> filter.</p>
+<h3 id="differences-when-filtering-on-the-wire-versus-reading-from-a-packet-capture-file">Differences when filtering on the wire versus reading from a packet capture file</h3>
+<p>Depending on the tcpdump version in use, your provided expression might be compiled slightly differently. What's more, there is a difference between the bytecode that is compiled for live packet captures on interfaces and for the bytecode that is compiled for filtering packet capture files. Earlier, we looked at the <code class="highlight">icmp</code> filter. We will now see what happens when we filter for a VLAN number with the <code class="highlight">vlan</code> filter.</p>
 <p>The <a href="https://en.wikipedia.org/wiki/EtherType" target="_blank">Wikipedia article about EtherTypes</a> lists the EtherTypes for VLANS: 
 for 802.1q the value is <code class="highlight"><span class="mf">0</span><span class="n">x8100</span><span class="w"></span></code>, for Q-in-Q we would expect to see <code class="highlight"><span class="mf">0</span><span class="n">x88A8</span><span class="w"></span></code> and for double tagging <code class="highlight"><span class="mf">0</span><span class="n">x9100</span><span class="w"></span></code>. We expect
 to find one of these values in Bytes 12 and 13 of the Ethernet header.

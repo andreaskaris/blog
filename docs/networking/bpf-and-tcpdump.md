@@ -20,7 +20,7 @@ tcpdump: listening on lo, link-type EN10MB (Ethernet), capture size 262144 bytes
 0 packets dropped by kernel
 ~~~
 
-Let's look at one of the captured packets. Each visual block in the hexdump is a halfword, or 16 bits. Offsets in tcpdump are specified in Bytes, and the dst port field is 2 Bytes in length. 
+Let's look at one of the captured packets. Each visual block in the hexdump is a halfword, or 16 bits. Offsets in tcpdump are specified in Bytes.
 The IP ethertype is 0x800 and can be found in Bytes 12 and 13, the ICMP protocol number for ICMP is 0x01 and can be found in Byte 23:
 ~~~
 [root@host ~]# tcpdump -r lo.pcap -xx

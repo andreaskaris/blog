@@ -525,7 +525,7 @@ Compiling expression 'host 127.0.0.254 and tcp and port 5353'
 17,40 0 0 12,21 0 14 2048,32 0 0 26,21 2 0 2130706686,32 0 0 30,21 0 10 2130706686,48 0 0 23,21 0 8 6,40 0 0 20,69 6 0 8191,177 0 0 14,72 0 0 14,21 2 0 5353,72 0 0 16,21 0 1 5353,6 0 0 8192,6 0 0 0
 ~~~
 
-## Generating and using BPF bytecode
+## Generating and using BPF bytecode with iptables
 
 The aforementioned article [BPF - the forgotten bytecode](https://blog.cloudflare.com/bpf-the-forgotten-bytecode/){target=_blank} shows that BPF bytecode can also be used outside of tcpdump. Let's see how we can use BPF bytecode together with iptables to filter traffic.
 

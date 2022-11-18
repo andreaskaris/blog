@@ -2,7 +2,7 @@
 
 ### Introduction
 
-This article extends upon the introduction into tcpdump's BPF compiler provided in the blog post [BPF - the forgotten bytecode](https://blog.cloudflare.com/bpf-the-forgotten-bytecode/). Before reading on, read through this resource, then come back here. The blog post also links to the paper [The BSD Packet Filter: A New Architecture for User-level Packet Capture](https://www.tcpdump.org/papers/bpf-usenix93.pdf) if you want to further deepen your understanding. The [Linux Socket Filtering aka Berkeley Packet Filter (BPF)](https://www.kernel.org/doc/Documentation/networking/filter.txt) kernel documentation might come in handy when following the examples below. Please also note that when I refer to BPF in this article, I refer to classic BPF and not to eBPF.
+This article extends upon the introduction into tcpdump's BPF compiler provided in the blog post [BPF - the forgotten bytecode](https://blog.cloudflare.com/bpf-the-forgotten-bytecode/){target=_blank}. Before reading on, read through this resource, then come back here. The blog post also links to the paper [The BSD Packet Filter: A New Architecture for User-level Packet Capture](https://www.tcpdump.org/papers/bpf-usenix93.pdf){target=_blank} if you want to further deepen your understanding. The [Linux Socket Filtering aka Berkeley Packet Filter (BPF)](https://www.kernel.org/doc/Documentation/networking/filter.txt){target=_blank} kernel documentation might come in handy when following the examples below. Please also note that when I refer to BPF in this article, I refer to classic BPF and not to eBPF.
 
 ### Compiling a basic BPF expression
 
@@ -74,7 +74,7 @@ Depending on the tcpdump version in use, your provided expression might be compi
 
 Earlier, we looked at the `icmp` filter. We will now see what happens when we filter for a VLAN number with the `vlan` filter.
 
-The [Wikipedia article about EtherTypes](https://en.wikipedia.org/wiki/EtherType) lists the EtherTypes for VLANS: 
+The [Wikipedia article about EtherTypes](https://en.wikipedia.org/wiki/EtherType){target=_blank} lists the EtherTypes for VLANS: 
 for 802.1q the value is `0x8100`, for Q-in-Q we would expect to see `0x88A8` and for double tagging `0x9100`. We expect
 to find one of these values in Bytes 12 and 13 of the Ethernet header.
 And when we apply the filter to our previously captured file, this is precisely what the expression is compiled to. Tcpdump first loads the halfword at Bytes 12 and 13. Then it sequentially checks if the value matches either of the known EtherTypes for VLAN:
@@ -104,7 +104,7 @@ Now, let's look at a live capture from the loopback interface. We should expect 
 
 The expression is different now! Why is that? Well, the kernel has an internal optimization and will actually store VLAN and other ancillary information in a location with negative a offset.
 
-The reason for this is that the kernel no longer passes specific information as-is to libpcap. See [https://bugs.launchpad.net/ubuntu/+source/tcpdump/+bug/1641429](https://bugs.launchpad.net/ubuntu/+source/tcpdump/+bug/1641429) for further details:
+The reason for this is that the kernel no longer passes specific information as-is to libpcap. See [https://bugs.launchpad.net/ubuntu/+source/tcpdump/+bug/1641429](https://bugs.launchpad.net/ubuntu/+source/tcpdump/+bug/1641429){target=_blank} for further details:
 ~~~
 The kernel now longer passes vlan tag information as-is to libpcap, instead BPF needs to access ancillary data.
 
@@ -114,7 +114,7 @@ Offsets are negative because this is the way to access this ancillary data (like
 https://github.com/torvalds/linux/blob/6f0d349d922ba44e4348a17a78ea51b7135965b1/include/uapi/linux/filter.h#L60
 ~~~
 
-And see the kernel documentation as well: [https://github.com/torvalds/linux/blob/7acac4b3196caee5e21fb5ea53f8bc124e6a16fc/include/uapi/linux/filter.h#L60](https://github.com/torvalds/linux/blob/7acac4b3196caee5e21fb5ea53f8bc124e6a16fc/include/uapi/linux/filter.h#L60):
+And see the kernel documentation as well: [https://github.com/torvalds/linux/blob/7acac4b3196caee5e21fb5ea53f8bc124e6a16fc/include/uapi/linux/filter.h#L60](https://github.com/torvalds/linux/blob/7acac4b3196caee5e21fb5ea53f8bc124e6a16fc/include/uapi/linux/filter.h#L60){target=_blank}:
 
 ~~~
 /* RATIONALE. Negative offsets are invalid in BPF.
@@ -188,7 +188,7 @@ tcpdump will compile different types of BPF depending on if the optimization fla
 
 The `-r` indicates to read from a file and the parameter is read here:
 
-* [https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1759](https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1759)
+* [https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1759](https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1759){target=_blank}
 
 ~~~
 		case 'r':
@@ -197,7 +197,7 @@ The `-r` indicates to read from a file and the parameter is read here:
 ~~~
 
 Opening a file for reading happens here:
-* [https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2053](https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2053)
+* [https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2053](https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2053){target=_blank}
 ~~~
 #ifdef HAVE_PCAP_SET_TSTAMP_PRECISION
 		pd = pcap_open_offline_with_tstamp_precision(RFileName,
@@ -209,7 +209,7 @@ Opening a file for reading happens here:
 
 If `-r` is not specified, then libpcap will listen on the interface instead:
 
-* [https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2135](https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2135)
+* [https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2135](https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2135){target=_blank}
 ~~~
 		/*
 		 * Try to open the interface with the specified name.
@@ -219,7 +219,7 @@ If `-r` is not specified, then libpcap will listen on the interface instead:
 
 How the BPF will be compiled depends on if a file was used as an input or if tcpdump reads from a socket on a network interface. The actual compilation of the user provided filter expression to BPF happens here:
 
-* [https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2238](https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2238)
+* [https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2238](https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2238){target=_blank}
 ~~~
 	if (pcap_compile(pd, &fcode, cmdbuf, Oflag, netmask) < 0)
 		error("%s", pcap_geterr(pd));
@@ -227,14 +227,14 @@ How the BPF will be compiled depends on if a file was used as an input or if tcp
 
 If the `-d` parameter (and thus the `dflag`) is set, tcpdump will call libpcap's `bpf_dump` function to print the expression in one of three formats:
 
-* [https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1595](https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1595)
+* [https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1595](https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1595){target=_blank}
 ~~~
 		case 'd':
 			++dflag;
 			break;
 ~~~
 
-* [https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2240](https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2240)
+* [https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2240](https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2240){target=_blank}
 ~~~
 	if (dflag) {
 		bpf_dump(&fcode, dflag);
@@ -273,11 +273,11 @@ man tcpdump
 
 In order to build a filter expression compiler, we look at the source code:
 
-* [https://github.com/the-tcpdump-group/tcpdump/blob/master/tcpdump.c#L2238](https://github.com/the-tcpdump-group/tcpdump/blob/master/tcpdump.c#L2238)
+* [https://github.com/the-tcpdump-group/tcpdump/blob/master/tcpdump.c#L2238](https://github.com/the-tcpdump-group/tcpdump/blob/master/tcpdump.c#L2238){target=_blank}
 
 And at this documentation here:
 
-* [https://www.tcpdump.org/pcap.html](https://www.tcpdump.org/pcap.html)
+* [https://www.tcpdump.org/pcap.html](https://www.tcpdump.org/pcap.html){target=_blank}
 
 #### Installing dependencies
 
@@ -528,7 +528,7 @@ Compiling expression 'host 127.0.0.254 and tcp and port 5353'
 
 ## Generating and using BPF bytecode
 
-The aforementioned article [BPF - the forgotten bytecode](https://blog.cloudflare.com/bpf-the-forgotten-bytecode/) shows that BPF bytecode can also be used outside of tcpdump. Let's see how we can use BPF bytecode together with iptables to filter traffic.
+The aforementioned article [BPF - the forgotten bytecode](https://blog.cloudflare.com/bpf-the-forgotten-bytecode/){target=_blank} shows that BPF bytecode can also be used outside of tcpdump. Let's see how we can use BPF bytecode together with iptables to filter traffic.
 
 ### Dependencies
 
@@ -547,7 +547,7 @@ yum install llvm -y
 
 There are several different options to generate BPF bytecode. The easiest way is to use tcpdump to generate it from a provided filter expression. The iptables bpf module requires input that is generated with data link type `DLT_RAW`. 
 
-For further information about DLTs, see [LINK-LAYER HEADER TYPES](https://www.tcpdump.org/linktypes.html) which states the following for `DLT_RAW`:
+For further information about DLTs, see [LINK-LAYER HEADER TYPES](https://www.tcpdump.org/linktypes.html){target=_blank} which states the following for `DLT_RAW`:
 ~~~
 Raw IP; the packet begins with an IPv4 or IPv6 header, with the version field of the header indicating whether it's an IPv4 or IPv6 heade
 ~~~
@@ -690,8 +690,8 @@ num   pkts bytes target     prot opt in     out     source               destina
 
 ### Generating BPF bytecode with nfnpf_compile
 
-While searching for more resources, I found [BPF: A Bytecode for filtering](https://www.lowendtalk.com/discussion/47469/bpf-a-bytecode-for-filtering).
-The article links to [nfbpf_compile.c](https://git.netfilter.org/iptables/tree/utils/nfbpf_compile.c) which cat generate iptables -m bpf compatible byte code
+While searching for more resources, I found [BPF: A Bytecode for filtering](https://www.lowendtalk.com/discussion/47469/bpf-a-bytecode-for-filtering){target=_blank}.
+The article links to [nfbpf_compile.c](https://git.netfilter.org/iptables/tree/utils/nfbpf_compile.c){target=_blank} which cat generate iptables -m bpf compatible byte code
 by using `DLT_RAW`.
 
 Here's the full script from the above link (just in case the original resource changes):
@@ -840,4 +840,4 @@ num   pkts bytes target     prot opt in     out     source               destina
 1        2   120 REJECT     all  --  *      *       0.0.0.0/0            0.0.0.0/0           match bpf 40 0 0 22,21 0 1 8080,6 0 0 1,6 0 0 0 reject-with icmp-port-unreachable
 ~~~
 
-For further details about the assembly language, see the [kernel documentation](https://www.kernel.org/doc/Documentation/networking/filter.txt).
+For further details about the assembly language, see the [kernel documentation](https://www.kernel.org/doc/Documentation/networking/filter.txt){target=_blank}.

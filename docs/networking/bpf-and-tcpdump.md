@@ -102,7 +102,7 @@ Now, let's look at a live capture from the loopback interface. We should expect 
 (007) ret      #0
 ~~~
 
-The expression is different now! Why is that? Well, the kernel has an internal optimization and will actually store VLAN and other ancillary information in a location with negative offset.
+The expression is different now! Why is that? Well, the kernel has an internal optimization and will actually store VLAN and other ancillary information in a location with negative a offset.
 
 The reason for this is that the kernel no longer passes specific information as-is to libpcap. See [https://bugs.launchpad.net/ubuntu/+source/tcpdump/+bug/1641429](https://bugs.launchpad.net/ubuntu/+source/tcpdump/+bug/1641429) for further details:
 ~~~
@@ -166,10 +166,10 @@ extract the last 12 bits from there and then check if the value equals 0x20. Oth
 (005) jeq      #0x9100          jt 6	jf 14
 (006) ldb      [-4048]                             # <---- does the kernel special field report this as a VLAN?
 (007) jeq      #0x1             jt 8	jf 10
-(008) ldb      [-4052]
-(009) ja       11
+(008) ldb      [-4052]                             # <---- load value at location SKF_AD_VLAN_TAG
+(009) ja       11                                  # <---- jump to instruction 11
 (010) ldh      [14]
-(011) and      #0xfff
+(011) and      #0xfff                              # <---- extract the last 12 bits from the field (VID)
 (012) jeq      #0x20            jt 13	jf 14      # <---- look for VLAN 32 as earlier
 (013) ret      #262144
 (014) ret      #0
@@ -196,11 +196,8 @@ The `-r` indicates to read from a file and the parameter is read here:
 			break;
 ~~~
 
-Opening a file for reading:
-
+Opening a file for reading happens here:
 * [https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2053](https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2053)
-
-This is done here:
 ~~~
 #ifdef HAVE_PCAP_SET_TSTAMP_PRECISION
 		pd = pcap_open_offline_with_tstamp_precision(RFileName,
@@ -220,9 +217,7 @@ If `-r` is not specified, then libpcap will listen on the interface instead:
 		pd = open_interface(device, ndo, ebuf);
 ~~~
 
-If a file was used as an input or an socket on a network interface determines how the BPF will be compiled. The the section above.
-
-The actual compilation of the user provided filter expression to BPF happens here:
+How the BPF will be compiled depends on if a file was used as an input or if tcpdump reads from a socket on a network interface. The actual compilation of the user provided filter expression to BPF happens here:
 
 * [https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2238](https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2238)
 ~~~
@@ -232,10 +227,10 @@ The actual compilation of the user provided filter expression to BPF happens her
 
 If the `-d` parameter (and thus the `dflag`) is set, tcpdump will call libpcap's `bpf_dump` function to print the expression in one of three formats:
 
-* [https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1600](https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1600)
+* [https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1595](https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1595)
 ~~~
-		case 'D':
-			Dflag++;
+		case 'd':
+			++dflag;
 			break;
 ~~~
 
@@ -286,7 +281,7 @@ And at this documentation here:
 
 #### Installing dependencies
 
-Install build dependencies:
+Install build dependencies. For example, on RHEL 8:
 ~~~
 subscription-manager repos --enable=codeready-builder-for-rhel-8-x86_64-rpms 
 yum install libpcap-devel -y
@@ -314,18 +309,17 @@ char * concat_args(int argc, char **argv) {
     char * arg_string;
     int len;
 
-        for(int i=1; i<argc; i++) {
-            len += strlen(argv[i]);
-        }
-        arg_string = (char *)malloc(len+argc-1);
+    for(int i=1; i<argc; i++) {
+        len += strlen(argv[i]);
+    }
+    arg_string = (char *)malloc(len+argc-1);
 
     for (int i=1; i < argc; i++) {
         if(i != 1) {
-            arg_string = strcat(arg_string, " ");
+            strcat(arg_string, " ");
         }
-        arg_string = strcat(arg_string, argv[i]);
+        strcat(arg_string, argv[i]);
     }
-
     return arg_string;
 }
 
@@ -373,7 +367,7 @@ int main(int argc, char **argv) {
 
     printf("%d,", fcode.bf_len);
     for (int i = 0; i < fcode.bf_len-1; ++ins, ++i) {
-	printf("%u %u %u %u,", ins->code, ins->jt, ins->jf, ins->k);
+    printf("%u %u %u %u,", ins->code, ins->jt, ins->jf, ins->k);
     }
     printf("%u %u %u %u\n", ins->code, ins->jt, ins->jf, ins->k);
 
@@ -395,7 +389,7 @@ gcc libpcap_expression_compiler.c -o libpcap_expression_compiler -lpcap
 
 #### Using the tool
 
-The tool will now produce the same output as tcpdump with the `-d`, `-dd` or `-ddd` flag set:
+The tool will now produce the same output as tcpdump with the `-d`, `-dd` or `-ddd` flag set. In order to do so, it will attach to the loopback interface, so the binary must be run with sufficient privileges.
 
 ~~~
 # ./libpcap_expression_compiler vlan 32
@@ -532,20 +526,57 @@ Compiling expression 'host 127.0.0.254 and tcp and port 5353'
 17,40 0 0 12,21 0 14 2048,32 0 0 26,21 2 0 2130706686,32 0 0 30,21 0 10 2130706686,48 0 0 23,21 0 8 6,40 0 0 20,69 6 0 8191,177 0 0 14,72 0 0 14,21 2 0 5353,72 0 0 16,21 0 1 5353,6 0 0 8192,6 0 0 0
 ~~~
 
-## BPF Bytecode
+## Generating and using BPF bytecode
 
-* [https://www.kernel.org/doc/Documentation/networking/filter.txt](https://www.kernel.org/doc/Documentation/networking/filter.txt)
-* [https://github.com/torvalds/linux/tree/master/tools/bpf](https://github.com/torvalds/linux/tree/master/tools/bpf)
+The aforementioned article [BPF - the forgotten bytecode](https://blog.cloudflare.com/bpf-the-forgotten-bytecode/) shows that BPF bytecode can also be used outside of tcpdump. Let's see how we can use BPF bytecode together with iptables to filter traffic.
 
-### Compiling BPF Bytecode
+### Dependencies
 
-In order to get to BPF Bytecode, there is an easy, an intermediate and a more complex way.
-
-#### tcpdump with filter expression
-
-This is the easiest way:
+For RHEL/CentOS 8, during my testing I installed the following build dependencies for the examples below:
 ~~~
-# tcpdump -i lo -e -nn  "tcp dst port 8080" -d 
+yum install '@Development Tools' -y
+yum install gcc-toolset -y
+yum install binutils-devel -y
+yum install readline-devel -y
+yum install elfutils-libelf-devel -y
+yum install clang -y
+yum install llvm -y
+~~~
+
+### Generating BPF bytecode with tcpdump
+
+There are several different options to generate BPF bytecode. The easiest way is to use tcpdump to generate it from a provided filter expression. The iptables bpf module requires input that is generated with data link type `DLT_RAW`. 
+
+For further information about DLTs, see [LINK-LAYER HEADER TYPES](https://www.tcpdump.org/linktypes.html) which states the following for `DLT_RAW`:
+~~~
+Raw IP; the packet begins with an IPv4 or IPv6 header, with the version field of the header indicating whether it's an IPv4 or IPv6 heade
+~~~
+
+#### Prerequisites for tcpdump
+
+In my case, `DLT_RAW` was not supported by my distribution's build (RHEL 8). If you find yourself in the same situation, you can build a recent version of tcpdump directly from source. 
+
+Example build instructions:
+~~~
+git clone https://github.com/the-tcpdump-group/tcpdump
+git clone https://github.com/the-tcpdump-group/libpcap.git
+cd libpcap/
+git checkout origin/libpcap-1.10
+./configure
+make install
+cd ../tcpdump/ 
+git checkout origin/tcpdump-4.99
+./configure
+make install
+~~~
+
+#### Using a simple filter expression with tcpdump
+
+Compare the output of the following commands:
+~~~
+# # implicit EN10MB DLT
+# tcpdump -d tcp dst port 8080
+Warning: assuming Ethernet
 (000) ldh      [12]
 (001) jeq      #0x86dd          jt 2	jf 6
 (002) ldb      [20]
@@ -562,141 +593,108 @@ This is the easiest way:
 (013) jeq      #0x1f90          jt 14	jf 15
 (014) ret      #262144
 (015) ret      #0
+# RAW DLT
+# tcpdump -y RAW -d tcp dst port 8080
+(000) ldb      [0]
+(001) and      #0xf0
+(002) jeq      #0x60            jt 3	jf 7
+(003) ldb      [6]
+(004) jeq      #0x6             jt 5	jf 18
+(005) ldh      [42]
+(006) jeq      #0x1f90          jt 17	jf 18
+(007) ldb      [0]
+(008) and      #0xf0
+(009) jeq      #0x40            jt 10	jf 18
+(010) ldb      [9]
+(011) jeq      #0x6             jt 12	jf 18
+(012) ldh      [6]
+(013) jset     #0x1fff          jt 18	jf 14
+(014) ldxb     4*([0]&0xf)
+(015) ldh      [x + 2]
+(016) jeq      #0x1f90          jt 17	jf 18
+(017) ret      #262144
+(018) ret      #0
 ~~~
 
-You get the Bytecode with:
+You get the bytecode with:
 ~~~
-# tcpdump -i lo -e -nn  "tcp dst port 8080" -ddd | tr '\n' ','
-16,40 0 0 12,21 0 4 34525,48 0 0 20,21 0 11 6,40 0 0 56,21 8 9 8080,21 0 8 2048,48 0 0 23,21 0 6 6,40 0 0 20,69 4 0 8191,177 0 0 14,72 0 0 16,21 0 1 8080,6 0 0 262144,6 0 0 0,
-~~~
-
-#### tcpdump with explicit offset expression
-
-Let's get a bit more fancy. In `test.pcap`, I captured a TCP request to port 8080. The hexdump looks as follows:
-~~~
-# tcpdump -e -nn -r test.pcap -XX | tail -n 12
-reading from file test.pcap, link-type EN10MB (Ethernet)
-dropped privs to tcpdump
-07:03:36.901256 00:00:00:00:00:00 > 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 66: 192.168.122.92.36166 > 192.168.122.92.8080: Flags [F.], seq 84, ack 1993, win 1373, options [nop,nop,TS val 3322938017 ecr 3322938017], length 0
-	0x0000:  0000 0000 0000 0000 0000 0000 0800 4500  ..............E.
-	0x0010:  0034 7023 4000 4006 5497 c0a8 7a5c c0a8  .4p#@.@.T...z\..
-	0x0020:  7a5c 8d46 1f90 86e0 b75e 7a9a 5a92 8011  z\.F.....^z.Z...
-	0x0030:  055d 7630 0000 0101 080a c610 02a1 c610  .]v0............
-	0x0040:  02a1                                     ..
-07:03:36.901275 00:00:00:00:00:00 > 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 66: 192.168.122.92.8080 > 192.168.122.92.36166: Flags [.], ack 85, win 342, options [nop,nop,TS val 3322938017 ecr 3322938017], length 0
-	0x0000:  0000 0000 0000 0000 0000 0000 0800 4500  ..............E.
-	0x0010:  0034 f1fa 4000 4006 d2bf c0a8 7a5c c0a8  .4..@.@.....z\..
-	0x0020:  7a5c 1f90 8d46 7a9a 5a92 86e0 b75f 8010  z\...Fz.Z...._..
-	0x0030:  0156 7630 0000 0101 080a c610 02a1 c610  .Vv0............
-	0x0040:  02a1    
+# tcpdump -y RAW -ddd tcp dst port 8080 | tr '\n' ',' | sed 's/,$//'
+19,48 0 0 0,84 0 0 240,21 0 4 96,48 0 0 6,21 0 13 6,40 0 0 42,21 10 11 8080,48 0 0 0,84 0 0 240,21 0 8 64,48 0 0 9,21 0 6 6,40 0 0 6,69 4 0 8191,177 0 0 0,72 0 0 2,21 0 1 8080,6 0 0 262144,6 0 0 0,
 ~~~
 
-We want to identify all packets with a dst port of `8080` (or `0x1f90` in hex notation). Each visual block in the hexdump is a half word, or 16 bits. Offsets in tcpdump are specified in Bytes, and the dst port field is 2 Bytes in lenght. We are looking for the 18th half word, or Bytes 36 and 37. The tcpdump expression would hence be:
+And now, you can use this bytecode with iptables:
 ~~~
-ether[36:2] == 0x1f90
+# python3 -m http.server 8080 >/dev/null 2>&1 &
+# curl -s -o /dev/null -w "%{http_code}" 127.0.0.1:8080
+200
+# iptables -I INPUT -m bpf --bytecode "$(tcpdump -y RAW -ddd tcp dst port 8080 | tr '\n' ',' | sed 's/,$//')" -j REJECT
+# curl -s -o /dev/null -w "%{http_code}" 127.0.0.1:8080
+000
+# iptables -L INPUT -nv --line-numbers
+Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
+num   pkts bytes target     prot opt in     out     source               destination
+1        2   120 REJECT     all  --  *      *       0.0.0.0/0            0.0.0.0/0           match bpf 48 0 0 0,84 0 0 240,21 0 4 96,48 0 0 6,21 0 13 6,40 0 0 42,21 10 11 8080,48 0 0 0,84 0 0 240,21 0 8 64,48 0 0 9,21 0 6 6,40 0 0 6,69 4 0 8191,177 0 0 0,72 0 0 2,21 0 1 8080,6 0 0 262144,6 0 0 0 reject-with icmp-port-unreachable
 ~~~
 
-Here's the result of the filter:
+#### tcpdump with an explicit offset expression
+
+Let's get a bit more fancy and let's filter the same packets with a custom offset expression. 
+In `test.pcap`, I captured a TCP request to port 8080. The hexdump looks as follows. I am purposefully ignoring the ethernet header by only providing `-x` as `DLT_RAW` begins with the IP header:
 ~~~
-# tcpdump -e -nn -r test.pcap ether[36:2] == 0x1f90
-reading from file test.pcap, link-type EN10MB (Ethernet)
-dropped privs to tcpdump
-07:03:36.900276 00:00:00:00:00:00 > 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 74: 192.168.122.92.36166 > 192.168.122.92.8080: Flags [S], seq 2262873866, win 43690, options [mss 65495,sackOK,TS val 3322938016 ecr 0,nop,wscale 7], length 0
-07:03:36.900297 00:00:00:00:00:00 > 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 66: 192.168.122.92.36166 > 192.168.122.92.8080: Flags [.], ack 2056934090, win 342, options [nop,nop,TS val 3322938016 ecr 3322938016], length 0
-07:03:36.900328 00:00:00:00:00:00 > 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 149: 192.168.122.92.36166 > 192.168.122.92.8080: Flags [P.], seq 0:83, ack 1, win 342, options [nop,nop,TS val 3322938016 ecr 3322938016], length 83: HTTP: GET / HTTP/1.1
-07:03:36.901097 00:00:00:00:00:00 > 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 66: 192.168.122.92.36166 > 192.168.122.92.8080: Flags [.], ack 156, win 350, options [nop,nop,TS val 3322938016 ecr 3322938016], length 0
-07:03:36.901122 00:00:00:00:00:00 > 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 66: 192.168.122.92.36166 > 192.168.122.92.8080: Flags [.], ack 1992, win 1373, options [nop,nop,TS val 3322938017 ecr 3322938016], length 0
-07:03:36.901256 00:00:00:00:00:00 > 00:00:00:00:00:00, ethertype IPv4 (0x0800), length 66: 192.168.122.92.36166 > 192.168.122.92.8080: Flags [F.], seq 83, ack 1993, win 1373, options [nop,nop,TS val 3322938017 ecr 3322938017], length 0
+# tcpdump -nn -r test.pcap -x | tail -n 10
+reading from file test.pcap, link-type EN10MB (Ethernet), snapshot length 262144
+08:58:05.409490 IP 127.0.0.1.8080 > 127.0.0.1.55346: Flags [F.], seq 1, ack 80, win 342, options [nop,nop,TS val 1370696821 ecr 1370694317], length 0
+	0x0000:  4500 0034 896d 4000 4006 b354 7f00 0001
+	0x0010:  7f00 0001 1f90 d832 2b16 be50 ec11 89b4
+	0x0020:  8011 0156 fe28 0000 0101 080a 51b3 2c75
+	0x0030:  51b3 22ad
+08:58:05.409525 IP 127.0.0.1.55346 > 127.0.0.1.8080: Flags [.], ack 2, win 342, options [nop,nop,TS val 1370696821 ecr 1370696821], length 0
+	0x0000:  4500 0034 0000 4000 4006 3cc2 7f00 0001
+	0x0010:  7f00 0001 d832 1f90 ec11 89b4 2b16 be51
+                             ^
+                             |-------- dst port 0x1f90 (Bytes 22 + 23)
+	0x0020:  8010 0156 2423 0000 0101 080a 51b3 2c75
+	0x0030:  51b3 2c75
 ~~~
+
+We want to identify all packets with a dst port of `8080` (or `0x1f90` in hex notation). Each visual block in the hexdump is a half word, or 16 bits. Offsets in tcpdump are specified in Bytes, and the dst port field is 2 Bytes in lenght. We are looking for half word 11, or Bytes 22 and 23. The tcpdump expression would hence be:
+~~~
+ether[22:2] == 0x1f90
+~~~
+Don't be mislead by the `ether` keyword. We are filtering with `DLT_RAW` and hence have to ignore the etherheader.
 
 And the compiled expression:
 ~~~
-# tcpdump -e -nn -i lo ether[36:2] == 0x1f90 -d
-(000) ldh      [36]
+#  tcpdump -y RAW -d ether[22:2] == 0x1f90
+(000) ldh      [22]
 (001) jeq      #0x1f90          jt 2	jf 3
 (002) ret      #262144
 (003) ret      #0
-# tcpdump -e -nn -i lo ether[36:2] == 0x1f90 -ddd | tr '\n' ','
-4,40 0 0 36,21 0 1 8080,6 0 0 262144,6 0 0 0,
+# tcpdump -y RAW -ddd ether[22:2] == 0x1f90 | tr '\n' ',' | sed 's/,$//'
+4,40 0 0 22,21 0 1 8080,6 0 0 262144,6 0 0 0
 ~~~
 
-#### Using BPF asm-like code
-
-##### Compiling helper binaries 
-
-First, you will need the bpf_asm binary from the kernel source code. 
-
-For RHEL/CentOS 8, install build dependencies:
+And we can test this again:
 ~~~
-yum install '@Development Tools' -y
-yum install gcc-toolset -y
-yum install binutils-devel -y
-yum install readline-devel -y
-yum install elfutils-libelf-devel -y
-yum install clang -y
-yum install llvm -y
+# python3 -m http.server 8080 >/dev/null 2>&1 &
+# curl -s -o /dev/null -w "%{http_code}" 127.0.0.1:8080
+200
+# # iptables -I INPUT -m bpf --bytecode "$(tcpdump -y RAW -ddd ether[22:2] == 0x1f90 | tr '\n' ',' | sed 's/,$//')" -j REJECT
+# curl -s -o /dev/null -w "%{http_code}" 127.0.0.1:8080
+000
+# iptables -L INPUT -nv --line-numbers
+Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
+num   pkts bytes target     prot opt in     out     source               destination
+1        2   120 REJECT     all  --  *      *       0.0.0.0/0            0.0.0.0/0           match bpf 40 0 0 22,21 0 1 8080,6 0 0 262144,6 0 0 0 reject-with icmp-port-unreachable
 ~~~
 
-Get the kernel source code on RHEL / CentOS:
-~~~
-mkdir -p kernel/src
-cd kernel/
-yumdownloader --source kernel
-cp kernel-*.src.rpm src/ ; cd src ; rpm2cpio kernel-*.src.rpm | cpio -idmv
-tar -xf linux-*.tar.xz
-~~~
+### Generating BPF bytecode with nfnpf_compile
 
-Compile the BPF toolset:
-~~~
-cd $(find . -path '*tools/bpf')
-make all
-cp bpf_asm /usr/local/bin/.
-cp bpf_dbg /usr/local/bin/.
-cp bpf_jit_disasm /usr/local/bin/.
-cp bpftool/bpftool /usr/local/bin/.
-~~~
+While searching for more resources, I found [BPF: A Bytecode for filtering](https://www.lowendtalk.com/discussion/47469/bpf-a-bytecode-for-filtering).
+The article links to [nfbpf_compile.c](https://git.netfilter.org/iptables/tree/utils/nfbpf_compile.c) which cat generate iptables -m bpf compatible byte code
+by using `DLT_RAW`.
 
-##### Building bytecode
-
-Now, create the following ASM like code:
-~~~
-# cat test.bpf 
-     ldh [36]
-     jneq #0x1f90, lb_1
-     ret #1
-
-lb_1:
-     ret #0
-~~~
-
-And compile it with:
-~~~
-# bpf_asm test.bpf 
-4,40 0 0 36,21 0 1 8080,6 0 0 1,6 0 0 0,
-~~~
-
-Compare this to the earlier output of `tcpdump -ddd`:
-~~~
-# tcpdump -e -nn -i lo ether[36:2] == 0x1f90 -ddd | tr '\n' ','
-4,40 0 0 36,21 0 1 8080,6 0 0 262144,6 0 0 0,
-~~~
-
-The only thing that's different here is the return code.
-
-For further details, see:
-
-* [https://www.kernel.org/doc/Documentation/networking/filter.txt](https://www.kernel.org/doc/Documentation/networking/filter.txt)
-
-## Using BPF in iptables expressions
-
-BPF allows us to write complex iptables rules. However, if you simply try using the rules that  we had compiled above, you will soon find out that this does not work. 
-
-Instead, look at the following resources:
-
-* [https://www.lowendtalk.com/discussion/47469/bpf-a-bytecode-for-filtering](https://www.lowendtalk.com/discussion/47469/bpf-a-bytecode-for-filtering)
-* [https://git.netfilter.org/iptables/tree/utils/nfbpf_compile.c](https://git.netfilter.org/iptables/tree/utils/nfbpf_compile.c)
-
-`nfbpf_compile` will create slightly different Bytecode, suited for iptables. Here's the full script from the above link (just in case the original resource changes):
+Here's the full script from the above link (just in case the original resource changes):
 ~~~
 cat <<'EOF' > nbpf_compile.c
 /*
@@ -761,52 +759,85 @@ Compile this with:
 gcc nbpf_compile.c -o nbpf_compile -lpcap
 ~~~
 
-Now, run this:
+And generate the bytecode:
 ~~~
 # ./nbpf_compile RAW 'tcp port 8080'
 23,48 0 0 0,84 0 0 240,21 0 6 96,48 0 0 6,21 0 17 6,40 0 0 40,21 14 0 8080,40 0 0 42,21 12 13 8080,48 0 0 0,84 0 0 240,21 0 10 64,48 0 0 9,21 0 8 6,40 0 0 6,69 6 0 8191,177 0 0 0,72 0 0 0,21 2 0 8080,72 0 0 2,21 0 1 8080,6 0 0 65535,6 0 0 0
 ~~~
 
-Compare this to the tcpdump output which will not work:
+As earlier, we can test this with:
 ~~~
-# tcpdump -r  test.pcap -d tcp port 8080 -ddd | tr '\n' ' '
-reading from file test.pcap, link-type EN10MB (Ethernet)
-20 40 0 0 12 21 0 6 34525 48 0 0 20 21 0 15 6 40 0 0 54 21 12 0 8080 40 0 0 56 21 10 11 8080 21 0 10 2048 48 0 0 23 21 0 8 6 40 0 0 20 69 6 0 8191 177 0 0 14 72 0 0 14 21 2 0 8080 72 0 0 16 21 0 1 8080 6 0 0 262144 6 0 0 0 
-# tcpdump -i lo  -d tcp port 8080 -ddd | tr '\n' ' '
-20 40 0 0 12 21 0 6 34525 48 0 0 20 21 0 15 6 40 0 0 54 21 12 0 8080 40 0 0 56 21 10 11 8080 21 0 10 2048 48 0 0 23 21 0 8 6 40 0 0 20 69 6 0 8191 177 0 0 14 72 0 0 14 21 2 0 8080 72 0 0 16 21 0 1 8080 6 0 0 262144 6 0 0 0
-~~~
-
-And also run a little web server for the sake of this test:
-~~~
-#  python3 -m http.server 8080 &
-~~~
-
-Run curl against the web server just to check that it's serving documents and can be reached:
-~~~
-# curl 192.168.122.92:8080 -I
-HTTP/1.0 200 OK
-Server: SimpleHTTP/0.6 Python/3.6.8
-Date: Fri, 26 Mar 2021 15:46:30 GMT
-Content-type: text/html; charset=utf-8
-Content-Length: 2272
-~~~
-
-Now, let's create an iptables rule that will match on the bytecode and apply it:
-~~~
-# iptables -I INPUT -m bpf --bytecode "23,48 0 0 0,84 0 0 240,21 0 6 96,48 0 0 6,21 0 17 6,40 0 0 40,21 14 0 8080,40 0 0 42,21 12 13 8080,48 0 0 0,84 0 0 240,21 0 10 64,48 0 0 9,21 0 8 6,40 0 0 6,69 6 0 8191,177 0 0 0,72 0 0 0,21 2 0 8080,72 0 0 2,21 0 1 8080,6 0 0 65535,6 0 0 0" --j REJECT
-~~~
-> This *must* be from `nbpf_compile`!
-
-After applying the rule, we can no longer contact the web server:
-~~~
-# curl 192.168.122.92:8080 -I
-curl: (7) Failed connect to 192.168.122.92:8080; Connection refused
-~~~
-
-And we can see that this rule here was matched:
-~~~
-# iptables -L INPUT -nv
+# python3 -m http.server 8080 >/dev/null 2>&1 &
+# curl -s -o /dev/null -w "%{http_code}" 127.0.0.1:8080
+200
+# iptables -I INPUT -m bpf --bytecode "$(./nbpf_compile RAW 'tcp port 8080')" -j REJECT
+# curl -s -o /dev/null -w "%{http_code}" 127.0.0.1:8080
+000
+# iptables -L INPUT -nv --line-numbers
 Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               destination         
-    5   300 REJECT     all  --  *      *       0.0.0.0/0            0.0.0.0/0           match bpf 48 0 0 0,84 0 0 240,21 0 6 96,48 0 0 6,21 0 17 6,40 0 0 40,21 14 0 8080,40 0 0 42,21 12 13 8080,48 0 0 0,84 0 0 240,21 0 10 64,48 0 0 9,21 0 8 6,40 0 0 6,69 6 0 8191,177 0 0 0,72 0 0 0,21 2 0 8080,72 0 0 2,21 0 1 8080,6 0 0 65535,6 0 0 0 reject-with icmp-port-unreachable
+num   pkts bytes target     prot opt in     out     source               destination
+1        2   120 REJECT     all  --  *      *       0.0.0.0/0            0.0.0.0/0           match bpf 48 0 0 0,84 0 0 240,21 0 6 96,48 0 0 6,21 0 17 6,40 0 0 40,21 14 0 8080,40 0 0 42,21 12 13 8080,48 0 0 0,84 0 0 240,21 0 10 64,48 0 0 9,21 0 8 6,40 0 0 6,69 6 0 8191,177 0 0 0,72 0 0 0,21 2 0 8080,72 0 0 2,21 0 1 8080,6 0 0 65535,6 0 0 0 reject-with icmp-port-unreachable
 ~~~
+
+### Using BPF asm-like code
+
+You can also choose the low level route and write your own BPF asm-like code.
+
+#### Compiling helper binaries 
+
+First, you will need the bpf_asm binary from the kernel source code. 
+
+Get the kernel source code on RHEL / CentOS:
+~~~
+mkdir -p kernel/src
+cd kernel/
+yumdownloader --source kernel
+cp kernel-*.src.rpm src/ ; cd src ; rpm2cpio kernel-*.src.rpm | cpio -idmv
+tar -xf linux-*.tar.xz
+~~~
+
+Compile the BPF toolset:
+~~~
+cd $(find . -path '*tools/bpf')
+make all
+cp bpf_asm /usr/local/bin/.
+cp bpf_dbg /usr/local/bin/.
+cp bpf_jit_disasm /usr/local/bin/.
+cp bpftool/bpftool /usr/local/bin/.
+~~~
+
+##### Building bytecode
+
+Now, create the following ASM like code:
+~~~
+# cat <<'EOF' > test.bpf 
+     ldh [22]
+     jneq #0x1f90, lb_1
+     ret #1
+
+lb_1:
+     ret #0
+EOF
+~~~
+
+And compile it to bytecode with:
+~~~
+# bpf_asm test.bpf 
+4,40 0 0 36,21 0 1 8080,6 0 0 1,6 0 0 0,
+~~~
+
+As earlier, we can test this with:
+~~~
+# python3 -m http.server 8080 >/dev/null 2>&1 &
+# curl -s -o /dev/null -w "%{http_code}" 127.0.0.1:8080
+200
+# iptables -I INPUT -m bpf --bytecode "$(bpf_asm test.bpf)" -j REJECT
+# curl -s -o /dev/null -w "%{http_code}" 127.0.0.1:8080
+000
+# iptables -L INPUT -nv --line-numbers
+Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
+num   pkts bytes target     prot opt in     out     source               destination
+1        2   120 REJECT     all  --  *      *       0.0.0.0/0            0.0.0.0/0           match bpf 40 0 0 22,21 0 1 8080,6 0 0 1,6 0 0 0 reject-with icmp-port-unreachable
+~~~
+
+For further details about the assembly language, see the [kernel documentation](https://www.kernel.org/doc/Documentation/networking/filter.txt).

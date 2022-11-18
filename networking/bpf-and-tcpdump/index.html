@@ -1595,7 +1595,7 @@
 
 <h2 id="tcpdump-expressions-and-bpf">tcpdump expressions and BPF</h2>
 <h3 id="introduction">Introduction</h3>
-<p>This article extends upon the introduction into tcpdump's BPF compiler provided in the blog post <a href="https://blog.cloudflare.com/bpf-the-forgotten-bytecode/">BPF - the forgotten bytecode</a>. Before reading on, read through this resource, then come back here. The blog post also links to the paper <a href="https://www.tcpdump.org/papers/bpf-usenix93.pdf">The BSD Packet Filter: A New Architecture for User-level Packet Capture</a> if you want to further deepen your understanding. The <a href="https://www.kernel.org/doc/Documentation/networking/filter.txt">Linux Socket Filtering aka Berkeley Packet Filter (BPF)</a> kernel documentation might come in handy when following the examples below. Please also note that when I refer to BPF in this article, I refer to classic BPF and not to eBPF.</p>
+<p>This article extends upon the introduction into tcpdump's BPF compiler provided in the blog post <a href="https://blog.cloudflare.com/bpf-the-forgotten-bytecode/" target="_blank">BPF - the forgotten bytecode</a>. Before reading on, read through this resource, then come back here. The blog post also links to the paper <a href="https://www.tcpdump.org/papers/bpf-usenix93.pdf" target="_blank">The BSD Packet Filter: A New Architecture for User-level Packet Capture</a> if you want to further deepen your understanding. The <a href="https://www.kernel.org/doc/Documentation/networking/filter.txt" target="_blank">Linux Socket Filtering aka Berkeley Packet Filter (BPF)</a> kernel documentation might come in handy when following the examples below. Please also note that when I refer to BPF in this article, I refer to classic BPF and not to eBPF.</p>
 <h3 id="compiling-a-basic-bpf-expression">Compiling a basic BPF expression</h3>
 <p>After reading through the aforementioned material, you should already have an understanding of tcpdump's BPF compiler. Any expression that you give to tcpdump will be compiled into bytecode which in turn will be given to the kernel's JIT compiler. Let's use an easy example and look at the <code class="highlight">icmp</code> filter.</p>
 <p>First, we will capture on the loopback interface and ping <code class="highlight"><span class="mf">127.0.0.1</span><span class="w"></span></code> at the same time. 
@@ -1690,7 +1690,7 @@ protocol number for ICMP is 0x01 and can be found in Byte 12:
 <p>I sometimes find myself in situations where tcpdump's filters do not work the way that I would expect them to. In those situations I often simply run tcpdump in line buffered mode (<code class="highlight">-l</code>) and pipe the output into <code class="highlight">grep</code> to find what I am looking for. Particularly the VLAN filter has quite often given me some headaches in the past.</p>
 <p>Depending on the tcpdump version in use, your provided expression might be compiled slightly differently. What's more, there is a difference between the bytecode that is compiled for live packet captures on interfaces and for the bytecode that is compiled for filtering packet capture files.</p>
 <p>Earlier, we looked at the <code class="highlight">icmp</code> filter. We will now see what happens when we filter for a VLAN number with the <code class="highlight">vlan</code> filter.</p>
-<p>The <a href="https://en.wikipedia.org/wiki/EtherType">Wikipedia article about EtherTypes</a> lists the EtherTypes for VLANS: 
+<p>The <a href="https://en.wikipedia.org/wiki/EtherType" target="_blank">Wikipedia article about EtherTypes</a> lists the EtherTypes for VLANS: 
 for 802.1q the value is <code class="highlight"><span class="mf">0</span><span class="n">x8100</span><span class="w"></span></code>, for Q-in-Q we would expect to see <code class="highlight"><span class="mf">0</span><span class="n">x88A8</span><span class="w"></span></code> and for double tagging <code class="highlight"><span class="mf">0</span><span class="n">x9100</span><span class="w"></span></code>. We expect
 to find one of these values in Bytes 12 and 13 of the Ethernet header.
 And when we apply the filter to our previously captured file, this is precisely what the expression is compiled to. Tcpdump first loads the halfword at Bytes 12 and 13. Then it sequentially checks if the value matches either of the known EtherTypes for VLAN:
@@ -1732,7 +1732,7 @@ And when we apply the filter to our previously captured file, this is precisely 
 </code></pre></div>
 </td></tr></table></p>
 <p>The expression is different now! Why is that? Well, the kernel has an internal optimization and will actually store VLAN and other ancillary information in a location with negative a offset.</p>
-<p>The reason for this is that the kernel no longer passes specific information as-is to libpcap. See <a href="https://bugs.launchpad.net/ubuntu/+source/tcpdump/+bug/1641429">https://bugs.launchpad.net/ubuntu/+source/tcpdump/+bug/1641429</a> for further details:
+<p>The reason for this is that the kernel no longer passes specific information as-is to libpcap. See <a href="https://bugs.launchpad.net/ubuntu/+source/tcpdump/+bug/1641429" target="_blank">https://bugs.launchpad.net/ubuntu/+source/tcpdump/+bug/1641429</a> for further details:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
@@ -1746,7 +1746,7 @@ And when we apply the filter to our previously captured file, this is precisely 
 <span class="nv">https</span>:<span class="o">//</span><span class="nv">github</span>.<span class="nv">com</span><span class="o">/</span><span class="nv">torvalds</span><span class="o">/</span><span class="nv">linux</span><span class="o">/</span><span class="nv">blob</span><span class="o">/</span><span class="mi">6</span><span class="nv">f0d349d922ba44e4348a17a78ea51b7135965b1</span><span class="o">/</span><span class="k">include</span><span class="o">/</span><span class="nv">uapi</span><span class="o">/</span><span class="nv">linux</span><span class="o">/</span><span class="nv">filter</span>.<span class="nv">h</span>#<span class="nv">L60</span>
 </code></pre></div>
 </td></tr></table></p>
-<p>And see the kernel documentation as well: <a href="https://github.com/torvalds/linux/blob/7acac4b3196caee5e21fb5ea53f8bc124e6a16fc/include/uapi/linux/filter.h#L60">https://github.com/torvalds/linux/blob/7acac4b3196caee5e21fb5ea53f8bc124e6a16fc/include/uapi/linux/filter.h#L60</a>:</p>
+<p>And see the kernel documentation as well: <a href="https://github.com/torvalds/linux/blob/7acac4b3196caee5e21fb5ea53f8bc124e6a16fc/include/uapi/linux/filter.h#L60" target="_blank">https://github.com/torvalds/linux/blob/7acac4b3196caee5e21fb5ea53f8bc124e6a16fc/include/uapi/linux/filter.h#L60</a>:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -1847,7 +1847,7 @@ extract the last 12 bits from there and then check if the value equals 0x20. Oth
 <p>tcpdump will compile different types of BPF depending on if the optimization flag is set but also particularly depending on if we open a file for reading or if we run a live capture.</p>
 <p>The <code class="highlight">-r</code> indicates to read from a file and the parameter is read here:</p>
 <ul>
-<li><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1759">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1759</a></li>
+<li><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1759" target="_blank">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1759</a></li>
 </ul>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
@@ -1857,7 +1857,7 @@ extract the last 12 bits from there and then check if the value equals 0x20. Oth
 </code></pre></div>
 </td></tr></table>
 <p>Opening a file for reading happens here:
-* <a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2053">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2053</a>
+* <a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2053" target="_blank">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2053</a>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
@@ -1873,7 +1873,7 @@ extract the last 12 bits from there and then check if the value equals 0x20. Oth
 </td></tr></table></p>
 <p>If <code class="highlight">-r</code> is not specified, then libpcap will listen on the interface instead:</p>
 <ul>
-<li><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2135">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2135</a>
+<li><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2135" target="_blank">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2135</a>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
@@ -1886,7 +1886,7 @@ extract the last 12 bits from there and then check if the value equals 0x20. Oth
 </ul>
 <p>How the BPF will be compiled depends on if a file was used as an input or if tcpdump reads from a socket on a network interface. The actual compilation of the user provided filter expression to BPF happens here:</p>
 <ul>
-<li><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2238">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2238</a>
+<li><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2238" target="_blank">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2238</a>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>    <span class="k">if</span> <span class="ss">(</span><span class="nv">pcap_compile</span><span class="ss">(</span><span class="nv">pd</span>, <span class="o">&amp;</span><span class="nv">fcode</span>, <span class="nv">cmdbuf</span>, <span class="nv">Oflag</span>, <span class="nv">netmask</span><span class="ss">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="ss">)</span>
         <span class="nv">error</span><span class="ss">(</span><span class="s2">&quot;</span><span class="s">%s</span><span class="s2">&quot;</span>, <span class="nv">pcap_geterr</span><span class="ss">(</span><span class="nv">pd</span><span class="ss">))</span><span class="c1">;</span>
@@ -1896,7 +1896,7 @@ extract the last 12 bits from there and then check if the value equals 0x20. Oth
 <p>If the <code class="highlight">-d</code> parameter (and thus the <code class="highlight">dflag</code>) is set, tcpdump will call libpcap's <code class="highlight">bpf_dump</code> function to print the expression in one of three formats:</p>
 <ul>
 <li>
-<p><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1595">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1595</a>
+<p><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1595" target="_blank">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L1595</a>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>        <span class="nv">case</span> <span class="s1">&#39;</span><span class="s">d</span><span class="s1">&#39;</span>:
@@ -1906,7 +1906,7 @@ extract the last 12 bits from there and then check if the value equals 0x20. Oth
 </td></tr></table></p>
 </li>
 <li>
-<p><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2240">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2240</a>
+<p><a href="https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2240" target="_blank">https://github.com/the-tcpdump-group/tcpdump/blob/8281c4ae6e7e01524d20dd69b2275d0ed7949216/tcpdump.c#L2240</a>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
@@ -1966,11 +1966,11 @@ extract the last 12 bits from there and then check if the value equals 0x20. Oth
 <h4 id="documentation">Documentation</h4>
 <p>In order to build a filter expression compiler, we look at the source code:</p>
 <ul>
-<li><a href="https://github.com/the-tcpdump-group/tcpdump/blob/master/tcpdump.c#L2238">https://github.com/the-tcpdump-group/tcpdump/blob/master/tcpdump.c#L2238</a></li>
+<li><a href="https://github.com/the-tcpdump-group/tcpdump/blob/master/tcpdump.c#L2238" target="_blank">https://github.com/the-tcpdump-group/tcpdump/blob/master/tcpdump.c#L2238</a></li>
 </ul>
 <p>And at this documentation here:</p>
 <ul>
-<li><a href="https://www.tcpdump.org/pcap.html">https://www.tcpdump.org/pcap.html</a></li>
+<li><a href="https://www.tcpdump.org/pcap.html" target="_blank">https://www.tcpdump.org/pcap.html</a></li>
 </ul>
 <h4 id="installing-dependencies">Installing dependencies</h4>
 <p>Install build dependencies. For example, on RHEL 8:
@@ -2423,7 +2423,7 @@ Compiling expression &#39;host 127.0.0.254 and tcp and port 5353&#39;
 </code></pre></div>
 </td></tr></table></p>
 <h2 id="generating-and-using-bpf-bytecode">Generating and using BPF bytecode</h2>
-<p>The aforementioned article <a href="https://blog.cloudflare.com/bpf-the-forgotten-bytecode/">BPF - the forgotten bytecode</a> shows that BPF bytecode can also be used outside of tcpdump. Let's see how we can use BPF bytecode together with iptables to filter traffic.</p>
+<p>The aforementioned article <a href="https://blog.cloudflare.com/bpf-the-forgotten-bytecode/" target="_blank">BPF - the forgotten bytecode</a> shows that BPF bytecode can also be used outside of tcpdump. Let's see how we can use BPF bytecode together with iptables to filter traffic.</p>
 <h3 id="dependencies">Dependencies</h3>
 <p>For RHEL/CentOS 8, during my testing I installed the following build dependencies for the examples below:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
@@ -2443,7 +2443,7 @@ Compiling expression &#39;host 127.0.0.254 and tcp and port 5353&#39;
 </td></tr></table></p>
 <h3 id="generating-bpf-bytecode-with-tcpdump">Generating BPF bytecode with tcpdump</h3>
 <p>There are several different options to generate BPF bytecode. The easiest way is to use tcpdump to generate it from a provided filter expression. The iptables bpf module requires input that is generated with data link type <code class="highlight">DLT_RAW</code>. </p>
-<p>For further information about DLTs, see <a href="https://www.tcpdump.org/linktypes.html">LINK-LAYER HEADER TYPES</a> which states the following for <code class="highlight">DLT_RAW</code>:
+<p>For further information about DLTs, see <a href="https://www.tcpdump.org/linktypes.html" target="_blank">LINK-LAYER HEADER TYPES</a> which states the following for <code class="highlight">DLT_RAW</code>:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>Raw IP; the packet begins with an IPv4 or IPv6 header, with the version field of the header indicating whether it&#39;s an IPv4 or IPv6 heade
 </code></pre></div>
 </td></tr></table></p>
@@ -2658,8 +2658,8 @@ num   pkts bytes target     prot opt in     out     source               destina
 </code></pre></div>
 </td></tr></table></p>
 <h3 id="generating-bpf-bytecode-with-nfnpf_compile">Generating BPF bytecode with nfnpf_compile</h3>
-<p>While searching for more resources, I found <a href="https://www.lowendtalk.com/discussion/47469/bpf-a-bytecode-for-filtering">BPF: A Bytecode for filtering</a>.
-The article links to <a href="https://git.netfilter.org/iptables/tree/utils/nfbpf_compile.c">nfbpf_compile.c</a> which cat generate iptables -m bpf compatible byte code
+<p>While searching for more resources, I found <a href="https://www.lowendtalk.com/discussion/47469/bpf-a-bytecode-for-filtering" target="_blank">BPF: A Bytecode for filtering</a>.
+The article links to <a href="https://git.netfilter.org/iptables/tree/utils/nfbpf_compile.c" target="_blank">nfbpf_compile.c</a> which cat generate iptables -m bpf compatible byte code
 by using <code class="highlight">DLT_RAW</code>.</p>
 <p>Here's the full script from the above link (just in case the original resource changes):
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
@@ -2884,7 +2884,7 @@ num   pkts bytes target     prot opt in     out     source               destina
 1        2   120 REJECT     all  --  *      *       0.0.0.0/0            0.0.0.0/0           match bpf 40 0 0 22,21 0 1 8080,6 0 0 1,6 0 0 0 reject-with icmp-port-unreachable
 </code></pre></div>
 </td></tr></table></p>
-<p>For further details about the assembly language, see the <a href="https://www.kernel.org/doc/Documentation/networking/filter.txt">kernel documentation</a>.</p>
+<p>For further details about the assembly language, see the <a href="https://www.kernel.org/doc/Documentation/networking/filter.txt" target="_blank">kernel documentation</a>.</p>
 
   <hr>
 <div class="md-source-file">

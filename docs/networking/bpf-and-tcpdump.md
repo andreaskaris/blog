@@ -1,10 +1,11 @@
-## tcpdump expressions and BPF
-
-### Introduction
+## Introduction
 
 I sometimes used to find myself in situations where tcpdump's filters seemingly did not work the way that I expected them to. In those situations I often simply ran tcpdump in line buffered mode (`-l`) and piped the output into `grep` to find what I was looking for. Particularly the VLAN filter used to give me some headaches with older versions of tcpdump and libpcap. In this article, I will try to shed some light at how tcpdump (via libpcap) generates bytecode for filtering packets. Understanding how the bytecode is generated and how it works should help you understand when things go wrong and when a filter expression might not match a specific packet that you are looking for.
 
 This article extends upon the introduction into tcpdump's BPF compiler provided in the blog post [BPF - the forgotten bytecode](https://blog.cloudflare.com/bpf-the-forgotten-bytecode/){target=_blank}. Before reading on, read through this resource, then come back here. The blog post also links to the paper [The BSD Packet Filter: A New Architecture for User-level Packet Capture](https://www.tcpdump.org/papers/bpf-usenix93.pdf){target=_blank} if you want to further deepen your understanding. The [Linux Socket Filtering aka Berkeley Packet Filter (BPF)](https://www.kernel.org/doc/Documentation/networking/filter.txt){target=_blank} kernel documentation might come in handy when following the examples below. Please also note that when I refer to BPF in this article, I refer to classic BPF and not to eBPF.
+
+
+## tcpdump expressions and BPF
 
 ### Compiling a basic BPF expression
 

@@ -812,6 +812,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#filtering-procsched_debug-to-only-show-processes-per-cpu" class="md-nav__link">
+    Filtering /proc/sched_debug to only show processes per CPU
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1442,13 +1449,18 @@ nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt
 </code></pre></div>
 </td></tr></table></p>
 <p>For more details, see: https://linux.die.net/man/8/lnstat</p>
+<h2 id="filtering-procsched_debug-to-only-show-processes-per-cpu">Filtering /proc/sched_debug to only show processes per CPU</h2>
+<p>To focus only on the tasks that ran on all CPUs, use the following filter for /proc/sched_debug:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>sed -e &#39;/^cpu#.*/,/^runnable.*/{//!d}&#39; &lt; /proc/sched_debug
+</code></pre></div>
+</td></tr></table></p>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">October 19, 2021</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 17, 2023</span>
       
     
   </small>

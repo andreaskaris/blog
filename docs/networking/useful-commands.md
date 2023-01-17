@@ -16,3 +16,10 @@ nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt
 ~~~
 
 For more details, see: https://linux.die.net/man/8/lnstat
+
+## Filtering /proc/sched_debug to only show processes per CPU
+
+To focus only on the tasks that ran on all CPUs, use the following filter for /proc/sched_debug:
+~~~
+sed -e '/^cpu#.*/,/^runnable.*/{//!d}' < /proc/sched_debug
+~~~

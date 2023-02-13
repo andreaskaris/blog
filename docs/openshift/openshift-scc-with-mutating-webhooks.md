@@ -1,7 +1,7 @@
 ## SCCs and mutating webhooks - a lesson learned
 
 Recently, a partner of ours observed a strange behavior in their OpenShift cluster. They had bound their pods'
-serviceAccount to a `priviledged` SCC, yet OpenShift injected `securityContext.runAsUser: <ID from project range>`
+serviceAccount to a `privileged` SCC, yet OpenShift injected `securityContext.runAsUser: <ID from project range>`
 into the pods:
 ~~~
 $ oc get pods -o custom-columns="NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc,RUNASUSER:.spec.containers[*].securityContext.runAsUser"
@@ -18,7 +18,6 @@ RUN useradd -u <uid> <username>
 USER <uid>
 ...
 ~~~
-> Dockerfile for quay.io/akaris/fedora-test:uid
 
 We double checked the deployment definition: the deployment did not specify any securityContext for the pod's
 containers. We then checked the pods' matched SCC, and all of them had been assigned the `privileged` SCC. So why would
@@ -30,7 +29,7 @@ rules, it fell back to the `restricted` SCC. The `restricted` SCC mutated the po
 `securityContext.runAsUser: <ID from project range>`. Now, Istio's mutating admission controller injected its containers
 into the pod. The Istio containers require the pod to run with the `privileged` SCC, so after this step, the pod was
 again sent through the SCC mutating admission controller where it was now assigned the `privileged` SCC. The pod
-therefore showed up with the `priviledged` SCC when inspecting it with `oc get pods`, but its contaners were also
+therefore showed up with the `privileged` SCC when inspecting it with `oc get pods`, but its containers were also
 assigned a `securityContext.runAsUser` field that was actually mutated by the `restricted` SCC which had been applied to
 the pod before the Istio mutation took place.
 
@@ -55,7 +54,7 @@ because the pod is happy running in a more restrictive context.
 
 Note that the `anyuid` SCC has a higher SCC priority, and thus it will always win against the `restricted` SCC.
 
-For further details, see: https://docs.openshift.com/container-platform/4.10/authentication/managing-security-context-constraints.html#scc-prioritization_configuring-internal-oauth
+For further details, see the [OpenShift documentation](https://docs.openshift.com/container-platform/4.10/authentication/managing-security-context-constraints.html#scc-prioritization_configuring-internal-oauth).
 
 When deploying a pod, you can check which SCC it is actually running with:
 ~~~
@@ -90,17 +89,18 @@ privileged                        true    ["*"]        RunAsAny    RunAsAny     
 restricted                        false   <no value>   MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    <no value>   false            ["configMap","downwardAPI","emptyDir","persistentVolumeClaim","projected","secret"]
 ~~~
 
-For the curious, the relevant OpenShift code lives in repository https://github.com/openshift/apiserver-library-go.
+For the curious, the relevant OpenShift code lives in the [apiserver-library-go](https://github.com/openshift/apiserver-library-go)
+repository.
 First of all, the SCC admission controller will only ever inject `securityContext.runAsUser` if the field is unset.
 Otherwise, it will keep the currently set value. On the other hand, the code in `user/runasany.go`s `Generate()` will
 always return `nil`, and thus result in a no-op. 
 
 * Generate() is called here, but only if securityContext.runAsUser is unset for the pod or container:
-https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccmatching/provider.go#L159
+[https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccmatching/provider.go#L159](https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccmatching/provider.go#L159)
 * RunAsAny UID Generate() returns `nil` and no change will be made to the pod definition:
-https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/user/runasany.go#L22
+[https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/user/runasany.go#L22](https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/user/runasany.go#L22)
 * Compare that to the MustRunAsRange UID Generate() which will return the first UID from the project's range:
-https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/user/mustrunasrange.go#L37
+[https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/user/mustrunasrange.go#L37](https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/user/mustrunasrange.go#L37)
 
 ###  Mutating webhooks
 
@@ -165,7 +165,7 @@ RUN whoami
 COPY script.sh /script.sh
 CMD ["/bin/bash", "/script.sh"]
 ~~~
-> You can find the repository with the Dockerfile and script here https://github.com/andreaskaris/fedora-test.
+> You can find the repository with the Dockerfile and script here [https://github.com/andreaskaris/fedora-test](https://github.com/andreaskaris/fedora-test).
 
 For all examples, the namespace's default ServiceAccount is bound to the `privileged` SCC:
 ~~~
@@ -254,9 +254,10 @@ uid=1001(exampleuser) gid=1001(exampleuser) groups=1001(exampleuser)
 ### Putting SCC prioritization, SCC runAsUser strategies and mutating webhooks together
 
 As a prerequisite for this section, we deployed the aforementioned mutating webhook. We also increased logging
-for the openshift-apiserver to `TraceAll` as we will analyze the API server logs a bit later:
+for the openshift-apiserver and kubeapiserver to `TraceAll` as we will analyze the API server logs a bit later:
 ~~~
 oc patch openshiftapiserver.operator/cluster --type=json -p '[{"op": "replace", "path": "/spec/logLevel", "value": "TraceAll" }]'
+oc patch kubeapiserver.operator/cluster --type=json -p '[{"op": "replace", "path": "/spec/logLevel", "value": "TraceAll" }]'
 ~~~
 
 With the mutating webhook in place, let's create the following deployment:

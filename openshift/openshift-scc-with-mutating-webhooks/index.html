@@ -1487,7 +1487,7 @@
 
 <h2 id="sccs-and-mutating-webhooks-a-lesson-learned">SCCs and mutating webhooks - a lesson learned</h2>
 <p>Recently, a partner of ours observed a strange behavior in their OpenShift cluster. They had bound their pods'
-serviceAccount to a <code class="highlight">priviledged</code> SCC, yet OpenShift injected <code class="highlight">securityContext.runAsUser: &lt;ID from project range&gt;</code>
+serviceAccount to a <code class="highlight">privileged</code> SCC, yet OpenShift injected <code class="highlight">securityContext.runAsUser: &lt;ID from project range&gt;</code>
 into the pods:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
@@ -1509,9 +1509,6 @@ USER &lt;uid&gt;
 ...
 </code></pre></div>
 </td></tr></table></p>
-<blockquote>
-<p>Dockerfile for quay.io/akaris/fedora-test:uid</p>
-</blockquote>
 <p>We double checked the deployment definition: the deployment did not specify any securityContext for the pod's
 containers. We then checked the pods' matched SCC, and all of them had been assigned the <code class="highlight">privileged</code> SCC. So why would
 the <code class="highlight">privileged</code> SCC inject <code class="highlight">securityContext.runAsUser</code> into the pods' containers? Well, our partner is using Istio,
@@ -1521,7 +1518,7 @@ rules, it fell back to the <code class="highlight">restricted</code> SCC. The <c
 <code class="highlight">securityContext.runAsUser: &lt;ID from project range&gt;</code>. Now, Istio's mutating admission controller injected its containers
 into the pod. The Istio containers require the pod to run with the <code class="highlight">privileged</code> SCC, so after this step, the pod was
 again sent through the SCC mutating admission controller where it was now assigned the <code class="highlight">privileged</code> SCC. The pod
-therefore showed up with the <code class="highlight">priviledged</code> SCC when inspecting it with <code class="highlight">oc get pods</code>, but its contaners were also
+therefore showed up with the <code class="highlight">privileged</code> SCC when inspecting it with <code class="highlight">oc get pods</code>, but its containers were also
 assigned a <code class="highlight">securityContext.runAsUser</code> field that was actually mutated by the <code class="highlight">restricted</code> SCC which had been applied to
 the pod before the Istio mutation took place.</p>
 <p>Let's elaborate a bit on this, and let's get started by covering our bases first.</p>
@@ -1538,7 +1535,7 @@ always be an implicit <code class="highlight">restricted</code> SCC with the sam
 <p>So even when you bind your ServiceAccount to the <code class="highlight">privileged</code> SCC, the pod may actually use the <code class="highlight">restricted</code> SCC, simply
 because the pod is happy running in a more restrictive context.</p>
 <p>Note that the <code class="highlight">anyuid</code> SCC has a higher SCC priority, and thus it will always win against the <code class="highlight">restricted</code> SCC.</p>
-<p>For further details, see: https://docs.openshift.com/container-platform/4.10/authentication/managing-security-context-constraints.html#scc-prioritization_configuring-internal-oauth</p>
+<p>For further details, see the <a href="https://docs.openshift.com/container-platform/4.10/authentication/managing-security-context-constraints.html#scc-prioritization_configuring-internal-oauth">OpenShift documentation</a>.</p>
 <p>When deploying a pod, you can check which SCC it is actually running with:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>oc get pods -o custom-columns=&quot;NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc&quot;
 </code></pre></div>
@@ -1570,17 +1567,18 @@ privileged                        <span class="nb">true</span>    <span class="o
 restricted                        <span class="nb">false</span>   &lt;no value&gt;   MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    &lt;no value&gt;   <span class="nb">false</span>            <span class="o">[</span><span class="s2">&quot;configMap&quot;</span>,<span class="s2">&quot;downwardAPI&quot;</span>,<span class="s2">&quot;emptyDir&quot;</span>,<span class="s2">&quot;persistentVolumeClaim&quot;</span>,<span class="s2">&quot;projected&quot;</span>,<span class="s2">&quot;secret&quot;</span><span class="o">]</span>
 </code></pre></div>
 </td></tr></table></p>
-<p>For the curious, the relevant OpenShift code lives in repository https://github.com/openshift/apiserver-library-go.
+<p>For the curious, the relevant OpenShift code lives in the <a href="https://github.com/openshift/apiserver-library-go">apiserver-library-go</a>
+repository.
 First of all, the SCC admission controller will only ever inject <code class="highlight">securityContext.runAsUser</code> if the field is unset.
 Otherwise, it will keep the currently set value. On the other hand, the code in <code class="highlight"><span class="k">user</span><span class="o">/</span><span class="n">runasany</span><span class="p">.</span><span class="k">go</span><span class="w"></span></code>s <code class="highlight">Generate()</code> will
 always return <code class="highlight">nil</code>, and thus result in a no-op. </p>
 <ul>
 <li>Generate() is called here, but only if securityContext.runAsUser is unset for the pod or container:
-https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccmatching/provider.go#L159</li>
+<a href="https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccmatching/provider.go#L159">https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccmatching/provider.go#L159</a></li>
 <li>RunAsAny UID Generate() returns <code class="highlight">nil</code> and no change will be made to the pod definition:
-https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/user/runasany.go#L22</li>
+<a href="https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/user/runasany.go#L22">https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/user/runasany.go#L22</a></li>
 <li>Compare that to the MustRunAsRange UID Generate() which will return the first UID from the project's range:
-https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/user/mustrunasrange.go#L37</li>
+<a href="https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/user/mustrunasrange.go#L37">https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/user/mustrunasrange.go#L37</a></li>
 </ul>
 <h3 id="mutating-webhooks">Mutating webhooks</h3>
 <p>Mutating webhooks are part of Kubernetes' <a href="https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/">Dynamic Admission Control</a>.
@@ -1674,7 +1672,7 @@ CMD <span class="o">[</span><span class="s2">&quot;/bin/bash&quot;</span>, <span
 </code></pre></div>
 </td></tr></table></p>
 <blockquote>
-<p>You can find the repository with the Dockerfile and script here https://github.com/andreaskaris/fedora-test.</p>
+<p>You can find the repository with the Dockerfile and script here <a href="https://github.com/andreaskaris/fedora-test">https://github.com/andreaskaris/fedora-test</a>.</p>
 </blockquote>
 <p>For all examples, the namespace's default ServiceAccount is bound to the <code class="highlight">privileged</code> SCC:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
@@ -1816,8 +1814,10 @@ $ oc <span class="nb">exec</span> fedora-test-with-capabilities-5f667b698d-ppc5f
 </td></tr></table></p>
 <h3 id="putting-scc-prioritization-scc-runasuser-strategies-and-mutating-webhooks-together">Putting SCC prioritization, SCC runAsUser strategies and mutating webhooks together</h3>
 <p>As a prerequisite for this section, we deployed the aforementioned mutating webhook. We also increased logging
-for the openshift-apiserver to <code class="highlight">TraceAll</code> as we will analyze the API server logs a bit later:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>oc patch openshiftapiserver.operator/cluster --type=json -p &#39;[{&quot;op&quot;: &quot;replace&quot;, &quot;path&quot;: &quot;/spec/logLevel&quot;, &quot;value&quot;: &quot;TraceAll&quot; }]&#39;
+for the openshift-apiserver and kubeapiserver to <code class="highlight">TraceAll</code> as we will analyze the API server logs a bit later:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>oc patch openshiftapiserver.operator/cluster --type=json -p &#39;[{&quot;op&quot;: &quot;replace&quot;, &quot;path&quot;: &quot;/spec/logLevel&quot;, &quot;value&quot;: &quot;TraceAll&quot; }]&#39;
+oc patch kubeapiserver.operator/cluster --type=json -p &#39;[{&quot;op&quot;: &quot;replace&quot;, &quot;path&quot;: &quot;/spec/logLevel&quot;, &quot;value&quot;: &quot;TraceAll&quot; }]&#39;
 </code></pre></div>
 </td></tr></table></p>
 <p>With the mutating webhook in place, let's create the following deployment:

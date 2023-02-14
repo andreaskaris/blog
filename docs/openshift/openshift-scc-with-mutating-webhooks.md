@@ -1,39 +1,137 @@
 ## SCCs and mutating webhooks - a lesson learned
 
-Recently, a partner of ours observed a strange behavior in their OpenShift cluster. They had bound their pods'
-serviceAccount to a `privileged` SCC, yet OpenShift injected `securityContext.runAsUser: <ID from project range>`
-into the pods:
+Recently, a partner of ours observed a strange behavior in their OpenShift cluster. For a specific application, this
+partner needs the pod to run with the UID that was configured by the application container image:
 ~~~
-$ oc get pods -o custom-columns="NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc,RUNASUSER:.spec.containers[*].securityContext.runAsUser"
-NAME                        SCC          RUNASUSER
-test-pod-7dd79d46bc-dvk4g   privileged   1000770000,...
-~~~
-
-Because the container image was expected to be run with a specific UID, the application pods could not
-come up:
-~~~
-$ cat Dockerfile 
-FROM ...
-RUN useradd -u <uid> <username>
-USER <uid>
-...
+$ cat application/Dockerfile 
+FROM (...)
+RUN useradd -u 1001 exampleuser
+USER 1001
+(...)
 ~~~
 
-We double checked the deployment definition: the deployment did not specify any securityContext for the pod's
-containers. We then checked the pods' matched SCC, and all of them had been assigned the `privileged` SCC. So why would
-the `privileged` SCC inject `securityContext.runAsUser` into the pods' containers? Well, our partner is using Istio,
-and the interaction between SCCs and mutating pod admission controllers can be quite complex.
+When their application pods run, the `.securityContext.runAsUser` field should not be set:
+~~~
+$ oc get pod application-pod -o jsonpath='{.spec.containers[?(@.name=="application-container")].securityContext.runAsUser}'
+$
+~~~
 
-In short, when the pod was created, it did not need to run with the `privileged` SCC and due to OpenShift's SCC matching
-rules, it fell back to the `restricted` SCC. The `restricted` SCC mutated the pod's containers and added
-`securityContext.runAsUser: <ID from project range>`. Now, Istio's mutating admission controller injected its containers
-into the pod. The Istio containers require the pod to run with the `privileged` SCC, so after this step, the pod was
-again sent through the SCC mutating admission controller where it was now assigned the `privileged` SCC. The pod
-therefore showed up with the `privileged` SCC when inspecting it with `oc get pods`, but its containers were also
-assigned a `securityContext.runAsUser` field that was actually mutated by the `restricted` SCC which had been applied to
-the pod before the Istio mutation took place.
+And the container should run with the user that was configured by the container image:
+~~~
+$ oc exec application-pod -- id
+uid=1001(exampleuser) gid=1001(exampleuser) groups=1001(exampleuser)
+~~~
 
-Let's elaborate a bit on this, and let's get started by covering our bases first.
+In order to achieve this, the partner they relies on the `RunAsAny` `RUNASUSER` strategy provided by either the
+`anyuid` or the `privileged` SCC:
+~~~
+$ oc get scc | grep -E 'NAME|^anyuid|privileged'
+NAME                              PRIV    CAPS         SELINUX     RUNASUSER          FSGROUP     SUPGROUP    PRIORITY     READONLYROOTFS   VOLUMES
+anyuid                            false   <no value>   MustRunAs   RunAsAny           RunAsAny    RunAsAny    10           false            ["configMap","downwardAPI","emptyDir","persistentVolumeClaim","projected","secret"]
+privileged                        true    ["*"]        RunAsAny    RunAsAny           RunAsAny    RunAsAny    <no value>   false            ["*"]
+~~~
+
+This partner is using a 3rd party Istio operator. Contrary to OpenShift ServiceMesh, upstream Istio requires elevated
+privileges when injecting its sidecars to the application pods. 
+
+When this partner followed the Istio documentation and bound the `anyuid` SCC to the namespace, the application pod's
+non-istio containers would keep its configured `securityContext.runAsUser`, as expected:
+~~~
+$ oc adm policy add-scc-to-group anyuid system:serviceaccounts:istio-test
+~~~
+
+On the other hand, when the partner bound the `privileged` SCC to the namespace, the application pod could still spawn,
+but the non-istio containers would show a `securityContext.runAsUser`. Due to this, the pods crash looped, as the
+container image's application could not run with OpenShfit's enforced `runAsUser` UID.
+
+Let's look at an example setup that simulates the partner's configuration. We install upstream Istio according to
+the upsteam documentation:
+
+* https://istio.io/latest/docs/setup/getting-started/#download
+* https://istio.io/latest/docs/setup/platform-setup/openshift/
+
+We then create a test namemspace for our application:
+~~~
+$ oc new-project istio-test
+$ cat <<EOF | oc -n istio-test create -f -
+apiVersion: "k8s.cni.cncf.io/v1"
+kind: NetworkAttachmentDefinition
+metadata:
+  name: istio-cni
+EOF
+$ oc label namespace istio-test istio-injection=enabled
+~~~
+
+We bind the `anyuid` SCC to the ServiceAccount:
+~~~
+$ oc adm policy add-scc-to-group anyuid system:serviceaccounts:istio-test
+~~~
+
+And apply the following application:
+~~~
+$ cat <<'EOF' > fedora-test-sidecar-inject.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: fedora-test-sidecar-inject
+  name: fedora-test-sidecar-inject
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployment: fedora-test-sidecar-inject
+  template:
+    metadata:
+      labels:
+        deployment: fedora-test-sidecar-inject
+      annotations:
+        sidecar.istio.io/inject: 'true'
+        sidecar.istio.io/proxyCPU: 50m
+        sidecar.istio.io/proxyCPULimit: 2000m
+        sidecar.istio.io/proxyMemory: 200Mi
+        sidecar.istio.io/proxyMemoryLimit: 1Gi
+        proxy.istio.io/config: '{ "terminationDrainDuration": 30s, "holdApplicationUntilProxyStarts": true }'
+    spec:
+      containers:
+      - image: quay.io/akaris/fedora-test:uid
+        imagePullPolicy: IfNotPresent
+        name: fedora-test-sidecar-inject
+EOF
+$ oc apply -f fedora-test-sidecar-inject.yaml
+~~~
+
+As you can see below, only the `istio-proxy` has the `securityContext.runAsUser` field set, whereas the
+`fedora-test-sidecar-inject` container does not:
+~~~
+$ oc get pods -o custom-columns="NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc,CONTAINERNAME:.spec.containers[*].name,RUNASUSER:.spec.containers[*].securityContext.runAsUser"
+NAME                                         SCC      CONTAINERNAME                            RUNASUSER
+fedora-test-sidecar-inject-d75986bbd-d5rd4   anyuid   istio-proxy,fedora-test-sidecar-inject   1337
+~~~
+
+But when we redeploy the application with the `privileged` SCC, something interesting happens:
+~~~
+$ oc delete -f fedora-test-sidecar-inject.yaml
+$ oc adm policy remove-scc-from-group anyuid system:serviceaccounts:istio-test
+$ oc adm policy add-scc-to-group privileged system:serviceaccounts:istio-test
+$ oc apply -f fedora-test-sidecar-inject.yaml
+~~~
+
+Note how the pod is bound to the `privileged` SCC, but the application container is now forced to run as a specific
+user ID:
+~~~
+$ oc get pods -o custom-columns="NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc,CONTAINERNAME:.spec.containers[*].name,RUNASUSER:.spec.containers[*].securityContext.runAsUser"
+NAME                                         SCC          CONTAINERNAME                            RUNASUSER
+fedora-test-sidecar-inject-d75986bbd-8j6vt   privileged   istio-proxy,fedora-test-sidecar-inject   1337,1000780000
+~~~
+
+How is this possible? Both the `privileged` SCC as well as the `anyuid` SCC set `RUNASUSER` to `RunAsAny`, yet the two
+SCCs seemingly behave differently. Why would the `privileged` SCC inject `securityContext.runAsUser` into the pods'
+containers? Well, Istio uses mutating admission webhooks to achieve sidecar injection. And as it turns out, the
+interaction between SCCs and mutating pod admission controllers can be quite complex.
+
+In order to figure out what is going on, let's start by refreshing our memory about SCCs. Then, we will deploy our own
+little mutating webhook and create a reproducer environment.
 
 ### SCC basics
 
@@ -333,8 +431,19 @@ fedora-test-with-capabilities-5f667b698d-tbz4t   privileged   <none>
 ~~~
 
 But this contradicts what we said earlier about the `privileged` SCC: it should not manipulate
-`securityContext`.`runAsUser`. As already explained during the introduction, when the pod is created, it matches the
-`restricted` SCC which mutates the pod's containers and adds `securityContext.runAsUser: <ID from project range>`.
+`securityContext`.`runAsUser`. Interestingly, when the pod is created, it matches the `restricted` SCC which mutates
+the pod's containers and adds `securityContext.runAsUser: <ID from project range>`.
 Then, the mutating admission controller injects the new capabilities into the pod's containers. After this step, the pod
 now requires to be `privileged` as it cannot run with the more restrictive set of rules from the `restricted` SCC.
 Therefore, it is again sent through the SCC mutating admission controller where it is now assigned the `privileged` SCC. 
+
+### TL;DR
+
+In short, when the pod was created, it did not need to run with the `privileged` SCC and due to OpenShift's SCC matching
+rules, it fell back to the `restricted` SCC. The `restricted` SCC mutated the pod's containers and added
+`securityContext.runAsUser: <ID from project range>`. Now, Istio's mutating admission controller injected its containers
+into the pod. The Istio containers require the pod to run with the `privileged` SCC, so after this step, the pod was
+again sent through the SCC mutating admission controller where it was now assigned the `privileged` SCC. The pod
+therefore showed up with the `privileged` SCC when inspecting it with `oc get pods`, but its containers were also
+assigned a `securityContext.runAsUser` field that was actually mutated by the `restricted` SCC which had been applied to
+the pod before the Istio mutation took place.

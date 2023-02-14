@@ -204,50 +204,6 @@ always return `nil`, and thus result in a no-op.
 * Compare that to the MustRunAsRange UID Generate() which will return the first UID from the project's range:
 [https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/user/mustrunasrange.go#L37](https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/user/mustrunasrange.go#L37)
 
-###  Mutating webhooks
-
-Mutating webhooks are part of Kubernetes' [Dynamic Admission Control](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/).
-A simple mutating admission webhook that we are going to use for some of the following examples can be found
-[in this github repository](https://github.com/andreaskaris/webhook). The mutating webhook examines the annotations of
-any pod upon creation. If the pod has an annotation `webhook/capabilities:` with a list of capabilities
-`["SETFCAP","CAP_NET_RAW","CAP_NET_ADMIN"]` then the mutating webhook will copy these capabilities into
-`securityContext.capabilities.add` of all containers:
-~~~
-apiVersion: apps/v1
-kind: Deployment
-(...)
-spec:
-(...)
-  template:
-    metadata:
-      (...)
-      annotations:
-        webhook/capabilities: '["SETFCAP","CAP_NET_RAW","CAP_NET_ADMIN"]'
-    spec:
-      containers:
-      - image: quay.io/akaris/fedora-test:uid
-        imagePullPolicy: IfNotPresent
-        name: fedora-test-with-capabilities
-(...)
-~~~
-
-A pod from the deployment above will be rewritten by the mutating webhook to:
-~~~
-(...)
-  spec:
-    containers:
-    - image: quay.io/akaris/fedora-test:uid
-      imagePullPolicy: IfNotPresent
-      name: fedora-test-with-capabilities
-      securityContext:
-        capabilities:
-          add:
-          - "SETFCAP"
-          - "CAP_NET_RAW"
-          - "CAP_NET_ADMIN"
-(...)
-~~~
-
 ### Putting SCC prioritization and SCC runAsUser strategies together
 
 As mentioned earlier, given that the `privileged` and `restricted` SCC both have the same priority, a pod that does
@@ -352,6 +308,51 @@ uid=1000770000(1000770000) gid=0(root) groups=0(root),1000770000
 $ oc exec fedora-test-with-capabilities-5f667b698d-ppc5f -- id
 uid=1001(exampleuser) gid=1001(exampleuser) groups=1001(exampleuser)
 ~~~
+
+###  Mutating webhooks
+
+Mutating webhooks are part of Kubernetes' [Dynamic Admission Control](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/).
+A simple mutating admission webhook that we are going to use for some of the following examples can be found
+[in this github repository](https://github.com/andreaskaris/webhook). The mutating webhook examines the annotations of
+any pod upon creation. If the pod has an annotation `webhook/capabilities:` with a list of capabilities
+`["SETFCAP","CAP_NET_RAW","CAP_NET_ADMIN"]` then the mutating webhook will copy these capabilities into
+`securityContext.capabilities.add` of all containers:
+~~~
+apiVersion: apps/v1
+kind: Deployment
+(...)
+spec:
+(...)
+  template:
+    metadata:
+      (...)
+      annotations:
+        webhook/capabilities: '["SETFCAP","CAP_NET_RAW","CAP_NET_ADMIN"]'
+    spec:
+      containers:
+      - image: quay.io/akaris/fedora-test:uid
+        imagePullPolicy: IfNotPresent
+        name: fedora-test-with-capabilities
+(...)
+~~~
+
+A pod from the deployment above will be rewritten by the mutating webhook to:
+~~~
+(...)
+  spec:
+    containers:
+    - image: quay.io/akaris/fedora-test:uid
+      imagePullPolicy: IfNotPresent
+      name: fedora-test-with-capabilities
+      securityContext:
+        capabilities:
+          add:
+          - "SETFCAP"
+          - "CAP_NET_RAW"
+          - "CAP_NET_ADMIN"
+(...)
+~~~
+
 
 ### Putting SCC prioritization, SCC runAsUser strategies and mutating webhooks together
 

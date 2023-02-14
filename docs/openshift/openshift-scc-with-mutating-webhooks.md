@@ -158,7 +158,7 @@ Note that the `anyuid` SCC has a higher SCC priority, and thus it will always wi
 
 For further details, see the [OpenShift documentation](https://docs.openshift.com/container-platform/4.10/authentication/managing-security-context-constraints.html#scc-prioritization_configuring-internal-oauth).
 
-When deploying a pod, you can check which SCC it is actually running with:
+When deploying a pod, you can check which SCC it is actually running with using the following command:
 ~~~
 oc get pods -o custom-columns="NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc"
 ~~~
@@ -210,7 +210,7 @@ Mutating webhooks are part of Kubernetes' [Dynamic Admission Control](https://ku
 A simple mutating admission webhook that we are going to use for some of the following examples can be found
 [in this github repository](https://github.com/andreaskaris/webhook). The mutating webhook examines the annotations of
 any pod upon creation. If the pod has an annotation `webhook/capabilities:` with a list of capabilities
-'["SETFCAP","CAP_NET_RAW","CAP_NET_ADMIN"]' then the mutating webhook will copy these capabilities into
+`["SETFCAP","CAP_NET_RAW","CAP_NET_ADMIN"]` then the mutating webhook will copy these capabilities into
 `securityContext.capabilities.add` of all containers:
 ~~~
 apiVersion: apps/v1

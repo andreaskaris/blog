@@ -1235,15 +1235,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#mutating-webhooks" class="md-nav__link">
-    Mutating webhooks
+  <a href="#putting-scc-prioritization-and-scc-runasuser-strategies-together" class="md-nav__link">
+    Putting SCC prioritization and SCC runAsUser strategies together
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#putting-scc-prioritization-and-scc-runasuser-strategies-together" class="md-nav__link">
-    Putting SCC prioritization and SCC runAsUser strategies together
+  <a href="#mutating-webhooks" class="md-nav__link">
+    Mutating webhooks
   </a>
   
 </li>
@@ -1729,74 +1729,6 @@ always return <code class="highlight">nil</code>, and thus result in a no-op. </
 <li>Compare that to the MustRunAsRange UID Generate() which will return the first UID from the project's range:
 <a href="https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/user/mustrunasrange.go#L37">https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/user/mustrunasrange.go#L37</a></li>
 </ul>
-<h3 id="mutating-webhooks">Mutating webhooks</h3>
-<p>Mutating webhooks are part of Kubernetes' <a href="https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/">Dynamic Admission Control</a>.
-A simple mutating admission webhook that we are going to use for some of the following examples can be found
-<a href="https://github.com/andreaskaris/webhook">in this github repository</a>. The mutating webhook examines the annotations of
-any pod upon creation. If the pod has an annotation <code class="highlight">webhook/capabilities:</code> with a list of capabilities
-<code class="highlight">[&quot;SETFCAP&quot;,&quot;CAP_NET_RAW&quot;,&quot;CAP_NET_ADMIN&quot;]</code> then the mutating webhook will copy these capabilities into
-<code class="highlight">securityContext.capabilities.add</code> of all containers:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">apiVersion</span><span class="o">:</span><span class="w"> </span><span class="n">apps</span><span class="o">/</span><span class="n">v1</span><span class="w"></span>
-<span class="n">kind</span><span class="o">:</span><span class="w"> </span><span class="n">Deployment</span><span class="w"></span>
-<span class="o">(...)</span><span class="w"></span>
-<span class="n">spec</span><span class="o">:</span><span class="w"></span>
-<span class="o">(...)</span><span class="w"></span>
-<span class="w">  </span><span class="n">template</span><span class="o">:</span><span class="w"></span>
-<span class="w">    </span><span class="n">metadata</span><span class="o">:</span><span class="w"></span>
-<span class="w">      </span><span class="o">(...)</span><span class="w"></span>
-<span class="w">      </span><span class="n">annotations</span><span class="o">:</span><span class="w"></span>
-<span class="w">        </span><span class="n">webhook</span><span class="o">/</span><span class="n">capabilities</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;[&quot;SETFCAP&quot;,&quot;CAP_NET_RAW&quot;,&quot;CAP_NET_ADMIN&quot;]&#39;</span><span class="w"></span>
-<span class="w">    </span><span class="n">spec</span><span class="o">:</span><span class="w"></span>
-<span class="w">      </span><span class="n">containers</span><span class="o">:</span><span class="w"></span>
-<span class="w">      </span><span class="o">-</span><span class="w"> </span><span class="n">image</span><span class="o">:</span><span class="w"> </span><span class="n">quay</span><span class="o">.</span><span class="na">io</span><span class="sr">/akaris/</span><span class="n">fedora</span><span class="o">-</span><span class="n">test</span><span class="o">:</span><span class="n">uid</span><span class="w"></span>
-<span class="w">        </span><span class="n">imagePullPolicy</span><span class="o">:</span><span class="w"> </span><span class="n">IfNotPresent</span><span class="w"></span>
-<span class="w">        </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">fedora</span><span class="o">-</span><span class="n">test</span><span class="o">-</span><span class="k">with</span><span class="o">-</span><span class="n">capabilities</span><span class="w"></span>
-<span class="o">(...)</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
-<p>A pod from the deployment above will be rewritten by the mutating webhook to:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>(...)
-  spec:
-    containers:
-    - image: quay.io/akaris/fedora-test:uid
-      imagePullPolicy: IfNotPresent
-      name: fedora-test-with-capabilities
-      securityContext:
-        capabilities:
-          add:
-          - &quot;SETFCAP&quot;
-          - &quot;CAP_NET_RAW&quot;
-          - &quot;CAP_NET_ADMIN&quot;
-(...)
-</code></pre></div>
-</td></tr></table></p>
 <h3 id="putting-scc-prioritization-and-scc-runasuser-strategies-together">Putting SCC prioritization and SCC runAsUser strategies together</h3>
 <p>As mentioned earlier, given that the <code class="highlight">privileged</code> and <code class="highlight">restricted</code> SCC both have the same priority, a pod that does
 not need any privileges from the <code class="highlight">privileged</code> SCC will automatically fall back to using the <code class="highlight">restricted</code> SCC. This is
@@ -1959,6 +1891,74 @@ $ oc <span class="nb">exec</span> fedora-test-59985b9667-bg8kk -- id
 <span class="nv">uid</span><span class="o">=</span><span class="m">1000770000</span><span class="o">(</span><span class="m">1000770000</span><span class="o">)</span> <span class="nv">gid</span><span class="o">=</span><span class="m">0</span><span class="o">(</span>root<span class="o">)</span> <span class="nv">groups</span><span class="o">=</span><span class="m">0</span><span class="o">(</span>root<span class="o">)</span>,1000770000
 $ oc <span class="nb">exec</span> fedora-test-with-capabilities-5f667b698d-ppc5f -- id
 <span class="nv">uid</span><span class="o">=</span><span class="m">1001</span><span class="o">(</span>exampleuser<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span><span class="m">1001</span><span class="o">(</span>exampleuser<span class="o">)</span> <span class="nv">groups</span><span class="o">=</span><span class="m">1001</span><span class="o">(</span>exampleuser<span class="o">)</span>
+</code></pre></div>
+</td></tr></table></p>
+<h3 id="mutating-webhooks">Mutating webhooks</h3>
+<p>Mutating webhooks are part of Kubernetes' <a href="https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/">Dynamic Admission Control</a>.
+A simple mutating admission webhook that we are going to use for some of the following examples can be found
+<a href="https://github.com/andreaskaris/webhook">in this github repository</a>. The mutating webhook examines the annotations of
+any pod upon creation. If the pod has an annotation <code class="highlight">webhook/capabilities:</code> with a list of capabilities
+<code class="highlight">[&quot;SETFCAP&quot;,&quot;CAP_NET_RAW&quot;,&quot;CAP_NET_ADMIN&quot;]</code> then the mutating webhook will copy these capabilities into
+<code class="highlight">securityContext.capabilities.add</code> of all containers:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">apiVersion</span><span class="o">:</span><span class="w"> </span><span class="n">apps</span><span class="o">/</span><span class="n">v1</span><span class="w"></span>
+<span class="n">kind</span><span class="o">:</span><span class="w"> </span><span class="n">Deployment</span><span class="w"></span>
+<span class="o">(...)</span><span class="w"></span>
+<span class="n">spec</span><span class="o">:</span><span class="w"></span>
+<span class="o">(...)</span><span class="w"></span>
+<span class="w">  </span><span class="n">template</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">metadata</span><span class="o">:</span><span class="w"></span>
+<span class="w">      </span><span class="o">(...)</span><span class="w"></span>
+<span class="w">      </span><span class="n">annotations</span><span class="o">:</span><span class="w"></span>
+<span class="w">        </span><span class="n">webhook</span><span class="o">/</span><span class="n">capabilities</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;[&quot;SETFCAP&quot;,&quot;CAP_NET_RAW&quot;,&quot;CAP_NET_ADMIN&quot;]&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="n">spec</span><span class="o">:</span><span class="w"></span>
+<span class="w">      </span><span class="n">containers</span><span class="o">:</span><span class="w"></span>
+<span class="w">      </span><span class="o">-</span><span class="w"> </span><span class="n">image</span><span class="o">:</span><span class="w"> </span><span class="n">quay</span><span class="o">.</span><span class="na">io</span><span class="sr">/akaris/</span><span class="n">fedora</span><span class="o">-</span><span class="n">test</span><span class="o">:</span><span class="n">uid</span><span class="w"></span>
+<span class="w">        </span><span class="n">imagePullPolicy</span><span class="o">:</span><span class="w"> </span><span class="n">IfNotPresent</span><span class="w"></span>
+<span class="w">        </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">fedora</span><span class="o">-</span><span class="n">test</span><span class="o">-</span><span class="k">with</span><span class="o">-</span><span class="n">capabilities</span><span class="w"></span>
+<span class="o">(...)</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p>A pod from the deployment above will be rewritten by the mutating webhook to:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>(...)
+  spec:
+    containers:
+    - image: quay.io/akaris/fedora-test:uid
+      imagePullPolicy: IfNotPresent
+      name: fedora-test-with-capabilities
+      securityContext:
+        capabilities:
+          add:
+          - &quot;SETFCAP&quot;
+          - &quot;CAP_NET_RAW&quot;
+          - &quot;CAP_NET_ADMIN&quot;
+(...)
 </code></pre></div>
 </td></tr></table></p>
 <h3 id="putting-scc-prioritization-scc-runasuser-strategies-and-mutating-webhooks-together">Putting SCC prioritization, SCC runAsUser strategies and mutating webhooks together</h3>

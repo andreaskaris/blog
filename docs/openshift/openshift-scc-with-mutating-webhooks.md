@@ -426,7 +426,7 @@ spec:
 (...)
 ~~~
 
-The new pod matches the `privileged` SCC, but it was also forced to run as a specific user ID:
+Surprisingly, the new pod matches the `privileged` SCC, but it was also forced to run as a specific user ID:
 ~~~
 $ oc get pods -o custom-columns="NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc,RUNASUSER:.spec.containers[*].securityContext.runAsUser"
 NAME                                             SCC          RUNASUSER
@@ -435,8 +435,10 @@ fedora-test-with-annotation-6745dd89bf-t6kdf     privileged   1000770000
 fedora-test-with-capabilities-5f667b698d-tbz4t   privileged   <none>
 ~~~
 
-But this contradicts what we said earlier about the `privileged` SCC: it should not manipulate
-`securityContext`.`runAsUser`. Interestingly, when the pod is created, it matches the `restricted` SCC which mutates
+This seemingly contradicts what we said earlier about the `privileged` SCC: it should not manipulate
+`securityContext.runAsUser`.
+
+Interestingly, when the pod is created, it matches the `restricted` SCC which mutates
 the pod's containers and adds `securityContext.runAsUser: <ID from project range>`.
 Then, the mutating admission controller injects the new capabilities into the pod's containers. After this step, the pod
 now requires to be `privileged` as it cannot run with the more restrictive set of rules from the `restricted` SCC.

@@ -1255,6 +1255,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#tldr" class="md-nav__link">
+    TL;DR
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1486,42 +1493,176 @@
   <h1>SCCs and mutating webhooks - a lesson learned</h1>
 
 <h2 id="sccs-and-mutating-webhooks-a-lesson-learned">SCCs and mutating webhooks - a lesson learned</h2>
-<p>Recently, a partner of ours observed a strange behavior in their OpenShift cluster. They had bound their pods'
-serviceAccount to a <code class="highlight">privileged</code> SCC, yet OpenShift injected <code class="highlight">securityContext.runAsUser: &lt;ID from project range&gt;</code>
-into the pods:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc get pods -o custom-columns<span class="o">=</span><span class="s2">&quot;NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc,RUNASUSER:.spec.containers[*].securityContext.runAsUser&quot;</span>
-NAME                        SCC          RUNASUSER
-test-pod-7dd79d46bc-dvk4g   privileged   <span class="m">1000770000</span>,...
-</code></pre></div>
-</td></tr></table></p>
-<p>Because the container image was expected to be run with a specific UID, the application pods could not
-come up:
+<p>Recently, a partner of ours observed a strange behavior in their OpenShift cluster. For a specific application, this
+partner needs the pod to run with the UID that was configured by the application container image:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
-<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ cat Dockerfile 
-FROM ...
-RUN useradd -u &lt;uid&gt; &lt;username&gt;
-USER &lt;uid&gt;
-...
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ cat application/Dockerfile 
+FROM <span class="o">(</span>...<span class="o">)</span>
+RUN useradd -u <span class="m">1001</span> exampleuser
+USER <span class="m">1001</span>
+<span class="o">(</span>...<span class="o">)</span>
 </code></pre></div>
 </td></tr></table></p>
-<p>We double checked the deployment definition: the deployment did not specify any securityContext for the pod's
-containers. We then checked the pods' matched SCC, and all of them had been assigned the <code class="highlight">privileged</code> SCC. So why would
-the <code class="highlight">privileged</code> SCC inject <code class="highlight">securityContext.runAsUser</code> into the pods' containers? Well, our partner is using Istio,
-and the interaction between SCCs and mutating pod admission controllers can be quite complex.</p>
-<p>In short, when the pod was created, it did not need to run with the <code class="highlight">privileged</code> SCC and due to OpenShift's SCC matching
-rules, it fell back to the <code class="highlight">restricted</code> SCC. The <code class="highlight">restricted</code> SCC mutated the pod's containers and added
-<code class="highlight">securityContext.runAsUser: &lt;ID from project range&gt;</code>. Now, Istio's mutating admission controller injected its containers
-into the pod. The Istio containers require the pod to run with the <code class="highlight">privileged</code> SCC, so after this step, the pod was
-again sent through the SCC mutating admission controller where it was now assigned the <code class="highlight">privileged</code> SCC. The pod
-therefore showed up with the <code class="highlight">privileged</code> SCC when inspecting it with <code class="highlight">oc get pods</code>, but its containers were also
-assigned a <code class="highlight">securityContext.runAsUser</code> field that was actually mutated by the <code class="highlight">restricted</code> SCC which had been applied to
-the pod before the Istio mutation took place.</p>
-<p>Let's elaborate a bit on this, and let's get started by covering our bases first.</p>
+<p>When their application pods run, the <code class="highlight"><span class="na">.securityContext.runAsUser</span><span class="w"></span></code> field should not be set:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc get pod application-pod -o <span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.spec.containers[?(@.name==&quot;application-container&quot;)].securityContext.runAsUser}&#39;</span>
+$
+</code></pre></div>
+</td></tr></table></p>
+<p>And the container should run with the user that was configured by the container image:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc <span class="nb">exec</span> application-pod -- id
+<span class="nv">uid</span><span class="o">=</span><span class="m">1001</span><span class="o">(</span>exampleuser<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span><span class="m">1001</span><span class="o">(</span>exampleuser<span class="o">)</span> <span class="nv">groups</span><span class="o">=</span><span class="m">1001</span><span class="o">(</span>exampleuser<span class="o">)</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>In order to achieve this, the partner they relies on the <code class="highlight">RunAsAny</code> <code class="highlight">RUNASUSER</code> strategy provided by either the
+<code class="highlight">anyuid</code> or the <code class="highlight">privileged</code> SCC:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc get scc <span class="p">|</span> grep -E <span class="s1">&#39;NAME|^anyuid|privileged&#39;</span>
+NAME                              PRIV    CAPS         SELINUX     RUNASUSER          FSGROUP     SUPGROUP    PRIORITY     READONLYROOTFS   VOLUMES
+anyuid                            <span class="nb">false</span>   &lt;no value&gt;   MustRunAs   RunAsAny           RunAsAny    RunAsAny    <span class="m">10</span>           <span class="nb">false</span>            <span class="o">[</span><span class="s2">&quot;configMap&quot;</span>,<span class="s2">&quot;downwardAPI&quot;</span>,<span class="s2">&quot;emptyDir&quot;</span>,<span class="s2">&quot;persistentVolumeClaim&quot;</span>,<span class="s2">&quot;projected&quot;</span>,<span class="s2">&quot;secret&quot;</span><span class="o">]</span>
+privileged                        <span class="nb">true</span>    <span class="o">[</span><span class="s2">&quot;*&quot;</span><span class="o">]</span>        RunAsAny    RunAsAny           RunAsAny    RunAsAny    &lt;no value&gt;   <span class="nb">false</span>            <span class="o">[</span><span class="s2">&quot;*&quot;</span><span class="o">]</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>This partner is using a 3rd party Istio operator. Contrary to OpenShift ServiceMesh, upstream Istio requires elevated
+privileges when injecting its sidecars to the application pods. </p>
+<p>When this partner followed the Istio documentation and bound the <code class="highlight">anyuid</code> SCC to the namespace, the application pod's
+non-istio containers would keep its configured <code class="highlight">securityContext.runAsUser</code>, as expected:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc adm policy add-scc-to-group anyuid system:serviceaccounts:istio-test
+</code></pre></div>
+</td></tr></table></p>
+<p>On the other hand, when the partner bound the <code class="highlight">privileged</code> SCC to the namespace, the application pod could still spawn,
+but the non-istio containers would show a <code class="highlight">securityContext.runAsUser</code>. Due to this, the pods crash looped, as the
+container image's application could not run with OpenShfit's enforced <code class="highlight">runAsUser</code> UID.</p>
+<p>Let's look at an example setup that simulates the partner's configuration. We install upstream Istio according to
+the upsteam documentation:</p>
+<ul>
+<li>https://istio.io/latest/docs/setup/getting-started/#download</li>
+<li>https://istio.io/latest/docs/setup/platform-setup/openshift/</li>
+</ul>
+<p>We then create a test namemspace for our application:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc new-project istio-test
+$ cat <span class="s">&lt;&lt;EOF | oc -n istio-test create -f -</span>
+<span class="s">apiVersion: &quot;k8s.cni.cncf.io/v1&quot;</span>
+<span class="s">kind: NetworkAttachmentDefinition</span>
+<span class="s">metadata:</span>
+<span class="s">  name: istio-cni</span>
+<span class="s">EOF</span>
+$ oc label namespace istio-test istio-injection<span class="o">=</span>enabled
+</code></pre></div>
+</td></tr></table></p>
+<p>We bind the <code class="highlight">anyuid</code> SCC to the ServiceAccount:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc adm policy add-scc-to-group anyuid system:serviceaccounts:istio-test
+</code></pre></div>
+</td></tr></table></p>
+<p>And apply the following application:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ cat <span class="s">&lt;&lt;&#39;EOF&#39; &gt; fedora-test-sidecar-inject.yaml</span>
+<span class="s">apiVersion: apps/v1</span>
+<span class="s">kind: Deployment</span>
+<span class="s">metadata:</span>
+<span class="s">  labels:</span>
+<span class="s">    app: fedora-test-sidecar-inject</span>
+<span class="s">  name: fedora-test-sidecar-inject</span>
+<span class="s">spec:</span>
+<span class="s">  replicas: 1</span>
+<span class="s">  selector:</span>
+<span class="s">    matchLabels:</span>
+<span class="s">      deployment: fedora-test-sidecar-inject</span>
+<span class="s">  template:</span>
+<span class="s">    metadata:</span>
+<span class="s">      labels:</span>
+<span class="s">        deployment: fedora-test-sidecar-inject</span>
+<span class="s">      annotations:</span>
+<span class="s">        sidecar.istio.io/inject: &#39;true&#39;</span>
+<span class="s">        sidecar.istio.io/proxyCPU: 50m</span>
+<span class="s">        sidecar.istio.io/proxyCPULimit: 2000m</span>
+<span class="s">        sidecar.istio.io/proxyMemory: 200Mi</span>
+<span class="s">        sidecar.istio.io/proxyMemoryLimit: 1Gi</span>
+<span class="s">        proxy.istio.io/config: &#39;{ &quot;terminationDrainDuration&quot;: 30s, &quot;holdApplicationUntilProxyStarts&quot;: true }&#39;</span>
+<span class="s">    spec:</span>
+<span class="s">      containers:</span>
+<span class="s">      - image: quay.io/akaris/fedora-test:uid</span>
+<span class="s">        imagePullPolicy: IfNotPresent</span>
+<span class="s">        name: fedora-test-sidecar-inject</span>
+<span class="s">EOF</span>
+$ oc apply -f fedora-test-sidecar-inject.yaml
+</code></pre></div>
+</td></tr></table></p>
+<p>As you can see below, only the <code class="highlight">istio-proxy</code> has the <code class="highlight">securityContext.runAsUser</code> field set, whereas the
+<code class="highlight">fedora-test-sidecar-inject</code> container does not:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc get pods -o custom-columns<span class="o">=</span><span class="s2">&quot;NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc,CONTAINERNAME:.spec.containers[*].name,RUNASUSER:.spec.containers[*].securityContext.runAsUser&quot;</span>
+NAME                                         SCC      CONTAINERNAME                            RUNASUSER
+fedora-test-sidecar-inject-d75986bbd-d5rd4   anyuid   istio-proxy,fedora-test-sidecar-inject   <span class="m">1337</span>
+</code></pre></div>
+</td></tr></table></p>
+<p>But when we redeploy the application with the <code class="highlight">privileged</code> SCC, something interesting happens:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc delete -f fedora-test-sidecar-inject.yaml
+$ oc adm policy remove-scc-from-group anyuid system:serviceaccounts:istio-test
+$ oc adm policy add-scc-to-group privileged system:serviceaccounts:istio-test
+$ oc apply -f fedora-test-sidecar-inject.yaml
+</code></pre></div>
+</td></tr></table></p>
+<p>Note how the pod is bound to the <code class="highlight">privileged</code> SCC, but the application container is now forced to run as a specific
+user ID:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc get pods -o custom-columns<span class="o">=</span><span class="s2">&quot;NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc,CONTAINERNAME:.spec.containers[*].name,RUNASUSER:.spec.containers[*].securityContext.runAsUser&quot;</span>
+NAME                                         SCC          CONTAINERNAME                            RUNASUSER
+fedora-test-sidecar-inject-d75986bbd-8j6vt   privileged   istio-proxy,fedora-test-sidecar-inject   <span class="m">1337</span>,1000780000
+</code></pre></div>
+</td></tr></table></p>
+<p>How is this possible? Both the <code class="highlight">privileged</code> SCC as well as the <code class="highlight">anyuid</code> SCC set <code class="highlight">RUNASUSER</code> to <code class="highlight">RunAsAny</code>, yet the two
+SCCs seemingly behave differently. Why would the <code class="highlight">privileged</code> SCC inject <code class="highlight">securityContext.runAsUser</code> into the pods'
+containers? Well, Istio uses mutating admission webhooks to achieve sidecar injection. And as it turns out, the
+interaction between SCCs and mutating pod admission controllers can be quite complex.</p>
+<p>In order to figure out what is going on, let's start by refreshing our memory about SCCs. Then, we will deploy our own
+little mutating webhook and create a reproducer environment.</p>
 <h3 id="scc-basics">SCC basics</h3>
 <h4 id="scc-prioritization">SCC prioritization</h4>
 <p>It is important to understand OCP SCC prioritization: In OCP,  we can apply multiple SCCs to a ServiceAccount.
@@ -1940,18 +2081,27 @@ fedora-test-with-capabilities-5f667b698d-tbz4t   privileged   &lt;none&gt;
 </code></pre></div>
 </td></tr></table></p>
 <p>But this contradicts what we said earlier about the <code class="highlight">privileged</code> SCC: it should not manipulate
-<code class="highlight">securityContext</code>.<code class="highlight">runAsUser</code>. As already explained during the introduction, when the pod is created, it matches the
-<code class="highlight">restricted</code> SCC which mutates the pod's containers and adds <code class="highlight">securityContext.runAsUser: &lt;ID from project range&gt;</code>.
+<code class="highlight">securityContext</code>.<code class="highlight">runAsUser</code>. Interestingly, when the pod is created, it matches the <code class="highlight">restricted</code> SCC which mutates
+the pod's containers and adds <code class="highlight">securityContext.runAsUser: &lt;ID from project range&gt;</code>.
 Then, the mutating admission controller injects the new capabilities into the pod's containers. After this step, the pod
 now requires to be <code class="highlight">privileged</code> as it cannot run with the more restrictive set of rules from the <code class="highlight">restricted</code> SCC.
 Therefore, it is again sent through the SCC mutating admission controller where it is now assigned the <code class="highlight">privileged</code> SCC. </p>
+<h3 id="tldr">TL;DR</h3>
+<p>In short, when the pod was created, it did not need to run with the <code class="highlight">privileged</code> SCC and due to OpenShift's SCC matching
+rules, it fell back to the <code class="highlight">restricted</code> SCC. The <code class="highlight">restricted</code> SCC mutated the pod's containers and added
+<code class="highlight">securityContext.runAsUser: &lt;ID from project range&gt;</code>. Now, Istio's mutating admission controller injected its containers
+into the pod. The Istio containers require the pod to run with the <code class="highlight">privileged</code> SCC, so after this step, the pod was
+again sent through the SCC mutating admission controller where it was now assigned the <code class="highlight">privileged</code> SCC. The pod
+therefore showed up with the <code class="highlight">privileged</code> SCC when inspecting it with <code class="highlight">oc get pods</code>, but its containers were also
+assigned a <code class="highlight">securityContext.runAsUser</code> field that was actually mutated by the <code class="highlight">restricted</code> SCC which had been applied to
+the pod before the Istio mutation took place.</p>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">February 13, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">February 14, 2023</span>
       
     
   </small>

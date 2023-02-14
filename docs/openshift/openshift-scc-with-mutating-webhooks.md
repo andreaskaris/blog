@@ -22,7 +22,7 @@ $ oc exec application-pod -- id
 uid=1001(exampleuser) gid=1001(exampleuser) groups=1001(exampleuser)
 ~~~
 
-In order to achieve this, the partner they relies on the `RunAsAny` `RUNASUSER` strategy provided by either the
+In order to achieve this, the partner relies on the `RunAsAny` `RUNASUSER` strategy provided by either the
 `anyuid` or the `privileged` SCC:
 ~~~
 $ oc get scc | grep -E 'NAME|^anyuid|privileged'
@@ -35,7 +35,7 @@ This partner is using a 3rd party Istio operator. Contrary to OpenShift ServiceM
 privileges when injecting its sidecars to the application pods. 
 
 When this partner followed the Istio documentation and bound the `anyuid` SCC to the namespace, the application pod's
-non-istio containers would keep its configured `securityContext.runAsUser`, as expected:
+non-istio containers would keep their configured `securityContext.runAsUser`, as expected:
 ~~~
 $ oc adm policy add-scc-to-group anyuid system:serviceaccounts:istio-test
 ~~~
@@ -47,10 +47,10 @@ container image's application could not run with OpenShfit's enforced `runAsUser
 Let's look at an example setup that simulates the partner's configuration. We install upstream Istio according to
 the upsteam documentation:
 
-* https://istio.io/latest/docs/setup/getting-started/#download
-* https://istio.io/latest/docs/setup/platform-setup/openshift/
+* [https://istio.io/latest/docs/setup/getting-started/#download](https://istio.io/latest/docs/setup/getting-started/#download)
+* [https://istio.io/latest/docs/setup/platform-setup/openshift/](https://istio.io/latest/docs/setup/platform-setup/openshift/)
 
-We then create a test namemspace for our application:
+We then create a test namespace for our application:
 ~~~
 $ oc new-project istio-test
 $ cat <<EOF | oc -n istio-test create -f -
@@ -102,11 +102,13 @@ $ oc apply -f fedora-test-sidecar-inject.yaml
 ~~~
 
 As you can see below, only the `istio-proxy` has the `securityContext.runAsUser` field set, whereas the
-`fedora-test-sidecar-inject` container does not:
+`fedora-test-sidecar-inject` container does not and thus the container image's UID is honored:
 ~~~
 $ oc get pods -o custom-columns="NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc,CONTAINERNAME:.spec.containers[*].name,RUNASUSER:.spec.containers[*].securityContext.runAsUser"
-NAME                                         SCC      CONTAINERNAME                            RUNASUSER
-fedora-test-sidecar-inject-d75986bbd-d5rd4   anyuid   istio-proxy,fedora-test-sidecar-inject   1337
+NAME                                         SCC          CONTAINERNAME                            RUNASUSER
+fedora-test-sidecar-inject-d75986bbd-pbqbx   anyuid       istio-proxy,fedora-test-sidecar-inject   1337
+$ oc exec fedora-test-sidecar-inject-d75986bbd-pbqbx -- id
+uid=1001(exampleuser) gid=1001(exampleuser) groups=1001(exampleuser)
 ~~~
 
 But when we redeploy the application with the `privileged` SCC, something interesting happens:
@@ -123,6 +125,8 @@ user ID:
 $ oc get pods -o custom-columns="NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc,CONTAINERNAME:.spec.containers[*].name,RUNASUSER:.spec.containers[*].securityContext.runAsUser"
 NAME                                         SCC          CONTAINERNAME                            RUNASUSER
 fedora-test-sidecar-inject-d75986bbd-8j6vt   privileged   istio-proxy,fedora-test-sidecar-inject   1337,1000780000
+$ oc exec fedora-test-sidecar-inject-d75986bbd-8j6vt -- id
+uid=1000780000(1000780000) gid=0(root) groups=0(root),1000780000
 ~~~
 
 How is this possible? Both the `privileged` SCC as well as the `anyuid` SCC set `RUNASUSER` to `RunAsAny`, yet the two

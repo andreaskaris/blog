@@ -1685,7 +1685,7 @@ always be an implicit <code class="highlight">restricted</code> SCC with the sam
 because the pod is happy running in a more restrictive context.</p>
 <p>Note that the <code class="highlight">anyuid</code> SCC has a higher SCC priority, and thus it will always win against the <code class="highlight">restricted</code> SCC.</p>
 <p>For further details, see the <a href="https://docs.openshift.com/container-platform/4.10/authentication/managing-security-context-constraints.html#scc-prioritization_configuring-internal-oauth">OpenShift documentation</a>.</p>
-<p>When deploying a pod, you can check which SCC it is actually running with:
+<p>When deploying a pod, you can check which SCC it is actually running with using the following command:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>oc get pods -o custom-columns=&quot;NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc&quot;
 </code></pre></div>
 </td></tr></table></p>
@@ -1734,7 +1734,7 @@ always return <code class="highlight">nil</code>, and thus result in a no-op. </
 A simple mutating admission webhook that we are going to use for some of the following examples can be found
 <a href="https://github.com/andreaskaris/webhook">in this github repository</a>. The mutating webhook examines the annotations of
 any pod upon creation. If the pod has an annotation <code class="highlight">webhook/capabilities:</code> with a list of capabilities
-'["SETFCAP","CAP_NET_RAW","CAP_NET_ADMIN"]' then the mutating webhook will copy these capabilities into
+<code class="highlight">[&quot;SETFCAP&quot;,&quot;CAP_NET_RAW&quot;,&quot;CAP_NET_ADMIN&quot;]</code> then the mutating webhook will copy these capabilities into
 <code class="highlight">securityContext.capabilities.add</code> of all containers:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>

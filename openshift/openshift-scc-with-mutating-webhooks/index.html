@@ -1518,7 +1518,7 @@ $
 <span class="nv">uid</span><span class="o">=</span><span class="m">1001</span><span class="o">(</span>exampleuser<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span><span class="m">1001</span><span class="o">(</span>exampleuser<span class="o">)</span> <span class="nv">groups</span><span class="o">=</span><span class="m">1001</span><span class="o">(</span>exampleuser<span class="o">)</span>
 </code></pre></div>
 </td></tr></table></p>
-<p>In order to achieve this, the partner they relies on the <code class="highlight">RunAsAny</code> <code class="highlight">RUNASUSER</code> strategy provided by either the
+<p>In order to achieve this, the partner relies on the <code class="highlight">RunAsAny</code> <code class="highlight">RUNASUSER</code> strategy provided by either the
 <code class="highlight">anyuid</code> or the <code class="highlight">privileged</code> SCC:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
@@ -1532,7 +1532,7 @@ privileged                        <span class="nb">true</span>    <span class="o
 <p>This partner is using a 3rd party Istio operator. Contrary to OpenShift ServiceMesh, upstream Istio requires elevated
 privileges when injecting its sidecars to the application pods. </p>
 <p>When this partner followed the Istio documentation and bound the <code class="highlight">anyuid</code> SCC to the namespace, the application pod's
-non-istio containers would keep its configured <code class="highlight">securityContext.runAsUser</code>, as expected:
+non-istio containers would keep their configured <code class="highlight">securityContext.runAsUser</code>, as expected:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc adm policy add-scc-to-group anyuid system:serviceaccounts:istio-test
 </code></pre></div>
 </td></tr></table></p>
@@ -1542,10 +1542,10 @@ container image's application could not run with OpenShfit's enforced <code clas
 <p>Let's look at an example setup that simulates the partner's configuration. We install upstream Istio according to
 the upsteam documentation:</p>
 <ul>
-<li>https://istio.io/latest/docs/setup/getting-started/#download</li>
-<li>https://istio.io/latest/docs/setup/platform-setup/openshift/</li>
+<li><a href="https://istio.io/latest/docs/setup/getting-started/#download">https://istio.io/latest/docs/setup/getting-started/#download</a></li>
+<li><a href="https://istio.io/latest/docs/setup/platform-setup/openshift/">https://istio.io/latest/docs/setup/platform-setup/openshift/</a></li>
 </ul>
-<p>We then create a test namemspace for our application:
+<p>We then create a test namespace for our application:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
@@ -1630,12 +1630,16 @@ $ oc apply -f fedora-test-sidecar-inject.yaml
 </code></pre></div>
 </td></tr></table></p>
 <p>As you can see below, only the <code class="highlight">istio-proxy</code> has the <code class="highlight">securityContext.runAsUser</code> field set, whereas the
-<code class="highlight">fedora-test-sidecar-inject</code> container does not:
+<code class="highlight">fedora-test-sidecar-inject</code> container does not and thus the container image's UID is honored:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc get pods -o custom-columns<span class="o">=</span><span class="s2">&quot;NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc,CONTAINERNAME:.spec.containers[*].name,RUNASUSER:.spec.containers[*].securityContext.runAsUser&quot;</span>
-NAME                                         SCC      CONTAINERNAME                            RUNASUSER
-fedora-test-sidecar-inject-d75986bbd-d5rd4   anyuid   istio-proxy,fedora-test-sidecar-inject   <span class="m">1337</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc get pods -o custom-columns<span class="o">=</span><span class="s2">&quot;NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc,CONTAINERNAME:.spec.containers[*].name,RUNASUSER:.spec.containers[*].securityContext.runAsUser&quot;</span>
+NAME                                         SCC          CONTAINERNAME                            RUNASUSER
+fedora-test-sidecar-inject-d75986bbd-pbqbx   anyuid       istio-proxy,fedora-test-sidecar-inject   <span class="m">1337</span>
+$ oc <span class="nb">exec</span> fedora-test-sidecar-inject-d75986bbd-pbqbx -- id
+<span class="nv">uid</span><span class="o">=</span><span class="m">1001</span><span class="o">(</span>exampleuser<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span><span class="m">1001</span><span class="o">(</span>exampleuser<span class="o">)</span> <span class="nv">groups</span><span class="o">=</span><span class="m">1001</span><span class="o">(</span>exampleuser<span class="o">)</span>
 </code></pre></div>
 </td></tr></table></p>
 <p>But when we redeploy the application with the <code class="highlight">privileged</code> SCC, something interesting happens:
@@ -1652,9 +1656,13 @@ $ oc apply -f fedora-test-sidecar-inject.yaml
 user ID:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc get pods -o custom-columns<span class="o">=</span><span class="s2">&quot;NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc,CONTAINERNAME:.spec.containers[*].name,RUNASUSER:.spec.containers[*].securityContext.runAsUser&quot;</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc get pods -o custom-columns<span class="o">=</span><span class="s2">&quot;NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc,CONTAINERNAME:.spec.containers[*].name,RUNASUSER:.spec.containers[*].securityContext.runAsUser&quot;</span>
 NAME                                         SCC          CONTAINERNAME                            RUNASUSER
 fedora-test-sidecar-inject-d75986bbd-8j6vt   privileged   istio-proxy,fedora-test-sidecar-inject   <span class="m">1337</span>,1000780000
+$ oc <span class="nb">exec</span> fedora-test-sidecar-inject-d75986bbd-8j6vt -- id
+<span class="nv">uid</span><span class="o">=</span><span class="m">1000780000</span><span class="o">(</span><span class="m">1000780000</span><span class="o">)</span> <span class="nv">gid</span><span class="o">=</span><span class="m">0</span><span class="o">(</span>root<span class="o">)</span> <span class="nv">groups</span><span class="o">=</span><span class="m">0</span><span class="o">(</span>root<span class="o">)</span>,1000780000
 </code></pre></div>
 </td></tr></table></p>
 <p>How is this possible? Both the <code class="highlight">privileged</code> SCC as well as the <code class="highlight">anyuid</code> SCC set <code class="highlight">RUNASUSER</code> to <code class="highlight">RunAsAny</code>, yet the two

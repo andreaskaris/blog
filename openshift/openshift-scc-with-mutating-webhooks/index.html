@@ -2076,7 +2076,7 @@ container as soon as we create the deployment:
 <span class="o">(...)</span><span class="w"></span>
 </code></pre></div>
 </td></tr></table></p>
-<p>The new pod matches the <code class="highlight">privileged</code> SCC, but it was also forced to run as a specific user ID:
+<p>Surprisingly, the new pod matches the <code class="highlight">privileged</code> SCC, but it was also forced to run as a specific user ID:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
@@ -2088,8 +2088,9 @@ fedora-test-with-annotation-6745dd89bf-t6kdf     privileged   <span class="m">10
 fedora-test-with-capabilities-5f667b698d-tbz4t   privileged   &lt;none&gt;
 </code></pre></div>
 </td></tr></table></p>
-<p>But this contradicts what we said earlier about the <code class="highlight">privileged</code> SCC: it should not manipulate
-<code class="highlight">securityContext</code>.<code class="highlight">runAsUser</code>. Interestingly, when the pod is created, it matches the <code class="highlight">restricted</code> SCC which mutates
+<p>This seemingly contradicts what we said earlier about the <code class="highlight">privileged</code> SCC: it should not manipulate
+<code class="highlight">securityContext.runAsUser</code>.</p>
+<p>Interestingly, when the pod is created, it matches the <code class="highlight">restricted</code> SCC which mutates
 the pod's containers and adds <code class="highlight">securityContext.runAsUser: &lt;ID from project range&gt;</code>.
 Then, the mutating admission controller injects the new capabilities into the pod's containers. After this step, the pod
 now requires to be <code class="highlight">privileged</code> as it cannot run with the more restrictive set of rules from the <code class="highlight">restricted</code> SCC.

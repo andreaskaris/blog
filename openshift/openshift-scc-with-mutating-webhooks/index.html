@@ -2288,6 +2288,24 @@ connect to the <code class="highlight">dlv</code> headless server with <code cla
 </ul>
 <p>The code that interests us most is in <code class="highlight"><span class="n">admission</span><span class="p">.</span><span class="k">go</span><span class="err">:</span><span class="mi">94</span><span class="w"></span></code>. Function <code class="highlight">computeSecurityContext</code> is the entrypoint for
 SCC admission and mutation. We will insert a breakpoint here for further analysis.</p>
+<p>The documentation about <a href="https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#reinvocation-policy">Reinvocation policy</a>
+points us to <a href="https://issue.k8s.io/64333">https://issue.k8s.io/64333</a>. The <a href="https://github.com/kubernetes/kubernetes/pull/78080/commits">PR 78080</a>
+addressed the issue. The code that interests us here is in
+<a href="https://github.com/openshift/kubernetes/blob/release-4.10/staging/src/k8s.io/apiserver/pkg/admission/plugin/webhook/mutating/dispatcher.go#L169">https://github.com/openshift/kubernetes/blob/release-4.10/staging/src/k8s.io/apiserver/pkg/admission/plugin/webhook/mutating/dispatcher.go#L169</a>:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>        <span class="k">if</span> <span class="nv">changed</span> {
+            <span class="o">//</span> <span class="nv">Patch</span> <span class="nv">had</span> <span class="nv">changed</span> <span class="nv">the</span> <span class="nv">object</span>. <span class="nv">Prepare</span> <span class="nv">to</span> <span class="nv">reinvoke</span> <span class="nv">all</span> <span class="nv">previous</span> <span class="nv">webhooks</span> <span class="nv">that</span> <span class="nv">are</span> <span class="nv">eligible</span> <span class="k">for</span> <span class="nv">re</span><span class="o">-</span><span class="nv">invocation</span>.
+            <span class="nv">webhookReinvokeCtx</span>.<span class="nv">RequireReinvokingPreviouslyInvokedPlugins</span><span class="ss">()</span>
+            <span class="nv">reinvokeCtx</span>.<span class="nv">SetShouldReinvoke</span><span class="ss">()</span>
+        }
+</code></pre></div>
+</td></tr></table></p>
+<blockquote>
+<p>The above code implements <code class="highlight">`<span class="nv">built</span><span class="o">-</span><span class="nv">in</span> <span class="nv">mutating</span> <span class="nv">admission</span> <span class="nv">plugins</span> <span class="nv">are</span> <span class="nv">re</span><span class="o">-</span><span class="nv">run</span> <span class="k">if</span> <span class="nv">a</span> <span class="nv">mutating</span> <span class="nv">webhook</span> <span class="nv">modifies</span> <span class="nv">an</span> <span class="nv">object</span></code>.</p>
+</blockquote>
 <h4 id="using-dlv-to-analyze-the-kube-apiserver">Using dlv to analyze the kube-apiserver</h4>
 <p>Next, connect to the headless <code class="highlight">dlv</code> server, set a breakpoint at <code class="highlight"><span class="n">admission</span><span class="p">.</span><span class="k">go</span><span class="err">:</span><span class="mi">94</span><span class="w"></span></code>, and print the relevant pod variables
 whenever we get to the breakpoint:
@@ -2456,15 +2474,230 @@ object:
 <span class="k">false</span><span class="w"></span>
 </code></pre></div>
 </td></tr></table></p>
+<p>Another way to look at this is by tracing both <code class="highlight"><span class="n">admission</span><span class="p">.</span><span class="k">go</span><span class="w"></span></code> and the webhooks' <code class="highlight"><span class="n">dispatcher</span><span class="p">.</span><span class="k">go</span><span class="w"></span></code>. Kill all <code class="highlight">dlv</code> connect
+sessions, then kill and restart the <code class="highlight">dlv</code> headless container (this may also cause the kube-apiserver to restart). After
+you restarted the <code class="highlight">dlv</code> headless pod, connect to it with:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="s1">&#39;EOF&#39;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">bash</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">dlv</span><span class="w"> </span><span class="n">connect</span><span class="w"> </span><span class="o">--</span><span class="n">allow</span><span class="o">-</span><span class="n">non</span><span class="o">-</span><span class="n">terminal</span><span class="o">-</span><span class="n">interactive</span><span class="w"> </span><span class="o">-</span><span class="n">r</span><span class="w"> </span><span class="n">stdout</span><span class="p">:</span><span class="n">stdout</span><span class="o">.</span><span class="n">txt</span><span class="w"> </span><span class="mf">192.168</span><span class="o">.</span><span class="mf">18.22</span><span class="p">:</span><span class="mi">12345</span><span class="w"></span>
+<span class="n">echo</span><span class="w"> </span><span class="s2">&quot;trace pkg/securitycontextconstraints/sccadmission/admission.go:94&quot;</span><span class="w"></span>
+<span class="n">echo</span><span class="w"> </span><span class="s2">&quot;on 1 print pod.ObjectMeta.GenerateName&quot;</span><span class="w"></span>
+<span class="n">echo</span><span class="w"> </span><span class="s2">&quot;on 1 print pod.ObjectMeta.Annotations&quot;</span><span class="w"></span>
+<span class="n">echo</span><span class="w"> </span><span class="s2">&quot;on 1 print pod.Spec.Containers[0].SecurityContext&quot;</span><span class="w"></span>
+<span class="n">echo</span><span class="w"> </span><span class="s2">&quot;on 1 print specMutationAllowed&quot;</span><span class="w"></span>
+<span class="n">echo</span><span class="w"> </span><span class="s2">&quot;trace apiserver/pkg/admission/plugin/webhook/mutating/dispatcher.go:169&quot;</span><span class="w"></span>
+<span class="n">echo</span><span class="w"> </span><span class="s2">&quot;on 2 print invocation.Webhook.uid&quot;</span><span class="w"></span>
+<span class="n">echo</span><span class="w"> </span><span class="s2">&quot;on 2 print invocation.Kind&quot;</span><span class="w"></span>
+<span class="n">echo</span><span class="w"> </span><span class="s2">&quot;on 2 print changed&quot;</span><span class="w"></span>
+<span class="n">echo</span><span class="w"> </span><span class="s2">&quot;c&quot;</span><span class="w"></span>
+<span class="n">EOF</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p>You can clearly see here that after our custom webhook is invoked, the pod changed and <code class="highlight">reinvokeCtx.SetShouldReinvoke()</code>
+is called. This will trigger the <code class="highlight">reinvoker</code> to call the built-in mutating admission controllers to run again:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span>
+<span class="normal">89</span>
+<span class="normal">90</span>
+<span class="normal">91</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">&gt;</span><span class="w"> </span><span class="n">goroutine</span><span class="p">(</span><span class="mi">343475</span><span class="p">)</span><span class="err">:</span><span class="w"> </span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">vendor</span><span class="o">/</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">openshift</span><span class="o">/</span><span class="n">apiserver</span><span class="o">-</span><span class="n">library</span><span class="o">-</span><span class="k">go</span><span class="o">/</span><span class="n">pkg</span><span class="o">/</span><span class="n">securitycontextconstraints</span><span class="o">/</span><span class="n">sccadmission</span><span class="p">.(</span><span class="o">*</span><span class="k">constraint</span><span class="p">).</span><span class="n">Admit</span><span class="p">((</span><span class="ss">&quot;*k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission.constraint&quot;</span><span class="p">)(</span><span class="mh">0xc000e42840</span><span class="p">),</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">Context</span><span class="p">(</span><span class="o">*</span><span class="n">context</span><span class="p">.</span><span class="n">valueCtx</span><span class="p">)</span><span class="w"> </span><span class="mh">0xbeef000000000008</span><span class="p">,</span><span class="w"> </span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">vendor</span><span class="o">/</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">apiserver</span><span class="o">/</span><span class="n">pkg</span><span class="o">/</span><span class="n">admission</span><span class="p">.</span><span class="n">Attributes</span><span class="p">(</span><span class="o">*</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">vendor</span><span class="o">/</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">apiserver</span><span class="o">/</span><span class="n">pkg</span><span class="o">/</span><span class="n">admission</span><span class="p">.</span><span class="n">attributesRecord</span><span class="p">)</span><span class="w"> </span><span class="mh">0xbeef000000000108</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">pod</span><span class="p">.</span><span class="n">ObjectMeta</span><span class="p">.</span><span class="nl">GenerateName</span><span class="p">:</span><span class="w"> </span><span class="ss">&quot;fedora-test-with-annotation-6745dd89bf-&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="n">pod</span><span class="p">.</span><span class="n">ObjectMeta</span><span class="p">.</span><span class="nl">Annotations</span><span class="p">:</span><span class="w"> </span><span class="k">map</span><span class="o">[</span><span class="n">string</span><span class="o">]</span><span class="n">string</span><span class="w"> </span><span class="o">[</span><span class="n"></span>
+<span class="n">        &quot;webhook/capabilities&quot;: &quot;[\&quot;SETFCAP\&quot;,\&quot;CAP_NET_RAW\&quot;,\&quot;CAP_NET_ADMIN\&quot;</span><span class="o">]</span><span class="ss">&quot;,</span>
+<span class="ss">    ]</span>
+<span class="ss">    pod.Spec.Containers[0].SecurityContext: *k8s.io/kubernetes/pkg/apis/core.SecurityContext nil</span>
+<span class="ss">    specMutationAllowed: true</span>
+
+<span class="ss">&gt; goroutine(343495): k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/admission/plugin/webhook/mutating.(*mutatingDispatcher).Dispatch((&quot;</span><span class="o">*</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">vendor</span><span class="o">/</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">apiserver</span><span class="o">/</span><span class="n">pkg</span><span class="o">/</span><span class="n">admission</span><span class="o">/</span><span class="n">plugin</span><span class="o">/</span><span class="n">webhook</span><span class="o">/</span><span class="n">mutating</span><span class="p">.</span><span class="n">mutatingDispatcher</span><span class="ss">&quot;)(0xc000db0020), context.Context(*context.valueCtx) 0xbeef000000000008, k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/admission.Attributes(*k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/admission.attributesRecord) 0xbeef000000000108, k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/admission.ObjectInterfaces(*k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/endpoints/handlers.RequestScope) 0xbeef000000000208, (unreadable read out of bounds))</span>
+<span class="ss">    data.uid: &quot;</span><span class="n">webhook</span><span class="o">/</span><span class="n">webhook</span><span class="p">.</span><span class="n">example</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mi">0</span><span class="ss">&quot;</span>
+<span class="ss">    invocation.Kind: k8s.io/kubernetes/vendor/k8s.io/apimachinery/pkg/runtime/schema.GroupVersionKind {Group: &quot;&quot;, Version: &quot;</span><span class="n">v1</span><span class="ss">&quot;, Kind: &quot;</span><span class="n">Pod</span><span class="ss">&quot;}</span>
+<span class="ss">    changed: true</span>
+
+<span class="ss">&gt; goroutine(343556): k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission.(*constraint).Admit((&quot;</span><span class="o">*</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">vendor</span><span class="o">/</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">openshift</span><span class="o">/</span><span class="n">apiserver</span><span class="o">-</span><span class="n">library</span><span class="o">-</span><span class="k">go</span><span class="o">/</span><span class="n">pkg</span><span class="o">/</span><span class="n">securitycontextconstraints</span><span class="o">/</span><span class="n">sccadmission</span><span class="p">.</span><span class="k">constraint</span><span class="ss">&quot;)(0xc000e42840), context.Context(*context.valueCtx) 0xbeef000000000008, k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/admission.Attributes(*k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/admission.attributesRecord) 0xbeef000000000108)</span>
+<span class="ss">    pod.ObjectMeta.GenerateName: &quot;</span><span class="n">fedora</span><span class="o">-</span><span class="n">test</span><span class="o">-</span><span class="k">with</span><span class="o">-</span><span class="n">annotation</span><span class="o">-</span><span class="mi">6745</span><span class="n">dd89bf</span><span class="o">-</span><span class="ss">&quot;</span>
+<span class="ss">    pod.ObjectMeta.Annotations: map[string]string [</span>
+<span class="ss">        &quot;</span><span class="n">openshift</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">scc</span><span class="ss">&quot;: &quot;</span><span class="n">restricted</span><span class="ss">&quot;,</span>
+<span class="ss">        &quot;</span><span class="n">webhook</span><span class="o">/</span><span class="n">capabilities</span><span class="ss">&quot;: &quot;</span><span class="o">[</span><span class="n">\&quot;SETFCAP\&quot;,\&quot;CAP_NET_RAW\&quot;,\&quot;CAP_NET_ADMIN\&quot;</span><span class="o">]</span><span class="ss">&quot;,</span>
+<span class="ss">    ]</span>
+<span class="ss">    pod.Spec.Containers[0].SecurityContext: *k8s.io/kubernetes/pkg/apis/core.SecurityContext {</span>
+<span class="ss">        Capabilities: *k8s.io/kubernetes/pkg/apis/core.Capabilities {</span>
+<span class="ss">            Add: []k8s.io/kubernetes/pkg/apis/core.Capability len: 3, cap: 4, [</span>
+<span class="ss">                &quot;</span><span class="n">SETFCAP</span><span class="ss">&quot;,</span>
+<span class="ss">                &quot;</span><span class="n">CAP_NET_RAW</span><span class="ss">&quot;,</span>
+<span class="ss">                &quot;</span><span class="n">CAP_NET_ADMIN</span><span class="ss">&quot;,</span>
+<span class="ss">            ],</span>
+<span class="ss">            Drop: []k8s.io/kubernetes/pkg/apis/core.Capability len: 4, cap: 4, [&quot;</span><span class="k">KILL</span><span class="ss">&quot;,&quot;</span><span class="n">MKNOD</span><span class="ss">&quot;,&quot;</span><span class="n">SETGID</span><span class="ss">&quot;,&quot;</span><span class="n">SETUID</span><span class="ss">&quot;],},</span>
+<span class="ss">        Privileged: *bool nil,</span>
+<span class="ss">        SELinuxOptions: *k8s.io/kubernetes/pkg/apis/core.SELinuxOptions nil,</span>
+<span class="ss">        WindowsOptions: *k8s.io/kubernetes/pkg/apis/core.WindowsSecurityContextOptions nil,</span>
+<span class="ss">        RunAsUser: *1000770000,</span>
+<span class="ss">        RunAsGroup: *int64 nil,</span>
+<span class="ss">        RunAsNonRoot: *bool nil,</span>
+<span class="ss">        ReadOnlyRootFilesystem: *bool nil,</span>
+<span class="ss">        AllowPrivilegeEscalation: *bool nil,</span>
+<span class="ss">        ProcMount: *k8s.io/kubernetes/pkg/apis/core.ProcMountType nil,</span>
+<span class="ss">        SeccompProfile: *k8s.io/kubernetes/pkg/apis/core.SeccompProfile nil,}</span>
+<span class="ss">    specMutationAllowed: true</span>
+
+<span class="ss">&gt; goroutine(344347): k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission.(*constraint).Admit((&quot;</span><span class="o">*</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">vendor</span><span class="o">/</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">openshift</span><span class="o">/</span><span class="n">apiserver</span><span class="o">-</span><span class="n">library</span><span class="o">-</span><span class="k">go</span><span class="o">/</span><span class="n">pkg</span><span class="o">/</span><span class="n">securitycontextconstraints</span><span class="o">/</span><span class="n">sccadmission</span><span class="p">.</span><span class="k">constraint</span><span class="ss">&quot;)(0xc000e42840), context.Context(*context.valueCtx) 0xbeef000000000008, k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/admission.Attributes(*k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/admission.attributesRecord) 0xbeef000000000108)</span>
+<span class="ss">    pod.ObjectMeta.GenerateName: &quot;</span><span class="n">fedora</span><span class="o">-</span><span class="n">test</span><span class="o">-</span><span class="k">with</span><span class="o">-</span><span class="n">annotation</span><span class="o">-</span><span class="mi">6745</span><span class="n">dd89bf</span><span class="o">-</span><span class="ss">&quot;</span>
+<span class="ss">    pod.ObjectMeta.Annotations: map[string]string [</span>
+<span class="ss">        &quot;</span><span class="n">k8s</span><span class="p">.</span><span class="n">ovn</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="n">pod</span><span class="o">-</span><span class="n">networks</span><span class="ss">&quot;: &quot;</span><span class="err">{\</span><span class="ss">&quot;default\&quot;</span><span class="err">:{\</span><span class="ss">&quot;ip_addresses\&quot;</span><span class="err">:</span><span class="o">[</span><span class="n">\&quot;10.128.0.197/23\&quot;,\&quot;fd01:0:0:1::c2/64...+83 more&quot;,</span>
+<span class="n">        &quot;openshift.io/scc&quot;: &quot;privileged&quot;,</span>
+<span class="n">        &quot;webhook/capabilities&quot;: &quot;[\&quot;SETFCAP\&quot;,\&quot;CAP_NET_RAW\&quot;,\&quot;CAP_NET_ADMIN\&quot;</span><span class="o">]</span><span class="ss">&quot;,</span>
+<span class="ss">    ]</span>
+<span class="ss">    pod.Spec.Containers[0].SecurityContext: *k8s.io/kubernetes/pkg/apis/core.SecurityContext {</span>
+<span class="ss">        Capabilities: *k8s.io/kubernetes/pkg/apis/core.Capabilities {</span>
+<span class="ss">            Add: []k8s.io/kubernetes/pkg/apis/core.Capability len: 3, cap: 4, [</span>
+<span class="ss">                &quot;</span><span class="n">SETFCAP</span><span class="ss">&quot;,</span>
+<span class="ss">                &quot;</span><span class="n">CAP_NET_RAW</span><span class="ss">&quot;,</span>
+<span class="ss">                &quot;</span><span class="n">CAP_NET_ADMIN</span><span class="ss">&quot;,</span>
+<span class="ss">            ],</span>
+<span class="ss">            Drop: []k8s.io/kubernetes/pkg/apis/core.Capability len: 4, cap: 4, [&quot;</span><span class="k">KILL</span><span class="ss">&quot;,&quot;</span><span class="n">MKNOD</span><span class="ss">&quot;,&quot;</span><span class="n">SETGID</span><span class="ss">&quot;,&quot;</span><span class="n">SETUID</span><span class="ss">&quot;],},</span>
+<span class="ss">        Privileged: *bool nil,</span>
+<span class="ss">        SELinuxOptions: *k8s.io/kubernetes/pkg/apis/core.SELinuxOptions nil,</span>
+<span class="ss">        WindowsOptions: *k8s.io/kubernetes/pkg/apis/core.WindowsSecurityContextOptions nil,</span>
+<span class="ss">        RunAsUser: *1000770000,</span>
+<span class="ss">        RunAsGroup: *int64 nil,</span>
+<span class="ss">        RunAsNonRoot: *bool nil,</span>
+<span class="ss">        ReadOnlyRootFilesystem: *bool nil,</span>
+<span class="ss">        AllowPrivilegeEscalation: *bool nil,</span>
+<span class="ss">        ProcMount: *k8s.io/kubernetes/pkg/apis/core.ProcMountType nil,</span>
+<span class="ss">        SeccompProfile: *k8s.io/kubernetes/pkg/apis/core.SeccompProfile nil,}</span>
+<span class="ss">    specMutationAllowed: false</span>
+<span class="ss">&gt; goroutine(344875): k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission.(*constraint).Admit((&quot;</span><span class="o">*</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">vendor</span><span class="o">/</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">openshift</span><span class="o">/</span><span class="n">apiserver</span><span class="o">-</span><span class="n">library</span><span class="o">-</span><span class="k">go</span><span class="o">/</span><span class="n">pkg</span><span class="o">/</span><span class="n">securitycontextconstraints</span><span class="o">/</span><span class="n">sccadmission</span><span class="p">.</span><span class="k">constraint</span><span class="ss">&quot;)(0xc000e42840), context.Context(*context.valueCtx) 0xbeef000000000008, k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/admission.Attributes(*k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/admission.attributesRecord) 0xbeef000000000108)</span>
+<span class="ss">    pod.ObjectMeta.GenerateName: &quot;</span><span class="n">fedora</span><span class="o">-</span><span class="n">test</span><span class="o">-</span><span class="k">with</span><span class="o">-</span><span class="n">annotation</span><span class="o">-</span><span class="mi">6745</span><span class="n">dd89bf</span><span class="o">-</span><span class="ss">&quot;</span>
+<span class="ss">    pod.ObjectMeta.Annotations: map[string]string [</span>
+<span class="ss">        &quot;</span><span class="n">k8s</span><span class="p">.</span><span class="n">ovn</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="n">pod</span><span class="o">-</span><span class="n">networks</span><span class="ss">&quot;: &quot;</span><span class="err">{\</span><span class="ss">&quot;default\&quot;</span><span class="err">:{\</span><span class="ss">&quot;ip_addresses\&quot;</span><span class="err">:</span><span class="o">[</span><span class="n">\&quot;10.128.0.197/23\&quot;,\&quot;fd01:0:0:1::c2/64...+83 more&quot;,</span>
+<span class="n">        &quot;openshift.io/scc&quot;: &quot;privileged&quot;,</span>
+<span class="n">        &quot;webhook/capabilities&quot;: &quot;[\&quot;SETFCAP\&quot;,\&quot;CAP_NET_RAW\&quot;,\&quot;CAP_NET_ADMIN\&quot;</span><span class="o">]</span><span class="ss">&quot;,</span>
+<span class="ss">    ]</span>
+<span class="ss">    pod.Spec.Containers[0].SecurityContext: *k8s.io/kubernetes/pkg/apis/core.SecurityContext {</span>
+<span class="ss">        Capabilities: *k8s.io/kubernetes/pkg/apis/core.Capabilities {</span>
+<span class="ss">            Add: []k8s.io/kubernetes/pkg/apis/core.Capability len: 3, cap: 4, [</span>
+<span class="ss">                &quot;</span><span class="n">SETFCAP</span><span class="ss">&quot;,</span>
+<span class="ss">                &quot;</span><span class="n">CAP_NET_RAW</span><span class="ss">&quot;,</span>
+<span class="ss">                &quot;</span><span class="n">CAP_NET_ADMIN</span><span class="ss">&quot;,</span>
+<span class="ss">            ],</span>
+<span class="ss">            Drop: []k8s.io/kubernetes/pkg/apis/core.Capability len: 4, cap: 4, [&quot;</span><span class="k">KILL</span><span class="ss">&quot;,&quot;</span><span class="n">MKNOD</span><span class="ss">&quot;,&quot;</span><span class="n">SETGID</span><span class="ss">&quot;,&quot;</span><span class="n">SETUID</span><span class="err">&quot;]</span><span class="p">,</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nl">Privileged</span><span class="p">:</span><span class="w"> </span><span class="o">*</span><span class="n">bool</span><span class="w"> </span><span class="n">nil</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nl">SELinuxOptions</span><span class="p">:</span><span class="w"> </span><span class="o">*</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pkg</span><span class="o">/</span><span class="n">apis</span><span class="o">/</span><span class="n">core</span><span class="p">.</span><span class="n">SELinuxOptions</span><span class="w"> </span><span class="n">nil</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nl">WindowsOptions</span><span class="p">:</span><span class="w"> </span><span class="o">*</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pkg</span><span class="o">/</span><span class="n">apis</span><span class="o">/</span><span class="n">core</span><span class="p">.</span><span class="n">WindowsSecurityContextOptions</span><span class="w"> </span><span class="n">nil</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nl">RunAsUser</span><span class="p">:</span><span class="w"> </span><span class="o">*</span><span class="mi">1000770000</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nl">RunAsGroup</span><span class="p">:</span><span class="w"> </span><span class="o">*</span><span class="n">int64</span><span class="w"> </span><span class="n">nil</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nl">RunAsNonRoot</span><span class="p">:</span><span class="w"> </span><span class="o">*</span><span class="n">bool</span><span class="w"> </span><span class="n">nil</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nl">ReadOnlyRootFilesystem</span><span class="p">:</span><span class="w"> </span><span class="o">*</span><span class="n">bool</span><span class="w"> </span><span class="n">nil</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nl">AllowPrivilegeEscalation</span><span class="p">:</span><span class="w"> </span><span class="o">*</span><span class="n">bool</span><span class="w"> </span><span class="n">nil</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nl">ProcMount</span><span class="p">:</span><span class="w"> </span><span class="o">*</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pkg</span><span class="o">/</span><span class="n">apis</span><span class="o">/</span><span class="n">core</span><span class="p">.</span><span class="n">ProcMountType</span><span class="w"> </span><span class="n">nil</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nl">SeccompProfile</span><span class="p">:</span><span class="w"> </span><span class="o">*</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pkg</span><span class="o">/</span><span class="n">apis</span><span class="o">/</span><span class="n">core</span><span class="p">.</span><span class="n">SeccompProfile</span><span class="w"> </span><span class="n">nil</span><span class="p">,</span><span class="err">}</span><span class="w"></span>
+<span class="w">    </span><span class="nl">specMutationAllowed</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
 <h3 id="tldr">TL;DR</h3>
-<p>In short, when the pod was created, it did not need to run with the <code class="highlight">privileged</code> SCC and due to OpenShift's SCC matching
-rules, it fell back to the <code class="highlight">restricted</code> SCC. The <code class="highlight">restricted</code> SCC mutated the pod's containers and added
-<code class="highlight">securityContext.runAsUser: &lt;ID from project range&gt;</code>. Now, Istio's mutating admission controller injected its containers
-into the pod. The Istio containers require the pod to run with the <code class="highlight">privileged</code> SCC, so after this step, the pod was
-again sent through the SCC mutating admission controller where it was now assigned the <code class="highlight">privileged</code> SCC. The pod
-therefore showed up with the <code class="highlight">privileged</code> SCC when inspecting it with <code class="highlight">oc get pods</code>, but its containers were also
-assigned a <code class="highlight">securityContext.runAsUser</code> field that was actually mutated by the <code class="highlight">restricted</code> SCC which had been applied to
-the pod before the Istio mutation took place.</p>
+<p>In short, when our pod was created, it did not need to run with the <code class="highlight">privileged</code> SCC. Both the <code class="highlight">restricted</code> and the
+<code class="highlight">privileged</code> SCC have the same priority. Due to OpenShift's SCC matching rules, the pod was first matched by the
+<code class="highlight">restricted</code> SCC. The <code class="highlight">restricted</code> SCC mutated the pod's containers and added <code class="highlight">securityContext.runAsUser: &lt;ID from project range&gt;</code>.</p>
+<p>Now, Istio's mutating admission controller injected its containers into the pod. Because the Istio webhook modified the
+pod, Kubernetes triggers a reinvocation of all built-in mutating admission controllers.</p>
+<p>Istio's containers require the pod to run with the <code class="highlight">privileged</code> SCC, so when the SCC mutating admission controller ran
+a second time, it now assigned the <code class="highlight">privileged</code> SCC to the pod.</p>
+<p>The pod therefore showed up with the <code class="highlight">privileged</code> SCC when inspecting it with <code class="highlight">oc get pods</code>, but its containers were also
+assigned a <code class="highlight">securityContext.runAsUser</code> field that was actually mutated by the <code class="highlight">restricted</code> SCC which had been applied
+during a previous run of the SCC mutating admission plugin.</p>
 
   <hr>
 <div class="md-source-file">

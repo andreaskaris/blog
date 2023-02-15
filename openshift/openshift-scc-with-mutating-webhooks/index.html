@@ -2148,8 +2148,10 @@ This would also explain why we do not see the same symptoms when we use the <cod
 <h3 id="proving-our-hypothesis">Proving our hypothesis</h3>
 <p>Unfortunately, we cannot simply <a href="https://access.redhat.com/solutions/3909751">configure TraceAll logging</a> for the
 <code class="highlight">kube-apiserver</code>, as the logs are too coarse even with <code class="highlight">TraceAll</code> enabled.</p>
-<p>Instead, we will build a custom OpenShift <code class="highlight">kube-apiserver</code> with debug flags enabled and deploy it in a test cluster.
-We will then use the delve (<code class="highlight">dlv</code>) debugger to analyze the <code class="highlight">kube-apiserver</code> process.</p>
+<p>Instead, we will build a custom OpenShift <code class="highlight">kube-apiserver</code> with debug flags enabled and deploy it in a Single Node
+OpenShift (SNO) test cluster. By using SNO, we can focus on a single instance of the <code class="highlight">kube-apiserver</code> during our
+analysis.</p>
+<p>We will then use the delve (<code class="highlight">dlv</code>) debugger to analyze the <code class="highlight">kube-apiserver</code> process.</p>
 <h4 id="building-a-custom-kube-apiserver-for-debugging">Building a custom kube-apiserver for debugging</h4>
 <p>First, we must clone <a href="https://github.com/openshift/kubernetes">https://github.com/openshift/kubernetes</a>.
 We then checkout the target branch of our cluster, in this case OpenShift 4.10:

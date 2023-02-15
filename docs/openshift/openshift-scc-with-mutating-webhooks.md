@@ -790,9 +790,9 @@ is called. This will trigger the `reinvoker` to call the built-in mutating admis
 	specMutationAllowed: false
 ~~~
 
-### TL;DR
+### Conclusion
 
-In short, when our pod was created, it did not need to run with the `privileged` SCC. Both the `restricted` and the
+In conclusion, when our pod was created, it did not need to run with the `privileged` SCC. Both the `restricted` and the
 `privileged` SCC have the same priority. Due to OpenShift's SCC matching rules, the pod was first matched by the
 `restricted` SCC. The `restricted` SCC mutated the pod's containers and added `securityContext.runAsUser: <ID from project range>`.
 

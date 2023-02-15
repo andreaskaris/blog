@@ -63,7 +63,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#sccs-and-mutating-webhooks-a-lesson-learned" class="md-skip">
+        <a href="#sccs-mutating-webhooks-and-admission-controller-reinvocation-a-lesson-learned" class="md-skip">
           Skip to content
         </a>
       
@@ -1176,6 +1176,8 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
+        
+      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           SCCs and mutating webhooks - a lesson learned
@@ -1192,6 +1194,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -1200,14 +1204,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#sccs-and-mutating-webhooks-a-lesson-learned" class="md-nav__link">
-    SCCs and mutating webhooks - a lesson learned
-  </a>
-  
-    <nav class="md-nav" aria-label="SCCs and mutating webhooks - a lesson learned">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#scc-basics" class="md-nav__link">
     SCC basics
   </a>
@@ -1233,36 +1229,36 @@
     </nav>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#putting-scc-prioritization-and-scc-runasuser-strategies-together" class="md-nav__link">
     Putting SCC prioritization and SCC runAsUser strategies together
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#mutating-webhooks" class="md-nav__link">
     Mutating webhooks
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#putting-scc-prioritization-scc-runasuser-strategies-and-mutating-webhooks-together" class="md-nav__link">
     Putting SCC prioritization, SCC runAsUser strategies and mutating webhooks together
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#formulating-a-hypothesis" class="md-nav__link">
     Formulating a hypothesis
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#proving-our-hypothesis" class="md-nav__link">
     Proving our hypothesis
   </a>
@@ -1302,16 +1298,11 @@
     </nav>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#conclusion" class="md-nav__link">
     Conclusion
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1538,9 +1529,8 @@
                 
 
 
-  <h1>SCCs and mutating webhooks - a lesson learned</h1>
-
-<h2 id="sccs-and-mutating-webhooks-a-lesson-learned">SCCs and mutating webhooks - a lesson learned</h2>
+<h1 id="sccs-mutating-webhooks-and-admission-controller-reinvocation-a-lesson-learned">SCCs, mutating webhooks and admission controller reinvocation - a lesson learned</h1>
+<p>Author: Andreas Karis</p>
 <p>Recently, a partner of ours observed a strange behavior in their OpenShift cluster. For a specific application, this
 partner needs the pod to run with the UID that was configured by the application container image:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>

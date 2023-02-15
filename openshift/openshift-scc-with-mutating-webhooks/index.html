@@ -1304,8 +1304,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#tldr" class="md-nav__link">
-    TL;DR
+  <a href="#conclusion" class="md-nav__link">
+    Conclusion
   </a>
   
 </li>
@@ -2687,8 +2687,8 @@ is called. This will trigger the <code class="highlight">reinvoker</code> to cal
 <span class="w">    </span><span class="nl">specMutationAllowed</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="w"></span>
 </code></pre></div>
 </td></tr></table></p>
-<h3 id="tldr">TL;DR</h3>
-<p>In short, when our pod was created, it did not need to run with the <code class="highlight">privileged</code> SCC. Both the <code class="highlight">restricted</code> and the
+<h3 id="conclusion">Conclusion</h3>
+<p>In conclusion, when our pod was created, it did not need to run with the <code class="highlight">privileged</code> SCC. Both the <code class="highlight">restricted</code> and the
 <code class="highlight">privileged</code> SCC have the same priority. Due to OpenShift's SCC matching rules, the pod was first matched by the
 <code class="highlight">restricted</code> SCC. The <code class="highlight">restricted</code> SCC mutated the pod's containers and added <code class="highlight">securityContext.runAsUser: &lt;ID from project range&gt;</code>.</p>
 <p>Now, Istio's mutating admission controller injected its containers into the pod. Because the Istio webhook modified the

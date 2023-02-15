@@ -353,15 +353,9 @@ A pod from the deployment above will be rewritten by the mutating webhook to:
 (...)
 ~~~
 
-
 ### Putting SCC prioritization, SCC runAsUser strategies and mutating webhooks together
 
-As a prerequisite for this section, we deployed the aforementioned mutating webhook. We also increased logging
-for the openshift-apiserver and kubeapiserver to `TraceAll` as we will analyze the API server logs a bit later:
-~~~
-oc patch openshiftapiserver.operator/cluster --type=json -p '[{"op": "replace", "path": "/spec/logLevel", "value": "TraceAll" }]'
-oc patch kubeapiserver.operator/cluster --type=json -p '[{"op": "replace", "path": "/spec/logLevel", "value": "TraceAll" }]'
-~~~
+As a prerequisite for this section, we deployed the aforementioned mutating webhook.
 
 With the mutating webhook in place, let's create the following deployment:
 ~~~
@@ -438,11 +432,200 @@ fedora-test-with-capabilities-5f667b698d-tbz4t   privileged   <none>
 This seemingly contradicts what we said earlier about the `privileged` SCC: it should not manipulate
 `securityContext.runAsUser`.
 
-Interestingly, when the pod is created, it matches the `restricted` SCC which mutates
-the pod's containers and adds `securityContext.runAsUser: <ID from project range>`.
+### Formulating a hypothesis
+
+Our hypothesis: when the pod is created, it matches the `restricted` SCC which mutates the pod's containers and adds
+`securityContext.runAsUser: <ID from project range>`.
 Then, the mutating admission controller injects the new capabilities into the pod's containers. After this step, the pod
 now requires to be `privileged` as it cannot run with the more restrictive set of rules from the `restricted` SCC.
-Therefore, it is again sent through the SCC mutating admission controller where it is now assigned the `privileged` SCC. 
+Therefore, it is again sent through the SCC mutating admission controller where it is now assigned the `privileged` SCC.
+This would also explains why we do not see the same symptoms when we use the `anyuid` SCC.
+
+### Proving our hypothesis
+
+Unfortunately, we cannot simply [configure TraceAll logging](https://access.redhat.com/solutions/3909751) for the
+`kube-apiserver`, as the logs are too coarse even with `TraceAll` enabled.
+
+Instead, we will build a custom OpenShift `kube-apiserver` with debug flags enabled and deploy it in a test cluster.
+We will then use delve to analyze the `kube-apiserver` process.
+
+#### Building a custom kube-apiserver for debugging
+
+We must clone [https://github.com/openshift/kubernetes](https://github.com/openshift/kubernetes).
+We then checkout the target branch, in this case OpenShift 4.10:
+~~~
+git checkout origin/release-4.10 -b debug-4.10
+~~~
+
+We then modify the `Dockerfile` and instruct it to build an API server with debug flags:
+~~~
+$ git diff
+diff --git a/openshift-hack/images/hyperkube/Dockerfile.rhel b/openshift-hack/images/hyperkube/Dockerfile.rhel
+index 4e9d88a343f..5df544b7c21 100644
+--- a/openshift-hack/images/hyperkube/Dockerfile.rhel
++++ b/openshift-hack/images/hyperkube/Dockerfile.rhel
+@@ -1,7 +1,7 @@
+ FROM registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.17-openshift-4.10 AS builder
+ WORKDIR /go/src/k8s.io/kubernetes
+ COPY . .
+-RUN make WHAT='cmd/kube-apiserver cmd/kube-controller-manager cmd/kube-scheduler cmd/kubelet cmd/watch-termination' && \
++RUN make GOLDFLAGS="" WHAT='cmd/kube-apiserver cmd/kube-controller-manager cmd/kube-scheduler cmd/kubelet cmd/watch-termination' && \
+     mkdir -p /tmp/build && \
+     cp openshift-hack/images/hyperkube/hyperkube /tmp/build && \
+     cp /go/src/k8s.io/kubernetes/_output/local/bin/linux/$(go env GOARCH)/{kube-apiserver,kube-controller-manager,kube-scheduler,kubelet,watch-termination} \
+~~~
+
+We then build and push the image to a public container registry:
+~~~
+podman build -t quay.io/akaris/hyperkube:debug-4.10 -f openshift-hack/images/hyperkube/Dockerfile.rhel .
+podman push quay.io/akaris/hyperkube:debug-4.10
+~~~
+
+We create two bach helper functions to simplify image deployment:
+~~~
+custom_kao ()
+{
+    KUBEAPI_IMAGE=$1;
+    update_kao;
+    oc scale deployment -n openshift-kube-apiserver-operator kube-apiserver-operator --replicas=0;
+    oc patch deployment -n openshift-kube-apiserver-operator kube-apiserver-operator -p '{"spec":{"template":{"spec":{"containers":[{"name":"kube-apiserver-operator","env":[{"name":"IMAGE","value":"'${KUBEAPI_IMAGE}'"}]}]}}}}';
+    oc describe deployment -n openshift-kube-apiserver-operator kube-apiserver-operator | grep --color=auto IMAGE;
+    sleep 10;
+    oc scale -n openshift-network-operator deployment.apps/network-operator --replicas=1;
+    oc scale deployment -n openshift-kube-apiserver-operator kube-apiserver-operator --replicas=1
+}
+update_kao ()
+{
+    oc patch clusterversion version --type json -p '[{"op":"add","path":"/spec/overrides","value":[{"kind":"Deployment","group":"apps","name":"kube-apiserver-operator","namespace":"openshift-kube-apiserver-operator","unmanaged":true}]}]'
+}
+~~~
+
+Last but not least, we instruct OpenShift to deploy the `kube-apiserver` with our custom image:
+~~~
+custom_kao quay.io/akaris/hyperkube:debug-4.10
+~~~
+
+Then, we wait for the `kube-apiserver` to deploy with our image:
+~~~
+$ oc get pods -n openshift-kube-apiserver -l apiserver=true -o yaml | grep debug-4.10
+      image: quay.io/akaris/hyperkube:debug-4.10
+      image: quay.io/akaris/hyperkube:debug-4.10
+      image: quay.io/akaris/hyperkube:debug-4.10
+      image: quay.io/akaris/hyperkube:debug-4.10
+$ oc get pods -n openshift-kube-apiserver -l apiserver=true
+NAME                                   READY   STATUS    RESTARTS   AGE
+kube-apiserver-sno.workload.bos2.lab   5/5     Running   0          55s
+~~~
+
+#### Building and running a dlv container image for debugging
+
+We are going to use a [custom container image](https://github.com/andreaskaris/dlv-container) to run the `dlv` golang
+debugger. Because dlv will pause the `kube-apiserver`, we cannot use `oc debug/node`. Instaed, we will run the image
+directly on the node with podman.
+
+~~~
+$ NODEIP=192.168.18.22
+$ ssh core@${NODEIP}
+$ sudo -i
+# NODEIP=192.168.18.22
+# podman run \
+    --privileged \
+    --pid=host --ipc=host --network=host \
+    --rm \
+    quay.io/akaris/dlv-container:1.20.1 \
+    dlv attach --headless --accept-multiclient --continue --listen ${NODEIP}:12345 $(pidof kube-apiserver) 
+~~~
+
+#### Using dlv to analyze the kube-apiserver
+
+SCC mutations are executed at the following code:
+* [https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccadmission/admission.go#L94](https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccadmission/admission.go#L94)
+
+Therefore, we can connect to dlv which currently runs in headless mode and set a breakpoint at that location, and print
+the relevant pod variables:
+~~~
+cat <<'EOF' | /bin/bash | dlv connect --allow-non-terminal-interactive 192.168.18.22:12345
+echo "break pkg/securitycontextconstraints/sccadmission/admission.go:94"
+echo "c"
+while true; do
+  echo "print pod.ObjectMeta.GenerateName"
+  echo "print pod.ObjectMeta.Annotations"
+  echo "print pod.Spec.Containers[0].SecurityContext"
+  echo "print specMutationAllowed"
+  echo "c"
+done
+EOF
+~~~
+
+Now, let's create our deployment which triggers the webhook:
+~~~
+oc apply -f fedora-test-with-annotation.yaml
+~~~
+
+The output proves our theory:
+~~~
+> k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission.(*constraint).Admit() /go/src/k8s.io/kubernetes/_output/local/go/src/k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission/admission.go:94 (hits goroutine(2230542):1 total:14) (PC: 0x3998490)
+Warning: debugging optimized function
+"fedora-test-with-annotation-6745dd89bf-"
+map[string]string [
+	"webhook/capabilities": "[\"SETFCAP\",\"CAP_NET_RAW\",\"CAP_NET_ADMIN\"]",
+]
+*k8s.io/kubernetes/pkg/apis/core.SecurityContext nil
+true
+> k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission.(*constraint).Admit() /go/src/k8s.io/kubernetes/_output/local/go/src/k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission/admission.go:94 (hits goroutine(2230672):1 total:15) (PC: 0x3998490)
+Warning: debugging optimized function
+"fedora-test-with-annotation-6745dd89bf-"
+map[string]string [
+	"openshift.io/scc": "restricted",
+	"webhook/capabilities": "[\"SETFCAP\",\"CAP_NET_RAW\",\"CAP_NET_ADMIN\"]",
+]
+*k8s.io/kubernetes/pkg/apis/core.SecurityContext {
+	Capabilities: *k8s.io/kubernetes/pkg/apis/core.Capabilities {
+		Add: []k8s.io/kubernetes/pkg/apis/core.Capability len: 3, cap: 4, [
+			"SETFCAP",
+			"CAP_NET_RAW",
+			"CAP_NET_ADMIN",
+		],
+		Drop: []k8s.io/kubernetes/pkg/apis/core.Capability len: 4, cap: 4, ["KILL","MKNOD","SETGID","SETUID"],},
+	Privileged: *bool nil,
+	SELinuxOptions: *k8s.io/kubernetes/pkg/apis/core.SELinuxOptions nil,
+	WindowsOptions: *k8s.io/kubernetes/pkg/apis/core.WindowsSecurityContextOptions nil,
+	RunAsUser: *1000770000,
+	RunAsGroup: *int64 nil,
+	RunAsNonRoot: *bool nil,
+	ReadOnlyRootFilesystem: *bool nil,
+	AllowPrivilegeEscalation: *bool nil,
+	ProcMount: *k8s.io/kubernetes/pkg/apis/core.ProcMountType nil,
+	SeccompProfile: *k8s.io/kubernetes/pkg/apis/core.SeccompProfile nil,}
+true
+> k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission.(*constraint).Admit() /go/src/k8s.io/kubernetes/_output/local/go/src/k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission/admission.go:94 (hits goroutine(2232623):1 total:16) (PC: 0x3998490)
+Warning: debugging optimized function
+"fedora-test-with-annotation-6745dd89bf-"
+map[string]string [
+	"k8s.ovn.org/pod-networks": "{\"default\":{\"ip_addresses\":[\"10.128.0.63/23\",\"fd01:0:0:1::3e/64\"],\"mac_address\":\"0a:58:0a:80:00:3f\",\"gateway_ips\":[\"10.128.0.1\",\"fd01:0:0:1::1\"]}}",
+	"openshift.io/scc": "privileged",
+	"webhook/capabilities": "[\"SETFCAP\",\"CAP_NET_RAW\",\"CAP_NET_ADMIN\"]",
+]
+*k8s.io/kubernetes/pkg/apis/core.SecurityContext {
+	Capabilities: *k8s.io/kubernetes/pkg/apis/core.Capabilities {
+		Add: []k8s.io/kubernetes/pkg/apis/core.Capability len: 3, cap: 4, [
+			"SETFCAP",
+			"CAP_NET_RAW",
+			"CAP_NET_ADMIN",
+		],
+		Drop: []k8s.io/kubernetes/pkg/apis/core.Capability len: 4, cap: 4, ["KILL","MKNOD","SETGID","SETUID"],},
+	Privileged: *bool nil,
+	SELinuxOptions: *k8s.io/kubernetes/pkg/apis/core.SELinuxOptions nil,
+	WindowsOptions: *k8s.io/kubernetes/pkg/apis/core.WindowsSecurityContextOptions nil,
+	RunAsUser: *1000770000,
+	RunAsGroup: *int64 nil,
+	RunAsNonRoot: *bool nil,
+	ReadOnlyRootFilesystem: *bool nil,
+	AllowPrivilegeEscalation: *bool nil,
+	ProcMount: *k8s.io/kubernetes/pkg/apis/core.ProcMountType nil,
+	SeccompProfile: *k8s.io/kubernetes/pkg/apis/core.SeccompProfile nil,}
+false
+~~~
 
 ### TL;DR
 

@@ -569,7 +569,8 @@ SCC admission and mutation. We will insert a breakpoint here for further analysi
 The documentation about [Reinvocation policy](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#reinvocation-policy)
 points us to [https://issue.k8s.io/64333](https://issue.k8s.io/64333). The [PR 78080](https://github.com/kubernetes/kubernetes/pull/78080/commits)
 addressed the issue. The code that interests us here is in
-[https://github.com/openshift/kubernetes/blob/release-4.10/staging/src/k8s.io/apiserver/pkg/admission/plugin/webhook/mutating/dispatcher.go#L169](https://github.com/openshift/kubernetes/blob/release-4.10/staging/src/k8s.io/apiserver/pkg/admission/plugin/webhook/mutating/dispatcher.go#L169):
+[https://github.com/openshift/kubernetes/blob/release-4.10/staging/src/k8s.io/apiserver/pkg/admission/plugin/webhook/mutating/dispatcher.go#L169](https://github.com/openshift/kubernetes/blob/release-4.10/staging/src/k8s.io/apiserver/pkg/admission/plugin/webhook/mutating/dispatcher.go#L169) and it's worth setting another tracepoint at this location,
+too:
 ~~~
 		if changed {
 			// Patch had changed the object. Prepare to reinvoke all previous webhooks that are eligible for re-invocation.

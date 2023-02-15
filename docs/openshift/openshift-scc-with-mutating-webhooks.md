@@ -447,17 +447,17 @@ Unfortunately, we cannot simply [configure TraceAll logging](https://access.redh
 `kube-apiserver`, as the logs are too coarse even with `TraceAll` enabled.
 
 Instead, we will build a custom OpenShift `kube-apiserver` with debug flags enabled and deploy it in a test cluster.
-We will then use delve to analyze the `kube-apiserver` process.
+We will then use the delve (`dlv`) debugger to analyze the `kube-apiserver` process.
 
 #### Building a custom kube-apiserver for debugging
 
-We must clone [https://github.com/openshift/kubernetes](https://github.com/openshift/kubernetes).
-We then checkout the target branch, in this case OpenShift 4.10:
+First, we must clone [https://github.com/openshift/kubernetes](https://github.com/openshift/kubernetes).
+We then checkout the target branch of our cluster, in this case OpenShift 4.10:
 ~~~
 git checkout origin/release-4.10 -b debug-4.10
 ~~~
 
-We then modify the `Dockerfile` and instruct it to build an API server with debug flags:
+We then modify the `Dockerfile` and instruct the image build process to build an API server with debug flags enabled:
 ~~~
 $ git diff
 diff --git a/openshift-hack/images/hyperkube/Dockerfile.rhel b/openshift-hack/images/hyperkube/Dockerfile.rhel
@@ -481,7 +481,7 @@ podman build -t quay.io/akaris/hyperkube:debug-4.10 -f openshift-hack/images/hyp
 podman push quay.io/akaris/hyperkube:debug-4.10
 ~~~
 
-We create two bach helper functions to simplify image deployment:
+We create two bash helper functions to simplify image deployment:
 ~~~
 custom_kao ()
 {
@@ -520,7 +520,7 @@ kube-apiserver-sno.workload.bos2.lab   5/5     Running   0          55s
 #### Building and running a dlv container image for debugging
 
 We are going to use a [custom container image](https://github.com/andreaskaris/dlv-container) to run the `dlv` golang
-debugger. Because dlv will pause the `kube-apiserver`, we cannot use `oc debug/node`. Instaed, we will run the image
+debugger. Because `dlv` will pause the `kube-apiserver`, we cannot use `oc debug/node`. Instead, we will run the image
 directly on the node with podman.
 
 ~~~
@@ -536,13 +536,31 @@ $ sudo -i
     dlv attach --headless --accept-multiclient --continue --listen ${NODEIP}:12345 $(pidof kube-apiserver) 
 ~~~
 
-#### Using dlv to analyze the kube-apiserver
+The above command will start `dlv` in headless mode. It will listen on `${NODEIP}:12345`. In the next step, we will
+connect to the `dlv` headless server with `dlv connect`.
 
-SCC mutations are executed at the following code:
+#### Identifying interesting code sections
+
+For the SCC `RUNASUSER` strategies, we are interested in code from the `apiserver-library`.
+
+For example, the `runAsAny` strategy is defined here:
+
+* [https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/user/runasany.go#L22](https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/user/runasany.go#L22)
+
+We can follow up the stack until we get to the `security.openshift.io/SecurityContextConstraint` admission plugin:
+
+* [https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccmatching/provider.go#L159](https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccmatching/provider.go#L159)
+* [https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccmatching/matcher.go#L117](https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccmatching/matcher.go#L117)
+* [https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccadmission/admission.go#L259](https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccadmission/admission.go#L259)
 * [https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccadmission/admission.go#L94](https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccadmission/admission.go#L94)
 
-Therefore, we can connect to dlv which currently runs in headless mode and set a breakpoint at that location, and print
-the relevant pod variables:
+The code that interests us most is in `admission.go:94`. Function `computeSecurityContext` is the entrypoint for
+SCC admission and mutation. We will insert a breakpoint here for further analysis.
+
+#### Using dlv to analyze the kube-apiserver
+
+Next, connect to the headless `dlv` server, set a breakpoint at `admission.go:94`, and print the relevant pod variables
+whenever we get to the breakpoint:
 ~~~
 cat <<'EOF' | /bin/bash | dlv connect --allow-non-terminal-interactive 192.168.18.22:12345
 echo "break pkg/securitycontextconstraints/sccadmission/admission.go:94"
@@ -562,8 +580,11 @@ Now, let's create our deployment which triggers the webhook:
 oc apply -f fedora-test-with-annotation.yaml
 ~~~
 
-The output proves our theory:
+As you can see, admission plugin `security.openshift.io/SecurityContextConstraint` mutates the pod twice. We can see
+that the pod's security context is `restricted` after the first mutation, but before the second mutation.
+At this point in time, `securityContext.runAsUser` is already injected into the pod's container definition:
 ~~~
+( ... before first SCC mutation ... )
 > k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission.(*constraint).Admit() /go/src/k8s.io/kubernetes/_output/local/go/src/k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission/admission.go:94 (hits goroutine(2230542):1 total:14) (PC: 0x3998490)
 Warning: debugging optimized function
 "fedora-test-with-annotation-6745dd89bf-"
@@ -572,11 +593,13 @@ map[string]string [
 ]
 *k8s.io/kubernetes/pkg/apis/core.SecurityContext nil
 true
+
+(... before second SCC mutation ...)
 > k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission.(*constraint).Admit() /go/src/k8s.io/kubernetes/_output/local/go/src/k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission/admission.go:94 (hits goroutine(2230672):1 total:15) (PC: 0x3998490)
 Warning: debugging optimized function
 "fedora-test-with-annotation-6745dd89bf-"
 map[string]string [
-	"openshift.io/scc": "restricted",
+	"openshift.io/scc": "restricted",      # <-------- set by first SCC mutation
 	"webhook/capabilities": "[\"SETFCAP\",\"CAP_NET_RAW\",\"CAP_NET_ADMIN\"]",
 ]
 *k8s.io/kubernetes/pkg/apis/core.SecurityContext {
@@ -590,7 +613,7 @@ map[string]string [
 	Privileged: *bool nil,
 	SELinuxOptions: *k8s.io/kubernetes/pkg/apis/core.SELinuxOptions nil,
 	WindowsOptions: *k8s.io/kubernetes/pkg/apis/core.WindowsSecurityContextOptions nil,
-	RunAsUser: *1000770000,
+	RunAsUser: *1000770000,               # <-------- set by first SCC mutation
 	RunAsGroup: *int64 nil,
 	RunAsNonRoot: *bool nil,
 	ReadOnlyRootFilesystem: *bool nil,
@@ -598,12 +621,19 @@ map[string]string [
 	ProcMount: *k8s.io/kubernetes/pkg/apis/core.ProcMountType nil,
 	SeccompProfile: *k8s.io/kubernetes/pkg/apis/core.SeccompProfile nil,}
 true
+~~~
+
+And we can see that the security context is elevated to `privileged` after the second SCC mutation.
+The third invocation of function `computeSecurityContext` is purely for validation purposes and does not mutate the
+object:
+~~~
+( ... after second SCC mutation, before validation step ... )
 > k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission.(*constraint).Admit() /go/src/k8s.io/kubernetes/_output/local/go/src/k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission/admission.go:94 (hits goroutine(2232623):1 total:16) (PC: 0x3998490)
 Warning: debugging optimized function
 "fedora-test-with-annotation-6745dd89bf-"
 map[string]string [
 	"k8s.ovn.org/pod-networks": "{\"default\":{\"ip_addresses\":[\"10.128.0.63/23\",\"fd01:0:0:1::3e/64\"],\"mac_address\":\"0a:58:0a:80:00:3f\",\"gateway_ips\":[\"10.128.0.1\",\"fd01:0:0:1::1\"]}}",
-	"openshift.io/scc": "privileged",
+	"openshift.io/scc": "privileged",      # <----------- second mutation set the SCC to privileged
 	"webhook/capabilities": "[\"SETFCAP\",\"CAP_NET_RAW\",\"CAP_NET_ADMIN\"]",
 ]
 *k8s.io/kubernetes/pkg/apis/core.SecurityContext {

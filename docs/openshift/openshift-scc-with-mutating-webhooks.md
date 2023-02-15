@@ -713,7 +713,7 @@ Another way to look at this is by tracing both `admission.go` and the webhooks' 
 sessions, then kill and restart the `dlv` headless container (this may also cause the kube-apiserver to restart). After
 you restarted the `dlv` headless pod, connect to it with:
 ~~~
-cat <<'EOF' | /bin/bash | dlv connect --allow-non-terminal-interactive -r stdout:stdout.txt 192.168.18.22:12345
+cat <<'EOF' | /bin/bash | dlv connect --allow-non-terminal-interactive 192.168.18.22:12345
 echo "trace pkg/securitycontextconstraints/sccadmission/admission.go:94"
 echo "on 1 print pod.ObjectMeta.GenerateName"
 echo "on 1 print pod.ObjectMeta.Annotations"

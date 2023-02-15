@@ -439,7 +439,13 @@ Our hypothesis: when the pod is created, it matches the `restricted` SCC which m
 Then, the mutating admission controller injects the new capabilities into the pod's containers. After this step, the pod
 now requires to be `privileged` as it cannot run with the more restrictive set of rules from the `restricted` SCC.
 Therefore, it is again sent through the SCC mutating admission controller where it is now assigned the `privileged` SCC.
-This would also explains why we do not see the same symptoms when we use the `anyuid` SCC.
+This would also explain why we do not see the same symptoms when we use the `anyuid` SCC.
+
+Our hypothesis is backed by [the Kubernetes documentation](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#reinvocation-policy):
+~~~
+To allow mutating admission plugins to observe changes made by other plugins, built-in mutating admission plugins are
+re-run if a mutating webhook modifies an object (...)
+~~~
 
 ### Proving our hypothesis
 

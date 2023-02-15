@@ -564,7 +564,34 @@ We can follow up the stack until we get to the `security.openshift.io/SecurityCo
 * [https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccadmission/admission.go#L94](https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccadmission/admission.go#L94)
 
 The code that interests us most is in `admission.go:94`. Function `computeSecurityContext` is the entrypoint for
-SCC admission and mutation. We will insert a breakpoint here for further analysis.
+SCC admission and mutation. We will insert a breakpoint here for further analysis:
+~~~
+// Admit determines if the pod should be admitted based on the requested security context
+// and the available SCCs.
+//
+// 1.  Find SCCs for the user.
+// 2.  Find SCCs for the SA.  If there is an error retrieving SA SCCs it is not fatal.
+// 3.  Remove duplicates between the user/SA SCCs.
+// 4.  Create the providers, includes setting pre-allocated values if necessary.
+// 5.  Try to generate and validate an SCC with providers.  If we find one then admit the pod
+//     with the validated SCC.  If we don't find any reject the pod and give all errors from the
+//     failed attempts.
+// On updates, the BeforeUpdate of the pod strategy only zeroes out the status.  That means that
+// any change that claims the pod is no longer privileged will be removed.  That should hold until
+// we get a true old/new set of objects in.
+func (c *constraint) Admit(ctx context.Context, a admission.Attributes, _ admission.ObjectInterfaces) error {
+	if ignore, err := shouldIgnore(a); err != nil {
+		return err
+	} else if ignore {
+		return nil
+	}
+	pod := a.GetObject().(*coreapi.Pod)
+
+	// TODO(liggitt): allow spec mutation during initializing updates?
+	specMutationAllowed := a.GetOperation() == admission.Create
+
+	allowedPod, sccName, validationErrs, err := c.computeSecurityContext(ctx, a, pod, specMutationAllowed, "")
+~~~
 
 The documentation about [Reinvocation policy](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#reinvocation-policy)
 points us to [https://issue.k8s.io/64333](https://issue.k8s.io/64333). The [PR 78080](https://github.com/kubernetes/kubernetes/pull/78080/commits)

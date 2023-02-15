@@ -1,4 +1,6 @@
-## SCCs, mutating webhooks and admission controller reinvocation - a lesson learned
+# SCCs, mutating webhooks and admission controller reinvocation - a lesson learned
+
+Author: Andreas Karis
 
 Recently, a partner of ours observed a strange behavior in their OpenShift cluster. For a specific application, this
 partner needs the pod to run with the UID that was configured by the application container image:

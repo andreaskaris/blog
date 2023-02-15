@@ -2,7 +2,7 @@ Welcome to my blog. Use the menu on the left to browse around.
 
 ## Latest posts
 
-* [SCCs and mutating webhooks - a lesson learned(openshift/openshift-scc-with-mutating-webhooks) 2023-02-13
+* [SCCs and mutating webhooks - a lesson learned](openshift/openshift-scc-with-mutating-webhooks) 2023-02-13
 * [Useful network commands](networking/useful-commands) ** updated 2023-01-17
 * [BPF and tcpdump](networking/bpf-and-tcpdump/) ** updated 2022-11-18
 * [Building custom release images for OpenShift](openshift/ocp-custom-release-image.md) 2022-10-19

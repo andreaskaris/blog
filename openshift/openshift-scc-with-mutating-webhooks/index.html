@@ -2138,7 +2138,13 @@ fedora-test-with-capabilities-5f667b698d-tbz4t   privileged   &lt;none&gt;
 Then, the mutating admission controller injects the new capabilities into the pod's containers. After this step, the pod
 now requires to be <code class="highlight">privileged</code> as it cannot run with the more restrictive set of rules from the <code class="highlight">restricted</code> SCC.
 Therefore, it is again sent through the SCC mutating admission controller where it is now assigned the <code class="highlight">privileged</code> SCC.
-This would also explains why we do not see the same symptoms when we use the <code class="highlight">anyuid</code> SCC.</p>
+This would also explain why we do not see the same symptoms when we use the <code class="highlight">anyuid</code> SCC.</p>
+<p>Our hypothesis is backed by <a href="https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#reinvocation-policy">the Kubernetes documentation</a>:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">To</span> <span class="nv">allow</span> <span class="nv">mutating</span> <span class="nv">admission</span> <span class="nv">plugins</span> <span class="nv">to</span> <span class="nv">observe</span> <span class="nv">changes</span> <span class="nv">made</span> <span class="nv">by</span> <span class="nv">other</span> <span class="nv">plugins</span>, <span class="nv">built</span><span class="o">-</span><span class="nv">in</span> <span class="nv">mutating</span> <span class="nv">admission</span> <span class="nv">plugins</span> <span class="nv">are</span>
+<span class="nv">re</span><span class="o">-</span><span class="nv">run</span> <span class="k">if</span> <span class="nv">a</span> <span class="nv">mutating</span> <span class="nv">webhook</span> <span class="nv">modifies</span> <span class="nv">an</span> <span class="nv">object</span> <span class="ss">(</span>...<span class="ss">)</span>
+</code></pre></div>
+</td></tr></table></p>
 <h3 id="proving-our-hypothesis">Proving our hypothesis</h3>
 <p>Unfortunately, we cannot simply <a href="https://access.redhat.com/solutions/3909751">configure TraceAll logging</a> for the
 <code class="highlight">kube-apiserver</code>, as the logs are too coarse even with <code class="highlight">TraceAll</code> enabled.</p>

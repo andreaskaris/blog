@@ -563,6 +563,19 @@ We can follow up the stack until we get to the `security.openshift.io/SecurityCo
 The code that interests us most is in `admission.go:94`. Function `computeSecurityContext` is the entrypoint for
 SCC admission and mutation. We will insert a breakpoint here for further analysis.
 
+The documentation about [Reinvocation policy](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#reinvocation-policy)
+points us to [https://issue.k8s.io/64333](https://issue.k8s.io/64333). The [PR 78080](https://github.com/kubernetes/kubernetes/pull/78080/commits)
+addressed the issue. The code that interests us here is in
+[https://github.com/openshift/kubernetes/blob/release-4.10/staging/src/k8s.io/apiserver/pkg/admission/plugin/webhook/mutating/dispatcher.go#L169](https://github.com/openshift/kubernetes/blob/release-4.10/staging/src/k8s.io/apiserver/pkg/admission/plugin/webhook/mutating/dispatcher.go#L169):
+~~~
+		if changed {
+			// Patch had changed the object. Prepare to reinvoke all previous webhooks that are eligible for re-invocation.
+			webhookReinvokeCtx.RequireReinvokingPreviouslyInvokedPlugins()
+			reinvokeCtx.SetShouldReinvoke()
+		}
+~~~
+> The above code implements ``built-in mutating admission plugins are re-run if a mutating webhook modifies an object`.
+
 #### Using dlv to analyze the kube-apiserver
 
 Next, connect to the headless `dlv` server, set a breakpoint at `admission.go:94`, and print the relevant pod variables
@@ -663,13 +676,132 @@ map[string]string [
 false
 ~~~
 
+Another way to look at this is by tracing both `admission.go` and the webhooks' `dispatcher.go`. Kill all `dlv` connect
+sessions, then kill and restart the `dlv` headless container (this may also cause the kube-apiserver to restart). After
+you restarted the `dlv` headless pod, connect to it with:
+~~~
+cat <<'EOF' | /bin/bash | dlv connect --allow-non-terminal-interactive -r stdout:stdout.txt 192.168.18.22:12345
+echo "trace pkg/securitycontextconstraints/sccadmission/admission.go:94"
+echo "on 1 print pod.ObjectMeta.GenerateName"
+echo "on 1 print pod.ObjectMeta.Annotations"
+echo "on 1 print pod.Spec.Containers[0].SecurityContext"
+echo "on 1 print specMutationAllowed"
+echo "trace apiserver/pkg/admission/plugin/webhook/mutating/dispatcher.go:169"
+echo "on 2 print invocation.Webhook.uid"
+echo "on 2 print invocation.Kind"
+echo "on 2 print changed"
+echo "c"
+EOF
+~~~
+
+You can clearly see here that after our custom webhook is invoked, the pod changed and `reinvokeCtx.SetShouldReinvoke()`
+is called. This will trigger the `reinvoker` to call the built-in mutating admission controllers to run again:
+~~~
+> goroutine(343475): k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission.(*constraint).Admit(("*k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission.constraint")(0xc000e42840), context.Context(*context.valueCtx) 0xbeef000000000008, k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/admission.Attributes(*k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/admission.attributesRecord) 0xbeef000000000108)
+	pod.ObjectMeta.GenerateName: "fedora-test-with-annotation-6745dd89bf-"
+	pod.ObjectMeta.Annotations: map[string]string [
+		"webhook/capabilities": "[\"SETFCAP\",\"CAP_NET_RAW\",\"CAP_NET_ADMIN\"]",
+	]
+	pod.Spec.Containers[0].SecurityContext: *k8s.io/kubernetes/pkg/apis/core.SecurityContext nil
+	specMutationAllowed: true
+
+> goroutine(343495): k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/admission/plugin/webhook/mutating.(*mutatingDispatcher).Dispatch(("*k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/admission/plugin/webhook/mutating.mutatingDispatcher")(0xc000db0020), context.Context(*context.valueCtx) 0xbeef000000000008, k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/admission.Attributes(*k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/admission.attributesRecord) 0xbeef000000000108, k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/admission.ObjectInterfaces(*k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/endpoints/handlers.RequestScope) 0xbeef000000000208, (unreadable read out of bounds))
+	data.uid: "webhook/webhook.example.com/0"
+	invocation.Kind: k8s.io/kubernetes/vendor/k8s.io/apimachinery/pkg/runtime/schema.GroupVersionKind {Group: "", Version: "v1", Kind: "Pod"}
+	changed: true
+
+> goroutine(343556): k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission.(*constraint).Admit(("*k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission.constraint")(0xc000e42840), context.Context(*context.valueCtx) 0xbeef000000000008, k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/admission.Attributes(*k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/admission.attributesRecord) 0xbeef000000000108)
+	pod.ObjectMeta.GenerateName: "fedora-test-with-annotation-6745dd89bf-"
+	pod.ObjectMeta.Annotations: map[string]string [
+		"openshift.io/scc": "restricted",
+		"webhook/capabilities": "[\"SETFCAP\",\"CAP_NET_RAW\",\"CAP_NET_ADMIN\"]",
+	]
+	pod.Spec.Containers[0].SecurityContext: *k8s.io/kubernetes/pkg/apis/core.SecurityContext {
+		Capabilities: *k8s.io/kubernetes/pkg/apis/core.Capabilities {
+			Add: []k8s.io/kubernetes/pkg/apis/core.Capability len: 3, cap: 4, [
+				"SETFCAP",
+				"CAP_NET_RAW",
+				"CAP_NET_ADMIN",
+			],
+			Drop: []k8s.io/kubernetes/pkg/apis/core.Capability len: 4, cap: 4, ["KILL","MKNOD","SETGID","SETUID"],},
+		Privileged: *bool nil,
+		SELinuxOptions: *k8s.io/kubernetes/pkg/apis/core.SELinuxOptions nil,
+		WindowsOptions: *k8s.io/kubernetes/pkg/apis/core.WindowsSecurityContextOptions nil,
+		RunAsUser: *1000770000,
+		RunAsGroup: *int64 nil,
+		RunAsNonRoot: *bool nil,
+		ReadOnlyRootFilesystem: *bool nil,
+		AllowPrivilegeEscalation: *bool nil,
+		ProcMount: *k8s.io/kubernetes/pkg/apis/core.ProcMountType nil,
+		SeccompProfile: *k8s.io/kubernetes/pkg/apis/core.SeccompProfile nil,}
+	specMutationAllowed: true
+
+> goroutine(344347): k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission.(*constraint).Admit(("*k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission.constraint")(0xc000e42840), context.Context(*context.valueCtx) 0xbeef000000000008, k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/admission.Attributes(*k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/admission.attributesRecord) 0xbeef000000000108)
+	pod.ObjectMeta.GenerateName: "fedora-test-with-annotation-6745dd89bf-"
+	pod.ObjectMeta.Annotations: map[string]string [
+		"k8s.ovn.org/pod-networks": "{\"default\":{\"ip_addresses\":[\"10.128.0.197/23\",\"fd01:0:0:1::c2/64...+83 more",
+		"openshift.io/scc": "privileged",
+		"webhook/capabilities": "[\"SETFCAP\",\"CAP_NET_RAW\",\"CAP_NET_ADMIN\"]",
+	]
+	pod.Spec.Containers[0].SecurityContext: *k8s.io/kubernetes/pkg/apis/core.SecurityContext {
+		Capabilities: *k8s.io/kubernetes/pkg/apis/core.Capabilities {
+			Add: []k8s.io/kubernetes/pkg/apis/core.Capability len: 3, cap: 4, [
+				"SETFCAP",
+				"CAP_NET_RAW",
+				"CAP_NET_ADMIN",
+			],
+			Drop: []k8s.io/kubernetes/pkg/apis/core.Capability len: 4, cap: 4, ["KILL","MKNOD","SETGID","SETUID"],},
+		Privileged: *bool nil,
+		SELinuxOptions: *k8s.io/kubernetes/pkg/apis/core.SELinuxOptions nil,
+		WindowsOptions: *k8s.io/kubernetes/pkg/apis/core.WindowsSecurityContextOptions nil,
+		RunAsUser: *1000770000,
+		RunAsGroup: *int64 nil,
+		RunAsNonRoot: *bool nil,
+		ReadOnlyRootFilesystem: *bool nil,
+		AllowPrivilegeEscalation: *bool nil,
+		ProcMount: *k8s.io/kubernetes/pkg/apis/core.ProcMountType nil,
+		SeccompProfile: *k8s.io/kubernetes/pkg/apis/core.SeccompProfile nil,}
+	specMutationAllowed: false
+> goroutine(344875): k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission.(*constraint).Admit(("*k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission.constraint")(0xc000e42840), context.Context(*context.valueCtx) 0xbeef000000000008, k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/admission.Attributes(*k8s.io/kubernetes/vendor/k8s.io/apiserver/pkg/admission.attributesRecord) 0xbeef000000000108)
+	pod.ObjectMeta.GenerateName: "fedora-test-with-annotation-6745dd89bf-"
+	pod.ObjectMeta.Annotations: map[string]string [
+		"k8s.ovn.org/pod-networks": "{\"default\":{\"ip_addresses\":[\"10.128.0.197/23\",\"fd01:0:0:1::c2/64...+83 more",
+		"openshift.io/scc": "privileged",
+		"webhook/capabilities": "[\"SETFCAP\",\"CAP_NET_RAW\",\"CAP_NET_ADMIN\"]",
+	]
+	pod.Spec.Containers[0].SecurityContext: *k8s.io/kubernetes/pkg/apis/core.SecurityContext {
+		Capabilities: *k8s.io/kubernetes/pkg/apis/core.Capabilities {
+			Add: []k8s.io/kubernetes/pkg/apis/core.Capability len: 3, cap: 4, [
+				"SETFCAP",
+				"CAP_NET_RAW",
+				"CAP_NET_ADMIN",
+			],
+			Drop: []k8s.io/kubernetes/pkg/apis/core.Capability len: 4, cap: 4, ["KILL","MKNOD","SETGID","SETUID"],},
+		Privileged: *bool nil,
+		SELinuxOptions: *k8s.io/kubernetes/pkg/apis/core.SELinuxOptions nil,
+		WindowsOptions: *k8s.io/kubernetes/pkg/apis/core.WindowsSecurityContextOptions nil,
+		RunAsUser: *1000770000,
+		RunAsGroup: *int64 nil,
+		RunAsNonRoot: *bool nil,
+		ReadOnlyRootFilesystem: *bool nil,
+		AllowPrivilegeEscalation: *bool nil,
+		ProcMount: *k8s.io/kubernetes/pkg/apis/core.ProcMountType nil,
+		SeccompProfile: *k8s.io/kubernetes/pkg/apis/core.SeccompProfile nil,}
+	specMutationAllowed: false
+~~~
+
 ### TL;DR
 
-In short, when the pod was created, it did not need to run with the `privileged` SCC and due to OpenShift's SCC matching
-rules, it fell back to the `restricted` SCC. The `restricted` SCC mutated the pod's containers and added
-`securityContext.runAsUser: <ID from project range>`. Now, Istio's mutating admission controller injected its containers
-into the pod. The Istio containers require the pod to run with the `privileged` SCC, so after this step, the pod was
-again sent through the SCC mutating admission controller where it was now assigned the `privileged` SCC. The pod
-therefore showed up with the `privileged` SCC when inspecting it with `oc get pods`, but its containers were also
-assigned a `securityContext.runAsUser` field that was actually mutated by the `restricted` SCC which had been applied to
-the pod before the Istio mutation took place.
+In short, when our pod was created, it did not need to run with the `privileged` SCC. Both the `restricted` and the
+`privileged` SCC have the same priority. Due to OpenShift's SCC matching rules, the pod was first matched by the
+`restricted` SCC. The `restricted` SCC mutated the pod's containers and added `securityContext.runAsUser: <ID from project range>`.
+
+Now, Istio's mutating admission controller injected its containers into the pod. Because the Istio webhook modified the
+pod, Kubernetes triggers a reinvocation of all built-in mutating admission controllers.
+
+Istio's containers require the pod to run with the `privileged` SCC, so when the SCC mutating admission controller ran
+a second time, it now assigned the `privileged` SCC to the pod.
+
+The pod therefore showed up with the `privileged` SCC when inspecting it with `oc get pods`, but its containers were also
+assigned a `securityContext.runAsUser` field that was actually mutated by the `restricted` SCC which had been applied
+during a previous run of the SCC mutating admission plugin.

@@ -452,7 +452,10 @@ re-run if a mutating webhook modifies an object (...)
 Unfortunately, we cannot simply [configure TraceAll logging](https://access.redhat.com/solutions/3909751) for the
 `kube-apiserver`, as the logs are too coarse even with `TraceAll` enabled.
 
-Instead, we will build a custom OpenShift `kube-apiserver` with debug flags enabled and deploy it in a test cluster.
+Instead, we will build a custom OpenShift `kube-apiserver` with debug flags enabled and deploy it in a Single Node
+OpenShift (SNO) test cluster. By using SNO, we can focus on a single instance of the `kube-apiserver` during our
+analysis.
+
 We will then use the delve (`dlv`) debugger to analyze the `kube-apiserver` process.
 
 #### Building a custom kube-apiserver for debugging

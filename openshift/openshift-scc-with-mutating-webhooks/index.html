@@ -1285,6 +1285,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#identifying-interesting-code-sections" class="md-nav__link">
+    Identifying interesting code sections
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#using-dlv-to-analyze-the-kube-apiserver" class="md-nav__link">
     Using dlv to analyze the kube-apiserver
   </a>
@@ -2136,14 +2143,14 @@ This would also explains why we do not see the same symptoms when we use the <co
 <p>Unfortunately, we cannot simply <a href="https://access.redhat.com/solutions/3909751">configure TraceAll logging</a> for the
 <code class="highlight">kube-apiserver</code>, as the logs are too coarse even with <code class="highlight">TraceAll</code> enabled.</p>
 <p>Instead, we will build a custom OpenShift <code class="highlight">kube-apiserver</code> with debug flags enabled and deploy it in a test cluster.
-We will then use delve to analyze the <code class="highlight">kube-apiserver</code> process.</p>
+We will then use the delve (<code class="highlight">dlv</code>) debugger to analyze the <code class="highlight">kube-apiserver</code> process.</p>
 <h4 id="building-a-custom-kube-apiserver-for-debugging">Building a custom kube-apiserver for debugging</h4>
-<p>We must clone <a href="https://github.com/openshift/kubernetes">https://github.com/openshift/kubernetes</a>.
-We then checkout the target branch, in this case OpenShift 4.10:
+<p>First, we must clone <a href="https://github.com/openshift/kubernetes">https://github.com/openshift/kubernetes</a>.
+We then checkout the target branch of our cluster, in this case OpenShift 4.10:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>git checkout origin/release-4.10 -b debug-4.10
 </code></pre></div>
 </td></tr></table></p>
-<p>We then modify the <code class="highlight">Dockerfile</code> and instruct it to build an API server with debug flags:
+<p>We then modify the <code class="highlight">Dockerfile</code> and instruct the image build process to build an API server with debug flags enabled:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -2179,7 +2186,7 @@ index 4e9d88a343f..5df544b7c21 <span class="m">100644</span>
 podman push quay.io/akaris/hyperkube:debug-4.10
 </code></pre></div>
 </td></tr></table></p>
-<p>We create two bach helper functions to simplify image deployment:
+<p>We create two bash helper functions to simplify image deployment:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -2235,7 +2242,7 @@ update_kao ()
 </td></tr></table></p>
 <h4 id="building-and-running-a-dlv-container-image-for-debugging">Building and running a dlv container image for debugging</h4>
 <p>We are going to use a <a href="https://github.com/andreaskaris/dlv-container">custom container image</a> to run the <code class="highlight">dlv</code> golang
-debugger. Because dlv will pause the <code class="highlight">kube-apiserver</code>, we cannot use <code class="highlight">oc debug/node</code>. Instaed, we will run the image
+debugger. Because <code class="highlight">dlv</code> will pause the <code class="highlight">kube-apiserver</code>, we cannot use <code class="highlight">oc debug/node</code>. Instead, we will run the image
 directly on the node with podman.</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
@@ -2258,11 +2265,26 @@ $ sudo -i
     dlv attach --headless --accept-multiclient --continue --listen <span class="si">${</span><span class="nv">NODEIP</span><span class="si">}</span>:12345 <span class="k">$(</span>pidof kube-apiserver<span class="k">)</span> 
 </code></pre></div>
 </td></tr></table>
+<p>The above command will start <code class="highlight">dlv</code> in headless mode. It will listen on <code class="highlight"><span class="cp">${</span><span class="n">NODEIP</span><span class="cp">}</span>:12345</code>. In the next step, we will
+connect to the <code class="highlight">dlv</code> headless server with <code class="highlight"><span class="nv">dlv</span> <span class="k">connect</span></code>.</p>
+<h4 id="identifying-interesting-code-sections">Identifying interesting code sections</h4>
+<p>For the SCC <code class="highlight">RUNASUSER</code> strategies, we are interested in code from the <code class="highlight">apiserver-library</code>.</p>
+<p>For example, the <code class="highlight">runAsAny</code> strategy is defined here:</p>
+<ul>
+<li><a href="https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/user/runasany.go#L22">https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/user/runasany.go#L22</a></li>
+</ul>
+<p>We can follow up the stack until we get to the <code class="highlight">security.openshift.io/SecurityContextConstraint</code> admission plugin:</p>
+<ul>
+<li><a href="https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccmatching/provider.go#L159">https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccmatching/provider.go#L159</a></li>
+<li><a href="https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccmatching/matcher.go#L117">https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccmatching/matcher.go#L117</a></li>
+<li><a href="https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccadmission/admission.go#L259">https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccadmission/admission.go#L259</a></li>
+<li><a href="https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccadmission/admission.go#L94">https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccadmission/admission.go#L94</a></li>
+</ul>
+<p>The code that interests us most is in <code class="highlight"><span class="n">admission</span><span class="p">.</span><span class="k">go</span><span class="err">:</span><span class="mi">94</span><span class="w"></span></code>. Function <code class="highlight">computeSecurityContext</code> is the entrypoint for
+SCC admission and mutation. We will insert a breakpoint here for further analysis.</p>
 <h4 id="using-dlv-to-analyze-the-kube-apiserver">Using dlv to analyze the kube-apiserver</h4>
-<p>SCC mutations are executed at the following code:
-* <a href="https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccadmission/admission.go#L94">https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/sccadmission/admission.go#L94</a></p>
-<p>Therefore, we can connect to dlv which currently runs in headless mode and set a breakpoint at that location, and print
-the relevant pod variables:
+<p>Next, connect to the headless <code class="highlight">dlv</code> server, set a breakpoint at <code class="highlight"><span class="n">admission</span><span class="p">.</span><span class="k">go</span><span class="err">:</span><span class="mi">94</span><span class="w"></span></code>, and print the relevant pod variables
+whenever we get to the breakpoint:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -2290,7 +2312,9 @@ the relevant pod variables:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>oc apply -f fedora-test-with-annotation.yaml
 </code></pre></div>
 </td></tr></table></p>
-<p>The output proves our theory:
+<p>As you can see, admission plugin <code class="highlight">security.openshift.io/SecurityContextConstraint</code> mutates the pod twice. We can see
+that the pod's security context is <code class="highlight">restricted</code> after the first mutation, but before the second mutation.
+At this point in time, <code class="highlight">securityContext.runAsUser</code> is already injected into the pod's container definition:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -2327,31 +2351,8 @@ the relevant pod variables:
 <span class="normal">34</span>
 <span class="normal">35</span>
 <span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">&gt;</span><span class="w"> </span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">vendor</span><span class="o">/</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">openshift</span><span class="o">/</span><span class="n">apiserver</span><span class="o">-</span><span class="n">library</span><span class="o">-</span><span class="k">go</span><span class="o">/</span><span class="n">pkg</span><span class="o">/</span><span class="n">securitycontextconstraints</span><span class="o">/</span><span class="n">sccadmission</span><span class="p">.(</span><span class="o">*</span><span class="k">constraint</span><span class="p">).</span><span class="n">Admit</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">_output</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">vendor</span><span class="o">/</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">openshift</span><span class="o">/</span><span class="n">apiserver</span><span class="o">-</span><span class="n">library</span><span class="o">-</span><span class="k">go</span><span class="o">/</span><span class="n">pkg</span><span class="o">/</span><span class="n">securitycontextconstraints</span><span class="o">/</span><span class="n">sccadmission</span><span class="o">/</span><span class="n">admission</span><span class="p">.</span><span class="k">go</span><span class="err">:</span><span class="mi">94</span><span class="w"> </span><span class="p">(</span><span class="n">hits</span><span class="w"> </span><span class="n">goroutine</span><span class="p">(</span><span class="mi">2230542</span><span class="p">)</span><span class="err">:</span><span class="mi">1</span><span class="w"> </span><span class="nl">total</span><span class="p">:</span><span class="mi">14</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nl">PC</span><span class="p">:</span><span class="w"> </span><span class="mh">0x3998490</span><span class="p">)</span><span class="w"></span>
+<span class="normal">37</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">(</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="k">before</span><span class="w"> </span><span class="k">first</span><span class="w"> </span><span class="n">SCC</span><span class="w"> </span><span class="n">mutation</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+<span class="o">&gt;</span><span class="w"> </span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">vendor</span><span class="o">/</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">openshift</span><span class="o">/</span><span class="n">apiserver</span><span class="o">-</span><span class="n">library</span><span class="o">-</span><span class="k">go</span><span class="o">/</span><span class="n">pkg</span><span class="o">/</span><span class="n">securitycontextconstraints</span><span class="o">/</span><span class="n">sccadmission</span><span class="p">.(</span><span class="o">*</span><span class="k">constraint</span><span class="p">).</span><span class="n">Admit</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">_output</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">vendor</span><span class="o">/</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">openshift</span><span class="o">/</span><span class="n">apiserver</span><span class="o">-</span><span class="n">library</span><span class="o">-</span><span class="k">go</span><span class="o">/</span><span class="n">pkg</span><span class="o">/</span><span class="n">securitycontextconstraints</span><span class="o">/</span><span class="n">sccadmission</span><span class="o">/</span><span class="n">admission</span><span class="p">.</span><span class="k">go</span><span class="err">:</span><span class="mi">94</span><span class="w"> </span><span class="p">(</span><span class="n">hits</span><span class="w"> </span><span class="n">goroutine</span><span class="p">(</span><span class="mi">2230542</span><span class="p">)</span><span class="err">:</span><span class="mi">1</span><span class="w"> </span><span class="nl">total</span><span class="p">:</span><span class="mi">14</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nl">PC</span><span class="p">:</span><span class="w"> </span><span class="mh">0x3998490</span><span class="p">)</span><span class="w"></span>
 <span class="nl">Warning</span><span class="p">:</span><span class="w"> </span><span class="n">debugging</span><span class="w"> </span><span class="n">optimized</span><span class="w"> </span><span class="k">function</span><span class="w"></span>
 <span class="ss">&quot;fedora-test-with-annotation-6745dd89bf-&quot;</span><span class="w"></span>
 <span class="k">map</span><span class="o">[</span><span class="n">string</span><span class="o">]</span><span class="n">string</span><span class="w"> </span><span class="o">[</span><span class="n"></span>
@@ -2359,11 +2360,13 @@ the relevant pod variables:
 <span class="ss">]</span>
 <span class="ss">*k8s.io/kubernetes/pkg/apis/core.SecurityContext nil</span>
 <span class="ss">true</span>
+
+<span class="ss">(... before second SCC mutation ...)</span>
 <span class="ss">&gt; k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission.(*constraint).Admit() /go/src/k8s.io/kubernetes/_output/local/go/src/k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission/admission.go:94 (hits goroutine(2230672):1 total:15) (PC: 0x3998490)</span>
 <span class="ss">Warning: debugging optimized function</span>
 <span class="ss">&quot;</span><span class="n">fedora</span><span class="o">-</span><span class="n">test</span><span class="o">-</span><span class="k">with</span><span class="o">-</span><span class="n">annotation</span><span class="o">-</span><span class="mi">6745</span><span class="n">dd89bf</span><span class="o">-</span><span class="ss">&quot;</span>
 <span class="ss">map[string]string [</span>
-<span class="ss">    &quot;</span><span class="n">openshift</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">scc</span><span class="ss">&quot;: &quot;</span><span class="n">restricted</span><span class="ss">&quot;,</span>
+<span class="ss">    &quot;</span><span class="n">openshift</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">scc</span><span class="ss">&quot;: &quot;</span><span class="n">restricted</span><span class="ss">&quot;,      # &lt;-------- set by first SCC mutation</span>
 <span class="ss">    &quot;</span><span class="n">webhook</span><span class="o">/</span><span class="n">capabilities</span><span class="ss">&quot;: &quot;</span><span class="o">[</span><span class="n">\&quot;SETFCAP\&quot;,\&quot;CAP_NET_RAW\&quot;,\&quot;CAP_NET_ADMIN\&quot;</span><span class="o">]</span><span class="ss">&quot;,</span>
 <span class="ss">]</span>
 <span class="ss">*k8s.io/kubernetes/pkg/apis/core.SecurityContext {</span>
@@ -2373,24 +2376,57 @@ the relevant pod variables:
 <span class="ss">            &quot;</span><span class="n">CAP_NET_RAW</span><span class="ss">&quot;,</span>
 <span class="ss">            &quot;</span><span class="n">CAP_NET_ADMIN</span><span class="ss">&quot;,</span>
 <span class="ss">        ],</span>
-<span class="ss">        Drop: []k8s.io/kubernetes/pkg/apis/core.Capability len: 4, cap: 4, [&quot;</span><span class="k">KILL</span><span class="ss">&quot;,&quot;</span><span class="n">MKNOD</span><span class="ss">&quot;,&quot;</span><span class="n">SETGID</span><span class="ss">&quot;,&quot;</span><span class="n">SETUID</span><span class="ss">&quot;],},</span>
-<span class="ss">    Privileged: *bool nil,</span>
-<span class="ss">    SELinuxOptions: *k8s.io/kubernetes/pkg/apis/core.SELinuxOptions nil,</span>
-<span class="ss">    WindowsOptions: *k8s.io/kubernetes/pkg/apis/core.WindowsSecurityContextOptions nil,</span>
-<span class="ss">    RunAsUser: *1000770000,</span>
-<span class="ss">    RunAsGroup: *int64 nil,</span>
-<span class="ss">    RunAsNonRoot: *bool nil,</span>
-<span class="ss">    ReadOnlyRootFilesystem: *bool nil,</span>
-<span class="ss">    AllowPrivilegeEscalation: *bool nil,</span>
-<span class="ss">    ProcMount: *k8s.io/kubernetes/pkg/apis/core.ProcMountType nil,</span>
-<span class="ss">    SeccompProfile: *k8s.io/kubernetes/pkg/apis/core.SeccompProfile nil,}</span>
-<span class="ss">true</span>
-<span class="ss">&gt; k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission.(*constraint).Admit() /go/src/k8s.io/kubernetes/_output/local/go/src/k8s.io/kubernetes/vendor/github.com/openshift/apiserver-library-go/pkg/securitycontextconstraints/sccadmission/admission.go:94 (hits goroutine(2232623):1 total:16) (PC: 0x3998490)</span>
-<span class="ss">Warning: debugging optimized function</span>
-<span class="ss">&quot;</span><span class="n">fedora</span><span class="o">-</span><span class="n">test</span><span class="o">-</span><span class="k">with</span><span class="o">-</span><span class="n">annotation</span><span class="o">-</span><span class="mi">6745</span><span class="n">dd89bf</span><span class="o">-</span><span class="ss">&quot;</span>
-<span class="ss">map[string]string [</span>
-<span class="ss">    &quot;</span><span class="n">k8s</span><span class="p">.</span><span class="n">ovn</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="n">pod</span><span class="o">-</span><span class="n">networks</span><span class="ss">&quot;: &quot;</span><span class="err">{\</span><span class="ss">&quot;default\&quot;</span><span class="err">:{\</span><span class="ss">&quot;ip_addresses\&quot;</span><span class="err">:</span><span class="o">[</span><span class="n">\&quot;10.128.0.63/23\&quot;,\&quot;fd01:0:0:1::3e/64\&quot;</span><span class="o">]</span><span class="p">,</span><span class="err">\</span><span class="ss">&quot;mac_address\&quot;</span><span class="err">:\</span><span class="ss">&quot;0a:58:0a:80:00:3f\&quot;</span><span class="p">,</span><span class="err">\</span><span class="ss">&quot;gateway_ips\&quot;</span><span class="err">:</span><span class="o">[</span><span class="n">\&quot;10.128.0.1\&quot;,\&quot;fd01:0:0:1::1\&quot;</span><span class="o">]</span><span class="err">}}</span><span class="ss">&quot;,</span>
-<span class="ss">    &quot;</span><span class="n">openshift</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">scc</span><span class="ss">&quot;: &quot;</span><span class="n">privileged</span><span class="ss">&quot;,</span>
+<span class="ss">        Drop: []k8s.io/kubernetes/pkg/apis/core.Capability len: 4, cap: 4, [&quot;</span><span class="k">KILL</span><span class="ss">&quot;,&quot;</span><span class="n">MKNOD</span><span class="ss">&quot;,&quot;</span><span class="n">SETGID</span><span class="ss">&quot;,&quot;</span><span class="n">SETUID</span><span class="err">&quot;]</span><span class="p">,</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nl">Privileged</span><span class="p">:</span><span class="w"> </span><span class="o">*</span><span class="n">bool</span><span class="w"> </span><span class="n">nil</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nl">SELinuxOptions</span><span class="p">:</span><span class="w"> </span><span class="o">*</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pkg</span><span class="o">/</span><span class="n">apis</span><span class="o">/</span><span class="n">core</span><span class="p">.</span><span class="n">SELinuxOptions</span><span class="w"> </span><span class="n">nil</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nl">WindowsOptions</span><span class="p">:</span><span class="w"> </span><span class="o">*</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pkg</span><span class="o">/</span><span class="n">apis</span><span class="o">/</span><span class="n">core</span><span class="p">.</span><span class="n">WindowsSecurityContextOptions</span><span class="w"> </span><span class="n">nil</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nl">RunAsUser</span><span class="p">:</span><span class="w"> </span><span class="o">*</span><span class="mi">1000770000</span><span class="p">,</span><span class="w">               </span><span class="err">#</span><span class="w"> </span><span class="o">&lt;--------</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="k">first</span><span class="w"> </span><span class="n">SCC</span><span class="w"> </span><span class="n">mutation</span><span class="w"></span>
+<span class="w">    </span><span class="nl">RunAsGroup</span><span class="p">:</span><span class="w"> </span><span class="o">*</span><span class="n">int64</span><span class="w"> </span><span class="n">nil</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nl">RunAsNonRoot</span><span class="p">:</span><span class="w"> </span><span class="o">*</span><span class="n">bool</span><span class="w"> </span><span class="n">nil</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nl">ReadOnlyRootFilesystem</span><span class="p">:</span><span class="w"> </span><span class="o">*</span><span class="n">bool</span><span class="w"> </span><span class="n">nil</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nl">AllowPrivilegeEscalation</span><span class="p">:</span><span class="w"> </span><span class="o">*</span><span class="n">bool</span><span class="w"> </span><span class="n">nil</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nl">ProcMount</span><span class="p">:</span><span class="w"> </span><span class="o">*</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pkg</span><span class="o">/</span><span class="n">apis</span><span class="o">/</span><span class="n">core</span><span class="p">.</span><span class="n">ProcMountType</span><span class="w"> </span><span class="n">nil</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nl">SeccompProfile</span><span class="p">:</span><span class="w"> </span><span class="o">*</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pkg</span><span class="o">/</span><span class="n">apis</span><span class="o">/</span><span class="n">core</span><span class="p">.</span><span class="n">SeccompProfile</span><span class="w"> </span><span class="n">nil</span><span class="p">,</span><span class="err">}</span><span class="w"></span>
+<span class="k">true</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table></p>
+<p>And we can see that the security context is elevated to <code class="highlight">privileged</code> after the second SCC mutation.
+The third invocation of function <code class="highlight">computeSecurityContext</code> is purely for validation purposes and does not mutate the
+object:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">(</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="k">after</span><span class="w"> </span><span class="k">second</span><span class="w"> </span><span class="n">SCC</span><span class="w"> </span><span class="n">mutation</span><span class="p">,</span><span class="w"> </span><span class="k">before</span><span class="w"> </span><span class="n">validation</span><span class="w"> </span><span class="n">step</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+<span class="o">&gt;</span><span class="w"> </span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">vendor</span><span class="o">/</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">openshift</span><span class="o">/</span><span class="n">apiserver</span><span class="o">-</span><span class="n">library</span><span class="o">-</span><span class="k">go</span><span class="o">/</span><span class="n">pkg</span><span class="o">/</span><span class="n">securitycontextconstraints</span><span class="o">/</span><span class="n">sccadmission</span><span class="p">.(</span><span class="o">*</span><span class="k">constraint</span><span class="p">).</span><span class="n">Admit</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">_output</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">vendor</span><span class="o">/</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">openshift</span><span class="o">/</span><span class="n">apiserver</span><span class="o">-</span><span class="n">library</span><span class="o">-</span><span class="k">go</span><span class="o">/</span><span class="n">pkg</span><span class="o">/</span><span class="n">securitycontextconstraints</span><span class="o">/</span><span class="n">sccadmission</span><span class="o">/</span><span class="n">admission</span><span class="p">.</span><span class="k">go</span><span class="err">:</span><span class="mi">94</span><span class="w"> </span><span class="p">(</span><span class="n">hits</span><span class="w"> </span><span class="n">goroutine</span><span class="p">(</span><span class="mi">2232623</span><span class="p">)</span><span class="err">:</span><span class="mi">1</span><span class="w"> </span><span class="nl">total</span><span class="p">:</span><span class="mi">16</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nl">PC</span><span class="p">:</span><span class="w"> </span><span class="mh">0x3998490</span><span class="p">)</span><span class="w"></span>
+<span class="nl">Warning</span><span class="p">:</span><span class="w"> </span><span class="n">debugging</span><span class="w"> </span><span class="n">optimized</span><span class="w"> </span><span class="k">function</span><span class="w"></span>
+<span class="ss">&quot;fedora-test-with-annotation-6745dd89bf-&quot;</span><span class="w"></span>
+<span class="k">map</span><span class="o">[</span><span class="n">string</span><span class="o">]</span><span class="n">string</span><span class="w"> </span><span class="o">[</span><span class="n"></span>
+<span class="n">    &quot;k8s.ovn.org/pod-networks&quot;: &quot;{\&quot;default\&quot;:{\&quot;ip_addresses\&quot;:[\&quot;10.128.0.63/23\&quot;,\&quot;fd01:0:0:1::3e/64\&quot;</span><span class="o">]</span><span class="p">,</span><span class="err">\</span><span class="ss">&quot;mac_address\&quot;</span><span class="err">:\</span><span class="ss">&quot;0a:58:0a:80:00:3f\&quot;</span><span class="p">,</span><span class="err">\</span><span class="ss">&quot;gateway_ips\&quot;</span><span class="err">:</span><span class="o">[</span><span class="n">\&quot;10.128.0.1\&quot;,\&quot;fd01:0:0:1::1\&quot;</span><span class="o">]</span><span class="err">}}</span><span class="ss">&quot;,</span>
+<span class="ss">    &quot;</span><span class="n">openshift</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">scc</span><span class="ss">&quot;: &quot;</span><span class="n">privileged</span><span class="ss">&quot;,      # &lt;----------- second mutation set the SCC to privileged</span>
 <span class="ss">    &quot;</span><span class="n">webhook</span><span class="o">/</span><span class="n">capabilities</span><span class="ss">&quot;: &quot;</span><span class="o">[</span><span class="n">\&quot;SETFCAP\&quot;,\&quot;CAP_NET_RAW\&quot;,\&quot;CAP_NET_ADMIN\&quot;</span><span class="o">]</span><span class="ss">&quot;,</span>
 <span class="ss">]</span>
 <span class="ss">*k8s.io/kubernetes/pkg/apis/core.SecurityContext {</span>

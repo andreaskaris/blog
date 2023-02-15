@@ -2293,7 +2293,8 @@ SCC admission and mutation. We will insert a breakpoint here for further analysi
 <p>The documentation about <a href="https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#reinvocation-policy">Reinvocation policy</a>
 points us to <a href="https://issue.k8s.io/64333">https://issue.k8s.io/64333</a>. The <a href="https://github.com/kubernetes/kubernetes/pull/78080/commits">PR 78080</a>
 addressed the issue. The code that interests us here is in
-<a href="https://github.com/openshift/kubernetes/blob/release-4.10/staging/src/k8s.io/apiserver/pkg/admission/plugin/webhook/mutating/dispatcher.go#L169">https://github.com/openshift/kubernetes/blob/release-4.10/staging/src/k8s.io/apiserver/pkg/admission/plugin/webhook/mutating/dispatcher.go#L169</a>:
+<a href="https://github.com/openshift/kubernetes/blob/release-4.10/staging/src/k8s.io/apiserver/pkg/admission/plugin/webhook/mutating/dispatcher.go#L169">https://github.com/openshift/kubernetes/blob/release-4.10/staging/src/k8s.io/apiserver/pkg/admission/plugin/webhook/mutating/dispatcher.go#L169</a> and it's worth setting another tracepoint at this location,
+too:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>

@@ -1,4 +1,4 @@
-![title](https://user-images.githubusercontent.com/3291433/220175015-c62df144-e020-4b7f-ae1d-a169e9ce36e1.png)
+![title](https://user-images.githubusercontent.com/3291433/220175185-f58bf274-e886-45ef-ab32-92b6cd3f1739.png)
 
 # SCCs and mutating webhooks - or how to learn about about admission controller reinvocation the hard way
 

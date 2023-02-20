@@ -441,9 +441,11 @@ This seemingly contradicts what we said earlier about the `privileged` SCC: it s
 Our hypothesis: when the pod is created, it first matches the `restricted` SCC which mutates the pod's containers and
 adds `securityContext.runAsUser: <ID from project range>`. Then, the mutating webhook injects the new capabilities
 into the pod's containers. After the pod was modified during the webhook mutation stage, the built-in SCC mutating
-admission plugin is rerun. The pod now requires to be assigned the `privileged` SCC as it cannot run with the more
-restrictive set of rules from the `restricted` SCC. This would also explain why we do not see the same symptoms when
-we use the `anyuid` SCC.
+admission plugin is rerun. The pod now must be assigned the `privileged` SCC as it cannot run with the more
+restrictive set of rules from the `restricted` SCC. Thus, the SCC admission plugin updates the pod's SCC accordingly.
+This also explains why we do not see the same symptoms when we use the `anyuid` SCC - the `anyuid` SCC always wins
+against the `restricted` SCC due to its higher priority, and thus the pod will be assigned the `anyuid` SCC from the
+very beginning.
 
 Our hypothesis is backed by [the Kubernetes documentation](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#reinvocation-policy):
 ~~~

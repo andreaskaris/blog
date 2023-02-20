@@ -616,7 +616,7 @@ too:
 			reinvokeCtx.SetShouldReinvoke()
 		}
 ~~~
-> The above code implements ``built-in mutating admission plugins are re-run if a mutating webhook modifies an object`.
+> The above code implements `built-in mutating admission plugins are re-run if a mutating webhook modifies an object`.
 
 #### Using dlv to analyze the kube-apiserver
 

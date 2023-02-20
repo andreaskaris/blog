@@ -1,4 +1,4 @@
-# SCCs, mutating webhooks and admission controller reinvocation - a lesson learned
+# SCCs and mutating webhooks - or how to learn about about admission controller reinvocation the hard way
 
 Author: Andreas Karis
 
@@ -436,12 +436,12 @@ This seemingly contradicts what we said earlier about the `privileged` SCC: it s
 
 ### Formulating a hypothesis
 
-Our hypothesis: when the pod is created, it matches the `restricted` SCC which mutates the pod's containers and adds
-`securityContext.runAsUser: <ID from project range>`.
-Then, the mutating admission controller injects the new capabilities into the pod's containers. After this step, the pod
-now requires to be `privileged` as it cannot run with the more restrictive set of rules from the `restricted` SCC.
-Therefore, it is again sent through the SCC mutating admission controller where it is now assigned the `privileged` SCC.
-This would also explain why we do not see the same symptoms when we use the `anyuid` SCC.
+Our hypothesis: when the pod is created, it first matches the `restricted` SCC which mutates the pod's containers and
+adds `securityContext.runAsUser: <ID from project range>`. Then, the mutating webhook injects the new capabilities
+into the pod's containers. After the pod was modified during the webhook mutation state, the built-in SCC mutating
+admission plugin is rerun. The pod now requires to be assigned the `privileged` SCC as it cannot run with the more
+restrictive set of rules from the `restricted` SCC. This would also explain why we do not see the same symptoms when
+we use the `anyuid` SCC.
 
 Our hypothesis is backed by [the Kubernetes documentation](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#reinvocation-policy):
 ~~~

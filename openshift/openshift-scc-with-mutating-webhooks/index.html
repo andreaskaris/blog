@@ -63,7 +63,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#sccs-mutating-webhooks-and-admission-controller-reinvocation-a-lesson-learned" class="md-skip">
+        <a href="#sccs-and-mutating-webhooks-or-how-to-learn-about-admission-plugin-reinvocation-the-hard-way" class="md-skip">
           Skip to content
         </a>
       
@@ -1529,7 +1529,8 @@
                 
 
 
-<h1 id="sccs-mutating-webhooks-and-admission-controller-reinvocation-a-lesson-learned">SCCs, mutating webhooks and admission controller reinvocation - a lesson learned</h1>
+<p><img alt="title" src="https://user-images.githubusercontent.com/3291433/220175185-f58bf274-e886-45ef-ab32-92b6cd3f1739.png" /></p>
+<h1 id="sccs-and-mutating-webhooks-or-how-to-learn-about-admission-plugin-reinvocation-the-hard-way">SCCs and mutating webhooks - or how to learn about admission plugin reinvocation the hard way</h1>
 <p>Author: Andreas Karis</p>
 <p>Recently, a partner of ours observed a strange behavior in their OpenShift cluster. For a specific application, this
 partner needs the pod to run with the UID that was configured by the application container image:
@@ -2123,18 +2124,20 @@ fedora-test-with-capabilities-5f667b698d-tbz4t   privileged   &lt;none&gt;
 <p>This seemingly contradicts what we said earlier about the <code class="highlight">privileged</code> SCC: it should not manipulate
 <code class="highlight">securityContext.runAsUser</code>.</p>
 <h3 id="formulating-a-hypothesis">Formulating a hypothesis</h3>
-<p>Our hypothesis: when the pod is created, it matches the <code class="highlight">restricted</code> SCC which mutates the pod's containers and adds
-<code class="highlight">securityContext.runAsUser: &lt;ID from project range&gt;</code>.
-Then, the mutating admission controller injects the new capabilities into the pod's containers. After this step, the pod
-now requires to be <code class="highlight">privileged</code> as it cannot run with the more restrictive set of rules from the <code class="highlight">restricted</code> SCC.
-Therefore, it is again sent through the SCC mutating admission controller where it is now assigned the <code class="highlight">privileged</code> SCC.
-This would also explain why we do not see the same symptoms when we use the <code class="highlight">anyuid</code> SCC.</p>
+<p>Our hypothesis: when the pod is created, it first matches the <code class="highlight">restricted</code> SCC which mutates the pod's containers and
+adds <code class="highlight">securityContext.runAsUser: &lt;ID from project range&gt;</code>. Then, the mutating webhook injects the new capabilities
+into the pod's containers. After the pod was modified during the webhook mutation state, the built-in SCC mutating
+admission plugin is rerun. The pod now requires to be assigned the <code class="highlight">privileged</code> SCC as it cannot run with the more
+restrictive set of rules from the <code class="highlight">restricted</code> SCC. This would also explain why we do not see the same symptoms when
+we use the <code class="highlight">anyuid</code> SCC.</p>
 <p>Our hypothesis is backed by <a href="https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#reinvocation-policy">the Kubernetes documentation</a>:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">To</span> <span class="nv">allow</span> <span class="nv">mutating</span> <span class="nv">admission</span> <span class="nv">plugins</span> <span class="nv">to</span> <span class="nv">observe</span> <span class="nv">changes</span> <span class="nv">made</span> <span class="nv">by</span> <span class="nv">other</span> <span class="nv">plugins</span>, <span class="nv">built</span><span class="o">-</span><span class="nv">in</span> <span class="nv">mutating</span> <span class="nv">admission</span> <span class="nv">plugins</span> <span class="nv">are</span>
 <span class="nv">re</span><span class="o">-</span><span class="nv">run</span> <span class="k">if</span> <span class="nv">a</span> <span class="nv">mutating</span> <span class="nv">webhook</span> <span class="nv">modifies</span> <span class="nv">an</span> <span class="nv">object</span> <span class="ss">(</span>...<span class="ss">)</span>
 </code></pre></div>
 </td></tr></table></p>
+<p>The following diagram is a simplified view of the aforementioned process:</p>
+<p><img alt="mutating-admission-control-reinvocation" src="https://user-images.githubusercontent.com/3291433/220171917-34083458-b36f-4b08-b1e7-827df540fd0f.png" /></p>
 <h3 id="proving-our-hypothesis">Proving our hypothesis</h3>
 <p>Unfortunately, we cannot simply <a href="https://access.redhat.com/solutions/3909751">configure TraceAll logging</a> for the
 <code class="highlight">kube-apiserver</code>, as the logs are too coarse even with <code class="highlight">TraceAll</code> enabled.</p>
@@ -2532,7 +2535,7 @@ you restarted the <code class="highlight">dlv</code> headless pod, connect to it
 <span class="normal"> 9</span>
 <span class="normal">10</span>
 <span class="normal">11</span>
-<span class="normal">12</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="s1">&#39;EOF&#39;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">bash</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">dlv</span><span class="w"> </span><span class="n">connect</span><span class="w"> </span><span class="o">--</span><span class="n">allow</span><span class="o">-</span><span class="n">non</span><span class="o">-</span><span class="n">terminal</span><span class="o">-</span><span class="n">interactive</span><span class="w"> </span><span class="o">-</span><span class="n">r</span><span class="w"> </span><span class="n">stdout</span><span class="p">:</span><span class="n">stdout</span><span class="o">.</span><span class="n">txt</span><span class="w"> </span><span class="mf">192.168</span><span class="o">.</span><span class="mf">18.22</span><span class="p">:</span><span class="mi">12345</span><span class="w"></span>
+<span class="normal">12</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="s1">&#39;EOF&#39;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">bash</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">dlv</span><span class="w"> </span><span class="n">connect</span><span class="w"> </span><span class="o">--</span><span class="n">allow</span><span class="o">-</span><span class="n">non</span><span class="o">-</span><span class="n">terminal</span><span class="o">-</span><span class="n">interactive</span><span class="w"> </span><span class="mf">192.168</span><span class="o">.</span><span class="mf">18.22</span><span class="p">:</span><span class="mi">12345</span><span class="w"></span>
 <span class="n">echo</span><span class="w"> </span><span class="s2">&quot;trace pkg/securitycontextconstraints/sccadmission/admission.go:94&quot;</span><span class="w"></span>
 <span class="n">echo</span><span class="w"> </span><span class="s2">&quot;on 1 print pod.ObjectMeta.GenerateName&quot;</span><span class="w"></span>
 <span class="n">echo</span><span class="w"> </span><span class="s2">&quot;on 1 print pod.ObjectMeta.Annotations&quot;</span><span class="w"></span>
@@ -2742,13 +2745,15 @@ a second time, it now assigned the <code class="highlight">privileged</code> SCC
 <p>The pod therefore showed up with the <code class="highlight">privileged</code> SCC when inspecting it with <code class="highlight">oc get pods</code>, but its containers were also
 assigned a <code class="highlight">securityContext.runAsUser</code> field that was actually mutated by the <code class="highlight">restricted</code> SCC which had been applied
 during a previous run of the SCC mutating admission plugin.</p>
+<p><img alt="mutating-admission-control-reinvocation-2" src="https://user-images.githubusercontent.com/3291433/220173073-e798a901-b420-4831-9358-272af86deffc.png" /></p>
+<p>In reality, the entire process can be even more complex. <a href="https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#reinvocation-policy">Mutating webhooks can specify a reinvocationPolicy of IfNeeded</a>. This way, mutating webhooks can be reinvocated as well.</p>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">February 15, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">February 20, 2023</span>
       
     
   </small>

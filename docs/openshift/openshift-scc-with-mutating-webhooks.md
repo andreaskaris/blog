@@ -469,6 +469,10 @@ analysis.
 
 We will then use the delve (`dlv`) debugger to analyze the `kube-apiserver` process.
 
+Of course, none of this should be done on a production cluster. Connecting a debugger to the `kube-apiserver` will
+pause the API server when hitting breakpoints, and it can also cause it to crash and/or be restarted. Only ever run
+the following steps on a disposable setup.
+
 #### Building a custom kube-apiserver for debugging
 
 First, we must clone [https://github.com/openshift/kubernetes](https://github.com/openshift/kubernetes).

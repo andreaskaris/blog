@@ -2147,6 +2147,9 @@ very beginning.</p>
 OpenShift (SNO) test cluster. By using SNO, we can focus on a single instance of the <code class="highlight">kube-apiserver</code> during our
 analysis.</p>
 <p>We will then use the delve (<code class="highlight">dlv</code>) debugger to analyze the <code class="highlight">kube-apiserver</code> process.</p>
+<p>Of course, none of this should be done on a production cluster. Connecting a debugger to the <code class="highlight">kube-apiserver</code> will
+pause the API server when hitting breakpoints, and it can also cause it to crash and/or be restarted. Only ever run
+the following steps on a disposable setup.</p>
 <h4 id="building-a-custom-kube-apiserver-for-debugging">Building a custom kube-apiserver for debugging</h4>
 <p>First, we must clone <a href="https://github.com/openshift/kubernetes">https://github.com/openshift/kubernetes</a>.
 We then checkout the target branch of our cluster, in this case OpenShift 4.10:

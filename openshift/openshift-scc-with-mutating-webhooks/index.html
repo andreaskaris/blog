@@ -2126,10 +2126,12 @@ fedora-test-with-capabilities-5f667b698d-tbz4t   privileged   &lt;none&gt;
 <h3 id="formulating-a-hypothesis">Formulating a hypothesis</h3>
 <p>Our hypothesis: when the pod is created, it first matches the <code class="highlight">restricted</code> SCC which mutates the pod's containers and
 adds <code class="highlight">securityContext.runAsUser: &lt;ID from project range&gt;</code>. Then, the mutating webhook injects the new capabilities
-into the pod's containers. After the pod was modified during the webhook mutation state, the built-in SCC mutating
-admission plugin is rerun. The pod now requires to be assigned the <code class="highlight">privileged</code> SCC as it cannot run with the more
-restrictive set of rules from the <code class="highlight">restricted</code> SCC. This would also explain why we do not see the same symptoms when
-we use the <code class="highlight">anyuid</code> SCC.</p>
+into the pod's containers. After the pod was modified during the webhook mutation stage, the built-in SCC mutating
+admission plugin is rerun. The pod now must be assigned the <code class="highlight">privileged</code> SCC as it cannot run with the more
+restrictive set of rules from the <code class="highlight">restricted</code> SCC. Thus, the SCC admission plugin updates the pod's SCC accordingly.
+This also explains why we do not see the same symptoms when we use the <code class="highlight">anyuid</code> SCC - the <code class="highlight">anyuid</code> SCC always wins
+against the <code class="highlight">restricted</code> SCC due to its higher priority, and thus the pod will be assigned the <code class="highlight">anyuid</code> SCC from the
+very beginning.</p>
 <p>Our hypothesis is backed by <a href="https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#reinvocation-policy">the Kubernetes documentation</a>:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">To</span> <span class="nv">allow</span> <span class="nv">mutating</span> <span class="nv">admission</span> <span class="nv">plugins</span> <span class="nv">to</span> <span class="nv">observe</span> <span class="nv">changes</span> <span class="nv">made</span> <span class="nv">by</span> <span class="nv">other</span> <span class="nv">plugins</span>, <span class="nv">built</span><span class="o">-</span><span class="nv">in</span> <span class="nv">mutating</span> <span class="nv">admission</span> <span class="nv">plugins</span> <span class="nv">are</span>

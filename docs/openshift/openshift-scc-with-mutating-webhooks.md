@@ -843,3 +843,5 @@ a second time, it now assigned the `privileged` SCC to the pod.
 The pod therefore showed up with the `privileged` SCC when inspecting it with `oc get pods`, but its containers were also
 assigned a `securityContext.runAsUser` field that was actually mutated by the `restricted` SCC which had been applied
 during a previous run of the SCC mutating admission plugin.
+
+![mutating-admission-control-reinvocation-2](https://user-images.githubusercontent.com/3291433/220173073-e798a901-b420-4831-9358-272af86deffc.png)

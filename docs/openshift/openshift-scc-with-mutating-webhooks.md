@@ -1,3 +1,5 @@
+![title](https://user-images.githubusercontent.com/3291433/220174870-18149077-88bd-4b77-9256-bf30f4712c65.png)
+
 # SCCs and mutating webhooks - or how to learn about about admission controller reinvocation the hard way
 
 Author: Andreas Karis

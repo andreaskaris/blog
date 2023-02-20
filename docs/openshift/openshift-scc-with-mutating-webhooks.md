@@ -449,6 +449,8 @@ To allow mutating admission plugins to observe changes made by other plugins, bu
 re-run if a mutating webhook modifies an object (...)
 ~~~
 
+The following diagram is a simplified view of the aforementioned process:
+
 ![mutating-admission-control-reinvocation](https://user-images.githubusercontent.com/3291433/220171917-34083458-b36f-4b08-b1e7-827df540fd0f.png)
 
 

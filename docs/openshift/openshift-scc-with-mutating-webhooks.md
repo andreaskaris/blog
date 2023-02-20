@@ -845,3 +845,5 @@ assigned a `securityContext.runAsUser` field that was actually mutated by the `r
 during a previous run of the SCC mutating admission plugin.
 
 ![mutating-admission-control-reinvocation-2](https://user-images.githubusercontent.com/3291433/220173073-e798a901-b420-4831-9358-272af86deffc.png)
+
+In reality, the entire process can be even more complex. [Mutating webhooks can specify a reinvocationPolicy of IfNeeded](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#reinvocation-policy). This way, mutating webhooks can be reinvocated as well.

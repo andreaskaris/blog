@@ -1,6 +1,6 @@
 ![title](https://user-images.githubusercontent.com/3291433/220175185-f58bf274-e886-45ef-ab32-92b6cd3f1739.png)
 
-# SCCs and mutating webhooks - or how to learn about about admission plugin reinvocation the hard way
+# SCCs and mutating webhooks - or how to learn about admission plugin reinvocation the hard way
 
 Author: Andreas Karis
 

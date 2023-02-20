@@ -440,7 +440,7 @@ This seemingly contradicts what we said earlier about the `privileged` SCC: it s
 
 Our hypothesis: when the pod is created, it first matches the `restricted` SCC which mutates the pod's containers and
 adds `securityContext.runAsUser: <ID from project range>`. Then, the mutating webhook injects the new capabilities
-into the pod's containers. After the pod was modified during the webhook mutation state, the built-in SCC mutating
+into the pod's containers. After the pod was modified during the webhook mutation stage, the built-in SCC mutating
 admission plugin is rerun. The pod now requires to be assigned the `privileged` SCC as it cannot run with the more
 restrictive set of rules from the `restricted` SCC. This would also explain why we do not see the same symptoms when
 we use the `anyuid` SCC.

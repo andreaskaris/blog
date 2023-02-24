@@ -269,9 +269,7 @@
   
 
 
-  
-
-<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
@@ -1683,6 +1681,156 @@
                 </div>
               </div>
             
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#kata-operator" class="md-nav__link">
+    kata-operator
+  </a>
+  
+    <nav class="md-nav" aria-label="kata-operator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kata-operator-will-not-install" class="md-nav__link">
+    kata-operator will not install
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vm-configuration" class="md-nav__link">
+    VM configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initrd-build-process" class="md-nav__link">
+    Initrd build process
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kata-configuration-which-kernel-and-initrd-does-the-vm-use" class="md-nav__link">
+    kata configuration - which kernel and initrd does the VM use?
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kata-runtime" class="md-nav__link">
+    kata-runtime
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-does-kata-containers-plug-the-vm-networking" class="md-nav__link">
+    How does kata containers plug the VM networking
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#selecting-the-appropriate-runtime-class-per-container" class="md-nav__link">
+    Selecting the appropriate runtime class per container
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crio-debugging-kata-container-launch" class="md-nav__link">
+    crio - debugging kata container launch
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#finding-the-kata-containers-socket" class="md-nav__link">
+    Finding the kata-containers socket
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connecting-a-debug-console-to-the-kata-vm" class="md-nav__link">
+    Connecting a debug console to the kata VM
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resources" class="md-nav__link">
+    Resources
+  </a>
+  
+    <nav class="md-nav" aria-label="Resources">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kata-operator_1" class="md-nav__link">
+    Kata operator
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kata-containers" class="md-nav__link">
+    Kata containers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kubernetes" class="md-nav__link">
+    kubernetes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#firecracker" class="md-nav__link">
+    Firecracker
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
             
           
           <div class="md-content" data-md-component="content">
@@ -4336,7 +4484,7 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["toc.integrate", "navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
     
     
       <script src="../../assets/javascripts/bundle.467223ff.min.js"></script>

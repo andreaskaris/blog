@@ -22,7 +22,23 @@ plugins:
         - linux
         - networking
         - openstack
-        - operator-sdk
+        - coding
+      categories:
+        - name: Ceph
+          dirs:
+            - ceph
+        - name: Linux
+          dirs:
+            - linux
+        - name: Networking
+          dirs:
+            - networking
+        - name: OpenStack
+          dirs:
+            - openstack
+        - name: Coding
+          dirs:
+            - coding
 # hide:
 #   - toc
 markdown_extensions:
@@ -50,7 +66,6 @@ nav:
   - iPXE boot environment on Fedora: linux/ipxe-boot-environment.md
   - Java Idrac Issues: linux/java-idrac-issues.md
   - meson: linux/meson.md
-  - My vimrc: linux/vimrc.md
   - namespaces: linux/namespaces.md
   - Old Java inside a container with xorgs: linux/old_java_version_with_xorgs_in_container.md
   - Retrieving process cgroup resource usage and limit info: linux/get-process-cgroup-info-and-limits.md
@@ -65,7 +80,6 @@ nav:
   - haproxy and HTTP/2: networking/haproxy-and-h2c.md
   - Install Open vSwitch on Rocky Linux 8: networking/install-openvswitch-on-rocky.md
   - Geneve tunneling: networking/geneve_tunneling.md
-  - Golang IP address conversion: networking/golang-ip-conversion.md
   - Netlink: networking/netlink.md  
   - OVN standalone on Fedora: networking/ovn_standalone_on_fedora.md
   - OVS packet recirculation: networking/ovs_recirculation.md
@@ -110,5 +124,7 @@ nav:
 - OpenStack:
   - Reattach to running deployment: openstack/reattach_to_running_deployment.md
   - Using clouds.yaml: openstack/using_clouds_yaml.md
-- OperatorSDK:
-  - Controller Reconciliation: operator-sdk/operator-sdk-reconciliation.md
+- Coding:
+  - Controller Reconciliation: coding/operator-sdk-reconciliation.md
+  - My vimrc: coding/vimrc.md
+  - Golang IP address conversion: coding/golang-ip-conversion.md

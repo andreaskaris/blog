@@ -1,5 +1,5 @@
 ---
-title: Big Data, Machine Learning, and Data Science
+title:
 ---
 
 ## Highlighted posts

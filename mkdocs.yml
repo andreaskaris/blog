@@ -12,9 +12,11 @@ theme:
     - navigation.prune
     - navigation.top
     - navigation.path
+    - navigation.indexes
 plugins:
   - git-revision-date-localized
-  - rss
+  - rss:
+      match_path: '^(?!.*index).*$'
   - blogging:
       dirs:
         - ceph
@@ -24,19 +26,22 @@ plugins:
         - openstack
         - coding
       categories:
-        - name: Ceph
+        - name: ceph
           dirs:
             - ceph
-        - name: Linux
+        - name: linux
           dirs:
             - linux
-        - name: Networking
+        - name: networking
           dirs:
             - networking
-        - name: OpenStack
+        - name: openstack
           dirs:
             - openstack
-        - name: Coding
+        - name: openshift
+          dirs:
+            - openshift
+        - name: coding
           dirs:
             - coding
 # hide:
@@ -49,17 +54,15 @@ markdown_extensions:
   - pymdownx.snippets
   - pymdownx.superfences
   - attr_list
+  - toc:
+      toc_depth : "0"
 nav:
 - Home: index.md
 - Ceph:
+  - ceph/index.md
   - Ceph manual test with qemu: ceph/ceph-manual-test.md
-- Containers:
-  - Analyzing CNI calls: openshift/analyzing-cni.md
-  - cgroups: linux/cgroups.md
-  - Containers in Linux: linux/containers.md
-  - List container images in registry: openshift/list_docker_registry_containers.md
-  - namespaces: linux/namespaces.md
 - Linux:
+  - linux/index.md
   - cgroups: linux/cgroups.md
   - Containers in Linux: linux/containers.md
   - Hugepages: linux/hugepages.md
@@ -72,6 +75,7 @@ nav:
   - RHEL Booting a virtual machine with UEFI but without secure boot: linux/libvirt-uefi-without-secureboot.md
   - Setting journalctl limits: linux/setting-journalctl-limits.md
 - Networking:
+  - networking/index.md
   - Accept Source Routing: networking/accept-source-routing.md
   - ARP and the Neighbor table: networking/arp_and_the_neighbor_table.md
   - BPF and tcpdump: networking/bpf-and-tcpdump.md
@@ -89,8 +93,10 @@ nav:
   - SCTP: networking/sctp.md
   - Useful commands: networking/useful-commands.md
   - Wireguard: networking/wireguard.md
-- OpenShift:
+- OpenShift and Kubernetes:
+  - openshift/index.md
   - AlertManager: openshift/alertmanager.md
+  - Analyzing CNI calls: openshift/analyzing-cni.md
   - Building custom release images for OpenShift: openshift/ocp-custom-release-image.md
   - CPU manager with custom MachineConfigPool: openshift/cpu-manager-with-custom-machine-config-pool.md
   - Crio vs conmon vs runc: openshift/crio-conmon-runc.md  
@@ -108,6 +114,7 @@ nav:
   - kata containers and the kata operatora: openshift/kata.md  
   - Kind with OVN Kubernetes Hybrid Overlay: openshift/ovn-kind-hybrid-overlay.md
   - Kind with private registry: openshift/kind-with-private-registry.md
+  - List container images in registry: openshift/list_docker_registry_containers.md
   - Mount a container image: openshift/mounting-container-image.md
   - OpenShift on OpenStack: openstack/install_openshift_on_openstack.md
   - Patch status.loadBalancer.ingress IP manually: openshift/patch-service-loadbalancer-ingress-ip.md
@@ -122,9 +129,11 @@ nav:
   - Useful commands for OpenShift SDN: openshift/useful-ocp-sdn-commands.md
   - Troubleshooting OpenShift on OpenStack worker creation: openshift/troubleshooting_openshift_on_openstack_worker_creation.md
 - OpenStack:
+  - openstack/index.md
   - Reattach to running deployment: openstack/reattach_to_running_deployment.md
   - Using clouds.yaml: openstack/using_clouds_yaml.md
 - Coding:
+  - coding/index.md
   - Controller Reconciliation: coding/operator-sdk-reconciliation.md
   - My vimrc: coding/vimrc.md
   - Golang IP address conversion: coding/golang-ip-conversion.md

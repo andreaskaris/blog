@@ -1,12 +1,8 @@
 ---
-title: ""
 exclude_from_blog: true
 ---
 
-## RSS feeds
-
-* [Created RSS feed](https://andreaskaris.github.io/blog/feed_rss_created.xml)
-* [Updated RSS feed](https://andreaskaris.github.io/blog/feed_rss_updated.xml)
+# Overview
 
 ## Highlighted posts
 

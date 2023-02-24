@@ -145,24 +145,8 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../ceph/ceph-manual-test/" class="md-tabs__link">
+      <a href="../../ceph/" class="md-tabs__link">
         Ceph
-      </a>
-    </li>
-  
-
-      
-        
-  
-  
-
-
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="../../openshift/analyzing-cni/" class="md-tabs__link">
-        Containers
       </a>
     </li>
   
@@ -179,7 +163,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="./" class="md-tabs__link md-tabs__link--active">
+      <a href="../" class="md-tabs__link md-tabs__link--active">
         Linux
       </a>
     </li>
@@ -195,7 +179,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../networking/accept-source-routing/" class="md-tabs__link">
+      <a href="../../networking/" class="md-tabs__link">
         Networking
       </a>
     </li>
@@ -211,8 +195,8 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../openshift/alertmanager/" class="md-tabs__link">
-        OpenShift
+      <a href="../../openshift/" class="md-tabs__link">
+        OpenShift and Kubernetes
       </a>
     </li>
   
@@ -227,7 +211,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../openstack/reattach_to_running_deployment/" class="md-tabs__link">
+      <a href="../../openstack/" class="md-tabs__link">
         OpenStack
       </a>
     </li>
@@ -243,7 +227,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../coding/operator-sdk-reconciliation/" class="md-tabs__link">
+      <a href="../../coding/" class="md-tabs__link">
         Coding
       </a>
     </li>
@@ -312,11 +296,25 @@
       
       
       
+        
+          
+            
+          
+        
+          
+        
       
-        <label class="md-nav__link" for="__nav_2">
-          Ceph
-          <span class="md-nav__icon md-icon"></span>
-        </label>
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../ceph/">Ceph</a>
+          
+            <label for="__nav_2">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
       
       <nav class="md-nav" aria-label="Ceph" data-md-level="1">
         <label class="md-nav__title" for="__nav_2">
@@ -324,6 +322,8 @@
           Ceph
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
           
             
               
@@ -351,386 +351,6 @@
 
   
   
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_3">
-          Containers
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Containers" data-md-level="1">
-        <label class="md-nav__title" for="__nav_3">
-          <span class="md-nav__icon md-icon"></span>
-          Containers
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../openshift/analyzing-cni/" class="md-nav__link">
-        Analyzing CNI calls
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          cgroups
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        cgroups
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#what-are-cgroups" class="md-nav__link">
-    What are cgroups?
-  </a>
-  
-    <nav class="md-nav" aria-label="What are cgroups?">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#summary-what-is-a-cgroup" class="md-nav__link">
-    Summary - what is a cgroup
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#definitions-what-is-a-cgroup" class="md-nav__link">
-    Definitions - what is a cgroup
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-relationship-of-containers-and-cgroups" class="md-nav__link">
-    The relationship of containers and cgroups
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cgroups-versions" class="md-nav__link">
-    cgroups versions
-  </a>
-  
-    <nav class="md-nav" aria-label="cgroups versions">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#backwards-compatibility" class="md-nav__link">
-    Backwards compatibility
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#which-version-of-cgroups-are-you-running" class="md-nav__link">
-    Which version of cgroups are you running?
-  </a>
-  
-    <nav class="md-nav" aria-label="Which version of cgroups are you running?">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#default-in-rhel-7" class="md-nav__link">
-    Default in RHEL 7
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#default-in-fedora-28" class="md-nav__link">
-    Default in Fedora 28
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#default-in-rhel-8" class="md-nav__link">
-    Default in RHEL 8
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#support-for-cgroupv2" class="md-nav__link">
-    Support for cgroupv2?
-  </a>
-  
-    <nav class="md-nav" aria-label="Support for cgroupv2?">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#in-rhel-7" class="md-nav__link">
-    In RHEL 7
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#in-rhel-8" class="md-nav__link">
-    In RHEL 8
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#types-of-cgroups-v1-resource-controllers" class="md-nav__link">
-    Types of cgroups v1 resource controllers
-  </a>
-  
-    <nav class="md-nav" aria-label="Types of cgroups v1 resource controllers">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#cpu-resource-controller" class="md-nav__link">
-    cpu resource controller
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cpuset-resource-controller" class="md-nav__link">
-    cpuset resource controller
-  </a>
-  
-    <nav class="md-nav" aria-label="cpuset resource controller">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#hugetlb-resource-controller" class="md-nav__link">
-    hugetlb resource controller
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#memory-cgroup" class="md-nav__link">
-    memory cgroup
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#blockio-cgroup" class="md-nav__link">
-    blockio cgroup
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#net_cls-cgroup" class="md-nav__link">
-    net_cls cgroup
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#net_prio-cgroup" class="md-nav__link">
-    net_prio cgroup
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#devices-cgroup" class="md-nav__link">
-    devices cgroup
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#freezer-cgroup" class="md-nav__link">
-    freezer cgroup
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mounting-unmounting-and-comounting-cgroup-v1-resource-controllers" class="md-nav__link">
-    mounting, unmounting and comounting cgroup v1 resource controllers
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#processes-in-cgroups" class="md-nav__link">
-    Processes in cgroups
-  </a>
-  
-    <nav class="md-nav" aria-label="Processes in cgroups">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#listing-the-cgroups-that-a-process-is-in" class="md-nav__link">
-    Listing the cgroups that a process is in
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#notify_on_release" class="md-nav__link">
-    notify_on_release
-  </a>
-  
-    <nav class="md-nav" aria-label="notify_on_release">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#resources" class="md-nav__link">
-    Resources
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../containers/" class="md-nav__link">
-        Containers in Linux
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../openshift/list_docker_registry_containers/" class="md-nav__link">
-        List container images in registry
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../namespaces/" class="md-nav__link">
-        namespaces
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
     
   
   
@@ -738,22 +358,58 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
       
       
       
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
       
-        <label class="md-nav__link" for="__nav_4">
-          Linux
-          <span class="md-nav__icon md-icon"></span>
-        </label>
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../">Linux</a>
+          
+            <label for="__nav_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
       
       <nav class="md-nav" aria-label="Linux" data-md-level="1">
-        <label class="md-nav__title" for="__nav_4">
+        <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Linux
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
           
             
               
@@ -1204,22 +860,70 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
       
       
       
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
       
-        <label class="md-nav__link" for="__nav_5">
-          Networking
-          <span class="md-nav__icon md-icon"></span>
-        </label>
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../networking/">Networking</a>
+          
+            <label for="__nav_4">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
       
       <nav class="md-nav" aria-label="Networking" data-md-level="1">
-        <label class="md-nav__title" for="__nav_5">
+        <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           Networking
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
           
             
               
@@ -1476,22 +1180,102 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
       
       
       
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
       
-        <label class="md-nav__link" for="__nav_6">
-          OpenShift
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../openshift/">OpenShift and Kubernetes</a>
+          
+            <label for="__nav_5">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="OpenShift and Kubernetes" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
           <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="OpenShift" data-md-level="1">
-        <label class="md-nav__title" for="__nav_6">
-          <span class="md-nav__icon md-icon"></span>
-          OpenShift
+          OpenShift and Kubernetes
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
           
             
               
@@ -1501,6 +1285,20 @@
     <li class="md-nav__item">
       <a href="../../openshift/alertmanager/" class="md-nav__link">
         AlertManager
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/analyzing-cni/" class="md-nav__link">
+        Analyzing CNI calls
       </a>
     </li>
   
@@ -1751,6 +1549,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../../openshift/list_docker_registry_containers/" class="md-nav__link">
+        List container images in registry
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../openshift/mounting-container-image/" class="md-nav__link">
         Mount a container image
       </a>
@@ -1944,22 +1756,40 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
       
       
       
+        
+          
+            
+          
+        
+          
+        
+          
+        
       
-        <label class="md-nav__link" for="__nav_7">
-          OpenStack
-          <span class="md-nav__icon md-icon"></span>
-        </label>
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../openstack/">OpenStack</a>
+          
+            <label for="__nav_6">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
       
       <nav class="md-nav" aria-label="OpenStack" data-md-level="1">
-        <label class="md-nav__title" for="__nav_7">
+        <label class="md-nav__title" for="__nav_6">
           <span class="md-nav__icon md-icon"></span>
           OpenStack
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
           
             
               
@@ -2006,22 +1836,42 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
       
       
       
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
       
-        <label class="md-nav__link" for="__nav_8">
-          Coding
-          <span class="md-nav__icon md-icon"></span>
-        </label>
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../coding/">Coding</a>
+          
+            <label for="__nav_7">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
       
       <nav class="md-nav" aria-label="Coding" data-md-level="1">
-        <label class="md-nav__title" for="__nav_8">
+        <label class="md-nav__title" for="__nav_7">
           <span class="md-nav__icon md-icon"></span>
           Coding
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
           
             
               
@@ -3312,7 +3162,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../namespaces/" class="md-footer__link md-footer__link--prev" aria-label="Previous: namespaces" rel="prev">
+        <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Index" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -3321,7 +3171,7 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              namespaces
+              Index
             </div>
           </div>
         </a>
@@ -3364,7 +3214,7 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
     
     
       <script src="../../assets/javascripts/bundle.467223ff.min.js"></script>

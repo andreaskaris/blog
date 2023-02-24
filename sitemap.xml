@@ -11,6 +11,21 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://andreaskaris.github.io/blog/coding/golang-ip-conversion/</loc>
+         <lastmod>2023-02-24</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://andreaskaris.github.io/blog/coding/operator-sdk-reconciliation/</loc>
+         <lastmod>2023-02-24</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://andreaskaris.github.io/blog/coding/vimrc/</loc>
+         <lastmod>2023-02-24</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://andreaskaris.github.io/blog/linux/cgroups/</loc>
          <lastmod>2023-02-24</lastmod>
          <changefreq>daily</changefreq>
@@ -66,11 +81,6 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://andreaskaris.github.io/blog/linux/vimrc/</loc>
-         <lastmod>2023-02-24</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://andreaskaris.github.io/blog/networking/accept-source-routing/</loc>
          <lastmod>2023-02-24</lastmod>
          <changefreq>daily</changefreq>
@@ -92,11 +102,6 @@
     </url>
     <url>
          <loc>https://andreaskaris.github.io/blog/networking/geneve_tunneling/</loc>
-         <lastmod>2023-02-24</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://andreaskaris.github.io/blog/networking/golang-ip-conversion/</loc>
          <lastmod>2023-02-24</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -327,11 +332,6 @@
     </url>
     <url>
          <loc>https://andreaskaris.github.io/blog/openstack/using_clouds_yaml/</loc>
-         <lastmod>2023-02-24</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://andreaskaris.github.io/blog/operator-sdk/operator-sdk-reconciliation/</loc>
          <lastmod>2023-02-24</lastmod>
          <changefreq>daily</changefreq>
     </url>

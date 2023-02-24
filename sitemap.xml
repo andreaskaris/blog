@@ -6,7 +6,17 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://andreaskaris.github.io/blog/ceph/</loc>
+         <lastmod>2023-02-24</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://andreaskaris.github.io/blog/ceph/ceph-manual-test/</loc>
+         <lastmod>2023-02-24</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://andreaskaris.github.io/blog/coding/</loc>
          <lastmod>2023-02-24</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -22,6 +32,11 @@
     </url>
     <url>
          <loc>https://andreaskaris.github.io/blog/coding/vimrc/</loc>
+         <lastmod>2023-02-24</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://andreaskaris.github.io/blog/linux/</loc>
          <lastmod>2023-02-24</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -77,6 +92,11 @@
     </url>
     <url>
          <loc>https://andreaskaris.github.io/blog/linux/setting-journalctl-limits/</loc>
+         <lastmod>2023-02-24</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://andreaskaris.github.io/blog/networking/</loc>
          <lastmod>2023-02-24</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -162,6 +182,11 @@
     </url>
     <url>
          <loc>https://andreaskaris.github.io/blog/networking/wireguard/</loc>
+         <lastmod>2023-02-24</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://andreaskaris.github.io/blog/openshift/</loc>
          <lastmod>2023-02-24</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -317,6 +342,11 @@
     </url>
     <url>
          <loc>https://andreaskaris.github.io/blog/openshift/useful-ocp-sdn-commands/</loc>
+         <lastmod>2023-02-24</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://andreaskaris.github.io/blog/openstack/</loc>
          <lastmod>2023-02-24</lastmod>
          <changefreq>daily</changefreq>
     </url>

@@ -3,6 +3,7 @@ site_description: Andreas Karis' blog about anything Kubernetes, OpenShift, Linu
 site_url: https://andreaskaris.github.io/blog/
 theme: 
   name: material
+  custom_dir: overrides
   palette:
     primary: black
     accent: pink

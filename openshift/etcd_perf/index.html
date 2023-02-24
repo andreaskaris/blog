@@ -12,8 +12,14 @@
       
         <link rel="canonical" href="https://andreaskaris.github.io/blog/openshift/etcd_perf/">
       
+      
+        <link rel="prev" href="../crio-conmon-runc/">
+      
+      
+        <link rel="next" href="../get-vs-list-api-calls/">
+      
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.14">
     
     
       
@@ -21,16 +27,13 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2d9f7617.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#000000">
-        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
       
+      
+
     
     
     
@@ -43,10 +46,11 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
+    
     
     
   </head>
@@ -57,7 +61,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="pink">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink">
   
     
     
@@ -65,11 +69,6 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
-      
-        
-        <a href="#how-to-test-etcd-performance" class="md-skip">
-          Skip to content
-        </a>
       
     </div>
     <div data-md-component="announce">
@@ -84,11 +83,11 @@
     <a href="../.." title="Andreas Karis Blog" class="md-header__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -121,7 +120,7 @@
           
             
 <nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-tabs__inner md-grid">
+  <div class="md-grid">
     <ul class="md-tabs__list">
       
         
@@ -258,7 +257,7 @@
     <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     Andreas Karis Blog
@@ -292,8 +291,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
       
       
         
@@ -316,7 +316,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Ceph" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
           Ceph
@@ -356,8 +356,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
       
       
         
@@ -400,7 +401,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Linux" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Linux
@@ -580,8 +581,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
       
       
         
@@ -636,7 +638,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Networking" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           Networking
@@ -902,8 +904,9 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
       
       
         
@@ -990,7 +993,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenShift and Kubernetes" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_5">
           <span class="md-nav__icon md-icon"></span>
           OpenShift and Kubernetes
@@ -1078,69 +1081,13 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Etcd Performance tests
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         Etcd Performance tests
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#how-to-test-etcd-performance" class="md-nav__link">
-    How to test etcd performance
-  </a>
-  
-    <nav class="md-nav" aria-label="How to test etcd performance">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#background" class="md-nav__link">
-    Background
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#etcdctl-check-perf-how-it-works" class="md-nav__link">
-    etcdctl check perf - how it works
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#running-etcdctl-check-perf" class="md-nav__link">
-    Running etcdctl check perf
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -1542,8 +1489,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
       
       
         
@@ -1568,7 +1516,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenStack" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_6">
           <span class="md-nav__icon md-icon"></span>
           OpenStack
@@ -1622,8 +1570,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
       
       
         
@@ -1650,7 +1599,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Coding" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_7">
           <span class="md-nav__icon md-icon"></span>
           Coding
@@ -1725,58 +1674,17 @@
   
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#how-to-test-etcd-performance" class="md-nav__link">
-    How to test etcd performance
-  </a>
-  
-    <nav class="md-nav" aria-label="How to test etcd performance">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#background" class="md-nav__link">
-    Background
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#etcdctl-check-perf-how-it-works" class="md-nav__link">
-    etcdctl check perf - how it works
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#running-etcdctl-check-perf" class="md-nav__link">
-    Running etcdctl check perf
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
   <h1>Etcd Performance tests</h1>
@@ -1791,9 +1699,8 @@
 <p>The <code class="highlight">etcdctl check perf</code> command will simulate specific workload scenarios for small(50 clients), medium (200 clients), large (500 clients) and extra large clusters (1000 clients). It will always run for 60 seconds.</p>
 <p>You can also check the code here:
 <a href="https://github.com/etcd-io/etcd/blob/master/etcdctl/ctlv3/command/check.go#L127">https://github.com/etcd-io/etcd/blob/master/etcdctl/ctlv3/command/check.go#L127</a>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">The</span><span class="w"> </span><span class="n">performance</span><span class="w"> </span><span class="n">check</span><span class="s1">&#39;s workload model. Accepted workloads: s(small), m(medium), l(large), xl(xLarge)</span>
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">The</span><span class="w"> </span><span class="n">performance</span><span class="w"> </span><span class="n">check</span><span class="s1">&#39;s workload model. Accepted workloads: s(small), m(medium), l(large), xl(xLarge)</span>
+</code></pre></div></td></tr></table></div></p>
 <p>The tests run by <code class="highlight">etcdctl check perf</code> will report PASS/FAIL depending on if they are within the following bounds:</p>
 <table>
 <thead>
@@ -1819,7 +1726,7 @@
 </table>
 <p>Additionally, etcd checks if there are any errors.</p>
 <p><a href="https://github.com/etcd-io/etcd/blob/6e800b9b0161ef874784fc6c679325acd67e2452/etcdctl/ctlv3/command/check.go#L51">https://github.com/etcd-io/etcd/blob/6e800b9b0161ef874784fc6c679325acd67e2452/etcdctl/ctlv3/command/check.go#L51</a>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1843,35 +1750,34 @@
 <span class="normal">22</span>
 <span class="normal">23</span>
 <span class="normal">24</span>
-<span class="normal">25</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">(...)</span><span class="w"></span>
-<span class="nf">var</span><span class="w"> </span><span class="n">checkPerfCfgMap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">map</span><span class="o">[</span><span class="n">string</span><span class="o">]</span><span class="n">checkPerfCfg</span><span class="err">{</span><span class="w"></span>
-<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="nl">TODO</span><span class="p">:</span><span class="w"> </span><span class="n">support</span><span class="w"> </span><span class="k">read</span><span class="w"> </span><span class="k">limit</span><span class="w"></span>
-<span class="w">    </span><span class="ss">&quot;s&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">limit</span><span class="err">:</span><span class="w">    </span><span class="mi">150</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nl">clients</span><span class="p">:</span><span class="w">  </span><span class="mi">50</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nl">duration</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="err">}</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="ss">&quot;m&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">limit</span><span class="err">:</span><span class="w">    </span><span class="mi">1000</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nl">clients</span><span class="p">:</span><span class="w">  </span><span class="mi">200</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nl">duration</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="err">}</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="ss">&quot;l&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">limit</span><span class="err">:</span><span class="w">    </span><span class="mi">8000</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nl">clients</span><span class="p">:</span><span class="w">  </span><span class="mi">500</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nl">duration</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="err">}</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="ss">&quot;xl&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">limit</span><span class="err">:</span><span class="w">    </span><span class="mi">15000</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nl">clients</span><span class="p">:</span><span class="w">  </span><span class="mi">1000</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nl">duration</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="err">}</span><span class="p">,</span><span class="w"></span>
-<span class="err">}</span><span class="w"></span>
-<span class="p">(...)</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="normal">25</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">(...)</span>
+<span class="nf">var</span><span class="w"> </span><span class="n">checkPerfCfgMap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">map</span><span class="o">[</span><span class="n">string</span><span class="o">]</span><span class="n">checkPerfCfg</span><span class="err">{</span>
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="nl">TODO</span><span class="p">:</span><span class="w"> </span><span class="n">support</span><span class="w"> </span><span class="k">read</span><span class="w"> </span><span class="k">limit</span>
+<span class="w">    </span><span class="ss">&quot;s&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{</span>
+<span class="w">        </span><span class="k">limit</span><span class="err">:</span><span class="w">    </span><span class="mi">150</span><span class="p">,</span>
+<span class="w">        </span><span class="nl">clients</span><span class="p">:</span><span class="w">  </span><span class="mi">50</span><span class="p">,</span>
+<span class="w">        </span><span class="nl">duration</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span>
+<span class="w">    </span><span class="err">}</span><span class="p">,</span>
+<span class="w">    </span><span class="ss">&quot;m&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{</span>
+<span class="w">        </span><span class="k">limit</span><span class="err">:</span><span class="w">    </span><span class="mi">1000</span><span class="p">,</span>
+<span class="w">        </span><span class="nl">clients</span><span class="p">:</span><span class="w">  </span><span class="mi">200</span><span class="p">,</span>
+<span class="w">        </span><span class="nl">duration</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span>
+<span class="w">    </span><span class="err">}</span><span class="p">,</span>
+<span class="w">    </span><span class="ss">&quot;l&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{</span>
+<span class="w">        </span><span class="k">limit</span><span class="err">:</span><span class="w">    </span><span class="mi">8000</span><span class="p">,</span>
+<span class="w">        </span><span class="nl">clients</span><span class="p">:</span><span class="w">  </span><span class="mi">500</span><span class="p">,</span>
+<span class="w">        </span><span class="nl">duration</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span>
+<span class="w">    </span><span class="err">}</span><span class="p">,</span>
+<span class="w">    </span><span class="ss">&quot;xl&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{</span>
+<span class="w">        </span><span class="k">limit</span><span class="err">:</span><span class="w">    </span><span class="mi">15000</span><span class="p">,</span>
+<span class="w">        </span><span class="nl">clients</span><span class="p">:</span><span class="w">  </span><span class="mi">1000</span><span class="p">,</span>
+<span class="w">        </span><span class="nl">duration</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span>
+<span class="w">    </span><span class="err">}</span><span class="p">,</span>
+<span class="err">}</span>
+<span class="p">(...)</span>
+</code></pre></div></td></tr></table></div></p>
 <p><a href="https://github.com/etcd-io/etcd/blob/6e800b9b0161ef874784fc6c679325acd67e2452/etcdctl/ctlv3/command/check.go#L232">https://github.com/etcd-io/etcd/blob/6e800b9b0161ef874784fc6c679325acd67e2452/etcdctl/ctlv3/command/check.go#L232</a>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1906,47 +1812,46 @@
 <span class="normal">33</span>
 <span class="normal">34</span>
 <span class="normal">35</span>
-<span class="normal">36</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">(</span><span class="o">...</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="nv">ok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span><span class="w"></span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nf">len</span><span class="p">(</span><span class="nv">s</span><span class="o">.</span><span class="nv">ErrorDist</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="nv">fmt</span><span class="o">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&quot;FAIL: too many errors&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="nv">k</span><span class="p">,</span><span class="w"> </span><span class="nv">v</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nv">range</span><span class="w"> </span><span class="nv">s</span><span class="o">.</span><span class="nv">ErrorDist</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="nv">fmt</span><span class="o">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&quot;FAIL: ERROR(%v) -&gt; %d\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">k</span><span class="p">,</span><span class="w"> </span><span class="nv">v</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="w">        </span><span class="nv">ok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">false</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="normal">36</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="w">    </span><span class="nv">ok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">true</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nf">len</span><span class="p">(</span><span class="nv">s</span><span class="o">.</span><span class="nv">ErrorDist</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nv">fmt</span><span class="o">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&quot;FAIL: too many errors&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="nv">k</span><span class="p">,</span><span class="w"> </span><span class="nv">v</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nv">range</span><span class="w"> </span><span class="nv">s</span><span class="o">.</span><span class="nv">ErrorDist</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nv">fmt</span><span class="o">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&quot;FAIL: ERROR(%v) -&gt; %d\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">k</span><span class="p">,</span><span class="w"> </span><span class="nv">v</span><span class="p">)</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="nv">ok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nv">s</span><span class="o">.</span><span class="nv">RPS</span><span class="o">/</span><span class="nf">float64</span><span class="p">(</span><span class="nv">cfg</span><span class="o">.</span><span class="nv">limit</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mf">0.9</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="nv">fmt</span><span class="o">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&quot;FAIL: Throughput too low: %d writes/s\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">int</span><span class="p">(</span><span class="nv">s</span><span class="o">.</span><span class="nv">RPS</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="nv">ok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">false</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="nv">fmt</span><span class="o">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&quot;PASS: Throughput is %d writes/s\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">int</span><span class="p">(</span><span class="nv">s</span><span class="o">.</span><span class="nv">RPS</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nv">s</span><span class="o">.</span><span class="nv">Slowest</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="nv">slowest</span><span class="w"> </span><span class="nv">request</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">500</span><span class="nv">ms</span><span class="w"></span>
-<span class="w">        </span><span class="nv">fmt</span><span class="o">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&quot;Slowest request took too long: %fs\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">s</span><span class="o">.</span><span class="nv">Slowest</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="nv">ok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">false</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="nv">fmt</span><span class="o">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&quot;PASS: Slowest request took %fs\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">s</span><span class="o">.</span><span class="nv">Slowest</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nv">s</span><span class="o">.</span><span class="nv">Stddev</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.1</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="nv">stddev</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">100</span><span class="nv">ms</span><span class="w"></span>
-<span class="w">        </span><span class="nv">fmt</span><span class="o">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&quot;Stddev too high: %fs\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">s</span><span class="o">.</span><span class="nv">Stddev</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="nv">ok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">false</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="nv">fmt</span><span class="o">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&quot;PASS: Stddev is %fs\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">s</span><span class="o">.</span><span class="nv">Stddev</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nv">s</span><span class="o">.</span><span class="nv">RPS</span><span class="o">/</span><span class="nf">float64</span><span class="p">(</span><span class="nv">cfg</span><span class="o">.</span><span class="nv">limit</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mf">0.9</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nv">fmt</span><span class="o">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&quot;FAIL: Throughput too low: %d writes/s\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">int</span><span class="p">(</span><span class="nv">s</span><span class="o">.</span><span class="nv">RPS</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">        </span><span class="nv">ok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nv">fmt</span><span class="o">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&quot;PASS: Throughput is %d writes/s\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">int</span><span class="p">(</span><span class="nv">s</span><span class="o">.</span><span class="nv">RPS</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nv">s</span><span class="o">.</span><span class="nv">Slowest</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="nv">slowest</span><span class="w"> </span><span class="nv">request</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">500</span><span class="nv">ms</span>
+<span class="w">        </span><span class="nv">fmt</span><span class="o">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&quot;Slowest request took too long: %fs\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">s</span><span class="o">.</span><span class="nv">Slowest</span><span class="p">)</span>
+<span class="w">        </span><span class="nv">ok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nv">fmt</span><span class="o">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&quot;PASS: Slowest request took %fs\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">s</span><span class="o">.</span><span class="nv">Slowest</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nv">s</span><span class="o">.</span><span class="nv">Stddev</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.1</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="nv">stddev</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">100</span><span class="nv">ms</span>
+<span class="w">        </span><span class="nv">fmt</span><span class="o">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&quot;Stddev too high: %fs\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">s</span><span class="o">.</span><span class="nv">Stddev</span><span class="p">)</span>
+<span class="w">        </span><span class="nv">ok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="no">false</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nv">fmt</span><span class="o">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&quot;PASS: Stddev is %fs\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nv">s</span><span class="o">.</span><span class="nv">Stddev</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nv">ok</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="nv">fmt</span><span class="o">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&quot;PASS&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="nv">fmt</span><span class="o">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&quot;FAIL&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="nv">os</span><span class="o">.</span><span class="nf">Exit</span><span class="p">(</span><span class="nv">ExitError</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">(</span><span class="o">...</span><span class="p">)</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nv">ok</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nv">fmt</span><span class="o">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&quot;PASS&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nv">fmt</span><span class="o">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&quot;FAIL&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="nv">os</span><span class="o">.</span><span class="nf">Exit</span><span class="p">(</span><span class="nv">ExitError</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div></p>
 <p>The processing of a run's metrics is done here:
 <a href="https://github.com/etcd-io/etcd/blob/6e800b9b0161ef874784fc6c679325acd67e2452/pkg/report/report.go#L185">https://github.com/etcd-io/etcd/blob/6e800b9b0161ef874784fc6c679325acd67e2452/pkg/report/report.go#L185</a>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1967,68 +1872,61 @@
 <span class="normal">19</span>
 <span class="normal">20</span>
 <span class="normal">21</span>
-<span class="normal">22</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">(...)</span><span class="w"></span>
-<span class="n">func</span><span class="w"> </span><span class="p">(</span><span class="n">r</span><span class="w"> </span><span class="o">*</span><span class="n">report</span><span class="p">)</span><span class="w"> </span><span class="n">processResults</span><span class="p">()</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">st</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="nc">time</span><span class="p">.</span><span class="n">Now</span><span class="p">()</span><span class="w"></span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">results</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">r</span><span class="p">.</span><span class="n">processResult</span><span class="p">(</span><span class="o">&amp;</span><span class="n">res</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="err">}</span><span class="w"></span>
-<span class="w">    </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">time</span><span class="p">.</span><span class="n">Since</span><span class="p">(</span><span class="n">st</span><span class="p">)</span><span class="w"></span>
+<span class="normal">22</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">(...)</span>
+<span class="n">func</span><span class="w"> </span><span class="p">(</span><span class="n">r</span><span class="w"> </span><span class="o">*</span><span class="n">report</span><span class="p">)</span><span class="w"> </span><span class="n">processResults</span><span class="p">()</span><span class="w"> </span><span class="err">{</span>
+<span class="w">    </span><span class="n">st</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="nc">time</span><span class="p">.</span><span class="n">Now</span><span class="p">()</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">results</span><span class="w"> </span><span class="err">{</span>
+<span class="w">        </span><span class="n">r</span><span class="p">.</span><span class="n">processResult</span><span class="p">(</span><span class="o">&amp;</span><span class="n">res</span><span class="p">)</span>
+<span class="w">    </span><span class="err">}</span>
+<span class="w">    </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">time</span><span class="p">.</span><span class="n">Since</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
 
-<span class="w">    </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">RPS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">float64</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Total</span><span class="p">.</span><span class="n">Seconds</span><span class="p">()</span><span class="w"></span>
-<span class="w">    </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Average</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">AvgTotal</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">float64</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="p">))</span><span class="w"></span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">dev</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Average</span><span class="w"></span>
-<span class="w">        </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Stddev</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dev</span><span class="w"></span>
-<span class="w">    </span><span class="err">}</span><span class="w"></span>
-<span class="w">    </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Stddev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">math</span><span class="p">.</span><span class="nf">Sqrt</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Stddev</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">float64</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="p">)))</span><span class="w"></span>
-<span class="w">    </span><span class="n">sort</span><span class="p">.</span><span class="n">Float64s</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nf">len</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Fastest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="o">[</span><span class="n">0</span><span class="o">]</span><span class="w"></span>
-<span class="w">        </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Slowest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="o">[</span><span class="n">len(r.stats.Lats)-1</span><span class="o">]</span><span class="w"></span>
-<span class="w">    </span><span class="err">}</span><span class="w"></span>
-<span class="err">}</span><span class="w"></span>
-<span class="p">(...)</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="w">    </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">RPS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">float64</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Total</span><span class="p">.</span><span class="n">Seconds</span><span class="p">()</span>
+<span class="w">    </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Average</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">AvgTotal</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">float64</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="p">))</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="w"> </span><span class="err">{</span>
+<span class="w">        </span><span class="n">dev</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Average</span>
+<span class="w">        </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Stddev</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dev</span>
+<span class="w">    </span><span class="err">}</span>
+<span class="w">    </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Stddev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">math</span><span class="p">.</span><span class="nf">Sqrt</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Stddev</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">float64</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="p">)))</span>
+<span class="w">    </span><span class="n">sort</span><span class="p">.</span><span class="n">Float64s</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nf">len</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="err">{</span>
+<span class="w">        </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Fastest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="o">[</span><span class="n">0</span><span class="o">]</span>
+<span class="w">        </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Slowest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">Lats</span><span class="o">[</span><span class="n">len(r.stats.Lats)-1</span><span class="o">]</span>
+<span class="w">    </span><span class="err">}</span>
+<span class="err">}</span>
+<span class="p">(...)</span>
+</code></pre></div></td></tr></table></div></p>
 <h3 id="running-etcdctl-check-perf">Running etcdctl check perf</h3>
 <p>The following illustrated how to test etcd performance in OpenShift 4.5</p>
 <p>Get the name of one of the etcd pods:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>ETCD_POD=$(oc -n openshift-etcd get pods -l app=etcd -o name | head -1)
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>ETCD_POD=$(oc -n openshift-etcd get pods -l app=etcd -o name | head -1)
+</code></pre></div></td></tr></table></div></p>
 <p>Run a normal test:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">oc</span> <span class="k">exec</span>  <span class="o">-</span><span class="nv">n</span> <span class="nv">openshift</span><span class="o">-</span><span class="nv">etcd</span> <span class="o">-</span><span class="nv">it</span> <span class="o">-</span><span class="nv">c</span> <span class="nv">etcd</span> <span class="mh">$E</span><span class="nv">TCD_POD</span> <span class="o">--</span> <span class="nv">etcdctl</span> <span class="nv">check</span> <span class="nv">perf</span>
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nv">oc</span><span class="w"> </span><span class="k">exec</span><span class="w">  </span><span class="o">-</span><span class="nv">n</span><span class="w"> </span><span class="nv">openshift</span><span class="o">-</span><span class="nv">etcd</span><span class="w"> </span><span class="o">-</span><span class="nv">it</span><span class="w"> </span><span class="o">-</span><span class="nv">c</span><span class="w"> </span><span class="nv">etcd</span><span class="w"> </span><span class="mh">$E</span><span class="nv">TCD_POD</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="nv">etcdctl</span><span class="w"> </span><span class="nv">check</span><span class="w"> </span><span class="nv">perf</span>
+</code></pre></div></td></tr></table></div></p>
 <p>Run a medium test:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">oc</span><span class="w"> </span><span class="n">exec</span><span class="w">  </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="n">openshift</span><span class="o">-</span><span class="n">etcd</span><span class="w"> </span><span class="o">-</span><span class="n">it</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="n">etcd</span><span class="w"> </span><span class="o">$</span><span class="n">ETCD_POD</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">etcdctl</span><span class="w"> </span><span class="n">check</span><span class="w"> </span><span class="n">perf</span><span class="w"> </span><span class="o">--</span><span class="nb">load</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">oc</span><span class="w"> </span><span class="n">exec</span><span class="w">  </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="n">openshift</span><span class="o">-</span><span class="n">etcd</span><span class="w"> </span><span class="o">-</span><span class="n">it</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="n">etcd</span><span class="w"> </span><span class="o">$</span><span class="n">ETCD_POD</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">etcdctl</span><span class="w"> </span><span class="n">check</span><span class="w"> </span><span class="n">perf</span><span class="w"> </span><span class="o">--</span><span class="nb">load</span><span class="o">=</span><span class="s1">&#39;m&#39;</span>
+</code></pre></div></td></tr></table></div></p>
 <p>Run a large test:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">oc</span><span class="w"> </span><span class="n">exec</span><span class="w">  </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="n">openshift</span><span class="o">-</span><span class="n">etcd</span><span class="w"> </span><span class="o">-</span><span class="n">it</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="n">etcd</span><span class="w"> </span><span class="o">$</span><span class="n">ETCD_POD</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">etcdctl</span><span class="w"> </span><span class="n">check</span><span class="w"> </span><span class="n">perf</span><span class="w"> </span><span class="o">--</span><span class="nb">load</span><span class="o">=</span><span class="s1">&#39;l&#39;</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">oc</span><span class="w"> </span><span class="n">exec</span><span class="w">  </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="n">openshift</span><span class="o">-</span><span class="n">etcd</span><span class="w"> </span><span class="o">-</span><span class="n">it</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="n">etcd</span><span class="w"> </span><span class="o">$</span><span class="n">ETCD_POD</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">etcdctl</span><span class="w"> </span><span class="n">check</span><span class="w"> </span><span class="n">perf</span><span class="w"> </span><span class="o">--</span><span class="nb">load</span><span class="o">=</span><span class="s1">&#39;l&#39;</span>
+</code></pre></div></td></tr></table></div></p>
 <p>Run an extra large test:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">oc</span><span class="w"> </span><span class="n">exec</span><span class="w">  </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="n">openshift</span><span class="o">-</span><span class="n">etcd</span><span class="w"> </span><span class="o">-</span><span class="n">it</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="n">etcd</span><span class="w"> </span><span class="o">$</span><span class="n">ETCD_POD</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">etcdctl</span><span class="w"> </span><span class="n">check</span><span class="w"> </span><span class="n">perf</span><span class="w"> </span><span class="o">--</span><span class="nb">load</span><span class="o">=</span><span class="s1">&#39;xl&#39;</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">oc</span><span class="w"> </span><span class="n">exec</span><span class="w">  </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="n">openshift</span><span class="o">-</span><span class="n">etcd</span><span class="w"> </span><span class="o">-</span><span class="n">it</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="n">etcd</span><span class="w"> </span><span class="o">$</span><span class="n">ETCD_POD</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">etcdctl</span><span class="w"> </span><span class="n">check</span><span class="w"> </span><span class="n">perf</span><span class="w"> </span><span class="o">--</span><span class="nb">load</span><span class="o">=</span><span class="s1">&#39;xl&#39;</span>
+</code></pre></div></td></tr></table></div></p>
 <p>Here's the output of a failed run:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
-<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="c1"># oc exec  -n openshift-etcd -it -c etcd $ETCD_POD -- etcdctl check perf --load=&#39;m&#39;</span><span class="w"></span>
-<span class="w"> </span><span class="mi">60</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">60</span><span class="w"> </span><span class="n">Boooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo</span><span class="o">!</span><span class="w"> </span><span class="mf">100.00</span><span class="o">%</span><span class="w"> </span><span class="mi">1</span><span class="n">m0s</span><span class="w"></span>
-<span class="n">FAIL</span><span class="p">:</span><span class="w"> </span><span class="n">Throughput</span><span class="w"> </span><span class="n">too</span><span class="w"> </span><span class="n">low</span><span class="p">:</span><span class="w"> </span><span class="mi">898</span><span class="w"> </span><span class="n">writes</span><span class="o">/</span><span class="n">s</span><span class="w"></span>
-<span class="n">Slowest</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="n">took</span><span class="w"> </span><span class="n">too</span><span class="w"> </span><span class="n">long</span><span class="p">:</span><span class="w"> </span><span class="mf">2.483523</span><span class="n">s</span><span class="w"></span>
-<span class="n">Stddev</span><span class="w"> </span><span class="n">too</span><span class="w"> </span><span class="n">high</span><span class="p">:</span><span class="w"> </span><span class="mf">0.170017</span><span class="n">s</span><span class="w"></span>
-<span class="n">FAIL</span><span class="w"></span>
-<span class="n">command</span><span class="w"> </span><span class="n">terminated</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">exit</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># oc exec  -n openshift-etcd -it -c etcd $ETCD_POD -- etcdctl check perf --load=&#39;m&#39;</span>
+<span class="w"> </span><span class="mi">60</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">60</span><span class="w"> </span><span class="n">Boooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo</span><span class="o">!</span><span class="w"> </span><span class="mf">100.00</span><span class="o">%</span><span class="w"> </span><span class="mi">1</span><span class="n">m0s</span>
+<span class="n">FAIL</span><span class="p">:</span><span class="w"> </span><span class="n">Throughput</span><span class="w"> </span><span class="n">too</span><span class="w"> </span><span class="n">low</span><span class="p">:</span><span class="w"> </span><span class="mi">898</span><span class="w"> </span><span class="n">writes</span><span class="o">/</span><span class="n">s</span>
+<span class="n">Slowest</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="n">took</span><span class="w"> </span><span class="n">too</span><span class="w"> </span><span class="n">long</span><span class="p">:</span><span class="w"> </span><span class="mf">2.483523</span><span class="n">s</span>
+<span class="n">Stddev</span><span class="w"> </span><span class="n">too</span><span class="w"> </span><span class="n">high</span><span class="p">:</span><span class="w"> </span><span class="mf">0.170017</span><span class="n">s</span>
+<span class="n">FAIL</span>
+<span class="n">command</span><span class="w"> </span><span class="n">terminated</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">exit</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="mi">1</span>
+</code></pre></div></td></tr></table></div></p>
 
   <hr>
 <div class="md-source-file">
@@ -2041,54 +1939,25 @@
   </small>
 </div>
 
-              
-            </article>
-          </div>
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
         
       </main>
       
         <footer class="md-footer">
-  
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
-      
-        
-        <a href="../crio-conmon-runc/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Crio vs conmon vs runc" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Crio vs conmon vs runc
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../get-vs-list-api-calls/" class="md-footer__link md-footer__link--next" aria-label="Next: Get vs List API Calls" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              Get vs List API Calls
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -2110,10 +1979,11 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.467223ff.min.js"></script>
+      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
       
     
   </body>

@@ -12,8 +12,14 @@
       
         <link rel="canonical" href="https://andreaskaris.github.io/blog/networking/wireguard/">
       
+      
+        <link rel="prev" href="../useful-commands/">
+      
+      
+        <link rel="next" href="../../openshift/">
+      
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.14">
     
     
       
@@ -21,16 +27,13 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2d9f7617.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#000000">
-        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
       
+      
+
     
     
     
@@ -43,10 +46,11 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
+    
     
     
   </head>
@@ -57,7 +61,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="pink">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink">
   
     
     
@@ -65,11 +69,6 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
-      
-        
-        <a href="#wireguard-demo-on-fedora-32" class="md-skip">
-          Skip to content
-        </a>
       
     </div>
     <div data-md-component="announce">
@@ -84,11 +83,11 @@
     <a href="../.." title="Andreas Karis Blog" class="md-header__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -121,7 +120,7 @@
           
             
 <nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-tabs__inner md-grid">
+  <div class="md-grid">
     <ul class="md-tabs__list">
       
         
@@ -258,7 +257,7 @@
     <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     Andreas Karis Blog
@@ -292,8 +291,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
       
       
         
@@ -316,7 +316,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Ceph" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
           Ceph
@@ -356,8 +356,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
       
       
         
@@ -400,7 +401,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Linux" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Linux
@@ -582,8 +583,9 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
       
       
         
@@ -638,7 +640,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Networking" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           Networking
@@ -880,94 +882,13 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Wireguard
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         Wireguard
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#create-keys" class="md-nav__link">
-    Create keys
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#write-down-ip-addresses-and-keys-for-later" class="md-nav__link">
-    Write down IP addresses and keys for later
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#manual-tunnel-setup" class="md-nav__link">
-    Manual tunnel setup
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tunnel-setup-with-config-files" class="md-nav__link">
-    Tunnel setup with config files
-  </a>
-  
-    <nav class="md-nav" aria-label="Tunnel setup with config files">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#starting-tunnels-on-system-boot" class="md-nav__link">
-    Starting tunnels on system boot
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#resources" class="md-nav__link">
-    Resources
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -991,8 +912,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
       
       
         
@@ -1079,7 +1001,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenShift and Kubernetes" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_5">
           <span class="md-nav__icon md-icon"></span>
           OpenShift and Kubernetes
@@ -1567,8 +1489,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
       
       
         
@@ -1593,7 +1516,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenStack" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_6">
           <span class="md-nav__icon md-icon"></span>
           OpenStack
@@ -1647,8 +1570,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
       
       
         
@@ -1675,7 +1599,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Coding" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_7">
           <span class="md-nav__icon md-icon"></span>
           Coding
@@ -1749,71 +1673,6 @@
   
   
   
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#create-keys" class="md-nav__link">
-    Create keys
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#write-down-ip-addresses-and-keys-for-later" class="md-nav__link">
-    Write down IP addresses and keys for later
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#manual-tunnel-setup" class="md-nav__link">
-    Manual tunnel setup
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tunnel-setup-with-config-files" class="md-nav__link">
-    Tunnel setup with config files
-  </a>
-  
-    <nav class="md-nav" aria-label="Tunnel setup with config files">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#starting-tunnels-on-system-boot" class="md-nav__link">
-    Starting tunnels on system boot
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#resources" class="md-nav__link">
-    Resources
-  </a>
-  
-</li>
-      
-    </ul>
   
 </nav>
                   </div>
@@ -1821,125 +1680,115 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
 <h1 id="wireguard-demo-on-fedora-32">Wireguard demo on Fedora 32</h1>
 <h2 id="prerequisites">Prerequisites</h2>
 <p>2 Fedora 32 nodes with kernel:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="n">uname</span><span class="w"> </span><span class="o">-</span><span class="n">a</span><span class="w"></span>
-<span class="n">Linux</span><span class="w"> </span><span class="n">wireguard01</span><span class="w"> </span><span class="mf">5.6.6</span><span class="o">-</span><span class="mf">300.f</span><span class="n">c32</span><span class="p">.</span><span class="n">x86_64</span><span class="w"> </span><span class="p">#</span><span class="mh">1</span><span class="w"> </span><span class="n">SMP</span><span class="w"> </span><span class="n">Tue</span><span class="w"> </span><span class="n">Apr</span><span class="w"> </span><span class="mh">21</span><span class="w"> </span><span class="mh">13</span><span class="o">:</span><span class="mh">44</span><span class="o">:</span><span class="mh">19</span><span class="w"> </span><span class="n">UTC</span><span class="w"> </span><span class="mh">2020</span><span class="w"> </span><span class="n">x86_64</span><span class="w"> </span><span class="n">x86_64</span><span class="w"> </span><span class="n">x86_64</span><span class="w"> </span><span class="n">GNU</span><span class="o">/</span><span class="n">Linux</span><span class="w"></span>
-<span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="mf">192.168.122</span><span class="w"></span>
-<span class="w">    </span><span class="n">inet</span><span class="w"> </span><span class="mf">192.168.122.250</span><span class="o">/</span><span class="mh">24</span><span class="w"> </span><span class="n">brd</span><span class="w"> </span><span class="mf">192.168.122.255</span><span class="w"> </span><span class="n">scope</span><span class="w"> </span><span class="n">global</span><span class="w"> </span><span class="n">dynamic</span><span class="w"> </span><span class="n">noprefixroute</span><span class="w"> </span><span class="n">eth0</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="n">uname</span><span class="w"> </span><span class="o">-</span><span class="n">a</span>
+<span class="n">Linux</span><span class="w"> </span><span class="n">wireguard01</span><span class="w"> </span><span class="mf">5.6.6</span><span class="o">-</span><span class="mf">300.f</span><span class="n">c32</span><span class="p">.</span><span class="n">x86_64</span><span class="w"> </span><span class="p">#</span><span class="mh">1</span><span class="w"> </span><span class="n">SMP</span><span class="w"> </span><span class="n">Tue</span><span class="w"> </span><span class="n">Apr</span><span class="w"> </span><span class="mh">21</span><span class="w"> </span><span class="mh">13</span><span class="o">:</span><span class="mh">44</span><span class="o">:</span><span class="mh">19</span><span class="w"> </span><span class="n">UTC</span><span class="w"> </span><span class="mh">2020</span><span class="w"> </span><span class="n">x86_64</span><span class="w"> </span><span class="n">x86_64</span><span class="w"> </span><span class="n">x86_64</span><span class="w"> </span><span class="n">GNU</span><span class="o">/</span><span class="n">Linux</span>
+<span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="mf">192.168.122</span>
+<span class="w">    </span><span class="n">inet</span><span class="w"> </span><span class="mf">192.168.122.250</span><span class="o">/</span><span class="mh">24</span><span class="w"> </span><span class="n">brd</span><span class="w"> </span><span class="mf">192.168.122.255</span><span class="w"> </span><span class="n">scope</span><span class="w"> </span><span class="n">global</span><span class="w"> </span><span class="n">dynamic</span><span class="w"> </span><span class="n">noprefixroute</span><span class="w"> </span><span class="n">eth0</span>
+</code></pre></div></td></tr></table></div></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wireguard</span><span class="p">]#</span><span class="w"> </span><span class="n">uname</span><span class="w"> </span><span class="o">-</span><span class="n">a</span><span class="w"></span>
-<span class="n">Linux</span><span class="w"> </span><span class="n">wireguard02</span><span class="w"> </span><span class="mf">5.6.6</span><span class="o">-</span><span class="mf">300.f</span><span class="n">c32</span><span class="p">.</span><span class="n">x86_64</span><span class="w"> </span><span class="p">#</span><span class="mh">1</span><span class="w"> </span><span class="n">SMP</span><span class="w"> </span><span class="n">Tue</span><span class="w"> </span><span class="n">Apr</span><span class="w"> </span><span class="mh">21</span><span class="w"> </span><span class="mh">13</span><span class="o">:</span><span class="mh">44</span><span class="o">:</span><span class="mh">19</span><span class="w"> </span><span class="n">UTC</span><span class="w"> </span><span class="mh">2020</span><span class="w"> </span><span class="n">x86_64</span><span class="w"> </span><span class="n">x86_64</span><span class="w"> </span><span class="n">x86_64</span><span class="w"> </span><span class="n">GNU</span><span class="o">/</span><span class="n">Linux</span><span class="w"></span>
-<span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wireguard</span><span class="p">]#</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="mf">192.168.122</span><span class="w"></span>
-<span class="w">    </span><span class="n">inet</span><span class="w"> </span><span class="mf">192.168.122.81</span><span class="o">/</span><span class="mh">24</span><span class="w"> </span><span class="n">brd</span><span class="w"> </span><span class="mf">192.168.122.255</span><span class="w"> </span><span class="n">scope</span><span class="w"> </span><span class="n">global</span><span class="w"> </span><span class="n">dynamic</span><span class="w"> </span><span class="n">noprefixroute</span><span class="w"> </span><span class="n">eth0</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wireguard</span><span class="p">]#</span><span class="w"> </span><span class="n">uname</span><span class="w"> </span><span class="o">-</span><span class="n">a</span>
+<span class="n">Linux</span><span class="w"> </span><span class="n">wireguard02</span><span class="w"> </span><span class="mf">5.6.6</span><span class="o">-</span><span class="mf">300.f</span><span class="n">c32</span><span class="p">.</span><span class="n">x86_64</span><span class="w"> </span><span class="p">#</span><span class="mh">1</span><span class="w"> </span><span class="n">SMP</span><span class="w"> </span><span class="n">Tue</span><span class="w"> </span><span class="n">Apr</span><span class="w"> </span><span class="mh">21</span><span class="w"> </span><span class="mh">13</span><span class="o">:</span><span class="mh">44</span><span class="o">:</span><span class="mh">19</span><span class="w"> </span><span class="n">UTC</span><span class="w"> </span><span class="mh">2020</span><span class="w"> </span><span class="n">x86_64</span><span class="w"> </span><span class="n">x86_64</span><span class="w"> </span><span class="n">x86_64</span><span class="w"> </span><span class="n">GNU</span><span class="o">/</span><span class="n">Linux</span>
+<span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wireguard</span><span class="p">]#</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="mf">192.168.122</span>
+<span class="w">    </span><span class="n">inet</span><span class="w"> </span><span class="mf">192.168.122.81</span><span class="o">/</span><span class="mh">24</span><span class="w"> </span><span class="n">brd</span><span class="w"> </span><span class="mf">192.168.122.255</span><span class="w"> </span><span class="n">scope</span><span class="w"> </span><span class="n">global</span><span class="w"> </span><span class="n">dynamic</span><span class="w"> </span><span class="n">noprefixroute</span><span class="w"> </span><span class="n">eth0</span>
+</code></pre></div></td></tr></table></div>
 <p>Install wireguard-tools, wireshark and tcpdump (the latter tools for monitoring):
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">yum</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="o">-</span><span class="n">y</span><span class="w"> </span><span class="n">wireguard</span><span class="o">-</span><span class="n">tools</span><span class="w"> </span><span class="n">wireshark</span><span class="w"> </span><span class="n">tcpdump</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">yum</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="o">-</span><span class="n">y</span><span class="w"> </span><span class="n">wireguard</span><span class="o">-</span><span class="n">tools</span><span class="w"> </span><span class="n">wireshark</span><span class="w"> </span><span class="n">tcpdump</span>
+</code></pre></div></td></tr></table></div></p>
 <h2 id="create-keys">Create keys</h2>
 <p>wireguard01:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">wg</span><span class="w"> </span><span class="n">genkey</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">private</span><span class="w"></span>
-<span class="n">chmod</span><span class="w"> </span><span class="mh">600</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">private</span><span class="w"></span>
-<span class="n">wg</span><span class="w"> </span><span class="n">pubkey</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">private</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">publickey</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">wg</span><span class="w"> </span><span class="n">genkey</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">private</span>
+<span class="n">chmod</span><span class="w"> </span><span class="mh">600</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">private</span>
+<span class="n">wg</span><span class="w"> </span><span class="n">pubkey</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">private</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">publickey</span>
+</code></pre></div></td></tr></table></div></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">private</span><span class="w"></span>
-<span class="mh">0</span><span class="n">JYD7daZL</span><span class="o">+</span><span class="n">Bh7u77vFnwXHs5Rdi7iFfpk8NC1pg542Q</span><span class="o">=</span><span class="w"></span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">private</span>
+<span class="mh">0</span><span class="n">JYD7daZL</span><span class="o">+</span><span class="n">Bh7u77vFnwXHs5Rdi7iFfpk8NC1pg542Q</span><span class="o">=</span>
 <span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">publickey</span><span class="w"> </span>
-<span class="n">pkyJK9ePlOTW9</span><span class="o">+</span><span class="n">GK73UnCZ4</span><span class="o">/</span><span class="n">b7</span><span class="o">/</span><span class="mh">3</span><span class="n">xOthdfdbF7OQUzw</span><span class="o">=</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table>
+<span class="n">pkyJK9ePlOTW9</span><span class="o">+</span><span class="n">GK73UnCZ4</span><span class="o">/</span><span class="n">b7</span><span class="o">/</span><span class="mh">3</span><span class="n">xOthdfdbF7OQUzw</span><span class="o">=</span>
+</code></pre></div></td></tr></table></div>
 <p>wireguard02:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">wg</span><span class="w"> </span><span class="n">genkey</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">private</span><span class="w"></span>
-<span class="n">chmod</span><span class="w"> </span><span class="mh">600</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">private</span><span class="w"></span>
-<span class="n">wg</span><span class="w"> </span><span class="n">pubkey</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">private</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">publickey</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">wg</span><span class="w"> </span><span class="n">genkey</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">private</span>
+<span class="n">chmod</span><span class="w"> </span><span class="mh">600</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">private</span>
+<span class="n">wg</span><span class="w"> </span><span class="n">pubkey</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">private</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">publickey</span>
+</code></pre></div></td></tr></table></div></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wireguard</span><span class="p">]#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">private</span><span class="w"></span>
-<span class="n">wHpqAYwqSp6F4lO09uFj8BQGVJ6OjZIkvVWUQdy</span><span class="o">+</span><span class="n">GGk</span><span class="o">=</span><span class="w"></span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wireguard</span><span class="p">]#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">private</span>
+<span class="n">wHpqAYwqSp6F4lO09uFj8BQGVJ6OjZIkvVWUQdy</span><span class="o">+</span><span class="n">GGk</span><span class="o">=</span>
 <span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wireguard</span><span class="p">]#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">publickey</span><span class="w"> </span>
-<span class="n">uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc</span><span class="o">=</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table>
+<span class="n">uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc</span><span class="o">=</span>
+</code></pre></div></td></tr></table></div>
 <h2 id="write-down-ip-addresses-and-keys-for-later">Write down IP addresses and keys for later</h2>
 <p>wireguard01:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="nl">private:</span><span class="w"> </span><span class="mh">0</span><span class="n">JYD7daZL</span><span class="o">+</span><span class="n">Bh7u77vFnwXHs5Rdi7iFfpk8NC1pg542Q</span><span class="o">=</span><span class="w"></span>
-<span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="nl">publickey:</span><span class="w"> </span><span class="n">pkyJK9ePlOTW9</span><span class="o">+</span><span class="n">GK73UnCZ4</span><span class="o">/</span><span class="n">b7</span><span class="o">/</span><span class="mh">3</span><span class="n">xOthdfdbF7OQUzw</span><span class="o">=</span><span class="w"></span>
-<span class="n">Outer</span><span class="w"> </span><span class="nl">IP:</span><span class="w"> </span><span class="mf">192.168.122.250</span><span class="o">/</span><span class="mh">24</span><span class="w"></span>
-<span class="n">Inner</span><span class="w"> </span><span class="nl">IP:</span><span class="w"> </span><span class="mf">192.168.123.1</span><span class="o">/</span><span class="mh">24</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="nl">private:</span><span class="w"> </span><span class="mh">0</span><span class="n">JYD7daZL</span><span class="o">+</span><span class="n">Bh7u77vFnwXHs5Rdi7iFfpk8NC1pg542Q</span><span class="o">=</span>
+<span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="nl">publickey:</span><span class="w"> </span><span class="n">pkyJK9ePlOTW9</span><span class="o">+</span><span class="n">GK73UnCZ4</span><span class="o">/</span><span class="n">b7</span><span class="o">/</span><span class="mh">3</span><span class="n">xOthdfdbF7OQUzw</span><span class="o">=</span>
+<span class="n">Outer</span><span class="w"> </span><span class="nl">IP:</span><span class="w"> </span><span class="mf">192.168.122.250</span><span class="o">/</span><span class="mh">24</span>
+<span class="n">Inner</span><span class="w"> </span><span class="nl">IP:</span><span class="w"> </span><span class="mf">192.168.123.1</span><span class="o">/</span><span class="mh">24</span>
+</code></pre></div></td></tr></table></div></p>
 <p>wireguard02:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="nl">private:</span><span class="w"> </span><span class="n">wHpqAYwqSp6F4lO09uFj8BQGVJ6OjZIkvVWUQdy</span><span class="o">+</span><span class="n">GGk</span><span class="o">=</span><span class="w"></span>
-<span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="nl">publickey:</span><span class="w"> </span><span class="n">uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc</span><span class="o">=</span><span class="w"></span>
-<span class="n">Outer</span><span class="w"> </span><span class="nl">IP:</span><span class="w"> </span><span class="mf">192.168.122.81</span><span class="o">/</span><span class="mh">24</span><span class="w"></span>
-<span class="n">Inner</span><span class="w"> </span><span class="nl">IP:</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="o">/</span><span class="mh">32</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="nl">private:</span><span class="w"> </span><span class="n">wHpqAYwqSp6F4lO09uFj8BQGVJ6OjZIkvVWUQdy</span><span class="o">+</span><span class="n">GGk</span><span class="o">=</span>
+<span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="nl">publickey:</span><span class="w"> </span><span class="n">uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc</span><span class="o">=</span>
+<span class="n">Outer</span><span class="w"> </span><span class="nl">IP:</span><span class="w"> </span><span class="mf">192.168.122.81</span><span class="o">/</span><span class="mh">24</span>
+<span class="n">Inner</span><span class="w"> </span><span class="nl">IP:</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="o">/</span><span class="mh">32</span>
+</code></pre></div></td></tr></table></div></p>
 <h2 id="manual-tunnel-setup">Manual tunnel setup</h2>
 <p>Follow these steps to create tunnels manually.</p>
 <p>wireguard01:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
-<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">ip</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="k">type</span><span class="w"> </span><span class="n">wireguard</span><span class="w"></span>
-<span class="n">ip</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="mf">192.168.123.1</span><span class="o">/</span><span class="mh">24</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">wg0</span><span class="w"></span>
-<span class="n">wg</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="n">private</span><span class="o">-</span><span class="n">key</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">private</span><span class="w"></span>
-<span class="n">wg</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="n">listen</span><span class="o">-</span><span class="n">port</span><span class="w"> </span><span class="mh">51820</span><span class="w"></span>
-<span class="n">wg</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="n">peer</span><span class="w"> </span><span class="n">uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc</span><span class="o">=</span><span class="w"> </span><span class="n">allowed</span><span class="o">-</span><span class="n">ips</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="o">/</span><span class="mh">32</span><span class="w"> </span><span class="n">endpoint</span><span class="w"> </span><span class="mf">192.168.122.81</span><span class="o">:</span><span class="mh">51820</span><span class="w"> </span><span class="n">persistent</span><span class="o">-</span><span class="n">keepalive</span><span class="w"> </span><span class="mh">30</span><span class="w"></span>
-<span class="n">ip</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="n">up</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">ip</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="k">type</span><span class="w"> </span><span class="n">wireguard</span>
+<span class="n">ip</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="mf">192.168.123.1</span><span class="o">/</span><span class="mh">24</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">wg0</span>
+<span class="n">wg</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="n">private</span><span class="o">-</span><span class="n">key</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">private</span>
+<span class="n">wg</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="n">listen</span><span class="o">-</span><span class="n">port</span><span class="w"> </span><span class="mh">51820</span>
+<span class="n">wg</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="n">peer</span><span class="w"> </span><span class="n">uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc</span><span class="o">=</span><span class="w"> </span><span class="n">allowed</span><span class="o">-</span><span class="n">ips</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="o">/</span><span class="mh">32</span><span class="w"> </span><span class="n">endpoint</span><span class="w"> </span><span class="mf">192.168.122.81</span><span class="o">:</span><span class="mh">51820</span><span class="w"> </span><span class="n">persistent</span><span class="o">-</span><span class="n">keepalive</span><span class="w"> </span><span class="mh">30</span>
+<span class="n">ip</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="n">up</span>
+</code></pre></div></td></tr></table></div></p>
 <p>wireguard02:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
-<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">ip</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="k">type</span><span class="w"> </span><span class="n">wireguard</span><span class="w"></span>
-<span class="n">ip</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="o">/</span><span class="mh">24</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">wg0</span><span class="w"></span>
-<span class="n">wg</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="n">private</span><span class="o">-</span><span class="n">key</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">private</span><span class="w"></span>
-<span class="n">wg</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="n">listen</span><span class="o">-</span><span class="n">port</span><span class="w"> </span><span class="mh">51820</span><span class="w"></span>
-<span class="n">wg</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="n">peer</span><span class="w"> </span><span class="n">pkyJK9ePlOTW9</span><span class="o">+</span><span class="n">GK73UnCZ4</span><span class="o">/</span><span class="n">b7</span><span class="o">/</span><span class="mh">3</span><span class="n">xOthdfdbF7OQUzw</span><span class="o">=</span><span class="w"> </span><span class="n">allowed</span><span class="o">-</span><span class="n">ips</span><span class="w"> </span><span class="mf">192.168.123.1</span><span class="o">/</span><span class="mh">32</span><span class="w"> </span><span class="n">endpoint</span><span class="w"> </span><span class="mf">192.168.122.250</span><span class="o">:</span><span class="mh">51820</span><span class="w"> </span><span class="n">persistent</span><span class="o">-</span><span class="n">keepalive</span><span class="w"> </span><span class="mh">30</span><span class="w"></span>
-<span class="n">ip</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="n">up</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">ip</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="k">type</span><span class="w"> </span><span class="n">wireguard</span>
+<span class="n">ip</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="o">/</span><span class="mh">24</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">wg0</span>
+<span class="n">wg</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="n">private</span><span class="o">-</span><span class="n">key</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">private</span>
+<span class="n">wg</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="n">listen</span><span class="o">-</span><span class="n">port</span><span class="w"> </span><span class="mh">51820</span>
+<span class="n">wg</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="n">peer</span><span class="w"> </span><span class="n">pkyJK9ePlOTW9</span><span class="o">+</span><span class="n">GK73UnCZ4</span><span class="o">/</span><span class="n">b7</span><span class="o">/</span><span class="mh">3</span><span class="n">xOthdfdbF7OQUzw</span><span class="o">=</span><span class="w"> </span><span class="n">allowed</span><span class="o">-</span><span class="n">ips</span><span class="w"> </span><span class="mf">192.168.123.1</span><span class="o">/</span><span class="mh">32</span><span class="w"> </span><span class="n">endpoint</span><span class="w"> </span><span class="mf">192.168.122.250</span><span class="o">:</span><span class="mh">51820</span><span class="w"> </span><span class="n">persistent</span><span class="o">-</span><span class="n">keepalive</span><span class="w"> </span><span class="mh">30</span>
+<span class="n">ip</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="n">up</span>
+</code></pre></div></td></tr></table></div></p>
 <p>Verify wireguard:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1950,21 +1799,20 @@
 <span class="normal"> 9</span>
 <span class="normal">10</span>
 <span class="normal">11</span>
-<span class="normal">12</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="n">wg</span><span class="w"></span>
-<span class="nl">interface:</span><span class="w"> </span><span class="n">wg0</span><span class="w"></span>
-<span class="w">  </span><span class="n">public</span><span class="w"> </span><span class="nl">key:</span><span class="w"> </span><span class="n">pkyJK9ePlOTW9</span><span class="o">+</span><span class="n">GK73UnCZ4</span><span class="o">/</span><span class="n">b7</span><span class="o">/</span><span class="mh">3</span><span class="n">xOthdfdbF7OQUzw</span><span class="o">=</span><span class="w"></span>
-<span class="w">  </span><span class="n">private</span><span class="w"> </span><span class="nl">key:</span><span class="w"> </span><span class="p">(</span><span class="n">hidden</span><span class="p">)</span><span class="w"></span>
-<span class="w">  </span><span class="n">listening</span><span class="w"> </span><span class="nl">port:</span><span class="w"> </span><span class="mh">51820</span><span class="w"></span>
+<span class="normal">12</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="n">wg</span>
+<span class="nl">interface:</span><span class="w"> </span><span class="n">wg0</span>
+<span class="w">  </span><span class="n">public</span><span class="w"> </span><span class="nl">key:</span><span class="w"> </span><span class="n">pkyJK9ePlOTW9</span><span class="o">+</span><span class="n">GK73UnCZ4</span><span class="o">/</span><span class="n">b7</span><span class="o">/</span><span class="mh">3</span><span class="n">xOthdfdbF7OQUzw</span><span class="o">=</span>
+<span class="w">  </span><span class="n">private</span><span class="w"> </span><span class="nl">key:</span><span class="w"> </span><span class="p">(</span><span class="n">hidden</span><span class="p">)</span>
+<span class="w">  </span><span class="n">listening</span><span class="w"> </span><span class="nl">port:</span><span class="w"> </span><span class="mh">51820</span>
 
-<span class="nl">peer:</span><span class="w"> </span><span class="n">uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc</span><span class="o">=</span><span class="w"></span>
-<span class="w">  </span><span class="nl">endpoint:</span><span class="w"> </span><span class="mf">192.168.122.81</span><span class="o">:</span><span class="mh">51820</span><span class="w"></span>
-<span class="w">  </span><span class="n">allowed</span><span class="w"> </span><span class="nl">ips:</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="o">/</span><span class="mh">32</span><span class="w"></span>
-<span class="w">  </span><span class="n">latest</span><span class="w"> </span><span class="nl">handshake:</span><span class="w"> </span><span class="mh">20</span><span class="w"> </span><span class="n">seconds</span><span class="w"> </span><span class="n">ago</span><span class="w"></span>
-<span class="w">  </span><span class="nl">transfer:</span><span class="w"> </span><span class="mh">180</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="n">received</span><span class="p">,</span><span class="w"> </span><span class="mh">568</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="n">sent</span><span class="w"></span>
-<span class="w">  </span><span class="n">persistent</span><span class="w"> </span><span class="nl">keepalive:</span><span class="w"> </span><span class="n">every</span><span class="w"> </span><span class="mh">30</span><span class="w"> </span><span class="n">seconds</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="nl">peer:</span><span class="w"> </span><span class="n">uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc</span><span class="o">=</span>
+<span class="w">  </span><span class="nl">endpoint:</span><span class="w"> </span><span class="mf">192.168.122.81</span><span class="o">:</span><span class="mh">51820</span>
+<span class="w">  </span><span class="n">allowed</span><span class="w"> </span><span class="nl">ips:</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="o">/</span><span class="mh">32</span>
+<span class="w">  </span><span class="n">latest</span><span class="w"> </span><span class="nl">handshake:</span><span class="w"> </span><span class="mh">20</span><span class="w"> </span><span class="n">seconds</span><span class="w"> </span><span class="n">ago</span>
+<span class="w">  </span><span class="nl">transfer:</span><span class="w"> </span><span class="mh">180</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="n">received</span><span class="p">,</span><span class="w"> </span><span class="mh">568</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="n">sent</span>
+<span class="w">  </span><span class="n">persistent</span><span class="w"> </span><span class="nl">keepalive:</span><span class="w"> </span><span class="n">every</span><span class="w"> </span><span class="mh">30</span><span class="w"> </span><span class="n">seconds</span>
+</code></pre></div></td></tr></table></div></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1975,42 +1823,39 @@
 <span class="normal"> 9</span>
 <span class="normal">10</span>
 <span class="normal">11</span>
-<span class="normal">12</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wireguard</span><span class="p">]#</span><span class="w"> </span><span class="n">wg</span><span class="w"></span>
-<span class="nl">interface:</span><span class="w"> </span><span class="n">wg0</span><span class="w"></span>
-<span class="w">  </span><span class="n">public</span><span class="w"> </span><span class="nl">key:</span><span class="w"> </span><span class="n">uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc</span><span class="o">=</span><span class="w"></span>
-<span class="w">  </span><span class="n">private</span><span class="w"> </span><span class="nl">key:</span><span class="w"> </span><span class="p">(</span><span class="n">hidden</span><span class="p">)</span><span class="w"></span>
-<span class="w">  </span><span class="n">listening</span><span class="w"> </span><span class="nl">port:</span><span class="w"> </span><span class="mh">51820</span><span class="w"></span>
+<span class="normal">12</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wireguard</span><span class="p">]#</span><span class="w"> </span><span class="n">wg</span>
+<span class="nl">interface:</span><span class="w"> </span><span class="n">wg0</span>
+<span class="w">  </span><span class="n">public</span><span class="w"> </span><span class="nl">key:</span><span class="w"> </span><span class="n">uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc</span><span class="o">=</span>
+<span class="w">  </span><span class="n">private</span><span class="w"> </span><span class="nl">key:</span><span class="w"> </span><span class="p">(</span><span class="n">hidden</span><span class="p">)</span>
+<span class="w">  </span><span class="n">listening</span><span class="w"> </span><span class="nl">port:</span><span class="w"> </span><span class="mh">51820</span>
 
-<span class="nl">peer:</span><span class="w"> </span><span class="n">pkyJK9ePlOTW9</span><span class="o">+</span><span class="n">GK73UnCZ4</span><span class="o">/</span><span class="n">b7</span><span class="o">/</span><span class="mh">3</span><span class="n">xOthdfdbF7OQUzw</span><span class="o">=</span><span class="w"></span>
-<span class="w">  </span><span class="nl">endpoint:</span><span class="w"> </span><span class="mf">192.168.122.250</span><span class="o">:</span><span class="mh">51820</span><span class="w"></span>
-<span class="w">  </span><span class="n">allowed</span><span class="w"> </span><span class="nl">ips:</span><span class="w"> </span><span class="mf">192.168.123.1</span><span class="o">/</span><span class="mh">32</span><span class="w"></span>
-<span class="w">  </span><span class="n">latest</span><span class="w"> </span><span class="nl">handshake:</span><span class="w"> </span><span class="mh">34</span><span class="w"> </span><span class="n">seconds</span><span class="w"> </span><span class="n">ago</span><span class="w"></span>
-<span class="w">  </span><span class="nl">transfer:</span><span class="w"> </span><span class="mh">156</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="n">received</span><span class="p">,</span><span class="w"> </span><span class="mh">180</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="n">sent</span><span class="w"></span>
-<span class="w">  </span><span class="n">persistent</span><span class="w"> </span><span class="nl">keepalive:</span><span class="w"> </span><span class="n">every</span><span class="w"> </span><span class="mh">30</span><span class="w"> </span><span class="n">seconds</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="nl">peer:</span><span class="w"> </span><span class="n">pkyJK9ePlOTW9</span><span class="o">+</span><span class="n">GK73UnCZ4</span><span class="o">/</span><span class="n">b7</span><span class="o">/</span><span class="mh">3</span><span class="n">xOthdfdbF7OQUzw</span><span class="o">=</span>
+<span class="w">  </span><span class="nl">endpoint:</span><span class="w"> </span><span class="mf">192.168.122.250</span><span class="o">:</span><span class="mh">51820</span>
+<span class="w">  </span><span class="n">allowed</span><span class="w"> </span><span class="nl">ips:</span><span class="w"> </span><span class="mf">192.168.123.1</span><span class="o">/</span><span class="mh">32</span>
+<span class="w">  </span><span class="n">latest</span><span class="w"> </span><span class="nl">handshake:</span><span class="w"> </span><span class="mh">34</span><span class="w"> </span><span class="n">seconds</span><span class="w"> </span><span class="n">ago</span>
+<span class="w">  </span><span class="nl">transfer:</span><span class="w"> </span><span class="mh">156</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="n">received</span><span class="p">,</span><span class="w"> </span><span class="mh">180</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="n">sent</span>
+<span class="w">  </span><span class="n">persistent</span><span class="w"> </span><span class="nl">keepalive:</span><span class="w"> </span><span class="n">every</span><span class="w"> </span><span class="mh">30</span><span class="w"> </span><span class="n">seconds</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
-<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="n">ping</span><span class="w"> </span><span class="o">-</span><span class="n">c1</span><span class="w"> </span><span class="o">-</span><span class="n">W1</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="w"></span>
-<span class="n">PING</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.123.2</span><span class="p">)</span><span class="w"> </span><span class="mh">56</span><span class="p">(</span><span class="mh">84</span><span class="p">)</span><span class="w"> </span><span class="n">bytes</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="w"></span>
-<span class="mh">64</span><span class="w"> </span><span class="n">bytes</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="o">:</span><span class="w"> </span><span class="n">icmp_seq</span><span class="o">=</span><span class="mh">1</span><span class="w"> </span><span class="n">ttl</span><span class="o">=</span><span class="mh">64</span><span class="w"> </span><span class="kt">time</span><span class="o">=</span><span class="mf">0.383</span><span class="w"> </span><span class="n">ms</span><span class="w"></span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="n">ping</span><span class="w"> </span><span class="o">-</span><span class="n">c1</span><span class="w"> </span><span class="o">-</span><span class="n">W1</span><span class="w"> </span><span class="mf">192.168.123.2</span>
+<span class="n">PING</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.123.2</span><span class="p">)</span><span class="w"> </span><span class="mh">56</span><span class="p">(</span><span class="mh">84</span><span class="p">)</span><span class="w"> </span><span class="n">bytes</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">data</span><span class="p">.</span>
+<span class="mh">64</span><span class="w"> </span><span class="n">bytes</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="o">:</span><span class="w"> </span><span class="n">icmp_seq</span><span class="o">=</span><span class="mh">1</span><span class="w"> </span><span class="n">ttl</span><span class="o">=</span><span class="mh">64</span><span class="w"> </span><span class="kt">time</span><span class="o">=</span><span class="mf">0.383</span><span class="w"> </span><span class="n">ms</span>
 
-<span class="o">---</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="w"> </span><span class="n">ping</span><span class="w"> </span><span class="n">statistics</span><span class="w"> </span><span class="o">---</span><span class="w"></span>
-<span class="mh">1</span><span class="w"> </span><span class="n">packets</span><span class="w"> </span><span class="n">transmitted</span><span class="p">,</span><span class="w"> </span><span class="mh">1</span><span class="w"> </span><span class="n">received</span><span class="p">,</span><span class="w"> </span><span class="mh">0</span><span class="o">%</span><span class="w"> </span><span class="n">packet</span><span class="w"> </span><span class="n">loss</span><span class="p">,</span><span class="w"> </span><span class="kt">time</span><span class="w"> </span><span class="mh">0</span><span class="n">ms</span><span class="w"></span>
-<span class="n">rtt</span><span class="w"> </span><span class="n">min</span><span class="o">/</span><span class="n">avg</span><span class="o">/</span><span class="n">max</span><span class="o">/</span><span class="n">mdev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.383</span><span class="o">/</span><span class="mf">0.383</span><span class="o">/</span><span class="mf">0.383</span><span class="o">/</span><span class="mf">0.000</span><span class="w"> </span><span class="n">ms</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table>
+<span class="o">---</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="w"> </span><span class="n">ping</span><span class="w"> </span><span class="n">statistics</span><span class="w"> </span><span class="o">---</span>
+<span class="mh">1</span><span class="w"> </span><span class="n">packets</span><span class="w"> </span><span class="n">transmitted</span><span class="p">,</span><span class="w"> </span><span class="mh">1</span><span class="w"> </span><span class="n">received</span><span class="p">,</span><span class="w"> </span><span class="mh">0</span><span class="o">%</span><span class="w"> </span><span class="n">packet</span><span class="w"> </span><span class="n">loss</span><span class="p">,</span><span class="w"> </span><span class="kt">time</span><span class="w"> </span><span class="mh">0</span><span class="n">ms</span>
+<span class="n">rtt</span><span class="w"> </span><span class="n">min</span><span class="o">/</span><span class="n">avg</span><span class="o">/</span><span class="n">max</span><span class="o">/</span><span class="n">mdev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.383</span><span class="o">/</span><span class="mf">0.383</span><span class="o">/</span><span class="mf">0.383</span><span class="o">/</span><span class="mf">0.000</span><span class="w"> </span><span class="n">ms</span>
+</code></pre></div></td></tr></table></div>
 <p>Delete interfaces again, run on both hosts:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>ip link del dev wg0
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>ip link del dev wg0
+</code></pre></div></td></tr></table></div></p>
 <h2 id="tunnel-setup-with-config-files">Tunnel setup with config files</h2>
 <p>Follow these steps to set up tunnels with systemd:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2021,21 +1866,20 @@
 <span class="normal"> 9</span>
 <span class="normal">10</span>
 <span class="normal">11</span>
-<span class="normal">12</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@wireguard01 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="s1">&#39;EOF&#39;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">wg0</span><span class="p">.</span><span class="n">conf</span><span class="w"></span>
-<span class="o">[</span><span class="n">Interface</span><span class="o">]</span><span class="w"></span>
-<span class="n">Address</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mf">192.168.123.1</span><span class="o">/</span><span class="mi">24</span><span class="w"></span>
-<span class="n">PrivateKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="n">JYD7daZL</span><span class="o">+</span><span class="n">Bh7u77vFnwXHs5Rdi7iFfpk8NC1pg542Q</span><span class="o">=</span><span class="w"></span>
-<span class="n">ListenPort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">51820</span><span class="w"></span>
+<span class="normal">12</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@wireguard01 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="s1">&#39;EOF&#39;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">wg0</span><span class="p">.</span><span class="n">conf</span>
+<span class="o">[</span><span class="n">Interface</span><span class="o">]</span>
+<span class="n">Address</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mf">192.168.123.1</span><span class="o">/</span><span class="mi">24</span>
+<span class="n">PrivateKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="n">JYD7daZL</span><span class="o">+</span><span class="n">Bh7u77vFnwXHs5Rdi7iFfpk8NC1pg542Q</span><span class="o">=</span>
+<span class="n">ListenPort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">51820</span>
 
-<span class="o">[</span><span class="n">Peer</span><span class="o">]</span><span class="w"></span>
-<span class="n">PublicKey</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc</span><span class="o">=</span><span class="w"></span>
-<span class="n">AllowedIPs</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="o">/</span><span class="mi">32</span><span class="w"></span>
-<span class="n">Endpoint</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mf">192.168.122.81</span><span class="err">:</span><span class="mi">51820</span><span class="w"></span>
-<span class="n">PersistentKeepalive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">30</span><span class="w"></span>
-<span class="n">EOF</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="o">[</span><span class="n">Peer</span><span class="o">]</span>
+<span class="n">PublicKey</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc</span><span class="o">=</span>
+<span class="n">AllowedIPs</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="o">/</span><span class="mi">32</span>
+<span class="n">Endpoint</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mf">192.168.122.81</span><span class="err">:</span><span class="mi">51820</span>
+<span class="n">PersistentKeepalive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">30</span>
+<span class="n">EOF</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2045,20 +1889,19 @@
 <span class="normal"> 8</span>
 <span class="normal"> 9</span>
 <span class="normal">10</span>
-<span class="normal">11</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@wireguard02 wireguard</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="s1">&#39;EOF&#39;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">wg0</span><span class="p">.</span><span class="n">conf</span><span class="w"></span>
-<span class="o">[</span><span class="n">Interface</span><span class="o">]</span><span class="w"></span>
-<span class="n">Address</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="o">/</span><span class="mi">32</span><span class="w"></span>
-<span class="n">PrivateKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wHpqAYwqSp6F4lO09uFj8BQGVJ6OjZIkvVWUQdy</span><span class="o">+</span><span class="n">GGk</span><span class="o">=</span><span class="w"></span>
+<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@wireguard02 wireguard</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="s1">&#39;EOF&#39;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">wireguard</span><span class="o">/</span><span class="n">wg0</span><span class="p">.</span><span class="n">conf</span>
+<span class="o">[</span><span class="n">Interface</span><span class="o">]</span>
+<span class="n">Address</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="o">/</span><span class="mi">32</span>
+<span class="n">PrivateKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wHpqAYwqSp6F4lO09uFj8BQGVJ6OjZIkvVWUQdy</span><span class="o">+</span><span class="n">GGk</span><span class="o">=</span>
 
-<span class="o">[</span><span class="n">Peer</span><span class="o">]</span><span class="w"></span>
-<span class="n">PublicKey</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">pkyJK9ePlOTW9</span><span class="o">+</span><span class="n">GK73UnCZ4</span><span class="o">/</span><span class="n">b7</span><span class="o">/</span><span class="mi">3</span><span class="n">xOthdfdbF7OQUzw</span><span class="o">=</span><span class="w"></span>
-<span class="n">AllowedIPs</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mf">192.168.123.1</span><span class="o">/</span><span class="mi">32</span><span class="w"></span>
-<span class="n">Endpoint</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mf">192.168.122.250</span><span class="err">:</span><span class="mi">51820</span><span class="w"></span>
-<span class="n">PersistentKeepalive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">30</span><span class="w"></span>
-<span class="n">EOF</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="o">[</span><span class="n">Peer</span><span class="o">]</span>
+<span class="n">PublicKey</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">pkyJK9ePlOTW9</span><span class="o">+</span><span class="n">GK73UnCZ4</span><span class="o">/</span><span class="n">b7</span><span class="o">/</span><span class="mi">3</span><span class="n">xOthdfdbF7OQUzw</span><span class="o">=</span>
+<span class="n">AllowedIPs</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mf">192.168.123.1</span><span class="o">/</span><span class="mi">32</span>
+<span class="n">Endpoint</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mf">192.168.122.250</span><span class="err">:</span><span class="mi">51820</span>
+<span class="n">PersistentKeepalive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">30</span>
+<span class="n">EOF</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2084,36 +1927,35 @@
 <span class="normal">24</span>
 <span class="normal">25</span>
 <span class="normal">26</span>
-<span class="normal">27</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="n">journalctl</span><span class="w"> </span><span class="o">-</span><span class="n">u</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">@</span><span class="n">wg0</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="o">-</span><span class="n">n0</span><span class="w"> </span><span class="o">&amp;</span><span class="w"></span>
-<span class="p">[</span><span class="mh">1</span><span class="p">]</span><span class="w"> </span><span class="mh">11296</span><span class="w"></span>
-<span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">Logs</span><span class="w"> </span><span class="k">begin</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">Wed</span><span class="w"> </span><span class="mh">2020</span><span class="o">-</span><span class="mh">08</span><span class="o">-</span><span class="mh">05</span><span class="w"> </span><span class="mh">15</span><span class="o">:</span><span class="mh">44</span><span class="o">:</span><span class="mh">13</span><span class="w"> </span><span class="n">UTC</span><span class="p">.</span><span class="w"> </span><span class="o">--</span><span class="w"></span>
+<span class="normal">27</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="n">journalctl</span><span class="w"> </span><span class="o">-</span><span class="n">u</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">@</span><span class="n">wg0</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="o">-</span><span class="n">n0</span><span class="w"> </span><span class="o">&amp;</span>
+<span class="p">[</span><span class="mh">1</span><span class="p">]</span><span class="w"> </span><span class="mh">11296</span>
+<span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">Logs</span><span class="w"> </span><span class="k">begin</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">Wed</span><span class="w"> </span><span class="mh">2020</span><span class="o">-</span><span class="mh">08</span><span class="o">-</span><span class="mh">05</span><span class="w"> </span><span class="mh">15</span><span class="o">:</span><span class="mh">44</span><span class="o">:</span><span class="mh">13</span><span class="w"> </span><span class="n">UTC</span><span class="p">.</span><span class="w"> </span><span class="o">--</span>
 
-<span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="n">systemctl</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">@</span><span class="n">wg0</span><span class="w"></span>
-<span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">06</span><span class="o">:</span><span class="mh">57</span><span class="w"> </span><span class="n">wireguard01</span><span class="w"> </span><span class="n">systemd</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="n">Starting</span><span class="w"> </span><span class="n">WireGuard</span><span class="w"> </span><span class="n">via</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">(</span><span class="mh">8</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">wg0</span><span class="p">...</span><span class="w"></span>
-<span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">06</span><span class="o">:</span><span class="mh">57</span><span class="w"> </span><span class="n">wireguard01</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">[</span><span class="mh">11299</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">[#]</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="k">type</span><span class="w"> </span><span class="n">wireguard</span><span class="w"></span>
-<span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">06</span><span class="o">:</span><span class="mh">57</span><span class="w"> </span><span class="n">wireguard01</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">[</span><span class="mh">11299</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">[#]</span><span class="w"> </span><span class="n">wg</span><span class="w"> </span><span class="n">setconf</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">fd</span><span class="o">/</span><span class="mh">63</span><span class="w"></span>
-<span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">06</span><span class="o">:</span><span class="mh">57</span><span class="w"> </span><span class="n">wireguard01</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">[</span><span class="mh">11299</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">[#]</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="o">-</span><span class="mh">4</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="mf">192.168.123.1</span><span class="o">/</span><span class="mh">24</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">wg0</span><span class="w"></span>
-<span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">06</span><span class="o">:</span><span class="mh">57</span><span class="w"> </span><span class="n">wireguard01</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">[</span><span class="mh">11299</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">[#]</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">mtu</span><span class="w"> </span><span class="mh">1420</span><span class="w"> </span><span class="n">up</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">wg0</span><span class="w"></span>
-<span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">06</span><span class="o">:</span><span class="mh">57</span><span class="w"> </span><span class="n">wireguard01</span><span class="w"> </span><span class="n">systemd</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="n">Finished</span><span class="w"> </span><span class="n">WireGuard</span><span class="w"> </span><span class="n">via</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">(</span><span class="mh">8</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">wg0</span><span class="p">.</span><span class="w"></span>
+<span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="n">systemctl</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">@</span><span class="n">wg0</span>
+<span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">06</span><span class="o">:</span><span class="mh">57</span><span class="w"> </span><span class="n">wireguard01</span><span class="w"> </span><span class="n">systemd</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="n">Starting</span><span class="w"> </span><span class="n">WireGuard</span><span class="w"> </span><span class="n">via</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">(</span><span class="mh">8</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">wg0</span><span class="p">...</span>
+<span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">06</span><span class="o">:</span><span class="mh">57</span><span class="w"> </span><span class="n">wireguard01</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">[</span><span class="mh">11299</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">[#]</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="k">type</span><span class="w"> </span><span class="n">wireguard</span>
+<span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">06</span><span class="o">:</span><span class="mh">57</span><span class="w"> </span><span class="n">wireguard01</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">[</span><span class="mh">11299</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">[#]</span><span class="w"> </span><span class="n">wg</span><span class="w"> </span><span class="n">setconf</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">fd</span><span class="o">/</span><span class="mh">63</span>
+<span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">06</span><span class="o">:</span><span class="mh">57</span><span class="w"> </span><span class="n">wireguard01</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">[</span><span class="mh">11299</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">[#]</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="o">-</span><span class="mh">4</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="mf">192.168.123.1</span><span class="o">/</span><span class="mh">24</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">wg0</span>
+<span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">06</span><span class="o">:</span><span class="mh">57</span><span class="w"> </span><span class="n">wireguard01</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">[</span><span class="mh">11299</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">[#]</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">mtu</span><span class="w"> </span><span class="mh">1420</span><span class="w"> </span><span class="n">up</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">wg0</span>
+<span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">06</span><span class="o">:</span><span class="mh">57</span><span class="w"> </span><span class="n">wireguard01</span><span class="w"> </span><span class="n">systemd</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="n">Finished</span><span class="w"> </span><span class="n">WireGuard</span><span class="w"> </span><span class="n">via</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">(</span><span class="mh">8</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">wg0</span><span class="p">.</span>
 
-<span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="n">fg</span><span class="w"></span>
-<span class="n">journalctl</span><span class="w"> </span><span class="o">-</span><span class="n">u</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">@</span><span class="n">wg0</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="o">-</span><span class="n">n0</span><span class="w"></span>
-<span class="o">^</span><span class="n">C</span><span class="w"></span>
-<span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="n">wg</span><span class="w"></span>
-<span class="nl">interface:</span><span class="w"> </span><span class="n">wg0</span><span class="w"></span>
-<span class="w">  </span><span class="n">public</span><span class="w"> </span><span class="nl">key:</span><span class="w"> </span><span class="n">pkyJK9ePlOTW9</span><span class="o">+</span><span class="n">GK73UnCZ4</span><span class="o">/</span><span class="n">b7</span><span class="o">/</span><span class="mh">3</span><span class="n">xOthdfdbF7OQUzw</span><span class="o">=</span><span class="w"></span>
-<span class="w">  </span><span class="n">private</span><span class="w"> </span><span class="nl">key:</span><span class="w"> </span><span class="p">(</span><span class="n">hidden</span><span class="p">)</span><span class="w"></span>
-<span class="w">  </span><span class="n">listening</span><span class="w"> </span><span class="nl">port:</span><span class="w"> </span><span class="mh">51820</span><span class="w"></span>
+<span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="n">fg</span>
+<span class="n">journalctl</span><span class="w"> </span><span class="o">-</span><span class="n">u</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">@</span><span class="n">wg0</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="o">-</span><span class="n">n0</span>
+<span class="o">^</span><span class="n">C</span>
+<span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="n">wg</span>
+<span class="nl">interface:</span><span class="w"> </span><span class="n">wg0</span>
+<span class="w">  </span><span class="n">public</span><span class="w"> </span><span class="nl">key:</span><span class="w"> </span><span class="n">pkyJK9ePlOTW9</span><span class="o">+</span><span class="n">GK73UnCZ4</span><span class="o">/</span><span class="n">b7</span><span class="o">/</span><span class="mh">3</span><span class="n">xOthdfdbF7OQUzw</span><span class="o">=</span>
+<span class="w">  </span><span class="n">private</span><span class="w"> </span><span class="nl">key:</span><span class="w"> </span><span class="p">(</span><span class="n">hidden</span><span class="p">)</span>
+<span class="w">  </span><span class="n">listening</span><span class="w"> </span><span class="nl">port:</span><span class="w"> </span><span class="mh">51820</span>
 
-<span class="nl">peer:</span><span class="w"> </span><span class="n">uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc</span><span class="o">=</span><span class="w"></span>
-<span class="w">  </span><span class="nl">endpoint:</span><span class="w"> </span><span class="mf">192.168.122.81</span><span class="o">:</span><span class="mh">34730</span><span class="w"></span>
-<span class="w">  </span><span class="n">allowed</span><span class="w"> </span><span class="nl">ips:</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="o">/</span><span class="mh">32</span><span class="w"></span>
-<span class="w">  </span><span class="n">latest</span><span class="w"> </span><span class="nl">handshake:</span><span class="w"> </span><span class="mh">1</span><span class="w"> </span><span class="n">minute</span><span class="p">,</span><span class="w"> </span><span class="mh">7</span><span class="w"> </span><span class="n">seconds</span><span class="w"> </span><span class="n">ago</span><span class="w"></span>
-<span class="w">  </span><span class="nl">transfer:</span><span class="w"> </span><span class="mh">180</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="n">received</span><span class="p">,</span><span class="w"> </span><span class="mh">484</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="n">sent</span><span class="w"></span>
-<span class="w">  </span><span class="n">persistent</span><span class="w"> </span><span class="nl">keepalive:</span><span class="w"> </span><span class="n">every</span><span class="w"> </span><span class="mh">30</span><span class="w"> </span><span class="n">seconds</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="nl">peer:</span><span class="w"> </span><span class="n">uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc</span><span class="o">=</span>
+<span class="w">  </span><span class="nl">endpoint:</span><span class="w"> </span><span class="mf">192.168.122.81</span><span class="o">:</span><span class="mh">34730</span>
+<span class="w">  </span><span class="n">allowed</span><span class="w"> </span><span class="nl">ips:</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="o">/</span><span class="mh">32</span>
+<span class="w">  </span><span class="n">latest</span><span class="w"> </span><span class="nl">handshake:</span><span class="w"> </span><span class="mh">1</span><span class="w"> </span><span class="n">minute</span><span class="p">,</span><span class="w"> </span><span class="mh">7</span><span class="w"> </span><span class="n">seconds</span><span class="w"> </span><span class="n">ago</span>
+<span class="w">  </span><span class="nl">transfer:</span><span class="w"> </span><span class="mh">180</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="n">received</span><span class="p">,</span><span class="w"> </span><span class="mh">484</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="n">sent</span>
+<span class="w">  </span><span class="n">persistent</span><span class="w"> </span><span class="nl">keepalive:</span><span class="w"> </span><span class="n">every</span><span class="w"> </span><span class="mh">30</span><span class="w"> </span><span class="n">seconds</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2138,57 +1980,54 @@
 <span class="normal">23</span>
 <span class="normal">24</span>
 <span class="normal">25</span>
-<span class="normal">26</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wireguard</span><span class="p">]#</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">Logs</span><span class="w"> </span><span class="k">begin</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">Wed</span><span class="w"> </span><span class="mh">2020</span><span class="o">-</span><span class="mh">08</span><span class="o">-</span><span class="mh">05</span><span class="w"> </span><span class="mh">15</span><span class="o">:</span><span class="mh">44</span><span class="o">:</span><span class="mh">47</span><span class="w"> </span><span class="n">UTC</span><span class="p">.</span><span class="w"> </span><span class="o">--</span><span class="w"></span>
+<span class="normal">26</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wireguard</span><span class="p">]#</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">Logs</span><span class="w"> </span><span class="k">begin</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">Wed</span><span class="w"> </span><span class="mh">2020</span><span class="o">-</span><span class="mh">08</span><span class="o">-</span><span class="mh">05</span><span class="w"> </span><span class="mh">15</span><span class="o">:</span><span class="mh">44</span><span class="o">:</span><span class="mh">47</span><span class="w"> </span><span class="n">UTC</span><span class="p">.</span><span class="w"> </span><span class="o">--</span>
 
-<span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wireguard</span><span class="p">]#</span><span class="w"> </span><span class="n">systemctl</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">@</span><span class="n">wg0</span><span class="w"></span>
-<span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wireguard</span><span class="p">]#</span><span class="w"> </span><span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">07</span><span class="o">:</span><span class="mh">04</span><span class="w"> </span><span class="n">wireguard02</span><span class="w"> </span><span class="n">systemd</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="n">Starting</span><span class="w"> </span><span class="n">WireGuard</span><span class="w"> </span><span class="n">via</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">(</span><span class="mh">8</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">wg0</span><span class="p">...</span><span class="w"></span>
-<span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">07</span><span class="o">:</span><span class="mh">04</span><span class="w"> </span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">[</span><span class="mh">10492</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">[#]</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="k">type</span><span class="w"> </span><span class="n">wireguard</span><span class="w"></span>
-<span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">07</span><span class="o">:</span><span class="mh">04</span><span class="w"> </span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">[</span><span class="mh">10492</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">[#]</span><span class="w"> </span><span class="n">wg</span><span class="w"> </span><span class="n">setconf</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">fd</span><span class="o">/</span><span class="mh">63</span><span class="w"></span>
-<span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">07</span><span class="o">:</span><span class="mh">04</span><span class="w"> </span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">[</span><span class="mh">10492</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">[#]</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="o">-</span><span class="mh">4</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="o">/</span><span class="mh">32</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">wg0</span><span class="w"></span>
-<span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">07</span><span class="o">:</span><span class="mh">04</span><span class="w"> </span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">[</span><span class="mh">10492</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">[#]</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">mtu</span><span class="w"> </span><span class="mh">1420</span><span class="w"> </span><span class="n">up</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">wg0</span><span class="w"></span>
-<span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">07</span><span class="o">:</span><span class="mh">04</span><span class="w"> </span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">[</span><span class="mh">10492</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">[#]</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="o">-</span><span class="mh">4</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="mf">192.168.123.1</span><span class="o">/</span><span class="mh">32</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">wg0</span><span class="w"></span>
-<span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">07</span><span class="o">:</span><span class="mh">04</span><span class="w"> </span><span class="n">wireguard02</span><span class="w"> </span><span class="n">systemd</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="n">Finished</span><span class="w"> </span><span class="n">WireGuard</span><span class="w"> </span><span class="n">via</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">(</span><span class="mh">8</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">wg0</span><span class="p">.</span><span class="w"></span>
-<span class="o">^</span><span class="n">C</span><span class="w"></span>
-<span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wireguard</span><span class="p">]#</span><span class="w"> </span><span class="n">fg</span><span class="w"></span>
-<span class="n">journalctl</span><span class="w"> </span><span class="o">-</span><span class="n">u</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">@</span><span class="n">wg0</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="o">-</span><span class="n">n0</span><span class="w"></span>
-<span class="o">^</span><span class="n">C</span><span class="w"></span>
-<span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wireguard</span><span class="p">]#</span><span class="w"> </span><span class="n">wg</span><span class="w"></span>
-<span class="nl">interface:</span><span class="w"> </span><span class="n">wg0</span><span class="w"></span>
-<span class="w">  </span><span class="n">public</span><span class="w"> </span><span class="nl">key:</span><span class="w"> </span><span class="n">uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc</span><span class="o">=</span><span class="w"></span>
-<span class="w">  </span><span class="n">private</span><span class="w"> </span><span class="nl">key:</span><span class="w"> </span><span class="p">(</span><span class="n">hidden</span><span class="p">)</span><span class="w"></span>
-<span class="w">  </span><span class="n">listening</span><span class="w"> </span><span class="nl">port:</span><span class="w"> </span><span class="mh">34730</span><span class="w"></span>
+<span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wireguard</span><span class="p">]#</span><span class="w"> </span><span class="n">systemctl</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">@</span><span class="n">wg0</span>
+<span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wireguard</span><span class="p">]#</span><span class="w"> </span><span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">07</span><span class="o">:</span><span class="mh">04</span><span class="w"> </span><span class="n">wireguard02</span><span class="w"> </span><span class="n">systemd</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="n">Starting</span><span class="w"> </span><span class="n">WireGuard</span><span class="w"> </span><span class="n">via</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">(</span><span class="mh">8</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">wg0</span><span class="p">...</span>
+<span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">07</span><span class="o">:</span><span class="mh">04</span><span class="w"> </span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">[</span><span class="mh">10492</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">[#]</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="k">type</span><span class="w"> </span><span class="n">wireguard</span>
+<span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">07</span><span class="o">:</span><span class="mh">04</span><span class="w"> </span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">[</span><span class="mh">10492</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">[#]</span><span class="w"> </span><span class="n">wg</span><span class="w"> </span><span class="n">setconf</span><span class="w"> </span><span class="n">wg0</span><span class="w"> </span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">fd</span><span class="o">/</span><span class="mh">63</span>
+<span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">07</span><span class="o">:</span><span class="mh">04</span><span class="w"> </span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">[</span><span class="mh">10492</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">[#]</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="o">-</span><span class="mh">4</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="o">/</span><span class="mh">32</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">wg0</span>
+<span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">07</span><span class="o">:</span><span class="mh">04</span><span class="w"> </span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">[</span><span class="mh">10492</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">[#]</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">mtu</span><span class="w"> </span><span class="mh">1420</span><span class="w"> </span><span class="n">up</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">wg0</span>
+<span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">07</span><span class="o">:</span><span class="mh">04</span><span class="w"> </span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">[</span><span class="mh">10492</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="p">[#]</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="o">-</span><span class="mh">4</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="mf">192.168.123.1</span><span class="o">/</span><span class="mh">32</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">wg0</span>
+<span class="n">Aug</span><span class="w"> </span><span class="mh">05</span><span class="w"> </span><span class="mh">20</span><span class="o">:</span><span class="mh">07</span><span class="o">:</span><span class="mh">04</span><span class="w"> </span><span class="n">wireguard02</span><span class="w"> </span><span class="n">systemd</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="n">Finished</span><span class="w"> </span><span class="n">WireGuard</span><span class="w"> </span><span class="n">via</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">(</span><span class="mh">8</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">wg0</span><span class="p">.</span>
+<span class="o">^</span><span class="n">C</span>
+<span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wireguard</span><span class="p">]#</span><span class="w"> </span><span class="n">fg</span>
+<span class="n">journalctl</span><span class="w"> </span><span class="o">-</span><span class="n">u</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="p">@</span><span class="n">wg0</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="o">-</span><span class="n">n0</span>
+<span class="o">^</span><span class="n">C</span>
+<span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard02</span><span class="w"> </span><span class="n">wireguard</span><span class="p">]#</span><span class="w"> </span><span class="n">wg</span>
+<span class="nl">interface:</span><span class="w"> </span><span class="n">wg0</span>
+<span class="w">  </span><span class="n">public</span><span class="w"> </span><span class="nl">key:</span><span class="w"> </span><span class="n">uD48Km4aRYXD7OvUtiatwqvvBG35lAad2j4hCpgNYEc</span><span class="o">=</span>
+<span class="w">  </span><span class="n">private</span><span class="w"> </span><span class="nl">key:</span><span class="w"> </span><span class="p">(</span><span class="n">hidden</span><span class="p">)</span>
+<span class="w">  </span><span class="n">listening</span><span class="w"> </span><span class="nl">port:</span><span class="w"> </span><span class="mh">34730</span>
 
-<span class="nl">peer:</span><span class="w"> </span><span class="n">pkyJK9ePlOTW9</span><span class="o">+</span><span class="n">GK73UnCZ4</span><span class="o">/</span><span class="n">b7</span><span class="o">/</span><span class="mh">3</span><span class="n">xOthdfdbF7OQUzw</span><span class="o">=</span><span class="w"></span>
-<span class="w">  </span><span class="nl">endpoint:</span><span class="w"> </span><span class="mf">192.168.122.250</span><span class="o">:</span><span class="mh">51820</span><span class="w"></span>
-<span class="w">  </span><span class="n">allowed</span><span class="w"> </span><span class="nl">ips:</span><span class="w"> </span><span class="mf">192.168.123.1</span><span class="o">/</span><span class="mh">32</span><span class="w"></span>
-<span class="w">  </span><span class="n">latest</span><span class="w"> </span><span class="nl">handshake:</span><span class="w"> </span><span class="mh">1</span><span class="w"> </span><span class="n">minute</span><span class="p">,</span><span class="w"> </span><span class="mh">8</span><span class="w"> </span><span class="n">seconds</span><span class="w"> </span><span class="n">ago</span><span class="w"></span>
-<span class="w">  </span><span class="nl">transfer:</span><span class="w"> </span><span class="mh">188</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="n">received</span><span class="p">,</span><span class="w"> </span><span class="mh">180</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="n">sent</span><span class="w"></span>
-<span class="w">  </span><span class="n">persistent</span><span class="w"> </span><span class="nl">keepalive:</span><span class="w"> </span><span class="n">every</span><span class="w"> </span><span class="mh">30</span><span class="w"> </span><span class="n">seconds</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table>
+<span class="nl">peer:</span><span class="w"> </span><span class="n">pkyJK9ePlOTW9</span><span class="o">+</span><span class="n">GK73UnCZ4</span><span class="o">/</span><span class="n">b7</span><span class="o">/</span><span class="mh">3</span><span class="n">xOthdfdbF7OQUzw</span><span class="o">=</span>
+<span class="w">  </span><span class="nl">endpoint:</span><span class="w"> </span><span class="mf">192.168.122.250</span><span class="o">:</span><span class="mh">51820</span>
+<span class="w">  </span><span class="n">allowed</span><span class="w"> </span><span class="nl">ips:</span><span class="w"> </span><span class="mf">192.168.123.1</span><span class="o">/</span><span class="mh">32</span>
+<span class="w">  </span><span class="n">latest</span><span class="w"> </span><span class="nl">handshake:</span><span class="w"> </span><span class="mh">1</span><span class="w"> </span><span class="n">minute</span><span class="p">,</span><span class="w"> </span><span class="mh">8</span><span class="w"> </span><span class="n">seconds</span><span class="w"> </span><span class="n">ago</span>
+<span class="w">  </span><span class="nl">transfer:</span><span class="w"> </span><span class="mh">188</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="n">received</span><span class="p">,</span><span class="w"> </span><span class="mh">180</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="n">sent</span>
+<span class="w">  </span><span class="n">persistent</span><span class="w"> </span><span class="nl">keepalive:</span><span class="w"> </span><span class="n">every</span><span class="w"> </span><span class="mh">30</span><span class="w"> </span><span class="n">seconds</span>
+</code></pre></div></td></tr></table></div>
 <p>And test ping:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
 <span class="normal">7</span>
-<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="n">ping</span><span class="w"> </span><span class="o">-</span><span class="n">c1</span><span class="w"> </span><span class="o">-</span><span class="n">W1</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="w"></span>
-<span class="n">PING</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.123.2</span><span class="p">)</span><span class="w"> </span><span class="mh">56</span><span class="p">(</span><span class="mh">84</span><span class="p">)</span><span class="w"> </span><span class="n">bytes</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="w"></span>
-<span class="mh">64</span><span class="w"> </span><span class="n">bytes</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="o">:</span><span class="w"> </span><span class="n">icmp_seq</span><span class="o">=</span><span class="mh">1</span><span class="w"> </span><span class="n">ttl</span><span class="o">=</span><span class="mh">64</span><span class="w"> </span><span class="kt">time</span><span class="o">=</span><span class="mf">0.356</span><span class="w"> </span><span class="n">ms</span><span class="w"></span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span><span class="n">ping</span><span class="w"> </span><span class="o">-</span><span class="n">c1</span><span class="w"> </span><span class="o">-</span><span class="n">W1</span><span class="w"> </span><span class="mf">192.168.123.2</span>
+<span class="n">PING</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.123.2</span><span class="p">)</span><span class="w"> </span><span class="mh">56</span><span class="p">(</span><span class="mh">84</span><span class="p">)</span><span class="w"> </span><span class="n">bytes</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">data</span><span class="p">.</span>
+<span class="mh">64</span><span class="w"> </span><span class="n">bytes</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="o">:</span><span class="w"> </span><span class="n">icmp_seq</span><span class="o">=</span><span class="mh">1</span><span class="w"> </span><span class="n">ttl</span><span class="o">=</span><span class="mh">64</span><span class="w"> </span><span class="kt">time</span><span class="o">=</span><span class="mf">0.356</span><span class="w"> </span><span class="n">ms</span>
 
-<span class="o">---</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="w"> </span><span class="n">ping</span><span class="w"> </span><span class="n">statistics</span><span class="w"> </span><span class="o">---</span><span class="w"></span>
-<span class="mh">1</span><span class="w"> </span><span class="n">packets</span><span class="w"> </span><span class="n">transmitted</span><span class="p">,</span><span class="w"> </span><span class="mh">1</span><span class="w"> </span><span class="n">received</span><span class="p">,</span><span class="w"> </span><span class="mh">0</span><span class="o">%</span><span class="w"> </span><span class="n">packet</span><span class="w"> </span><span class="n">loss</span><span class="p">,</span><span class="w"> </span><span class="kt">time</span><span class="w"> </span><span class="mh">0</span><span class="n">ms</span><span class="w"></span>
-<span class="n">rtt</span><span class="w"> </span><span class="n">min</span><span class="o">/</span><span class="n">avg</span><span class="o">/</span><span class="n">max</span><span class="o">/</span><span class="n">mdev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.356</span><span class="o">/</span><span class="mf">0.356</span><span class="o">/</span><span class="mf">0.356</span><span class="o">/</span><span class="mf">0.000</span><span class="w"> </span><span class="n">ms</span><span class="w"></span>
+<span class="o">---</span><span class="w"> </span><span class="mf">192.168.123.2</span><span class="w"> </span><span class="n">ping</span><span class="w"> </span><span class="n">statistics</span><span class="w"> </span><span class="o">---</span>
+<span class="mh">1</span><span class="w"> </span><span class="n">packets</span><span class="w"> </span><span class="n">transmitted</span><span class="p">,</span><span class="w"> </span><span class="mh">1</span><span class="w"> </span><span class="n">received</span><span class="p">,</span><span class="w"> </span><span class="mh">0</span><span class="o">%</span><span class="w"> </span><span class="n">packet</span><span class="w"> </span><span class="n">loss</span><span class="p">,</span><span class="w"> </span><span class="kt">time</span><span class="w"> </span><span class="mh">0</span><span class="n">ms</span>
+<span class="n">rtt</span><span class="w"> </span><span class="n">min</span><span class="o">/</span><span class="n">avg</span><span class="o">/</span><span class="n">max</span><span class="o">/</span><span class="n">mdev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.356</span><span class="o">/</span><span class="mf">0.356</span><span class="o">/</span><span class="mf">0.356</span><span class="o">/</span><span class="mf">0.000</span><span class="w"> </span><span class="n">ms</span>
 <span class="p">[</span><span class="n">root</span><span class="p">@</span><span class="n">wireguard01</span><span class="w"> </span><span class="o">~</span><span class="p">]#</span><span class="w"> </span>
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <h3 id="starting-tunnels-on-system-boot">Starting tunnels on system boot</h3>
 <p>Simply run:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">systemctl</span><span class="w"> </span><span class="n">enable</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="nv">@wg0</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">systemctl</span><span class="w"> </span><span class="n">enable</span><span class="w"> </span><span class="n">wg</span><span class="o">-</span><span class="n">quick</span><span class="nv">@wg0</span>
+</code></pre></div></td></tr></table></div></p>
 <h2 id="resources">Resources</h2>
 <ul>
 <li><a href="https://www.wireguard.com/quickstart/">https://www.wireguard.com/quickstart/</a></li>
@@ -2209,54 +2048,25 @@
   </small>
 </div>
 
-              
-            </article>
-          </div>
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
         
       </main>
       
         <footer class="md-footer">
-  
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
-      
-        
-        <a href="../useful-commands/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Useful commands" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Useful commands
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../../openshift/" class="md-footer__link md-footer__link--next" aria-label="Next: OpenShift and Kubernetes" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              OpenShift and Kubernetes
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -2278,10 +2088,11 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.467223ff.min.js"></script>
+      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
       
     
   </body>

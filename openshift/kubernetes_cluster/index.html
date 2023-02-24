@@ -12,8 +12,14 @@
       
         <link rel="canonical" href="https://andreaskaris.github.io/blog/openshift/kubernetes_cluster/">
       
+      
+        <link rel="prev" href="../openshift_httpbin_tshark_sidecar/">
+      
+      
+        <link rel="next" href="../HPA/">
+      
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.14">
     
     
       
@@ -21,16 +27,13 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2d9f7617.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#000000">
-        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
       
+      
+
     
     
     
@@ -43,10 +46,11 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
+    
     
     
   </head>
@@ -57,7 +61,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="pink">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink">
   
     
     
@@ -65,11 +69,6 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
-      
-        
-        <a href="#hints-for-installing-a-kubernetes-cluster-on-fedora" class="md-skip">
-          Skip to content
-        </a>
       
     </div>
     <div data-md-component="announce">
@@ -84,11 +83,11 @@
     <a href="../.." title="Andreas Karis Blog" class="md-header__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -121,7 +120,7 @@
           
             
 <nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-tabs__inner md-grid">
+  <div class="md-grid">
     <ul class="md-tabs__list">
       
         
@@ -258,7 +257,7 @@
     <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     Andreas Karis Blog
@@ -292,8 +291,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
       
       
         
@@ -316,7 +316,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Ceph" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
           Ceph
@@ -356,8 +356,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
       
       
         
@@ -400,7 +401,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Linux" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Linux
@@ -580,8 +581,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
       
       
         
@@ -636,7 +638,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Networking" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           Networking
@@ -902,8 +904,9 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
       
       
         
@@ -990,7 +993,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenShift and Kubernetes" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_5">
           <span class="md-nav__icon md-icon"></span>
           OpenShift and Kubernetes
@@ -1120,87 +1123,13 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Hints for installing kubernetes on Fedora
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         Hints for installing kubernetes on Fedora
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#dns-etchosts-for-all-nodes" class="md-nav__link">
-    DNS | /etc/hosts for all nodes
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#keepalived-configuration-for-master-nodes" class="md-nav__link">
-    Keepalived configuration for master nodes
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#haproxy-setup-on-master-nodes" class="md-nav__link">
-    haproxy setup on master nodes
-  </a>
-  
-    <nav class="md-nav" aria-label="haproxy setup on master nodes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#install-more-recent-version-of-containerd" class="md-nav__link">
-    Install more recent version of containerd
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#revert-fedora-to-use-cgroupv1" class="md-nav__link">
-    Revert Fedora to use cgroupv1
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#work-around-issues-with-flannel-in-k8s-116" class="md-nav__link">
-    Work around issues with Flannel in k8s 1.16
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -1560,8 +1489,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
       
       
         
@@ -1586,7 +1516,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenStack" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_6">
           <span class="md-nav__icon md-icon"></span>
           OpenStack
@@ -1640,8 +1570,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
       
       
         
@@ -1668,7 +1599,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Coding" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_7">
           <span class="md-nav__icon md-icon"></span>
           Coding
@@ -1742,64 +1673,6 @@
   
   
   
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#dns-etchosts-for-all-nodes" class="md-nav__link">
-    DNS | /etc/hosts for all nodes
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#keepalived-configuration-for-master-nodes" class="md-nav__link">
-    Keepalived configuration for master nodes
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#haproxy-setup-on-master-nodes" class="md-nav__link">
-    haproxy setup on master nodes
-  </a>
-  
-    <nav class="md-nav" aria-label="haproxy setup on master nodes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#install-more-recent-version-of-containerd" class="md-nav__link">
-    Install more recent version of containerd
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#revert-fedora-to-use-cgroupv1" class="md-nav__link">
-    Revert Fedora to use cgroupv1
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#work-around-issues-with-flannel-in-k8s-116" class="md-nav__link">
-    Work around issues with Flannel in k8s 1.16
-  </a>
-  
-</li>
-      
-    </ul>
   
 </nav>
                   </div>
@@ -1807,17 +1680,18 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
 <h1 id="hints-for-installing-a-kubernetes-cluster-on-fedora">Hints for installing a kubernetes cluster on Fedora</h1>
 <p>Hints for installing a kubernetes cluster on Fedora in a virtual environment for lab purposes</p>
 <h2 id="dns-etchosts-for-all-nodes">DNS | /etc/hosts for all nodes</h2>
 <p>Make sure to set up <code class="highlight">/etc/hosts</code> on all nodes:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1826,7 +1700,7 @@
 <span class="normal"> 7</span>
 <span class="normal"> 8</span>
 <span class="normal"> 9</span>
-<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>cat&lt;&lt;EOF&gt;/etc/hosts
+<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code>cat&lt;&lt;EOF&gt;/etc/hosts
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 192.168.122.250 api.example.com
@@ -1836,11 +1710,10 @@
 192.168.122.70 vm3
 192.168.122.117 vm5
 EOF
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <h2 id="keepalived-configuration-for-master-nodes">Keepalived configuration for master nodes</h2>
 <p>Master nodes can be set up with the following keepalived configuration for HA:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1852,7 +1725,7 @@ EOF
 <span class="normal">10</span>
 <span class="normal">11</span>
 <span class="normal">12</span>
-<span class="normal">13</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>cat&lt;&lt;&#39;EOF&#39;&gt;/etc/keepalived/keepalived.conf 
+<span class="normal">13</span></pre></div></td><td class="code"><div><pre><span></span><code>cat&lt;&lt;&#39;EOF&#39;&gt;/etc/keepalived/keepalived.conf 
 vrrp_instance vip {
  state MASTER
  notify /usr/local/sbin/notify-keepalived.sh
@@ -1865,9 +1738,8 @@ vrrp_instance vip {
  }
 }
 EOF
-</code></pre></div>
-</td></tr></table></p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+</code></pre></div></td></tr></table></div></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1887,35 +1759,33 @@ EOF
 <span class="normal">18</span>
 <span class="normal">19</span>
 <span class="normal">20</span>
-<span class="normal">21</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">cat</span><span class="o">&lt;&lt;</span><span class="s1">&#39;</span><span class="s">EOF</span><span class="s1">&#39;</span><span class="o">&gt;/</span><span class="nv">usr</span><span class="o">/</span><span class="nv">local</span><span class="o">/</span><span class="nv">sbin</span><span class="o">/</span><span class="nv">notify</span><span class="o">-</span><span class="nv">keepalived</span>.<span class="nv">sh</span>
+<span class="normal">21</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nv">cat</span><span class="o">&lt;&lt;</span><span class="s1">&#39;EOF&#39;</span><span class="o">&gt;/</span><span class="nv">usr</span><span class="o">/</span><span class="nv">local</span><span class="o">/</span><span class="nv">sbin</span><span class="o">/</span><span class="nv">notify</span><span class="o">-</span><span class="nv">keepalived</span>.<span class="nv">sh</span>
 #<span class="o">!/</span><span class="nv">bin</span><span class="o">/</span><span class="nv">bash</span>
 <span class="nv">TYPE</span><span class="o">=</span><span class="mh">$1</span>
 <span class="nv">NAME</span><span class="o">=</span><span class="mh">$2</span>
 <span class="nv">STATE</span><span class="o">=</span><span class="mh">$3</span>
 
-<span class="nv">sleep</span> <span class="mi">2</span>
+<span class="nv">sleep</span><span class="w"> </span><span class="mi">2</span>
 
-<span class="nv">case</span> $<span class="nv">STATE</span> <span class="nv">in</span>
-        <span class="s2">&quot;</span><span class="s">MASTER</span><span class="s2">&quot;</span><span class="ss">)</span> <span class="o">/</span><span class="nv">usr</span><span class="o">/</span><span class="nv">bin</span><span class="o">/</span><span class="nv">systemctl</span> <span class="nv">start</span> <span class="nv">haproxy</span>
-                  <span class="c1">;;</span>
-        <span class="s2">&quot;</span><span class="s">BACKUP</span><span class="s2">&quot;</span><span class="ss">)</span> <span class="o">/</span><span class="nv">usr</span><span class="o">/</span><span class="nv">bin</span><span class="o">/</span><span class="nv">systemctl</span> <span class="nv">stop</span> <span class="nv">haproxy</span>
-                  <span class="c1">;;</span>
-        <span class="s2">&quot;</span><span class="s">FAULT</span><span class="s2">&quot;</span><span class="ss">)</span>  <span class="o">/</span><span class="nv">usr</span><span class="o">/</span><span class="nv">bin</span><span class="o">/</span><span class="nv">systemctl</span> <span class="nv">stop</span> <span class="nv">haproxy</span>
-                  <span class="k">exit</span> <span class="mi">0</span>
-                  <span class="c1">;;</span>
-        <span class="o">*</span><span class="ss">)</span>        <span class="o">/</span><span class="nv">sbin</span><span class="o">/</span><span class="nv">logger</span> <span class="s2">&quot;</span><span class="s">haproxy unknown state</span><span class="s2">&quot;</span>
-                  <span class="k">exit</span> <span class="mi">1</span>
-                  <span class="c1">;;</span>
+<span class="nv">case</span><span class="w"> </span>$<span class="nv">STATE</span><span class="w"> </span><span class="nv">in</span>
+<span class="w">        </span><span class="s2">&quot;MASTER&quot;</span><span class="ss">)</span><span class="w"> </span><span class="o">/</span><span class="nv">usr</span><span class="o">/</span><span class="nv">bin</span><span class="o">/</span><span class="nv">systemctl</span><span class="w"> </span><span class="nv">start</span><span class="w"> </span><span class="nv">haproxy</span>
+<span class="w">                  </span><span class="c1">;;</span>
+<span class="w">        </span><span class="s2">&quot;BACKUP&quot;</span><span class="ss">)</span><span class="w"> </span><span class="o">/</span><span class="nv">usr</span><span class="o">/</span><span class="nv">bin</span><span class="o">/</span><span class="nv">systemctl</span><span class="w"> </span><span class="nv">stop</span><span class="w"> </span><span class="nv">haproxy</span>
+<span class="w">                  </span><span class="c1">;;</span>
+<span class="w">        </span><span class="s2">&quot;FAULT&quot;</span><span class="ss">)</span><span class="w">  </span><span class="o">/</span><span class="nv">usr</span><span class="o">/</span><span class="nv">bin</span><span class="o">/</span><span class="nv">systemctl</span><span class="w"> </span><span class="nv">stop</span><span class="w"> </span><span class="nv">haproxy</span>
+<span class="w">                  </span><span class="k">exit</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">                  </span><span class="c1">;;</span>
+<span class="w">        </span><span class="o">*</span><span class="ss">)</span><span class="w">        </span><span class="o">/</span><span class="nv">sbin</span><span class="o">/</span><span class="nv">logger</span><span class="w"> </span><span class="s2">&quot;haproxy unknown state&quot;</span>
+<span class="w">                  </span><span class="k">exit</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">                  </span><span class="c1">;;</span>
 <span class="nv">esac</span>
 <span class="nv">EOF</span>
-</code></pre></div>
-</td></tr></table>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>chmod +x /usr/local/sbin/notify-keepalived.sh
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>chmod +x /usr/local/sbin/notify-keepalived.sh
+</code></pre></div></td></tr></table></div>
 <h2 id="haproxy-setup-on-master-nodes">haproxy setup on master nodes</h2>
 <p>This goes hand in hand with the keepalived coniguration mentioned earlier - run this on all of the masters:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1956,53 +1826,52 @@ EOF
 <span class="normal">39</span>
 <span class="normal">40</span>
 <span class="normal">41</span>
-<span class="normal">42</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">cat</span><span class="o">&lt;&lt;</span><span class="n">EOF</span><span class="o">&gt;/</span><span class="n">etc</span><span class="o">/</span><span class="n">haproxy</span><span class="o">/</span><span class="n">haproxy</span><span class="o">.</span><span class="n">cfg</span><span class="w"></span>
-<span class="n">global</span><span class="w"></span>
-<span class="w">    </span><span class="nb">log</span><span class="w">         </span><span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="w"> </span><span class="n">local2</span><span class="w"></span>
-<span class="w">    </span><span class="n">chroot</span><span class="w">      </span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">haproxy</span><span class="w"></span>
-<span class="w">    </span><span class="n">pidfile</span><span class="w">     </span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">haproxy</span><span class="o">.</span><span class="n">pid</span><span class="w"></span>
-<span class="w">    </span><span class="n">maxconn</span><span class="w">     </span><span class="mi">4000</span><span class="w"></span>
-<span class="w">    </span><span class="n">user</span><span class="w">        </span><span class="n">haproxy</span><span class="w"></span>
-<span class="w">    </span><span class="n">group</span><span class="w">       </span><span class="n">haproxy</span><span class="w"></span>
-<span class="w">    </span><span class="n">daemon</span><span class="w"></span>
-<span class="w">    </span><span class="n">stats</span><span class="w"> </span><span class="n">socket</span><span class="w"> </span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">haproxy</span><span class="o">/</span><span class="n">stats</span><span class="w"></span>
-<span class="w">    </span><span class="n">ssl</span><span class="o">-</span><span class="n">default</span><span class="o">-</span><span class="n">bind</span><span class="o">-</span><span class="n">ciphers</span><span class="w"> </span><span class="n">PROFILE</span><span class="o">=</span><span class="n">SYSTEM</span><span class="w"></span>
-<span class="w">    </span><span class="n">ssl</span><span class="o">-</span><span class="n">default</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="n">ciphers</span><span class="w"> </span><span class="n">PROFILE</span><span class="o">=</span><span class="n">SYSTEM</span><span class="w"></span>
+<span class="normal">42</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">cat</span><span class="o">&lt;&lt;</span><span class="n">EOF</span><span class="o">&gt;/</span><span class="n">etc</span><span class="o">/</span><span class="n">haproxy</span><span class="o">/</span><span class="n">haproxy</span><span class="o">.</span><span class="n">cfg</span>
+<span class="n">global</span>
+<span class="w">    </span><span class="nb">log</span><span class="w">         </span><span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="w"> </span><span class="n">local2</span>
+<span class="w">    </span><span class="n">chroot</span><span class="w">      </span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">haproxy</span>
+<span class="w">    </span><span class="n">pidfile</span><span class="w">     </span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">haproxy</span><span class="o">.</span><span class="n">pid</span>
+<span class="w">    </span><span class="n">maxconn</span><span class="w">     </span><span class="mi">4000</span>
+<span class="w">    </span><span class="n">user</span><span class="w">        </span><span class="n">haproxy</span>
+<span class="w">    </span><span class="n">group</span><span class="w">       </span><span class="n">haproxy</span>
+<span class="w">    </span><span class="n">daemon</span>
+<span class="w">    </span><span class="n">stats</span><span class="w"> </span><span class="n">socket</span><span class="w"> </span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">haproxy</span><span class="o">/</span><span class="n">stats</span>
+<span class="w">    </span><span class="n">ssl</span><span class="o">-</span><span class="n">default</span><span class="o">-</span><span class="n">bind</span><span class="o">-</span><span class="n">ciphers</span><span class="w"> </span><span class="n">PROFILE</span><span class="o">=</span><span class="n">SYSTEM</span>
+<span class="w">    </span><span class="n">ssl</span><span class="o">-</span><span class="n">default</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="n">ciphers</span><span class="w"> </span><span class="n">PROFILE</span><span class="o">=</span><span class="n">SYSTEM</span>
 
-<span class="n">defaults</span><span class="w"></span>
-<span class="w">    </span><span class="n">mode</span><span class="w">                    </span><span class="n">tcp</span><span class="w"></span>
-<span class="w">    </span><span class="nb">log</span><span class="w">                     </span><span class="n">global</span><span class="w"></span>
-<span class="w">    </span><span class="n">option</span><span class="w">                  </span><span class="n">httplog</span><span class="w"></span>
-<span class="w">    </span><span class="n">option</span><span class="w">                  </span><span class="n">dontlognull</span><span class="w"></span>
-<span class="w">    </span><span class="n">option</span><span class="w"> </span><span class="n">http</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="n">close</span><span class="w"></span>
-<span class="w">    </span><span class="n">option</span><span class="w"> </span><span class="n">forwardfor</span><span class="w">       </span><span class="n">except</span><span class="w"> </span><span class="mf">127.0</span><span class="o">.</span><span class="mf">0.0</span><span class="o">/</span><span class="mi">8</span><span class="w"></span>
-<span class="w">    </span><span class="n">option</span><span class="w">                  </span><span class="n">redispatch</span><span class="w"></span>
-<span class="w">    </span><span class="n">retries</span><span class="w">                 </span><span class="mi">3</span><span class="w"></span>
-<span class="w">    </span><span class="n">timeout</span><span class="w"> </span><span class="n">http</span><span class="o">-</span><span class="n">request</span><span class="w">    </span><span class="mi">10</span><span class="n">s</span><span class="w"></span>
-<span class="w">    </span><span class="n">timeout</span><span class="w"> </span><span class="n">queue</span><span class="w">           </span><span class="mi">1</span><span class="n">m</span><span class="w"></span>
-<span class="w">    </span><span class="n">timeout</span><span class="w"> </span><span class="n">connect</span><span class="w">         </span><span class="mi">10</span><span class="n">s</span><span class="w"></span>
-<span class="w">    </span><span class="n">timeout</span><span class="w"> </span><span class="n">client</span><span class="w">          </span><span class="mi">1</span><span class="n">m</span><span class="w"></span>
-<span class="w">    </span><span class="n">timeout</span><span class="w"> </span><span class="n">server</span><span class="w">          </span><span class="mi">1</span><span class="n">m</span><span class="w"></span>
-<span class="w">    </span><span class="n">timeout</span><span class="w"> </span><span class="n">http</span><span class="o">-</span><span class="n">keep</span><span class="o">-</span><span class="n">alive</span><span class="w"> </span><span class="mi">10</span><span class="n">s</span><span class="w"></span>
-<span class="w">    </span><span class="n">timeout</span><span class="w"> </span><span class="n">check</span><span class="w">           </span><span class="mi">10</span><span class="n">s</span><span class="w"></span>
-<span class="w">    </span><span class="n">maxconn</span><span class="w">                 </span><span class="mi">3000</span><span class="w"></span>
+<span class="n">defaults</span>
+<span class="w">    </span><span class="n">mode</span><span class="w">                    </span><span class="n">tcp</span>
+<span class="w">    </span><span class="nb">log</span><span class="w">                     </span><span class="n">global</span>
+<span class="w">    </span><span class="n">option</span><span class="w">                  </span><span class="n">httplog</span>
+<span class="w">    </span><span class="n">option</span><span class="w">                  </span><span class="n">dontlognull</span>
+<span class="w">    </span><span class="n">option</span><span class="w"> </span><span class="n">http</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="n">close</span>
+<span class="w">    </span><span class="n">option</span><span class="w"> </span><span class="n">forwardfor</span><span class="w">       </span><span class="n">except</span><span class="w"> </span><span class="mf">127.0</span><span class="o">.</span><span class="mf">0.0</span><span class="o">/</span><span class="mi">8</span>
+<span class="w">    </span><span class="n">option</span><span class="w">                  </span><span class="n">redispatch</span>
+<span class="w">    </span><span class="n">retries</span><span class="w">                 </span><span class="mi">3</span>
+<span class="w">    </span><span class="n">timeout</span><span class="w"> </span><span class="n">http</span><span class="o">-</span><span class="n">request</span><span class="w">    </span><span class="mi">10</span><span class="n">s</span>
+<span class="w">    </span><span class="n">timeout</span><span class="w"> </span><span class="n">queue</span><span class="w">           </span><span class="mi">1</span><span class="n">m</span>
+<span class="w">    </span><span class="n">timeout</span><span class="w"> </span><span class="n">connect</span><span class="w">         </span><span class="mi">10</span><span class="n">s</span>
+<span class="w">    </span><span class="n">timeout</span><span class="w"> </span><span class="n">client</span><span class="w">          </span><span class="mi">1</span><span class="n">m</span>
+<span class="w">    </span><span class="n">timeout</span><span class="w"> </span><span class="n">server</span><span class="w">          </span><span class="mi">1</span><span class="n">m</span>
+<span class="w">    </span><span class="n">timeout</span><span class="w"> </span><span class="n">http</span><span class="o">-</span><span class="n">keep</span><span class="o">-</span><span class="n">alive</span><span class="w"> </span><span class="mi">10</span><span class="n">s</span>
+<span class="w">    </span><span class="n">timeout</span><span class="w"> </span><span class="n">check</span><span class="w">           </span><span class="mi">10</span><span class="n">s</span>
+<span class="w">    </span><span class="n">maxconn</span><span class="w">                 </span><span class="mi">3000</span>
 
-<span class="n">frontend</span><span class="w"> </span><span class="n">main</span><span class="w"></span>
-<span class="w">    </span><span class="n">bind</span><span class="w"> </span><span class="n">api</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="mi">6443</span><span class="w"></span>
-<span class="w">    </span><span class="n">mode</span><span class="w"> </span><span class="n">tcp</span><span class="w"></span>
-<span class="w">    </span><span class="n">default_backend</span><span class="w">             </span><span class="n">app</span><span class="w"></span>
+<span class="n">frontend</span><span class="w"> </span><span class="n">main</span>
+<span class="w">    </span><span class="n">bind</span><span class="w"> </span><span class="n">api</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="mi">6443</span>
+<span class="w">    </span><span class="n">mode</span><span class="w"> </span><span class="n">tcp</span>
+<span class="w">    </span><span class="n">default_backend</span><span class="w">             </span><span class="n">app</span>
 
-<span class="n">backend</span><span class="w"> </span><span class="n">app</span><span class="w"></span>
-<span class="w">    </span><span class="n">balance</span><span class="w">     </span><span class="n">roundrobin</span><span class="w"></span>
-<span class="w">    </span><span class="n">server</span><span class="w">  </span><span class="n">app1</span><span class="w"> </span><span class="n">vm1</span><span class="p">:</span><span class="mi">6443</span><span class="w"> </span><span class="n">check</span><span class="w"></span>
-<span class="w">    </span><span class="n">server</span><span class="w">  </span><span class="n">app2</span><span class="w"> </span><span class="n">vm2</span><span class="p">:</span><span class="mi">6443</span><span class="w"> </span><span class="n">check</span><span class="w"></span>
-<span class="w">    </span><span class="n">server</span><span class="w">  </span><span class="n">app3</span><span class="w"> </span><span class="n">vm3</span><span class="p">:</span><span class="mi">6443</span><span class="w"> </span><span class="n">check</span><span class="w"></span>
-<span class="n">EOF</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="n">backend</span><span class="w"> </span><span class="n">app</span>
+<span class="w">    </span><span class="n">balance</span><span class="w">     </span><span class="n">roundrobin</span>
+<span class="w">    </span><span class="n">server</span><span class="w">  </span><span class="n">app1</span><span class="w"> </span><span class="n">vm1</span><span class="p">:</span><span class="mi">6443</span><span class="w"> </span><span class="n">check</span>
+<span class="w">    </span><span class="n">server</span><span class="w">  </span><span class="n">app2</span><span class="w"> </span><span class="n">vm2</span><span class="p">:</span><span class="mi">6443</span><span class="w"> </span><span class="n">check</span>
+<span class="w">    </span><span class="n">server</span><span class="w">  </span><span class="n">app3</span><span class="w"> </span><span class="n">vm3</span><span class="p">:</span><span class="mi">6443</span><span class="w"> </span><span class="n">check</span>
+<span class="n">EOF</span>
+</code></pre></div></td></tr></table></div></p>
 <h3 id="install-more-recent-version-of-containerd">Install more recent version of containerd</h3>
 <p>In Fedora 31, it's required to install a more recent version of containerd than what is provided by the package manager:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2023,61 +1892,57 @@ EOF
 <span class="normal">19</span>
 <span class="normal">20</span>
 <span class="normal">21</span>
-<span class="normal">22</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">yum</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">containerd</span><span class="w"> </span><span class="o">-</span><span class="n">y</span><span class="w"></span>
-<span class="n">tar</span><span class="w"> </span><span class="o">-</span><span class="n">xf</span><span class="w"> </span><span class="n">containerd</span><span class="o">-</span><span class="mf">1.3</span><span class="o">.</span><span class="mf">0.</span><span class="n">linux</span><span class="o">-</span><span class="n">amd64</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span><span class="w"></span>
-<span class="n">mv</span><span class="w"> </span><span class="n">bin</span><span class="o">/*</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">sbin</span><span class="o">/.</span><span class="w"></span>
+<span class="normal">22</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">yum</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">containerd</span><span class="w"> </span><span class="o">-</span><span class="n">y</span>
+<span class="n">tar</span><span class="w"> </span><span class="o">-</span><span class="n">xf</span><span class="w"> </span><span class="n">containerd</span><span class="o">-</span><span class="mf">1.3</span><span class="o">.</span><span class="mf">0.</span><span class="n">linux</span><span class="o">-</span><span class="n">amd64</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">mv</span><span class="w"> </span><span class="n">bin</span><span class="o">/*</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">sbin</span><span class="o">/.</span>
 <span class="n">cat</span><span class="o">&lt;&lt;</span><span class="s1">&#39;EOF&#39;</span><span class="o">&gt;/</span><span class="n">etc</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">containerd</span><span class="o">.</span><span class="n">service</span><span class="w"> </span>
-<span class="p">[</span><span class="n">Unit</span><span class="p">]</span><span class="w"></span>
-<span class="n">Description</span><span class="o">=</span><span class="n">containerd</span><span class="w"> </span><span class="n">container</span><span class="w"> </span><span class="n">runtime</span><span class="w"></span>
-<span class="n">Documentation</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">containerd</span><span class="o">.</span><span class="n">io</span><span class="w"></span>
-<span class="n">After</span><span class="o">=</span><span class="n">network</span><span class="o">.</span><span class="n">target</span><span class="w"></span>
+<span class="p">[</span><span class="n">Unit</span><span class="p">]</span>
+<span class="n">Description</span><span class="o">=</span><span class="n">containerd</span><span class="w"> </span><span class="n">container</span><span class="w"> </span><span class="n">runtime</span>
+<span class="n">Documentation</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">containerd</span><span class="o">.</span><span class="n">io</span>
+<span class="n">After</span><span class="o">=</span><span class="n">network</span><span class="o">.</span><span class="n">target</span>
 
-<span class="p">[</span><span class="n">Service</span><span class="p">]</span><span class="w"></span>
-<span class="n">ExecStartPre</span><span class="o">=/</span><span class="n">sbin</span><span class="o">/</span><span class="n">modprobe</span><span class="w"> </span><span class="n">overlay</span><span class="w"></span>
-<span class="n">ExecStart</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">containerd</span><span class="w"></span>
-<span class="n">Delegate</span><span class="o">=</span><span class="n">yes</span><span class="w"></span>
-<span class="n">KillMode</span><span class="o">=</span><span class="n">process</span><span class="w"></span>
+<span class="p">[</span><span class="n">Service</span><span class="p">]</span>
+<span class="n">ExecStartPre</span><span class="o">=/</span><span class="n">sbin</span><span class="o">/</span><span class="n">modprobe</span><span class="w"> </span><span class="n">overlay</span>
+<span class="n">ExecStart</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">containerd</span>
+<span class="n">Delegate</span><span class="o">=</span><span class="n">yes</span>
+<span class="n">KillMode</span><span class="o">=</span><span class="n">process</span>
 
-<span class="p">[</span><span class="n">Install</span><span class="p">]</span><span class="w"></span>
-<span class="n">WantedBy</span><span class="o">=</span><span class="n">multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target</span><span class="w"></span>
-<span class="n">EOF</span><span class="w"></span>
-<span class="n">systemctl</span><span class="w"> </span><span class="n">daemon</span><span class="o">-</span><span class="n">reload</span><span class="w"></span>
-<span class="n">systemctl</span><span class="w"> </span><span class="n">restart</span><span class="w"> </span><span class="n">containerd</span><span class="w"></span>
-<span class="n">systemctl</span><span class="w"> </span><span class="n">enable</span><span class="w"> </span><span class="n">containerd</span><span class="w"></span>
-<span class="n">crictl</span><span class="w"> </span><span class="o">--</span><span class="n">runtime</span><span class="o">-</span><span class="n">endpoint</span><span class="o">=/</span><span class="k">var</span><span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">containerd</span><span class="o">/</span><span class="n">containerd</span><span class="o">.</span><span class="n">sock</span><span class="w"> </span><span class="n">info</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="p">[</span><span class="n">Install</span><span class="p">]</span>
+<span class="n">WantedBy</span><span class="o">=</span><span class="n">multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target</span>
+<span class="n">EOF</span>
+<span class="n">systemctl</span><span class="w"> </span><span class="n">daemon</span><span class="o">-</span><span class="n">reload</span>
+<span class="n">systemctl</span><span class="w"> </span><span class="n">restart</span><span class="w"> </span><span class="n">containerd</span>
+<span class="n">systemctl</span><span class="w"> </span><span class="n">enable</span><span class="w"> </span><span class="n">containerd</span>
+<span class="n">crictl</span><span class="w"> </span><span class="o">--</span><span class="n">runtime</span><span class="o">-</span><span class="n">endpoint</span><span class="o">=/</span><span class="k">var</span><span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">containerd</span><span class="o">/</span><span class="n">containerd</span><span class="o">.</span><span class="n">sock</span><span class="w"> </span><span class="n">info</span>
+</code></pre></div></td></tr></table></div></p>
 <h2 id="revert-fedora-to-use-cgroupv1">Revert Fedora to use cgroupv1</h2>
 <p>Revert Fedora 31 to cgroupv1 as this will not work with cgroupv2
 <a href="https://medium.com/nttlabs/cgroup-v2-596d035be4d7">https://medium.com/nttlabs/cgroup-v2-596d035be4d7</a></p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>sudo dnf install -y grubby
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code>sudo dnf install -y grubby
 sudo grubby \
   --update-kernel=ALL \
   --args=&quot;systemd.unified_cgroup_hierarchy=0&quot;
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 <h2 id="work-around-issues-with-flannel-in-k8s-116">Work around issues with Flannel in k8s 1.16</h2>
 <p>Problems with flannel in k8s 1.16:
 <a href="https://stackoverflow.com/questions/58024643/kubernetes-master-node-not-ready-state">https://stackoverflow.com/questions/58024643/kubernetes-master-node-not-ready-state</a>
 <a href="https://github.com/coreos/flannel/issues/1185">https://github.com/coreos/flannel/issues/1185</a></p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
-<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@vm1 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">ADVERTISE_URL</span><span class="o">=</span><span class="ss">&quot;https://127.0.0.1:2379&quot;</span><span class="w"></span>
-<span class="o">[</span><span class="n">root@vm1 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">ETCDCTL_API</span><span class="o">=</span><span class="mi">3</span><span class="w"> </span><span class="n">etcdctl</span><span class="w"> </span><span class="o">--</span><span class="n">endpoints</span><span class="w"> </span><span class="err">$</span><span class="n">ADVERTISE_URL</span><span class="w"> </span><span class="o">--</span><span class="n">cacert</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pki</span><span class="o">/</span><span class="n">etcd</span><span class="o">/</span><span class="n">ca</span><span class="p">.</span><span class="n">crt</span><span class="w"> </span><span class="o">--</span><span class="k">key</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pki</span><span class="o">/</span><span class="n">etcd</span><span class="o">/</span><span class="n">server</span><span class="p">.</span><span class="k">key</span><span class="w"> </span><span class="o">--</span><span class="n">cert</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pki</span><span class="o">/</span><span class="n">etcd</span><span class="o">/</span><span class="n">server</span><span class="p">.</span><span class="n">crt</span><span class="w"> </span><span class="o">--</span><span class="n">insecure</span><span class="o">-</span><span class="n">skip</span><span class="o">-</span><span class="n">tls</span><span class="o">-</span><span class="n">verify</span><span class="w"> </span><span class="k">member</span><span class="w"> </span><span class="n">list</span><span class="w"></span>
-<span class="mi">7</span><span class="n">f6515a7c372e765</span><span class="p">,</span><span class="w"> </span><span class="n">started</span><span class="p">,</span><span class="w"> </span><span class="n">vm3</span><span class="p">,</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="mf">192.168.122.70</span><span class="err">:</span><span class="mi">2380</span><span class="p">,</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="mf">192.168.122.70</span><span class="err">:</span><span class="mi">2379</span><span class="w"></span>
-<span class="n">cf8371b51a17571b</span><span class="p">,</span><span class="w"> </span><span class="n">started</span><span class="p">,</span><span class="w"> </span><span class="n">vm2</span><span class="p">,</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="mf">192.168.122.140</span><span class="err">:</span><span class="mi">2380</span><span class="p">,</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="mf">192.168.122.140</span><span class="err">:</span><span class="mi">2379</span><span class="w"></span>
-<span class="n">ec403cb4ca539d7b</span><span class="p">,</span><span class="w"> </span><span class="n">started</span><span class="p">,</span><span class="w"> </span><span class="n">vm1</span><span class="p">,</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="mf">192.168.122.248</span><span class="err">:</span><span class="mi">2380</span><span class="p">,</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="mf">192.168.122.248</span><span class="err">:</span><span class="mi">2379</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">ETCDCTL_API</span><span class="o">=</span><span class="mi">3</span><span class="w"> </span><span class="n">etcdctl</span><span class="w"> </span><span class="o">--</span><span class="n">endpoints</span><span class="w"> </span><span class="o">$</span><span class="n">ADVERTISE_URL</span><span class="w"> </span><span class="o">--</span><span class="n">cacert</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pki</span><span class="o">/</span><span class="n">etcd</span><span class="o">/</span><span class="n">ca</span><span class="o">.</span><span class="n">crt</span><span class="w"> </span><span class="o">--</span><span class="n">key</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pki</span><span class="o">/</span><span class="n">etcd</span><span class="o">/</span><span class="n">server</span><span class="o">.</span><span class="n">key</span><span class="w"> </span><span class="o">--</span><span class="n">cert</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pki</span><span class="o">/</span><span class="n">etcd</span><span class="o">/</span><span class="n">server</span><span class="o">.</span><span class="n">crt</span><span class="w"> </span><span class="n">get</span><span class="w"> </span><span class="o">--</span><span class="n">prefix</span><span class="w"> </span><span class="o">/</span><span class="n">registry</span><span class="w"> </span><span class="o">-</span><span class="n">w</span><span class="w"> </span><span class="n">json</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">python</span><span class="w"> </span><span class="o">-</span><span class="n">m</span><span class="w"> </span><span class="n">json</span><span class="o">.</span><span class="k">tool</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@vm1 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">ADVERTISE_URL</span><span class="o">=</span><span class="ss">&quot;https://127.0.0.1:2379&quot;</span>
+<span class="o">[</span><span class="n">root@vm1 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">ETCDCTL_API</span><span class="o">=</span><span class="mi">3</span><span class="w"> </span><span class="n">etcdctl</span><span class="w"> </span><span class="o">--</span><span class="n">endpoints</span><span class="w"> </span><span class="err">$</span><span class="n">ADVERTISE_URL</span><span class="w"> </span><span class="o">--</span><span class="n">cacert</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pki</span><span class="o">/</span><span class="n">etcd</span><span class="o">/</span><span class="n">ca</span><span class="p">.</span><span class="n">crt</span><span class="w"> </span><span class="o">--</span><span class="k">key</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pki</span><span class="o">/</span><span class="n">etcd</span><span class="o">/</span><span class="n">server</span><span class="p">.</span><span class="k">key</span><span class="w"> </span><span class="o">--</span><span class="n">cert</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pki</span><span class="o">/</span><span class="n">etcd</span><span class="o">/</span><span class="n">server</span><span class="p">.</span><span class="n">crt</span><span class="w"> </span><span class="o">--</span><span class="n">insecure</span><span class="o">-</span><span class="n">skip</span><span class="o">-</span><span class="n">tls</span><span class="o">-</span><span class="n">verify</span><span class="w"> </span><span class="k">member</span><span class="w"> </span><span class="n">list</span>
+<span class="mi">7</span><span class="n">f6515a7c372e765</span><span class="p">,</span><span class="w"> </span><span class="n">started</span><span class="p">,</span><span class="w"> </span><span class="n">vm3</span><span class="p">,</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="mf">192.168.122.70</span><span class="err">:</span><span class="mi">2380</span><span class="p">,</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="mf">192.168.122.70</span><span class="err">:</span><span class="mi">2379</span>
+<span class="n">cf8371b51a17571b</span><span class="p">,</span><span class="w"> </span><span class="n">started</span><span class="p">,</span><span class="w"> </span><span class="n">vm2</span><span class="p">,</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="mf">192.168.122.140</span><span class="err">:</span><span class="mi">2380</span><span class="p">,</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="mf">192.168.122.140</span><span class="err">:</span><span class="mi">2379</span>
+<span class="n">ec403cb4ca539d7b</span><span class="p">,</span><span class="w"> </span><span class="n">started</span><span class="p">,</span><span class="w"> </span><span class="n">vm1</span><span class="p">,</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="mf">192.168.122.248</span><span class="err">:</span><span class="mi">2380</span><span class="p">,</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="mf">192.168.122.248</span><span class="err">:</span><span class="mi">2379</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">ETCDCTL_API</span><span class="o">=</span><span class="mi">3</span><span class="w"> </span><span class="n">etcdctl</span><span class="w"> </span><span class="o">--</span><span class="n">endpoints</span><span class="w"> </span><span class="o">$</span><span class="n">ADVERTISE_URL</span><span class="w"> </span><span class="o">--</span><span class="n">cacert</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pki</span><span class="o">/</span><span class="n">etcd</span><span class="o">/</span><span class="n">ca</span><span class="o">.</span><span class="n">crt</span><span class="w"> </span><span class="o">--</span><span class="n">key</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pki</span><span class="o">/</span><span class="n">etcd</span><span class="o">/</span><span class="n">server</span><span class="o">.</span><span class="n">key</span><span class="w"> </span><span class="o">--</span><span class="n">cert</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pki</span><span class="o">/</span><span class="n">etcd</span><span class="o">/</span><span class="n">server</span><span class="o">.</span><span class="n">crt</span><span class="w"> </span><span class="n">get</span><span class="w"> </span><span class="o">--</span><span class="n">prefix</span><span class="w"> </span><span class="o">/</span><span class="n">registry</span><span class="w"> </span><span class="o">-</span><span class="n">w</span><span class="w"> </span><span class="n">json</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">python</span><span class="w"> </span><span class="o">-</span><span class="n">m</span><span class="w"> </span><span class="n">json</span><span class="o">.</span><span class="k">tool</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2098,31 +1963,30 @@ sudo grubby \
 <span class="normal">19</span>
 <span class="normal">20</span>
 <span class="normal">21</span>
-<span class="normal">22</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@vm1 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">ETCDCTL_API</span><span class="o">=</span><span class="mi">3</span><span class="w"> </span><span class="n">etcdctl</span><span class="w"> </span><span class="o">--</span><span class="n">endpoints</span><span class="w"> </span><span class="err">$</span><span class="n">ADVERTISE_URL</span><span class="w"> </span><span class="o">--</span><span class="n">cacert</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pki</span><span class="o">/</span><span class="n">etcd</span><span class="o">/</span><span class="n">ca</span><span class="p">.</span><span class="n">crt</span><span class="w"> </span><span class="o">--</span><span class="k">key</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pki</span><span class="o">/</span><span class="n">etcd</span><span class="o">/</span><span class="n">server</span><span class="p">.</span><span class="k">key</span><span class="w"> </span><span class="o">--</span><span class="n">cert</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pki</span><span class="o">/</span><span class="n">etcd</span><span class="o">/</span><span class="n">server</span><span class="p">.</span><span class="n">crt</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="o">--</span><span class="k">prefix</span><span class="w"> </span><span class="o">/</span><span class="n">registry</span><span class="w"> </span><span class="o">--</span><span class="n">keys</span><span class="o">-</span><span class="k">only</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">flann</span><span class="w"></span>
-<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">clusterrolebindings</span><span class="o">/</span><span class="n">flannel</span><span class="w"></span>
-<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">clusterroles</span><span class="o">/</span><span class="n">flannel</span><span class="w"></span>
-<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">configmaps</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">cfg</span><span class="w"></span>
-<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">controllerrevisions</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">amd64</span><span class="o">-</span><span class="mi">67</span><span class="n">f65bfbc7</span><span class="w"></span>
-<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">controllerrevisions</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">arm</span><span class="o">-</span><span class="mi">74</span><span class="n">f7486b59</span><span class="w"></span>
-<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">controllerrevisions</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">arm64</span><span class="o">-</span><span class="mi">575</span><span class="n">fdc5885</span><span class="w"></span>
-<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">controllerrevisions</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">ppc64le</span><span class="o">-</span><span class="mi">84596</span><span class="n">b9cb9</span><span class="w"></span>
-<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">controllerrevisions</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">s390x</span><span class="o">-</span><span class="mi">7</span><span class="n">f96755bd4</span><span class="w"></span>
-<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">daemonsets</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">amd64</span><span class="w"></span>
-<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">daemonsets</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">arm</span><span class="w"></span>
-<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">daemonsets</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">arm64</span><span class="w"></span>
-<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">daemonsets</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">ppc64le</span><span class="w"></span>
-<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">daemonsets</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">s390x</span><span class="w"></span>
-<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">pods</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">amd64</span><span class="o">-</span><span class="mi">7</span><span class="n">gd69</span><span class="w"></span>
-<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">pods</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">amd64</span><span class="o">-</span><span class="mi">9</span><span class="n">jkzr</span><span class="w"></span>
-<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">pods</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">amd64</span><span class="o">-</span><span class="n">krgj4</span><span class="w"></span>
-<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">pods</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">amd64</span><span class="o">-</span><span class="n">v6wqc</span><span class="w"></span>
-<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">pods</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">amd64</span><span class="o">-</span><span class="n">vfnhx</span><span class="w"></span>
-<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">podsecuritypolicy</span><span class="o">/</span><span class="n">psp</span><span class="p">.</span><span class="n">flannel</span><span class="p">.</span><span class="n">unprivileged</span><span class="w"></span>
-<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">secrets</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">flannel</span><span class="o">-</span><span class="n">token</span><span class="o">-</span><span class="n">ff78q</span><span class="w"></span>
-<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">serviceaccounts</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">flannel</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal">22</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@vm1 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">ETCDCTL_API</span><span class="o">=</span><span class="mi">3</span><span class="w"> </span><span class="n">etcdctl</span><span class="w"> </span><span class="o">--</span><span class="n">endpoints</span><span class="w"> </span><span class="err">$</span><span class="n">ADVERTISE_URL</span><span class="w"> </span><span class="o">--</span><span class="n">cacert</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pki</span><span class="o">/</span><span class="n">etcd</span><span class="o">/</span><span class="n">ca</span><span class="p">.</span><span class="n">crt</span><span class="w"> </span><span class="o">--</span><span class="k">key</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pki</span><span class="o">/</span><span class="n">etcd</span><span class="o">/</span><span class="n">server</span><span class="p">.</span><span class="k">key</span><span class="w"> </span><span class="o">--</span><span class="n">cert</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">pki</span><span class="o">/</span><span class="n">etcd</span><span class="o">/</span><span class="n">server</span><span class="p">.</span><span class="n">crt</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="o">--</span><span class="k">prefix</span><span class="w"> </span><span class="o">/</span><span class="n">registry</span><span class="w"> </span><span class="o">--</span><span class="n">keys</span><span class="o">-</span><span class="k">only</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">flann</span>
+<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">clusterrolebindings</span><span class="o">/</span><span class="n">flannel</span>
+<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">clusterroles</span><span class="o">/</span><span class="n">flannel</span>
+<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">configmaps</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">cfg</span>
+<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">controllerrevisions</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">amd64</span><span class="o">-</span><span class="mi">67</span><span class="n">f65bfbc7</span>
+<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">controllerrevisions</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">arm</span><span class="o">-</span><span class="mi">74</span><span class="n">f7486b59</span>
+<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">controllerrevisions</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">arm64</span><span class="o">-</span><span class="mi">575</span><span class="n">fdc5885</span>
+<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">controllerrevisions</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">ppc64le</span><span class="o">-</span><span class="mi">84596</span><span class="n">b9cb9</span>
+<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">controllerrevisions</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">s390x</span><span class="o">-</span><span class="mi">7</span><span class="n">f96755bd4</span>
+<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">daemonsets</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">amd64</span>
+<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">daemonsets</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">arm</span>
+<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">daemonsets</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">arm64</span>
+<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">daemonsets</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">ppc64le</span>
+<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">daemonsets</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">s390x</span>
+<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">pods</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">amd64</span><span class="o">-</span><span class="mi">7</span><span class="n">gd69</span>
+<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">pods</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">amd64</span><span class="o">-</span><span class="mi">9</span><span class="n">jkzr</span>
+<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">pods</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">amd64</span><span class="o">-</span><span class="n">krgj4</span>
+<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">pods</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">amd64</span><span class="o">-</span><span class="n">v6wqc</span>
+<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">pods</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">amd64</span><span class="o">-</span><span class="n">vfnhx</span>
+<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">podsecuritypolicy</span><span class="o">/</span><span class="n">psp</span><span class="p">.</span><span class="n">flannel</span><span class="p">.</span><span class="n">unprivileged</span>
+<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">secrets</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">flannel</span><span class="o">-</span><span class="n">token</span><span class="o">-</span><span class="n">ff78q</span>
+<span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">serviceaccounts</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="o">/</span><span class="n">flannel</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2135,78 +1999,73 @@ sudo grubby \
 <span class="normal">11</span>
 <span class="normal">12</span>
 <span class="normal">13</span>
-<span class="normal">14</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@vm1 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">kubectl</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="o">-</span><span class="n">it</span><span class="w"> </span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">amd64</span><span class="o">-</span><span class="mi">7</span><span class="n">gd69</span><span class="w"> </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="w"> </span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">bash</span><span class="w"></span>
-<span class="n">bash</span><span class="o">-</span><span class="mf">4.4</span><span class="err">#</span><span class="w"> </span><span class="n">ps</span><span class="w"></span>
-<span class="n">PID</span><span class="w">   </span><span class="k">USER</span><span class="w">     </span><span class="nc">TIME</span><span class="w">  </span><span class="n">COMMAND</span><span class="w"></span>
-<span class="w">    </span><span class="mi">1</span><span class="w"> </span><span class="n">root</span><span class="w">      </span><span class="mi">0</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">flanneld</span><span class="w"> </span><span class="o">--</span><span class="n">ip</span><span class="o">-</span><span class="n">masq</span><span class="w"> </span><span class="o">--</span><span class="n">kube</span><span class="o">-</span><span class="n">subnet</span><span class="o">-</span><span class="n">mgr</span><span class="w"></span>
-<span class="w"> </span><span class="mi">8183</span><span class="w"> </span><span class="n">root</span><span class="w">      </span><span class="mi">0</span><span class="err">:</span><span class="mi">00</span><span class="w"> </span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">bash</span><span class="w"></span>
-<span class="w"> </span><span class="mi">8190</span><span class="w"> </span><span class="n">root</span><span class="w">      </span><span class="mi">0</span><span class="err">:</span><span class="mi">00</span><span class="w"> </span><span class="n">ps</span><span class="w"></span>
-<span class="n">bash</span><span class="o">-</span><span class="mf">4.4</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">/</span><span class="n">net</span><span class="o">-</span><span class="n">conf</span><span class="p">.</span><span class="n">json</span><span class="w"></span>
-<span class="err">{</span><span class="w"></span>
-<span class="w">  </span><span class="ss">&quot;Network&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;10.244.0.0/16&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="ss">&quot;Backend&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
-<span class="w">    </span><span class="ss">&quot;Type&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;vxlan&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="err">}</span><span class="w"></span>
-<span class="err">}</span><span class="w"></span>
+<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@vm1 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">kubectl</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="o">-</span><span class="n">it</span><span class="w"> </span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">-</span><span class="n">ds</span><span class="o">-</span><span class="n">amd64</span><span class="o">-</span><span class="mi">7</span><span class="n">gd69</span><span class="w"> </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="n">kube</span><span class="o">-</span><span class="k">system</span><span class="w"> </span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">bash</span>
+<span class="n">bash</span><span class="o">-</span><span class="mf">4.4</span><span class="err">#</span><span class="w"> </span><span class="n">ps</span>
+<span class="n">PID</span><span class="w">   </span><span class="k">USER</span><span class="w">     </span><span class="nc">TIME</span><span class="w">  </span><span class="n">COMMAND</span>
+<span class="w">    </span><span class="mi">1</span><span class="w"> </span><span class="n">root</span><span class="w">      </span><span class="mi">0</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">flanneld</span><span class="w"> </span><span class="o">--</span><span class="n">ip</span><span class="o">-</span><span class="n">masq</span><span class="w"> </span><span class="o">--</span><span class="n">kube</span><span class="o">-</span><span class="n">subnet</span><span class="o">-</span><span class="n">mgr</span>
+<span class="w"> </span><span class="mi">8183</span><span class="w"> </span><span class="n">root</span><span class="w">      </span><span class="mi">0</span><span class="err">:</span><span class="mi">00</span><span class="w"> </span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">bash</span>
+<span class="w"> </span><span class="mi">8190</span><span class="w"> </span><span class="n">root</span><span class="w">      </span><span class="mi">0</span><span class="err">:</span><span class="mi">00</span><span class="w"> </span><span class="n">ps</span>
+<span class="n">bash</span><span class="o">-</span><span class="mf">4.4</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="n">flannel</span><span class="o">/</span><span class="n">net</span><span class="o">-</span><span class="n">conf</span><span class="p">.</span><span class="n">json</span>
+<span class="err">{</span>
+<span class="w">  </span><span class="ss">&quot;Network&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;10.244.0.0/16&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="ss">&quot;Backend&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{</span>
+<span class="w">    </span><span class="ss">&quot;Type&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;vxlan&quot;</span>
+<span class="w">  </span><span class="err">}</span>
+<span class="err">}</span>
 <span class="n">bash</span><span class="o">-</span><span class="mf">4.4</span><span class="err">#</span><span class="w"> </span>
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 <p><a href="https://github.com/coreos/flannel/blob/master/Documentation/configuration.md">https://github.com/coreos/flannel/blob/master/Documentation/configuration.md</a></p>
 <p>Issue with systemd and flannel:
 <a href="https://github.com/coreos/flannel/issues/1155">https://github.com/coreos/flannel/issues/1155</a>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
-<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">cat</span><span class="o">&lt;&lt;</span><span class="s1">&#39;EOF&#39;</span><span class="o">&gt;/</span><span class="n">etc</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">network</span><span class="o">/</span><span class="mi">10</span><span class="o">-</span><span class="n">flannel</span><span class="p">.</span><span class="n">link</span><span class="w"></span>
-<span class="o">[</span><span class="n">Match</span><span class="o">]</span><span class="w"></span>
-<span class="n">OriginalName</span><span class="o">=</span><span class="n">flannel</span><span class="o">*</span><span class="w"></span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">cat</span><span class="o">&lt;&lt;</span><span class="s1">&#39;EOF&#39;</span><span class="o">&gt;/</span><span class="n">etc</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">network</span><span class="o">/</span><span class="mi">10</span><span class="o">-</span><span class="n">flannel</span><span class="p">.</span><span class="n">link</span>
+<span class="o">[</span><span class="n">Match</span><span class="o">]</span>
+<span class="n">OriginalName</span><span class="o">=</span><span class="n">flannel</span><span class="o">*</span>
 
-<span class="o">[</span><span class="n">Link</span><span class="o">]</span><span class="w"></span>
-<span class="n">MACAddressPolicy</span><span class="o">=</span><span class="k">none</span><span class="w"></span>
-<span class="n">EOF</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@vm4 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="k">default</span><span class="o">/</span><span class="n">grub</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">CMDLINE</span><span class="w"></span>
-<span class="n">GRUB_CMDLINE_LINUX</span><span class="o">=</span><span class="ss">&quot;no_timer_check net.ifnames=0 console=tty1 console=ttyS0,115200n8 systemd.unified_cgroup_hierarchy=0&quot;</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="o">[</span><span class="n">Link</span><span class="o">]</span>
+<span class="n">MACAddressPolicy</span><span class="o">=</span><span class="k">none</span>
+<span class="n">EOF</span>
+</code></pre></div></td></tr></table></div></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@vm4 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="k">default</span><span class="o">/</span><span class="n">grub</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">CMDLINE</span>
+<span class="n">GRUB_CMDLINE_LINUX</span><span class="o">=</span><span class="ss">&quot;no_timer_check net.ifnames=0 console=tty1 console=ttyS0,115200n8 systemd.unified_cgroup_hierarchy=0&quot;</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
 <span class="normal">7</span>
-<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@vm4 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">yum</span><span class="p">.</span><span class="n">repos</span><span class="p">.</span><span class="n">d</span><span class="o">/</span><span class="n">kubernetes</span><span class="p">.</span><span class="n">repo</span><span class="w"> </span>
-<span class="o">[</span><span class="n">kubernetes</span><span class="o">]</span><span class="w"></span>
-<span class="n">name</span><span class="o">=</span><span class="n">Kubernetes</span><span class="w"></span>
-<span class="n">baseurl</span><span class="o">=</span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="n">packages</span><span class="p">.</span><span class="n">cloud</span><span class="p">.</span><span class="n">google</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">yum</span><span class="o">/</span><span class="n">repos</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">-</span><span class="n">el7</span><span class="o">-</span><span class="n">x86_64</span><span class="w"></span>
-<span class="n">enabled</span><span class="o">=</span><span class="mi">1</span><span class="w"></span>
-<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span><span class="w"></span>
-<span class="n">repo_gpgcheck</span><span class="o">=</span><span class="mi">1</span><span class="w"></span>
-<span class="n">gpgkey</span><span class="o">=</span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="n">packages</span><span class="p">.</span><span class="n">cloud</span><span class="p">.</span><span class="n">google</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">yum</span><span class="o">/</span><span class="n">doc</span><span class="o">/</span><span class="n">yum</span><span class="o">-</span><span class="k">key</span><span class="p">.</span><span class="n">gpg</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="n">packages</span><span class="p">.</span><span class="n">cloud</span><span class="p">.</span><span class="n">google</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">yum</span><span class="o">/</span><span class="n">doc</span><span class="o">/</span><span class="n">rpm</span><span class="o">-</span><span class="n">package</span><span class="o">-</span><span class="k">key</span><span class="p">.</span><span class="n">gpg</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@vm4 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">yum</span><span class="p">.</span><span class="n">repos</span><span class="p">.</span><span class="n">d</span><span class="o">/</span><span class="n">kubernetes</span><span class="p">.</span><span class="n">repo</span><span class="w"> </span>
+<span class="o">[</span><span class="n">kubernetes</span><span class="o">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">Kubernetes</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="n">packages</span><span class="p">.</span><span class="n">cloud</span><span class="p">.</span><span class="n">google</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">yum</span><span class="o">/</span><span class="n">repos</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">-</span><span class="n">el7</span><span class="o">-</span><span class="n">x86_64</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">repo_gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="n">packages</span><span class="p">.</span><span class="n">cloud</span><span class="p">.</span><span class="n">google</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">yum</span><span class="o">/</span><span class="n">doc</span><span class="o">/</span><span class="n">yum</span><span class="o">-</span><span class="k">key</span><span class="p">.</span><span class="n">gpg</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="n">packages</span><span class="p">.</span><span class="n">cloud</span><span class="p">.</span><span class="n">google</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">yum</span><span class="o">/</span><span class="n">doc</span><span class="o">/</span><span class="n">rpm</span><span class="o">-</span><span class="n">package</span><span class="o">-</span><span class="k">key</span><span class="p">.</span><span class="n">gpg</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
-<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@vm4 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">rpm</span><span class="w"> </span><span class="o">-</span><span class="n">qa</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">egrep</span><span class="w"> </span><span class="s1">&#39;kube|docker&#39;</span><span class="w"></span>
-<span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="mf">19.03.4</span><span class="o">-</span><span class="mf">3.</span><span class="n">fc31</span><span class="p">.</span><span class="n">x86_64</span><span class="w"></span>
-<span class="n">kubectl</span><span class="o">-</span><span class="mf">1.16.2</span><span class="o">-</span><span class="mf">0.</span><span class="n">x86_64</span><span class="w"></span>
-<span class="n">kubelet</span><span class="o">-</span><span class="mf">1.16.2</span><span class="o">-</span><span class="mf">0.</span><span class="n">x86_64</span><span class="w"></span>
-<span class="n">kubeadm</span><span class="o">-</span><span class="mf">1.16.2</span><span class="o">-</span><span class="mf">0.</span><span class="n">x86_64</span><span class="w"></span>
-<span class="n">kubernetes</span><span class="o">-</span><span class="n">cni</span><span class="o">-</span><span class="mf">0.7.5</span><span class="o">-</span><span class="mf">0.</span><span class="n">x86_64</span><span class="w"></span>
-<span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">cli</span><span class="o">-</span><span class="mf">19.03.4</span><span class="o">-</span><span class="mf">3.</span><span class="n">fc31</span><span class="p">.</span><span class="n">x86_64</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@vm4 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">rpm</span><span class="w"> </span><span class="o">-</span><span class="n">qa</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">egrep</span><span class="w"> </span><span class="s1">&#39;kube|docker&#39;</span>
+<span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="mf">19.03.4</span><span class="o">-</span><span class="mf">3.</span><span class="n">fc31</span><span class="p">.</span><span class="n">x86_64</span>
+<span class="n">kubectl</span><span class="o">-</span><span class="mf">1.16.2</span><span class="o">-</span><span class="mf">0.</span><span class="n">x86_64</span>
+<span class="n">kubelet</span><span class="o">-</span><span class="mf">1.16.2</span><span class="o">-</span><span class="mf">0.</span><span class="n">x86_64</span>
+<span class="n">kubeadm</span><span class="o">-</span><span class="mf">1.16.2</span><span class="o">-</span><span class="mf">0.</span><span class="n">x86_64</span>
+<span class="n">kubernetes</span><span class="o">-</span><span class="n">cni</span><span class="o">-</span><span class="mf">0.7.5</span><span class="o">-</span><span class="mf">0.</span><span class="n">x86_64</span>
+<span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">cli</span><span class="o">-</span><span class="mf">19.03.4</span><span class="o">-</span><span class="mf">3.</span><span class="n">fc31</span><span class="p">.</span><span class="n">x86_64</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2289,95 +2148,93 @@ sudo grubby \
 <span class="normal">81</span>
 <span class="normal">82</span>
 <span class="normal">83</span>
-<span class="normal">84</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">root</span><span class="err">@</span><span class="n">vm4</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># cat /etc/yum.repos.d/docker-ce.repo</span><span class="w"></span>
-<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">stable</span><span class="p">]</span><span class="w"></span>
-<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Stable</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="o">$</span><span class="n">basearch</span><span class="w"></span>
-<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/$</span><span class="n">basearch</span><span class="o">/</span><span class="n">stable</span><span class="w"></span>
-<span class="n">enabled</span><span class="o">=</span><span class="mi">1</span><span class="w"></span>
-<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span><span class="w"></span>
-<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span><span class="w"></span>
+<span class="normal">84</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">root</span><span class="err">@</span><span class="n">vm4</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># cat /etc/yum.repos.d/docker-ce.repo</span>
+<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">stable</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Stable</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="o">$</span><span class="n">basearch</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/$</span><span class="n">basearch</span><span class="o">/</span><span class="n">stable</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span>
 
-<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">stable</span><span class="o">-</span><span class="n">debuginfo</span><span class="p">]</span><span class="w"></span>
-<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Stable</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Debuginfo</span><span class="w"> </span><span class="o">$</span><span class="n">basearch</span><span class="w"></span>
-<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/</span><span class="n">debug</span><span class="o">-$</span><span class="n">basearch</span><span class="o">/</span><span class="n">stable</span><span class="w"></span>
-<span class="n">enabled</span><span class="o">=</span><span class="mi">0</span><span class="w"></span>
-<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span><span class="w"></span>
-<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span><span class="w"></span>
+<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">stable</span><span class="o">-</span><span class="n">debuginfo</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Stable</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Debuginfo</span><span class="w"> </span><span class="o">$</span><span class="n">basearch</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/</span><span class="n">debug</span><span class="o">-$</span><span class="n">basearch</span><span class="o">/</span><span class="n">stable</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span>
 
-<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">stable</span><span class="o">-</span><span class="n">source</span><span class="p">]</span><span class="w"></span>
-<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Stable</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Sources</span><span class="w"></span>
-<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/</span><span class="n">source</span><span class="o">/</span><span class="n">stable</span><span class="w"></span>
-<span class="n">enabled</span><span class="o">=</span><span class="mi">0</span><span class="w"></span>
-<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span><span class="w"></span>
-<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span><span class="w"></span>
+<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">stable</span><span class="o">-</span><span class="n">source</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Stable</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Sources</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/</span><span class="n">source</span><span class="o">/</span><span class="n">stable</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span>
 
-<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">edge</span><span class="p">]</span><span class="w"></span>
-<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Edge</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="o">$</span><span class="n">basearch</span><span class="w"></span>
-<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/$</span><span class="n">basearch</span><span class="o">/</span><span class="n">edge</span><span class="w"></span>
-<span class="n">enabled</span><span class="o">=</span><span class="mi">0</span><span class="w"></span>
-<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span><span class="w"></span>
-<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span><span class="w"></span>
+<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">edge</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Edge</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="o">$</span><span class="n">basearch</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/$</span><span class="n">basearch</span><span class="o">/</span><span class="n">edge</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span>
 
-<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">edge</span><span class="o">-</span><span class="n">debuginfo</span><span class="p">]</span><span class="w"></span>
-<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Edge</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Debuginfo</span><span class="w"> </span><span class="o">$</span><span class="n">basearch</span><span class="w"></span>
-<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/</span><span class="n">debug</span><span class="o">-$</span><span class="n">basearch</span><span class="o">/</span><span class="n">edge</span><span class="w"></span>
-<span class="n">enabled</span><span class="o">=</span><span class="mi">0</span><span class="w"></span>
-<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span><span class="w"></span>
-<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span><span class="w"></span>
+<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">edge</span><span class="o">-</span><span class="n">debuginfo</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Edge</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Debuginfo</span><span class="w"> </span><span class="o">$</span><span class="n">basearch</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/</span><span class="n">debug</span><span class="o">-$</span><span class="n">basearch</span><span class="o">/</span><span class="n">edge</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span>
 
-<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">edge</span><span class="o">-</span><span class="n">source</span><span class="p">]</span><span class="w"></span>
-<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Edge</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Sources</span><span class="w"></span>
-<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/</span><span class="n">source</span><span class="o">/</span><span class="n">edge</span><span class="w"></span>
-<span class="n">enabled</span><span class="o">=</span><span class="mi">0</span><span class="w"></span>
-<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span><span class="w"></span>
-<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span><span class="w"></span>
+<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">edge</span><span class="o">-</span><span class="n">source</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Edge</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Sources</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/</span><span class="n">source</span><span class="o">/</span><span class="n">edge</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span>
 
-<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">test</span><span class="p">]</span><span class="w"></span>
-<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Test</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="o">$</span><span class="n">basearch</span><span class="w"></span>
-<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/$</span><span class="n">basearch</span><span class="o">/</span><span class="n">test</span><span class="w"></span>
-<span class="n">enabled</span><span class="o">=</span><span class="mi">0</span><span class="w"></span>
-<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span><span class="w"></span>
-<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span><span class="w"></span>
+<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">test</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Test</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="o">$</span><span class="n">basearch</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/$</span><span class="n">basearch</span><span class="o">/</span><span class="n">test</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span>
 
-<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">test</span><span class="o">-</span><span class="n">debuginfo</span><span class="p">]</span><span class="w"></span>
-<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Test</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Debuginfo</span><span class="w"> </span><span class="o">$</span><span class="n">basearch</span><span class="w"></span>
-<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/</span><span class="n">debug</span><span class="o">-$</span><span class="n">basearch</span><span class="o">/</span><span class="n">test</span><span class="w"></span>
-<span class="n">enabled</span><span class="o">=</span><span class="mi">0</span><span class="w"></span>
-<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span><span class="w"></span>
-<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span><span class="w"></span>
+<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">test</span><span class="o">-</span><span class="n">debuginfo</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Test</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Debuginfo</span><span class="w"> </span><span class="o">$</span><span class="n">basearch</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/</span><span class="n">debug</span><span class="o">-$</span><span class="n">basearch</span><span class="o">/</span><span class="n">test</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span>
 
-<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">test</span><span class="o">-</span><span class="n">source</span><span class="p">]</span><span class="w"></span>
-<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Test</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Sources</span><span class="w"></span>
-<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/</span><span class="n">source</span><span class="o">/</span><span class="n">test</span><span class="w"></span>
-<span class="n">enabled</span><span class="o">=</span><span class="mi">0</span><span class="w"></span>
-<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span><span class="w"></span>
-<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span><span class="w"></span>
+<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">test</span><span class="o">-</span><span class="n">source</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Test</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Sources</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/</span><span class="n">source</span><span class="o">/</span><span class="n">test</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span>
 
-<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">nightly</span><span class="p">]</span><span class="w"></span>
-<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Nightly</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="o">$</span><span class="n">basearch</span><span class="w"></span>
-<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/$</span><span class="n">basearch</span><span class="o">/</span><span class="n">nightly</span><span class="w"></span>
-<span class="n">enabled</span><span class="o">=</span><span class="mi">0</span><span class="w"></span>
-<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span><span class="w"></span>
-<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span><span class="w"></span>
+<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">nightly</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Nightly</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="o">$</span><span class="n">basearch</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/$</span><span class="n">basearch</span><span class="o">/</span><span class="n">nightly</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span>
 
-<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">nightly</span><span class="o">-</span><span class="n">debuginfo</span><span class="p">]</span><span class="w"></span>
-<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Nightly</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Debuginfo</span><span class="w"> </span><span class="o">$</span><span class="n">basearch</span><span class="w"></span>
-<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/</span><span class="n">debug</span><span class="o">-$</span><span class="n">basearch</span><span class="o">/</span><span class="n">nightly</span><span class="w"></span>
-<span class="n">enabled</span><span class="o">=</span><span class="mi">0</span><span class="w"></span>
-<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span><span class="w"></span>
-<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span><span class="w"></span>
+<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">nightly</span><span class="o">-</span><span class="n">debuginfo</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Nightly</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Debuginfo</span><span class="w"> </span><span class="o">$</span><span class="n">basearch</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/</span><span class="n">debug</span><span class="o">-$</span><span class="n">basearch</span><span class="o">/</span><span class="n">nightly</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span>
 
-<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">nightly</span><span class="o">-</span><span class="n">source</span><span class="p">]</span><span class="w"></span>
-<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Nightly</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Sources</span><span class="w"></span>
-<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/</span><span class="n">source</span><span class="o">/</span><span class="n">nightly</span><span class="w"></span>
-<span class="n">enabled</span><span class="o">=</span><span class="mi">0</span><span class="w"></span>
-<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span><span class="w"></span>
-<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>yum install kubeadm kubectl kubelet kubernetes-cni docker-ce -y
-</code></pre></div>
-</td></tr></table>
+<span class="p">[</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">nightly</span><span class="o">-</span><span class="n">source</span><span class="p">]</span>
+<span class="n">name</span><span class="o">=</span><span class="n">Docker</span><span class="w"> </span><span class="n">CE</span><span class="w"> </span><span class="n">Nightly</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Sources</span>
+<span class="n">baseurl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/$</span><span class="n">releasever</span><span class="o">/</span><span class="n">source</span><span class="o">/</span><span class="n">nightly</span>
+<span class="n">enabled</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">gpgcheck</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">gpgkey</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">gpg</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>yum install kubeadm kubectl kubelet kubernetes-cni docker-ce -y
+</code></pre></div></td></tr></table></div>
 
   <hr>
 <div class="md-source-file">
@@ -2390,54 +2247,25 @@ sudo grubby \
   </small>
 </div>
 
-              
-            </article>
-          </div>
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
         
       </main>
       
         <footer class="md-footer">
-  
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
-      
-        
-        <a href="../openshift_httpbin_tshark_sidecar/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Httpbin tshark sidecar container" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Httpbin tshark sidecar container
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../HPA/" class="md-footer__link md-footer__link--next" aria-label="Next: Horizontal Pod Autoscaler" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              Horizontal Pod Autoscaler
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -2459,10 +2287,11 @@ sudo grubby \
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.467223ff.min.js"></script>
+      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
       
     
   </body>

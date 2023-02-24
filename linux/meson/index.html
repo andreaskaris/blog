@@ -12,8 +12,14 @@
       
         <link rel="canonical" href="https://andreaskaris.github.io/blog/linux/meson/">
       
+      
+        <link rel="prev" href="../java-idrac-issues/">
+      
+      
+        <link rel="next" href="../namespaces/">
+      
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.14">
     
     
       
@@ -21,16 +27,13 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2d9f7617.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#000000">
-        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
       
+      
+
     
     
     
@@ -43,10 +46,11 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
+    
     
     
   </head>
@@ -57,7 +61,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="pink">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink">
   
     
     
@@ -65,11 +69,6 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
-      
-        
-        <a href="#meson" class="md-skip">
-          Skip to content
-        </a>
       
     </div>
     <div data-md-component="announce">
@@ -84,11 +83,11 @@
     <a href="../.." title="Andreas Karis Blog" class="md-header__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -121,7 +120,7 @@
           
             
 <nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-tabs__inner md-grid">
+  <div class="md-grid">
     <ul class="md-tabs__list">
       
         
@@ -258,7 +257,7 @@
     <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     Andreas Karis Blog
@@ -292,8 +291,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
       
       
         
@@ -316,7 +316,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Ceph" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
           Ceph
@@ -358,8 +358,9 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
       
       
         
@@ -402,7 +403,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Linux" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Linux
@@ -490,67 +491,13 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          meson
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         meson
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#what-is-meson" class="md-nav__link">
-    What is meson?
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#who-is-using-meson" class="md-nav__link">
-    Who is using meson?
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#requirements-for-meson" class="md-nav__link">
-    Requirements for meson
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-to-get-meson" class="md-nav__link">
-    How to get meson
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -644,8 +591,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
       
       
         
@@ -700,7 +648,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Networking" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           Networking
@@ -964,8 +912,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
       
       
         
@@ -1052,7 +1001,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenShift and Kubernetes" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_5">
           <span class="md-nav__icon md-icon"></span>
           OpenShift and Kubernetes
@@ -1540,8 +1489,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
       
       
         
@@ -1566,7 +1516,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenStack" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_6">
           <span class="md-nav__icon md-icon"></span>
           OpenStack
@@ -1620,8 +1570,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
       
       
         
@@ -1648,7 +1599,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Coding" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_7">
           <span class="md-nav__icon md-icon"></span>
           Coding
@@ -1722,44 +1673,6 @@
   
   
   
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#what-is-meson" class="md-nav__link">
-    What is meson?
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#who-is-using-meson" class="md-nav__link">
-    Who is using meson?
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#requirements-for-meson" class="md-nav__link">
-    Requirements for meson
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-to-get-meson" class="md-nav__link">
-    How to get meson
-  </a>
-  
-</li>
-      
-    </ul>
   
 </nav>
                   </div>
@@ -1767,17 +1680,18 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
 <h1 id="meson">meson</h1>
 <h2 id="what-is-meson">What is meson?</h2>
 <p>Meson is a new build system, meant to replace <code class="highlight">make</code>.</p>
 <p><a href="https://mesonbuild.com/index.html">https://mesonbuild.com/index.html</a>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1790,22 +1704,21 @@
 <span class="normal">11</span>
 <span class="normal">12</span>
 <span class="normal">13</span>
-<span class="normal">14</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">Overview</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nv">Overview</span>
 
-<span class="nv">Meson</span> <span class="nv">is</span> <span class="nv">an</span> <span class="nv">open</span> <span class="nv">source</span> <span class="nv">build</span> <span class="nv">system</span> <span class="nv">meant</span> <span class="nv">to</span> <span class="nv">be</span> <span class="nv">both</span> <span class="nv">extremely</span> <span class="nv">fast</span>, <span class="nv">and</span>, <span class="nv">even</span> <span class="nv">more</span> <span class="nv">importantly</span>, <span class="nv">as</span> <span class="nv">user</span> <span class="nv">friendly</span> <span class="nv">as</span> <span class="nv">possible</span>.
+<span class="nv">Meson</span><span class="w"> </span><span class="nv">is</span><span class="w"> </span><span class="nv">an</span><span class="w"> </span><span class="nv">open</span><span class="w"> </span><span class="nv">source</span><span class="w"> </span><span class="nv">build</span><span class="w"> </span><span class="nv">system</span><span class="w"> </span><span class="nv">meant</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">be</span><span class="w"> </span><span class="nv">both</span><span class="w"> </span><span class="nv">extremely</span><span class="w"> </span><span class="nv">fast</span>,<span class="w"> </span><span class="nv">and</span>,<span class="w"> </span><span class="nv">even</span><span class="w"> </span><span class="nv">more</span><span class="w"> </span><span class="nv">importantly</span>,<span class="w"> </span><span class="nv">as</span><span class="w"> </span><span class="nv">user</span><span class="w"> </span><span class="nv">friendly</span><span class="w"> </span><span class="nv">as</span><span class="w"> </span><span class="nv">possible</span>.
 
-<span class="nv">The</span> <span class="nv">main</span> <span class="nv">design</span> <span class="nv">point</span> <span class="nv">of</span> <span class="nv">Meson</span> <span class="nv">is</span> <span class="nv">that</span> <span class="nv">every</span> <span class="nv">moment</span> <span class="nv">a</span> <span class="nv">developer</span> <span class="nv">spends</span> <span class="nv">writing</span> <span class="nv">or</span> <span class="nv">debugging</span> <span class="nv">build</span> <span class="nv">definitions</span> <span class="nv">is</span> <span class="nv">a</span> <span class="nv">second</span> <span class="nv">wasted</span>. <span class="nv">So</span> <span class="nv">is</span> <span class="nv">every</span> <span class="nv">second</span> <span class="nv">spent</span> <span class="nv">waiting</span> <span class="k">for</span> <span class="nv">the</span> <span class="nv">build</span> <span class="nv">system</span> <span class="nv">to</span> <span class="nv">actually</span> <span class="nv">start</span> <span class="nv">compiling</span> <span class="nv">code</span>.
+<span class="nv">The</span><span class="w"> </span><span class="nv">main</span><span class="w"> </span><span class="nv">design</span><span class="w"> </span><span class="nv">point</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="nv">Meson</span><span class="w"> </span><span class="nv">is</span><span class="w"> </span><span class="nv">that</span><span class="w"> </span><span class="nv">every</span><span class="w"> </span><span class="nv">moment</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="nv">developer</span><span class="w"> </span><span class="nv">spends</span><span class="w"> </span><span class="nv">writing</span><span class="w"> </span><span class="nv">or</span><span class="w"> </span><span class="nv">debugging</span><span class="w"> </span><span class="nv">build</span><span class="w"> </span><span class="nv">definitions</span><span class="w"> </span><span class="nv">is</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="nv">second</span><span class="w"> </span><span class="nv">wasted</span>.<span class="w"> </span><span class="nv">So</span><span class="w"> </span><span class="nv">is</span><span class="w"> </span><span class="nv">every</span><span class="w"> </span><span class="nv">second</span><span class="w"> </span><span class="nv">spent</span><span class="w"> </span><span class="nv">waiting</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">build</span><span class="w"> </span><span class="nv">system</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">actually</span><span class="w"> </span><span class="nv">start</span><span class="w"> </span><span class="nv">compiling</span><span class="w"> </span><span class="nv">code</span>.
 <span class="nv">Features</span>
 
-    <span class="nv">multiplatform</span> <span class="nv">support</span> <span class="k">for</span> <span class="nv">Linux</span>, <span class="nv">macOS</span>, <span class="nv">Windows</span>, <span class="nv">GCC</span>, <span class="nv">Clang</span>, <span class="nv">Visual</span> <span class="nv">Studio</span> <span class="nv">and</span> <span class="nv">others</span>
-    <span class="nv">supported</span> <span class="nv">languages</span> <span class="k">include</span> <span class="nv">C</span>, <span class="nv">C</span><span class="o">++</span>, <span class="nv">D</span>, <span class="nv">Fortran</span>, <span class="nv">Java</span>, <span class="nv">Rust</span>
-    <span class="nv">build</span> <span class="nv">definitions</span> <span class="nv">in</span> <span class="nv">a</span> <span class="nv">very</span> <span class="nv">readable</span> <span class="nv">and</span> <span class="nv">user</span> <span class="nv">friendly</span> <span class="nv">non</span><span class="o">-</span><span class="nv">Turing</span> <span class="nv">complete</span> <span class="nv">DSL</span>
-    <span class="nv">cross</span> <span class="nv">compilation</span> <span class="k">for</span> <span class="nv">many</span> <span class="nv">operating</span> <span class="nv">systems</span> <span class="nv">as</span> <span class="nv">well</span> <span class="nv">as</span> <span class="nv">bare</span> <span class="nv">metal</span>
-    <span class="nv">optimized</span> <span class="k">for</span> <span class="nv">extremely</span> <span class="nv">fast</span> <span class="nv">full</span> <span class="nv">and</span> <span class="nv">incremental</span> <span class="nv">builds</span> <span class="nv">without</span> <span class="nv">sacrificing</span> <span class="nv">correctness</span>
-    <span class="nv">built</span><span class="o">-</span><span class="nv">in</span> <span class="nv">multiplatform</span> <span class="nv">dependency</span> <span class="nv">provider</span> <span class="nv">that</span> <span class="nv">works</span> <span class="nv">together</span> <span class="nv">with</span> <span class="nv">distro</span> <span class="nv">packages</span>
-    <span class="nv">fun</span><span class="o">!</span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="w">    </span><span class="nv">multiplatform</span><span class="w"> </span><span class="nv">support</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">Linux</span>,<span class="w"> </span><span class="nv">macOS</span>,<span class="w"> </span><span class="nv">Windows</span>,<span class="w"> </span><span class="nv">GCC</span>,<span class="w"> </span><span class="nv">Clang</span>,<span class="w"> </span><span class="nv">Visual</span><span class="w"> </span><span class="nv">Studio</span><span class="w"> </span><span class="nv">and</span><span class="w"> </span><span class="nv">others</span>
+<span class="w">    </span><span class="nv">supported</span><span class="w"> </span><span class="nv">languages</span><span class="w"> </span><span class="k">include</span><span class="w"> </span><span class="nv">C</span>,<span class="w"> </span><span class="nv">C</span><span class="o">++</span>,<span class="w"> </span><span class="nv">D</span>,<span class="w"> </span><span class="nv">Fortran</span>,<span class="w"> </span><span class="nv">Java</span>,<span class="w"> </span><span class="nv">Rust</span>
+<span class="w">    </span><span class="nv">build</span><span class="w"> </span><span class="nv">definitions</span><span class="w"> </span><span class="nv">in</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="nv">very</span><span class="w"> </span><span class="nv">readable</span><span class="w"> </span><span class="nv">and</span><span class="w"> </span><span class="nv">user</span><span class="w"> </span><span class="nv">friendly</span><span class="w"> </span><span class="nv">non</span><span class="o">-</span><span class="nv">Turing</span><span class="w"> </span><span class="nv">complete</span><span class="w"> </span><span class="nv">DSL</span>
+<span class="w">    </span><span class="nv">cross</span><span class="w"> </span><span class="nv">compilation</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">many</span><span class="w"> </span><span class="nv">operating</span><span class="w"> </span><span class="nv">systems</span><span class="w"> </span><span class="nv">as</span><span class="w"> </span><span class="nv">well</span><span class="w"> </span><span class="nv">as</span><span class="w"> </span><span class="nv">bare</span><span class="w"> </span><span class="nv">metal</span>
+<span class="w">    </span><span class="nv">optimized</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">extremely</span><span class="w"> </span><span class="nv">fast</span><span class="w"> </span><span class="nv">full</span><span class="w"> </span><span class="nv">and</span><span class="w"> </span><span class="nv">incremental</span><span class="w"> </span><span class="nv">builds</span><span class="w"> </span><span class="nv">without</span><span class="w"> </span><span class="nv">sacrificing</span><span class="w"> </span><span class="nv">correctness</span>
+<span class="w">    </span><span class="nv">built</span><span class="o">-</span><span class="nv">in</span><span class="w"> </span><span class="nv">multiplatform</span><span class="w"> </span><span class="nv">dependency</span><span class="w"> </span><span class="nv">provider</span><span class="w"> </span><span class="nv">that</span><span class="w"> </span><span class="nv">works</span><span class="w"> </span><span class="nv">together</span><span class="w"> </span><span class="nv">with</span><span class="w"> </span><span class="nv">distro</span><span class="w"> </span><span class="nv">packages</span>
+<span class="w">    </span><span class="nv">fun</span><span class="o">!</span>
+</code></pre></div></td></tr></table></div></p>
 <h2 id="who-is-using-meson">Who is using meson?</h2>
 <p><a href="https://mesonbuild.com/Users.html">https://mesonbuild.com/Users.html</a></p>
 <h2 id="requirements-for-meson">Requirements for meson</h2>
@@ -1825,54 +1738,25 @@
   </small>
 </div>
 
-              
-            </article>
-          </div>
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
         
       </main>
       
         <footer class="md-footer">
-  
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
-      
-        
-        <a href="../java-idrac-issues/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Java Idrac Issues" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Java Idrac Issues
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../namespaces/" class="md-footer__link md-footer__link--next" aria-label="Next: namespaces" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              namespaces
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -1894,10 +1778,11 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.467223ff.min.js"></script>
+      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
       
     
   </body>

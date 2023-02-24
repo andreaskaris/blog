@@ -12,8 +12,14 @@
       
         <link rel="canonical" href="https://andreaskaris.github.io/blog/openshift/useful-ocp-commands/">
       
+      
+        <link rel="prev" href="../openshift_troubleshooting_etcd_state/">
+      
+      
+        <link rel="next" href="../useful-ocp-sdn-commands/">
+      
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.14">
     
     
       
@@ -21,16 +27,13 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2d9f7617.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#000000">
-        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
       
+      
+
     
     
     
@@ -43,10 +46,11 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
+    
     
     
   </head>
@@ -57,7 +61,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="pink">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink">
   
     
     
@@ -65,11 +69,6 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
-      
-        
-        <a href="#useful-commands-for-openshift" class="md-skip">
-          Skip to content
-        </a>
       
     </div>
     <div data-md-component="announce">
@@ -84,11 +83,11 @@
     <a href="../.." title="Andreas Karis Blog" class="md-header__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -121,7 +120,7 @@
           
             
 <nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-tabs__inner md-grid">
+  <div class="md-grid">
     <ul class="md-tabs__list">
       
         
@@ -258,7 +257,7 @@
     <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     Andreas Karis Blog
@@ -292,8 +291,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
       
       
         
@@ -316,7 +316,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Ceph" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
           Ceph
@@ -356,8 +356,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
       
       
         
@@ -400,7 +401,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Linux" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Linux
@@ -580,8 +581,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
       
       
         
@@ -636,7 +638,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Networking" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           Networking
@@ -902,8 +904,9 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
       
       
         
@@ -990,7 +993,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenShift and Kubernetes" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_5">
           <span class="md-nav__icon md-icon"></span>
           OpenShift and Kubernetes
@@ -1428,135 +1431,13 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Useful commands for OpenShift
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         Useful commands for OpenShift
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#querying-the-ocp-4x-upgrades-info-api" class="md-nav__link">
-    Querying the OCP 4.x upgrades info API
-  </a>
-  
-    <nav class="md-nav" aria-label="Querying the OCP 4.x upgrades info API">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#function-definitions" class="md-nav__link">
-    Function definitions
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    Usage
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#upgrading-to-a-specific-out-of-graph-image" class="md-nav__link">
-    Upgrading to a specific out of graph image
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#gathering-all-resources-from-a-namespace-with-oc-adm-inspect" class="md-nav__link">
-    Gathering all resources from a namespace with oc adm inspect
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#listing-specific-pod-columns" class="md-nav__link">
-    Listing specific pod columns
-  </a>
-  
-    <nav class="md-nav" aria-label="Listing specific pod columns">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#qos-class" class="md-nav__link">
-    QOS class
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#scc" class="md-nav__link">
-    SCC
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ovnkubernetes" class="md-nav__link">
-    OVNKubernetes
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pod-security-admissin" class="md-nav__link">
-    Pod Security Admissin
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ocp-release-images" class="md-nav__link">
-    OCP release images
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ovn-kubernetes-gathering-ts-data-when-mg-fails" class="md-nav__link">
-    OVN Kubernetes - gathering TS data when mg fails
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -1608,8 +1489,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
       
       
         
@@ -1634,7 +1516,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenStack" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_6">
           <span class="md-nav__icon md-icon"></span>
           OpenStack
@@ -1688,8 +1570,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
       
       
         
@@ -1716,7 +1599,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Coding" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_7">
           <span class="md-nav__icon md-icon"></span>
           Coding
@@ -1790,112 +1673,6 @@
   
   
   
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#querying-the-ocp-4x-upgrades-info-api" class="md-nav__link">
-    Querying the OCP 4.x upgrades info API
-  </a>
-  
-    <nav class="md-nav" aria-label="Querying the OCP 4.x upgrades info API">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#function-definitions" class="md-nav__link">
-    Function definitions
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    Usage
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#upgrading-to-a-specific-out-of-graph-image" class="md-nav__link">
-    Upgrading to a specific out of graph image
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#gathering-all-resources-from-a-namespace-with-oc-adm-inspect" class="md-nav__link">
-    Gathering all resources from a namespace with oc adm inspect
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#listing-specific-pod-columns" class="md-nav__link">
-    Listing specific pod columns
-  </a>
-  
-    <nav class="md-nav" aria-label="Listing specific pod columns">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#qos-class" class="md-nav__link">
-    QOS class
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#scc" class="md-nav__link">
-    SCC
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ovnkubernetes" class="md-nav__link">
-    OVNKubernetes
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pod-security-admissin" class="md-nav__link">
-    Pod Security Admissin
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ocp-release-images" class="md-nav__link">
-    OCP release images
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ovn-kubernetes-gathering-ts-data-when-mg-fails" class="md-nav__link">
-    OVN Kubernetes - gathering TS data when mg fails
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
   
 </nav>
                   </div>
@@ -1903,17 +1680,18 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
 <h1 id="useful-commands-for-openshift">Useful commands for OpenShift</h1>
 <h2 id="querying-the-ocp-4x-upgrades-info-api">Querying the OCP 4.x upgrades info API</h2>
 <h3 id="function-definitions">Function definitions</h3>
 <p>The following bash functions are useful when needing information about possible upgrade paths and OCP versions:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1930,29 +1708,28 @@
 <span class="normal">15</span>
 <span class="normal">16</span>
 <span class="normal">17</span>
-<span class="normal">18</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">function</span> <span class="nv">ocp</span><span class="o">-</span><span class="nv">upgrade</span><span class="o">-</span><span class="nv">paths</span><span class="ss">()</span> {
-  <span class="nv">version</span><span class="o">=</span><span class="mh">$1</span>
-  <span class="k">for</span> <span class="nv">channel</span> <span class="nv">in</span> <span class="nv">stable</span> <span class="nv">fast</span> <span class="nv">candidate</span> <span class="c1">; do</span>
-      <span class="nv">echo</span> <span class="s2">&quot;</span><span class="s">=== $channel-$version ===</span><span class="s2">&quot;</span>
-      <span class="nv">curl</span> <span class="o">-</span><span class="nv">sH</span> <span class="s1">&#39;</span><span class="s">Accept: application/json</span><span class="s1">&#39;</span> <span class="s2">&quot;</span><span class="s">https://api.openshift.com/api/upgrades_info/v1/graph?channel=$channel-$version</span><span class="s2">&quot;</span> <span class="o">|</span> <span class="nv">jq</span> <span class="o">-</span><span class="nv">r</span> <span class="s1">&#39;</span><span class="s">[.nodes[].version] | sort | unique[]</span><span class="s1">&#39;</span>
-  <span class="nv">done</span>
+<span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nv">function</span><span class="w"> </span><span class="nv">ocp</span><span class="o">-</span><span class="nv">upgrade</span><span class="o">-</span><span class="nv">paths</span><span class="ss">()</span><span class="w"> </span>{
+<span class="w">  </span><span class="nv">version</span><span class="o">=</span><span class="mh">$1</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="nv">channel</span><span class="w"> </span><span class="nv">in</span><span class="w"> </span><span class="nv">stable</span><span class="w"> </span><span class="nv">fast</span><span class="w"> </span><span class="nv">candidate</span><span class="w"> </span><span class="c1">; do</span>
+<span class="w">      </span><span class="nv">echo</span><span class="w"> </span><span class="s2">&quot;=== $channel-$version ===&quot;</span>
+<span class="w">      </span><span class="nv">curl</span><span class="w"> </span><span class="o">-</span><span class="nv">sH</span><span class="w"> </span><span class="s1">&#39;Accept: application/json&#39;</span><span class="w"> </span><span class="s2">&quot;https://api.openshift.com/api/upgrades_info/v1/graph?channel=$channel-$version&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nv">jq</span><span class="w"> </span><span class="o">-</span><span class="nv">r</span><span class="w"> </span><span class="s1">&#39;[.nodes[].version] | sort | unique[]&#39;</span>
+<span class="w">  </span><span class="nv">done</span>
 }
 
-<span class="nv">function</span> <span class="nv">ocp</span><span class="o">-</span><span class="nv">version</span><span class="o">-</span><span class="nv">info</span><span class="ss">()</span> {
-  <span class="nv">channel</span><span class="o">=</span><span class="mh">$1</span>
-  <span class="nv">version</span><span class="o">=</span><span class="mh">$2</span>
-  <span class="nv">major</span><span class="o">=</span>$<span class="ss">(</span><span class="nv">echo</span> $<span class="nv">version</span> <span class="o">|</span> <span class="nv">awk</span> <span class="o">-</span><span class="nv">F</span> <span class="s1">&#39;</span><span class="s">.</span><span class="s1">&#39;</span> <span class="s1">&#39;</span><span class="s">{print $1 &quot;.&quot; $2}</span><span class="s1">&#39;</span><span class="ss">)</span>
-  <span class="nv">minor</span><span class="o">=</span>$<span class="ss">(</span><span class="nv">echo</span> $<span class="nv">version</span> <span class="o">|</span> <span class="nv">awk</span> <span class="o">-</span><span class="nv">F</span> <span class="s1">&#39;</span><span class="s">.</span><span class="s1">&#39;</span> <span class="s1">&#39;</span><span class="s">{print $NF}</span><span class="s1">&#39;</span><span class="ss">)</span>
-  <span class="nv">echo</span> <span class="s2">&quot;</span><span class="s">Checking for $channel and major $major and minor $minor</span><span class="s2">&quot;</span>
-  <span class="nv">url</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">https://api.openshift.com/api/upgrades_info/v1/graph?channel=$channel-$major&amp;x86_64&#39;</span><span class="s2">&quot;</span>
-  <span class="nv">echo</span> $<span class="nv">url</span>
-  <span class="nv">curl</span> <span class="o">-</span><span class="nv">sH</span> <span class="s2">&quot;</span><span class="s">Accept:application/json</span><span class="s2">&quot;</span> $<span class="nv">url</span> <span class="o">|</span> <span class="nv">jq</span> <span class="s2">&quot;</span><span class="s">.nodes[] | select(.version == \</span><span class="s2">&quot;</span>$<span class="nv">version</span>\<span class="s2">&quot;</span><span class="s">)</span><span class="s2">&quot;</span>
+<span class="nv">function</span><span class="w"> </span><span class="nv">ocp</span><span class="o">-</span><span class="nv">version</span><span class="o">-</span><span class="nv">info</span><span class="ss">()</span><span class="w"> </span>{
+<span class="w">  </span><span class="nv">channel</span><span class="o">=</span><span class="mh">$1</span>
+<span class="w">  </span><span class="nv">version</span><span class="o">=</span><span class="mh">$2</span>
+<span class="w">  </span><span class="nv">major</span><span class="o">=</span>$<span class="ss">(</span><span class="nv">echo</span><span class="w"> </span>$<span class="nv">version</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nv">awk</span><span class="w"> </span><span class="o">-</span><span class="nv">F</span><span class="w"> </span><span class="s1">&#39;.&#39;</span><span class="w"> </span><span class="s1">&#39;{print $1 &quot;.&quot; $2}&#39;</span><span class="ss">)</span>
+<span class="w">  </span><span class="nv">minor</span><span class="o">=</span>$<span class="ss">(</span><span class="nv">echo</span><span class="w"> </span>$<span class="nv">version</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nv">awk</span><span class="w"> </span><span class="o">-</span><span class="nv">F</span><span class="w"> </span><span class="s1">&#39;.&#39;</span><span class="w"> </span><span class="s1">&#39;{print $NF}&#39;</span><span class="ss">)</span>
+<span class="w">  </span><span class="nv">echo</span><span class="w"> </span><span class="s2">&quot;Checking for $channel and major $major and minor $minor&quot;</span>
+<span class="w">  </span><span class="nv">url</span><span class="o">=</span><span class="s2">&quot;https://api.openshift.com/api/upgrades_info/v1/graph?channel=$channel-$major&amp;x86_64&#39;&quot;</span>
+<span class="w">  </span><span class="nv">echo</span><span class="w"> </span>$<span class="nv">url</span>
+<span class="w">  </span><span class="nv">curl</span><span class="w"> </span><span class="o">-</span><span class="nv">sH</span><span class="w"> </span><span class="s2">&quot;Accept:application/json&quot;</span><span class="w"> </span>$<span class="nv">url</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nv">jq</span><span class="w"> </span><span class="s2">&quot;.nodes[] | select(.version == \&quot;</span>$<span class="nv">version</span>\<span class="s2">&quot;)&quot;</span>
 }
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 <h3 id="usage">Usage</h3>
 <p>Upgrade paths:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">  1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">  1</span>
 <span class="normal">  2</span>
 <span class="normal">  3</span>
 <span class="normal">  4</span>
@@ -2076,8 +1853,8 @@
 <span class="normal">122</span>
 <span class="normal">123</span>
 <span class="normal">124</span>
-<span class="normal">125</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ ocp-upgrade-paths <span class="m">4</span>.4
-<span class="o">===</span> stable-4.4 <span class="o">===</span>
+<span class="normal">125</span></pre></div></td><td class="code"><div><pre><span></span><code>$<span class="w"> </span>ocp-upgrade-paths<span class="w"> </span><span class="m">4</span>.4
+<span class="o">===</span><span class="w"> </span>stable-4.4<span class="w"> </span><span class="o">===</span>
 <span class="m">4</span>.3.12
 <span class="m">4</span>.3.13
 <span class="m">4</span>.3.18
@@ -2110,7 +1887,7 @@
 <span class="m">4</span>.4.6
 <span class="m">4</span>.4.8
 <span class="m">4</span>.4.9
-<span class="o">===</span> fast-4.4 <span class="o">===</span>
+<span class="o">===</span><span class="w"> </span>fast-4.4<span class="w"> </span><span class="o">===</span>
 <span class="m">4</span>.3.12
 <span class="m">4</span>.3.13
 <span class="m">4</span>.3.18
@@ -2143,7 +1920,7 @@
 <span class="m">4</span>.4.6
 <span class="m">4</span>.4.8
 <span class="m">4</span>.4.9
-<span class="o">===</span> candidate-4.4 <span class="o">===</span>
+<span class="o">===</span><span class="w"> </span>candidate-4.4<span class="w"> </span><span class="o">===</span>
 <span class="m">4</span>.3.10
 <span class="m">4</span>.3.11
 <span class="m">4</span>.3.12
@@ -2201,10 +1978,9 @@
 <span class="m">4</span>.4.7
 <span class="m">4</span>.4.8
 <span class="m">4</span>.4.9
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p>Version info:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2217,24 +1993,23 @@
 <span class="normal">11</span>
 <span class="normal">12</span>
 <span class="normal">13</span>
-<span class="normal">14</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">$</span><span class="w"> </span><span class="n">ocp</span><span class="o">-</span><span class="n">version</span><span class="o">-</span><span class="n">info</span><span class="w"> </span><span class="n">stable</span><span class="w"> </span><span class="mf">4.5</span><span class="o">.</span><span class="mi">7</span><span class="w"></span>
-<span class="n">Checking</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">stable</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">major</span><span class="w"> </span><span class="mf">4.5</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">minor</span><span class="w"> </span><span class="mi">7</span><span class="w"></span>
+<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">$</span><span class="w"> </span><span class="n">ocp</span><span class="o">-</span><span class="n">version</span><span class="o">-</span><span class="n">info</span><span class="w"> </span><span class="n">stable</span><span class="w"> </span><span class="mf">4.5</span><span class="o">.</span><span class="mi">7</span>
+<span class="n">Checking</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">stable</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">major</span><span class="w"> </span><span class="mf">4.5</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">minor</span><span class="w"> </span><span class="mi">7</span>
 <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">api</span><span class="o">.</span><span class="n">openshift</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">upgrades_info</span><span class="o">/</span><span class="n">v1</span><span class="o">/</span><span class="n">graph</span><span class="err">?</span><span class="n">channel</span><span class="o">=</span><span class="n">stable</span><span class="o">-</span><span class="mf">4.5</span><span class="o">&amp;</span><span class="n">x86_64</span><span class="s1">&#39;</span>
-<span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="s2">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4.5.7&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="s2">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;quay.io/openshift-release-dev/ocp-release@sha256:776b7e8158edf64c82f18f5ec4d6ef378ac3de81ba0dc2700b885ceb62e71279&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="s2">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="s2">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="s2">&quot;io.openshift.upgrades.graph.previous.remove_regex&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4.4.12&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="s2">&quot;io.openshift.upgrades.graph.release.channels&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;candidate-4.5,fast-4.5,stable-4.5,candidate-4.6&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="s2">&quot;io.openshift.upgrades.graph.release.manifestref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sha256:776b7e8158edf64c82f18f5ec4d6ef378ac3de81ba0dc2700b885ceb62e71279&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="s2">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://access.redhat.com/errata/RHBA-2020:3436&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="p">{</span>
+<span class="w">  </span><span class="s2">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4.5.7&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;quay.io/openshift-release-dev/ocp-release@sha256:776b7e8158edf64c82f18f5ec4d6ef378ac3de81ba0dc2700b885ceb62e71279&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;io.openshift.upgrades.graph.previous.remove_regex&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4.4.12&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;io.openshift.upgrades.graph.release.channels&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;candidate-4.5,fast-4.5,stable-4.5,candidate-4.6&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;io.openshift.upgrades.graph.release.manifestref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sha256:776b7e8158edf64c82f18f5ec4d6ef378ac3de81ba0dc2700b885ceb62e71279&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://access.redhat.com/errata/RHBA-2020:3436&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div></p>
 <h3 id="upgrading-to-a-specific-out-of-graph-image">Upgrading to a specific out of graph image</h3>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2275,51 +2050,50 @@
 <span class="normal">39</span>
 <span class="normal">40</span>
 <span class="normal">41</span>
-<span class="normal">42</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">akaris@linux ~</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">ocp</span><span class="o">-</span><span class="n">upgrade</span><span class="o">-</span><span class="n">paths</span><span class="w"> </span><span class="mf">4.5</span><span class="w"></span>
-<span class="o">===</span><span class="w"> </span><span class="n">stable</span><span class="o">-</span><span class="mf">4.5</span><span class="w"> </span><span class="o">===</span><span class="w"></span>
-<span class="mf">4.5.1</span><span class="w"></span>
-<span class="mf">4.5.2</span><span class="w"></span>
-<span class="mf">4.5.3</span><span class="w"></span>
-<span class="mf">4.5.4</span><span class="w"></span>
-<span class="o">===</span><span class="w"> </span><span class="n">fast</span><span class="o">-</span><span class="mf">4.5</span><span class="w"> </span><span class="o">===</span><span class="w"></span>
-<span class="mf">4.4.10</span><span class="w"></span>
-<span class="mf">4.4.11</span><span class="w"></span>
-<span class="mf">4.4.12</span><span class="w"></span>
-<span class="mf">4.4.13</span><span class="w"></span>
-<span class="mf">4.4.14</span><span class="w"></span>
-<span class="mf">4.4.15</span><span class="w"></span>
-<span class="mf">4.4.16</span><span class="w"></span>
-<span class="mf">4.5.1</span><span class="w"></span>
-<span class="mf">4.5.2</span><span class="w"></span>
-<span class="mf">4.5.3</span><span class="w"></span>
-<span class="mf">4.5.4</span><span class="w"></span>
-<span class="o">===</span><span class="w"> </span><span class="n">candidate</span><span class="o">-</span><span class="mf">4.5</span><span class="w"> </span><span class="o">===</span><span class="w"></span>
-<span class="mf">4.4.10</span><span class="w"></span>
-<span class="mf">4.4.11</span><span class="w"></span>
-<span class="mf">4.4.12</span><span class="w"></span>
-<span class="mf">4.4.13</span><span class="w"></span>
-<span class="mf">4.4.14</span><span class="w"></span>
-<span class="mf">4.4.15</span><span class="w"></span>
-<span class="mf">4.4.16</span><span class="w"></span>
-<span class="mf">4.4.6</span><span class="w"></span>
-<span class="mf">4.4.8</span><span class="w"></span>
-<span class="mf">4.4.9</span><span class="w"></span>
-<span class="mf">4.5.0</span><span class="w"></span>
-<span class="mf">4.5.0</span><span class="o">-</span><span class="n">rc</span><span class="mf">.1</span><span class="w"></span>
-<span class="mf">4.5.0</span><span class="o">-</span><span class="n">rc</span><span class="mf">.2</span><span class="w"></span>
-<span class="mf">4.5.0</span><span class="o">-</span><span class="n">rc</span><span class="mf">.4</span><span class="w"></span>
-<span class="mf">4.5.0</span><span class="o">-</span><span class="n">rc</span><span class="mf">.5</span><span class="w"></span>
-<span class="mf">4.5.0</span><span class="o">-</span><span class="n">rc</span><span class="mf">.6</span><span class="w"></span>
-<span class="mf">4.5.0</span><span class="o">-</span><span class="n">rc</span><span class="mf">.7</span><span class="w"></span>
-<span class="mf">4.5.1</span><span class="w"></span>
-<span class="mf">4.5.1</span><span class="o">-</span><span class="n">rc</span><span class="mf">.0</span><span class="w"></span>
-<span class="mf">4.5.2</span><span class="w"></span>
-<span class="mf">4.5.3</span><span class="w"></span>
-<span class="mf">4.5.4</span><span class="w"></span>
-<span class="mf">4.5.5</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal">42</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">akaris@linux ~</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">ocp</span><span class="o">-</span><span class="n">upgrade</span><span class="o">-</span><span class="n">paths</span><span class="w"> </span><span class="mf">4.5</span>
+<span class="o">===</span><span class="w"> </span><span class="n">stable</span><span class="o">-</span><span class="mf">4.5</span><span class="w"> </span><span class="o">===</span>
+<span class="mf">4.5.1</span>
+<span class="mf">4.5.2</span>
+<span class="mf">4.5.3</span>
+<span class="mf">4.5.4</span>
+<span class="o">===</span><span class="w"> </span><span class="n">fast</span><span class="o">-</span><span class="mf">4.5</span><span class="w"> </span><span class="o">===</span>
+<span class="mf">4.4.10</span>
+<span class="mf">4.4.11</span>
+<span class="mf">4.4.12</span>
+<span class="mf">4.4.13</span>
+<span class="mf">4.4.14</span>
+<span class="mf">4.4.15</span>
+<span class="mf">4.4.16</span>
+<span class="mf">4.5.1</span>
+<span class="mf">4.5.2</span>
+<span class="mf">4.5.3</span>
+<span class="mf">4.5.4</span>
+<span class="o">===</span><span class="w"> </span><span class="n">candidate</span><span class="o">-</span><span class="mf">4.5</span><span class="w"> </span><span class="o">===</span>
+<span class="mf">4.4.10</span>
+<span class="mf">4.4.11</span>
+<span class="mf">4.4.12</span>
+<span class="mf">4.4.13</span>
+<span class="mf">4.4.14</span>
+<span class="mf">4.4.15</span>
+<span class="mf">4.4.16</span>
+<span class="mf">4.4.6</span>
+<span class="mf">4.4.8</span>
+<span class="mf">4.4.9</span>
+<span class="mf">4.5.0</span>
+<span class="mf">4.5.0</span><span class="o">-</span><span class="n">rc</span><span class="mf">.1</span>
+<span class="mf">4.5.0</span><span class="o">-</span><span class="n">rc</span><span class="mf">.2</span>
+<span class="mf">4.5.0</span><span class="o">-</span><span class="n">rc</span><span class="mf">.4</span>
+<span class="mf">4.5.0</span><span class="o">-</span><span class="n">rc</span><span class="mf">.5</span>
+<span class="mf">4.5.0</span><span class="o">-</span><span class="n">rc</span><span class="mf">.6</span>
+<span class="mf">4.5.0</span><span class="o">-</span><span class="n">rc</span><span class="mf">.7</span>
+<span class="mf">4.5.1</span>
+<span class="mf">4.5.1</span><span class="o">-</span><span class="n">rc</span><span class="mf">.0</span>
+<span class="mf">4.5.2</span>
+<span class="mf">4.5.3</span>
+<span class="mf">4.5.4</span>
+<span class="mf">4.5.5</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2348,137 +2122,124 @@
 <span class="normal">27</span>
 <span class="normal">28</span>
 <span class="normal">29</span>
-<span class="normal">30</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">linux</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="o">$</span><span class="w"> </span><span class="n">ocp</span><span class="o">-</span><span class="n">version</span><span class="o">-</span><span class="n">info</span><span class="w"> </span><span class="n">stable</span><span class="w"> </span><span class="mf">4.5</span><span class="o">.</span><span class="mi">7</span><span class="w"></span>
-<span class="n">Checking</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">stable</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">major</span><span class="w"> </span><span class="mf">4.5</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">minor</span><span class="w"> </span><span class="mi">7</span><span class="w"></span>
+<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">linux</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="o">$</span><span class="w"> </span><span class="n">ocp</span><span class="o">-</span><span class="n">version</span><span class="o">-</span><span class="n">info</span><span class="w"> </span><span class="n">stable</span><span class="w"> </span><span class="mf">4.5</span><span class="o">.</span><span class="mi">7</span>
+<span class="n">Checking</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">stable</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">major</span><span class="w"> </span><span class="mf">4.5</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">minor</span><span class="w"> </span><span class="mi">7</span>
 <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">api</span><span class="o">.</span><span class="n">openshift</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">upgrades_info</span><span class="o">/</span><span class="n">v1</span><span class="o">/</span><span class="n">graph</span><span class="err">?</span><span class="n">channel</span><span class="o">=</span><span class="n">stable</span><span class="o">-</span><span class="mf">4.5</span><span class="o">&amp;</span><span class="n">x86_64</span><span class="s1">&#39;</span>
-<span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="s2">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4.5.7&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="s2">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;quay.io/openshift-release-dev/ocp-release@sha256:776b7e8158edf64c82f18f5ec4d6ef378ac3de81ba0dc2700b885ceb62e71279&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="s2">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="s2">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="s2">&quot;io.openshift.upgrades.graph.previous.remove_regex&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4.4.12&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="s2">&quot;io.openshift.upgrades.graph.release.channels&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;candidate-4.5,fast-4.5,stable-4.5,candidate-4.6&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="s2">&quot;io.openshift.upgrades.graph.release.manifestref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sha256:776b7e8158edf64c82f18f5ec4d6ef378ac3de81ba0dc2700b885ceb62e71279&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="s2">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://access.redhat.com/errata/RHBA-2020:3436&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-<span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">linux</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="o">$</span><span class="w"> </span><span class="n">ocp</span><span class="o">-</span><span class="n">version</span><span class="o">-</span><span class="n">info</span><span class="w"> </span><span class="n">stable</span><span class="w"> </span><span class="mf">4.5</span><span class="o">.</span><span class="mi">8</span><span class="w"></span>
-<span class="n">Checking</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">stable</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">major</span><span class="w"> </span><span class="mf">4.5</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">minor</span><span class="w"> </span><span class="mi">8</span><span class="w"></span>
+<span class="p">{</span>
+<span class="w">  </span><span class="s2">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4.5.7&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;quay.io/openshift-release-dev/ocp-release@sha256:776b7e8158edf64c82f18f5ec4d6ef378ac3de81ba0dc2700b885ceb62e71279&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;io.openshift.upgrades.graph.previous.remove_regex&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4.4.12&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;io.openshift.upgrades.graph.release.channels&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;candidate-4.5,fast-4.5,stable-4.5,candidate-4.6&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;io.openshift.upgrades.graph.release.manifestref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sha256:776b7e8158edf64c82f18f5ec4d6ef378ac3de81ba0dc2700b885ceb62e71279&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://access.redhat.com/errata/RHBA-2020:3436&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">linux</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="o">$</span><span class="w"> </span><span class="n">ocp</span><span class="o">-</span><span class="n">version</span><span class="o">-</span><span class="n">info</span><span class="w"> </span><span class="n">stable</span><span class="w"> </span><span class="mf">4.5</span><span class="o">.</span><span class="mi">8</span>
+<span class="n">Checking</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">stable</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">major</span><span class="w"> </span><span class="mf">4.5</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">minor</span><span class="w"> </span><span class="mi">8</span>
 <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">api</span><span class="o">.</span><span class="n">openshift</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">upgrades_info</span><span class="o">/</span><span class="n">v1</span><span class="o">/</span><span class="n">graph</span><span class="err">?</span><span class="n">channel</span><span class="o">=</span><span class="n">stable</span><span class="o">-</span><span class="mf">4.5</span><span class="o">&amp;</span><span class="n">x86_64</span><span class="s1">&#39;</span>
-<span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">linux</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="o">$</span><span class="w"> </span><span class="n">ocp</span><span class="o">-</span><span class="n">version</span><span class="o">-</span><span class="n">info</span><span class="w"> </span><span class="n">candidate</span><span class="w"> </span><span class="mf">4.5</span><span class="o">.</span><span class="mi">8</span><span class="w"></span>
-<span class="n">Checking</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">candidate</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">major</span><span class="w"> </span><span class="mf">4.5</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">minor</span><span class="w"> </span><span class="mi">8</span><span class="w"></span>
+<span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">linux</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="o">$</span><span class="w"> </span><span class="n">ocp</span><span class="o">-</span><span class="n">version</span><span class="o">-</span><span class="n">info</span><span class="w"> </span><span class="n">candidate</span><span class="w"> </span><span class="mf">4.5</span><span class="o">.</span><span class="mi">8</span>
+<span class="n">Checking</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">candidate</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">major</span><span class="w"> </span><span class="mf">4.5</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">minor</span><span class="w"> </span><span class="mi">8</span>
 <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">api</span><span class="o">.</span><span class="n">openshift</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">upgrades_info</span><span class="o">/</span><span class="n">v1</span><span class="o">/</span><span class="n">graph</span><span class="err">?</span><span class="n">channel</span><span class="o">=</span><span class="n">candidate</span><span class="o">-</span><span class="mf">4.5</span><span class="o">&amp;</span><span class="n">x86_64</span><span class="s1">&#39;</span>
-<span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="s2">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4.5.8&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="s2">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;quay.io/openshift-release-dev/ocp-release@sha256:ae61753ad8c8a26ed67fa233eea578194600d6c72622edab2516879cfbf019fd&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="s2">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="s2">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="s2">&quot;io.openshift.upgrades.graph.release.channels&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;candidate-4.5,candidate-4.6&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="s2">&quot;io.openshift.upgrades.graph.release.manifestref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sha256:ae61753ad8c8a26ed67fa233eea578194600d6c72622edab2516879cfbf019fd&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="s2">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://access.redhat.com/errata/RHBA-2020:3510&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table>
-<p>How to uprgade to an image that's not on the graph (not supported). Look at <code class="highlight"><span class="n">payload</span><span class="w"></span></code> from ocp-version-info and use that image:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">oc</span><span class="w"> </span><span class="n">adm</span><span class="w"> </span><span class="n">upgrade</span><span class="w"> </span><span class="c1">--allow-explicit-upgrade --to-image quay.io/openshift-release-dev/ocp-release@sha256:776b7e8158edf64c82f18f5ec4d6ef378ac3de81ba0dc2700b885ceb62e71279</span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="p">{</span>
+<span class="w">  </span><span class="s2">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4.5.8&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;quay.io/openshift-release-dev/ocp-release@sha256:ae61753ad8c8a26ed67fa233eea578194600d6c72622edab2516879cfbf019fd&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;io.openshift.upgrades.graph.release.channels&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;candidate-4.5,candidate-4.6&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;io.openshift.upgrades.graph.release.manifestref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sha256:ae61753ad8c8a26ed67fa233eea578194600d6c72622edab2516879cfbf019fd&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://access.redhat.com/errata/RHBA-2020:3510&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>How to uprgade to an image that's not on the graph (not supported). Look at <code class="highlight"><span class="n">payload</span></code> from ocp-version-info and use that image:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">oc</span><span class="w"> </span><span class="n">adm</span><span class="w"> </span><span class="n">upgrade</span><span class="w"> </span><span class="c1">--allow-explicit-upgrade --to-image quay.io/openshift-release-dev/ocp-release@sha256:776b7e8158edf64c82f18f5ec4d6ef378ac3de81ba0dc2700b885ceb62e71279</span>
+</code></pre></div></td></tr></table></div></p>
 <h2 id="gathering-all-resources-from-a-namespace-with-oc-adm-inspect">Gathering all resources from a namespace with oc adm inspect</h2>
 <p>Use the following command to gather all resources from a namespace. </p>
 <blockquote>
 <p><strong>Warning:</strong> This will include secrets!!
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>namespace=pipelines-tutorial
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code>namespace=pipelines-tutorial
 oc adm inspect -n $namespace $(oc api-resources --verbs=get,list --namespaced=true | tail -n+2 | awk &#39;{print $1}&#39; | tr &#39;\n&#39; &#39;,&#39; | sed &#39;s/,$//&#39;)
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 </blockquote>
 <p>Exclude critical resources with:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>namespace=pipelines-tutorial
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code>namespace=pipelines-tutorial
 exclude_list=&quot;secrets&quot;
 oc adm inspect -n $namespace $(oc api-resources --verbs=get,list --namespaced=true | tail -n+2 | egrep -v &quot;$exclude_list&quot; | awk &#39;{print $1}&#39; | tr &#39;\n&#39; &#39;,&#39; | sed &#39;s/,$//&#39;)
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <h2 id="listing-specific-pod-columns">Listing specific pod columns</h2>
 <h3 id="qos-class">QOS class</h3>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>oc get pods --output=custom-columns=&quot;NAME:.metadata.name,STATUS:.status.qosClass&quot;
-</code></pre></div>
-</td></tr></table>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>oc get pods --output=custom-columns=&quot;NAME:.metadata.name,STATUS:.status.qosClass&quot;
+</code></pre></div></td></tr></table></div>
 <p>Example:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code># oc get pods --output=custom-columns=&quot;NAME:.metadata.name,STATUS:.status.qosClass&quot;
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code># oc get pods --output=custom-columns=&quot;NAME:.metadata.name,STATUS:.status.qosClass&quot;
 NAME                                    STATUS
 poda                                    Burstable
 podb                                    Guaranteed
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <h3 id="scc">SCC</h3>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>oc get pods --output=custom-columns=&#39;NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc&#39;
-</code></pre></div>
-</td></tr></table>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>oc get pods --output=custom-columns=&#39;NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc&#39;
+</code></pre></div></td></tr></table></div>
 <p>Example:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code># oc get pods --output=custom-columns=&#39;NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc&#39;
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code># oc get pods --output=custom-columns=&#39;NAME:.metadata.name,SCC:.metadata.annotations.openshift\.io/scc&#39;
 NAME                                    SCC
 poda                                    privileged
 podb                                    privileged
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <h3 id="ovnkubernetes">OVNKubernetes</h3>
 <p>Find the active OVN northbound database node:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
-<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="n">pod</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="o">$</span><span class="p">(</span><span class="n">oc</span><span class="w"> </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="n">openshift</span><span class="o">-</span><span class="n">ovn</span><span class="o">-</span><span class="n">kubernetes</span><span class="w"> </span><span class="n">get</span><span class="w"> </span><span class="n">pod</span><span class="w"> </span><span class="o">-</span><span class="n">l</span><span class="w"> </span><span class="n">app</span><span class="o">=</span><span class="n">ovnkube</span><span class="o">-</span><span class="k">master</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">awk</span><span class="w"> </span><span class="o">-</span><span class="n">F</span><span class="w"> </span><span class="s1">&#39;/&#39;</span><span class="w"> </span><span class="s1">&#39;{print $NF}&#39;</span><span class="p">);</span><span class="w"> </span><span class="n">do</span><span class="w"></span>
-<span class="w">  </span><span class="n">status</span><span class="o">=$</span><span class="p">(</span><span class="n">oc</span><span class="w"> </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="n">openshift</span><span class="o">-</span><span class="n">ovn</span><span class="o">-</span><span class="n">kubernetes</span><span class="w"> </span><span class="n">logs</span><span class="w"> </span><span class="o">$</span><span class="n">pod</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="n">northd</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">egrep</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="s1">&#39;active|standby&#39;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">tail</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">&quot;$status&quot;</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;active&quot;</span><span class="w"> </span><span class="p">];</span><span class="w"> </span><span class="n">then</span><span class="w"></span>
-<span class="w">        </span><span class="k">export</span><span class="w"> </span><span class="n">POD</span><span class="o">=</span><span class="s2">&quot;$pod&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="n">fi</span><span class="w"></span>
-<span class="n">done</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="n">pod</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="o">$</span><span class="p">(</span><span class="n">oc</span><span class="w"> </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="n">openshift</span><span class="o">-</span><span class="n">ovn</span><span class="o">-</span><span class="n">kubernetes</span><span class="w"> </span><span class="n">get</span><span class="w"> </span><span class="n">pod</span><span class="w"> </span><span class="o">-</span><span class="n">l</span><span class="w"> </span><span class="n">app</span><span class="o">=</span><span class="n">ovnkube</span><span class="o">-</span><span class="k">master</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">awk</span><span class="w"> </span><span class="o">-</span><span class="n">F</span><span class="w"> </span><span class="s1">&#39;/&#39;</span><span class="w"> </span><span class="s1">&#39;{print $NF}&#39;</span><span class="p">);</span><span class="w"> </span><span class="n">do</span>
+<span class="w">  </span><span class="n">status</span><span class="o">=$</span><span class="p">(</span><span class="n">oc</span><span class="w"> </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="n">openshift</span><span class="o">-</span><span class="n">ovn</span><span class="o">-</span><span class="n">kubernetes</span><span class="w"> </span><span class="n">logs</span><span class="w"> </span><span class="o">$</span><span class="n">pod</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="n">northd</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">egrep</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="s1">&#39;active|standby&#39;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">tail</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">&quot;$status&quot;</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;active&quot;</span><span class="w"> </span><span class="p">];</span><span class="w"> </span><span class="n">then</span>
+<span class="w">        </span><span class="k">export</span><span class="w"> </span><span class="n">POD</span><span class="o">=</span><span class="s2">&quot;$pod&quot;</span>
+<span class="w">  </span><span class="n">fi</span>
+<span class="n">done</span>
+</code></pre></div></td></tr></table></div></p>
 <p>Then, you can use this to query the database, e.g.:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">oc</span> <span class="o">-</span><span class="nv">n</span> <span class="nv">openshift</span><span class="o">-</span><span class="nv">ovn</span><span class="o">-</span><span class="nv">kubernetes</span> <span class="k">exec</span> <span class="o">-</span><span class="nv">it</span> $<span class="nv">POD</span> <span class="o">--</span> <span class="nv">ovn</span><span class="o">-</span><span class="nv">nbctl</span> <span class="k">show</span>
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nv">oc</span><span class="w"> </span><span class="o">-</span><span class="nv">n</span><span class="w"> </span><span class="nv">openshift</span><span class="o">-</span><span class="nv">ovn</span><span class="o">-</span><span class="nv">kubernetes</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="o">-</span><span class="nv">it</span><span class="w"> </span>$<span class="nv">POD</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="nv">ovn</span><span class="o">-</span><span class="nv">nbctl</span><span class="w"> </span><span class="k">show</span>
+</code></pre></div></td></tr></table></div></p>
 <h3 id="pod-security-admissin">Pod Security Admissin</h3>
 <p>In order to make a namespace priviledge from a pod security admission, use the following function:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
-<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>privileged(){
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code>privileged(){
     oc label ns $1 security.openshift.io/scc.podSecurityLabelSync=&quot;false&quot; --overwrite=true
     oc label ns $1 pod-security.kubernetes.io/enforce=privileged --overwrite=true
     oc label ns $1 pod-security.kubernetes.io/warn=privileged --overwrite=true
     oc label ns $1 pod-security.kubernetes.io/audit=privileged --overwrite=true
 }
 privileged &lt;namespace name&gt;
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <h3 id="ocp-release-images">OCP release images</h3>
 <p>Show info about release images:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>oc adm release info --commits quay.io/openshift-release-dev/ocp-release:4.12.0-ec.4-x86_64
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>oc adm release info --commits quay.io/openshift-release-dev/ocp-release:4.12.0-ec.4-x86_64
+</code></pre></div></td></tr></table></div></p>
 <p>Extract manifests:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>oc adm release extract --to manifests quay.io/openshift-release-dev/ocp-release:4.12.0-ec.4-x86_64
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>oc adm release extract --to manifests quay.io/openshift-release-dev/ocp-release:4.12.0-ec.4-x86_64
+</code></pre></div></td></tr></table></div></p>
 <h3 id="ovn-kubernetes-gathering-ts-data-when-mg-fails">OVN Kubernetes - gathering TS data when mg fails</h3>
 <p>Collect OVN databases:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2489,22 +2250,21 @@ privileged &lt;namespace name&gt;
 <span class="normal"> 9</span>
 <span class="normal">10</span>
 <span class="normal">11</span>
-<span class="normal">12</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>d=$(mktemp -d);
-pushd <span class="nv">$d</span>;
-for pp in $(oc get pods -n openshift-ovn-kubernetes -l app=ovnkube-master -o name); do
-  p=<span class="cp">${</span><span class="n">pp</span><span class="o">/</span><span class="n">pod</span>\<span class="o">//</span><span class="cp">}</span>;
-  for db in nb sb; do
-    oc exec -it -n openshift-ovn-kubernetes -c <span class="cp">${</span><span class="n">db</span><span class="cp">}</span>db <span class="nv">$p</span> -- cat /etc/ovn/ovn<span class="cp">${</span><span class="n">db</span><span class="cp">}</span>_db.db &gt; ovn<span class="cp">${</span><span class="n">db</span><span class="cp">}</span>_db.db.<span class="cp">${</span><span class="n">p</span><span class="cp">}</span> ;
-  done;
+<span class="normal">12</span></pre></div></td><td class="code"><div><pre><span></span><code>d=$(mktemp<span class="w"> </span>-d);
+pushd<span class="w"> </span><span class="nv">$d</span>;
+for<span class="w"> </span>pp<span class="w"> </span>in<span class="w"> </span>$(oc<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>openshift-ovn-kubernetes<span class="w"> </span>-l<span class="w"> </span>app=ovnkube-master<span class="w"> </span>-o<span class="w"> </span>name);<span class="w"> </span>do
+<span class="w">  </span>p=<span class="cp">${</span><span class="n">pp</span><span class="o">/</span><span class="n">pod</span>\<span class="o">//</span><span class="cp">}</span>;
+<span class="w">  </span>for<span class="w"> </span>db<span class="w"> </span>in<span class="w"> </span>nb<span class="w"> </span>sb;<span class="w"> </span>do
+<span class="w">    </span>oc<span class="w"> </span>exec<span class="w"> </span>-it<span class="w"> </span>-n<span class="w"> </span>openshift-ovn-kubernetes<span class="w"> </span>-c<span class="w"> </span><span class="cp">${</span><span class="n">db</span><span class="cp">}</span>db<span class="w"> </span><span class="nv">$p</span><span class="w"> </span>--<span class="w"> </span>cat<span class="w"> </span>/etc/ovn/ovn<span class="cp">${</span><span class="n">db</span><span class="cp">}</span>_db.db<span class="w"> </span>&gt;<span class="w"> </span>ovn<span class="cp">${</span><span class="n">db</span><span class="cp">}</span>_db.db.<span class="cp">${</span><span class="n">p</span><span class="cp">}</span><span class="w"> </span>;
+<span class="w">  </span>done;
 done;
 popd;
-tar -czf /tmp/ovndbs.tar.gz <span class="nv">$d</span>
-echo &quot;Collected:&quot;
-tar -tf   /tmp/ovndbs.tar.gz
-</code></pre></div>
-</td></tr></table></p>
+tar<span class="w"> </span>-czf<span class="w"> </span>/tmp/ovndbs.tar.gz<span class="w"> </span><span class="nv">$d</span>
+echo<span class="w"> </span>&quot;Collected:&quot;
+tar<span class="w"> </span>-tf<span class="w">   </span>/tmp/ovndbs.tar.gz
+</code></pre></div></td></tr></table></div></p>
 <p>Collect pod logs:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2514,19 +2274,18 @@ tar -tf   /tmp/ovndbs.tar.gz
 <span class="normal"> 8</span>
 <span class="normal"> 9</span>
 <span class="normal">10</span>
-<span class="normal">11</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>d=$(mktemp -d)
-pushd <span class="nv">$d</span>
-oc get pods -n openshift-ovn-kubernetes | tee oc_get_pods.txt
-for pp in $(oc get pods -n openshift-ovn-kubernetes -o name); do
-  p=<span class="cp">${</span><span class="n">pp</span><span class="o">/</span><span class="n">pod</span>\<span class="o">//</span><span class="cp">}</span>;
-  oc logs -n openshift-ovn-kubernetes <span class="nv">$p</span> --all-containers &gt; <span class="nv">$p.txt</span>; done
+<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code>d=$(mktemp<span class="w"> </span>-d)
+pushd<span class="w"> </span><span class="nv">$d</span>
+oc<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>openshift-ovn-kubernetes<span class="w"> </span>|<span class="w"> </span>tee<span class="w"> </span>oc_get_pods.txt
+for<span class="w"> </span>pp<span class="w"> </span>in<span class="w"> </span>$(oc<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>openshift-ovn-kubernetes<span class="w"> </span>-o<span class="w"> </span>name);<span class="w"> </span>do
+<span class="w">  </span>p=<span class="cp">${</span><span class="n">pp</span><span class="o">/</span><span class="n">pod</span>\<span class="o">//</span><span class="cp">}</span>;
+<span class="w">  </span>oc<span class="w"> </span>logs<span class="w"> </span>-n<span class="w"> </span>openshift-ovn-kubernetes<span class="w"> </span><span class="nv">$p</span><span class="w"> </span>--all-containers<span class="w"> </span>&gt;<span class="w"> </span><span class="nv">$p.txt</span>;<span class="w"> </span>done
 done
 popd
-tar -czf /tmp/ovnlogs.tar.gz <span class="nv">$d</span>
-echo &quot;Collected:&quot;
-tar -tf /tmp/ovnlogs.tar.gz
-</code></pre></div>
-</td></tr></table></p>
+tar<span class="w"> </span>-czf<span class="w"> </span>/tmp/ovnlogs.tar.gz<span class="w"> </span><span class="nv">$d</span>
+echo<span class="w"> </span>&quot;Collected:&quot;
+tar<span class="w"> </span>-tf<span class="w"> </span>/tmp/ovnlogs.tar.gz
+</code></pre></div></td></tr></table></div></p>
 
   <hr>
 <div class="md-source-file">
@@ -2539,54 +2298,25 @@ tar -tf /tmp/ovnlogs.tar.gz
   </small>
 </div>
 
-              
-            </article>
-          </div>
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
         
       </main>
       
         <footer class="md-footer">
-  
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
-      
-        
-        <a href="../openshift_troubleshooting_etcd_state/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Troubleshooting etcd state" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Troubleshooting etcd state
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../useful-ocp-sdn-commands/" class="md-footer__link md-footer__link--next" aria-label="Next: Useful commands for OpenShift SDN" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              Useful commands for OpenShift SDN
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -2608,10 +2338,11 @@ tar -tf /tmp/ovnlogs.tar.gz
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.467223ff.min.js"></script>
+      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
       
     
   </body>

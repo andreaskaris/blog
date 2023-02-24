@@ -12,8 +12,14 @@
       
         <link rel="canonical" href="https://andreaskaris.github.io/blog/networking/ovs_with_gdb/">
       
+      
+        <link rel="prev" href="../ovs-vxlan-tunnels-and-dscp/">
+      
+      
+        <link rel="next" href="../packet-tracing-with-ovn/">
+      
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.14">
     
     
       
@@ -21,16 +27,13 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2d9f7617.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#000000">
-        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
       
+      
+
     
     
     
@@ -43,10 +46,11 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
+    
     
     
   </head>
@@ -57,7 +61,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="pink">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink">
   
     
     
@@ -65,11 +69,6 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
-      
-        
-        <a href="#inspecting-ovs-with-gdb" class="md-skip">
-          Skip to content
-        </a>
       
     </div>
     <div data-md-component="announce">
@@ -84,11 +83,11 @@
     <a href="../.." title="Andreas Karis Blog" class="md-header__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -121,7 +120,7 @@
           
             
 <nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-tabs__inner md-grid">
+  <div class="md-grid">
     <ul class="md-tabs__list">
       
         
@@ -258,7 +257,7 @@
     <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     Andreas Karis Blog
@@ -292,8 +291,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
       
       
         
@@ -316,7 +316,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Ceph" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
           Ceph
@@ -356,8 +356,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
       
       
         
@@ -400,7 +401,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Linux" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Linux
@@ -582,8 +583,9 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
       
       
         
@@ -638,7 +640,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Networking" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           Networking
@@ -824,81 +826,13 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          OVS with GDB
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         OVS with GDB
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#introduction" class="md-nav__link">
-    Introduction
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#generate-a-core-dump-of-ovs" class="md-nav__link">
-    Generate a core dump of OVS
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#install-debuginfo-for-ovs" class="md-nav__link">
-    Install debuginfo for OVS
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#download-the-script" class="md-nav__link">
-    Download the script
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#open-core-dump-with-gdb" class="md-nav__link">
-    Open core dump with GDB
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-the-debug-script" class="md-nav__link">
-    Using the debug script
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -978,8 +912,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
       
       
         
@@ -1066,7 +1001,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenShift and Kubernetes" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_5">
           <span class="md-nav__icon md-icon"></span>
           OpenShift and Kubernetes
@@ -1554,8 +1489,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
       
       
         
@@ -1580,7 +1516,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenStack" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_6">
           <span class="md-nav__icon md-icon"></span>
           OpenStack
@@ -1634,8 +1570,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
       
       
         
@@ -1662,7 +1599,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Coding" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_7">
           <span class="md-nav__icon md-icon"></span>
           Coding
@@ -1736,58 +1673,6 @@
   
   
   
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#introduction" class="md-nav__link">
-    Introduction
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#generate-a-core-dump-of-ovs" class="md-nav__link">
-    Generate a core dump of OVS
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#install-debuginfo-for-ovs" class="md-nav__link">
-    Install debuginfo for OVS
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#download-the-script" class="md-nav__link">
-    Download the script
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#open-core-dump-with-gdb" class="md-nav__link">
-    Open core dump with GDB
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-the-debug-script" class="md-nav__link">
-    Using the debug script
-  </a>
-  
-</li>
-      
-    </ul>
   
 </nav>
                   </div>
@@ -1795,10 +1680,11 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
 <h1 id="inspecting-ovs-with-gdb">Inspecting OVS with GDB</h1>
@@ -1807,27 +1693,25 @@
 <p>This is mainly a walkthrough of how to get there on RHEL 7.</p>
 <h2 id="generate-a-core-dump-of-ovs">Generate a core dump of OVS</h2>
 <p>Enable core dump collection with abrt:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
-<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>yum install abrt abrt-addon-ccpp abrt-tui
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code>yum install abrt abrt-addon-ccpp abrt-tui
 abrt-install-ccpp-hook install
 abrt-install-ccpp-hook is-installed; echo $?;
 service abrtd start
 service abrt-ccpp start
 abrt-auto-reporting enabled
 abrt-cli list
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p>Kill OVS:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>kill -11 $(pidof ovs-vswitchd)
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>kill -11 $(pidof ovs-vswitchd)
+</code></pre></div></td></tr></table></div></p>
 <p>List core dumps:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
@@ -1835,53 +1719,46 @@ abrt-cli list
 <span class="normal">6</span>
 <span class="normal">7</span>
 <span class="normal">8</span>
-<span class="normal">9</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">overcloud</span><span class="o">-</span><span class="n">computedpdk</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># abrt-cli list</span><span class="w"></span>
-<span class="n">id</span><span class="w"> </span><span class="mi">60</span><span class="n">b0650c5db6225ab1debfba0f80bbdee60cef43</span><span class="w"></span>
-<span class="n">reason</span><span class="p">:</span><span class="w">         </span><span class="n">ovs</span><span class="o">-</span><span class="n">vswitchd</span><span class="w"> </span><span class="n">killed</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">SIGSEGV</span><span class="w"></span>
-<span class="n">time</span><span class="p">:</span><span class="w">           </span><span class="n">Mon</span><span class="w"> </span><span class="mi">31</span><span class="w"> </span><span class="n">Dec</span><span class="w"> </span><span class="mi">2018</span><span class="w"> </span><span class="mi">05</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">12</span><span class="w"> </span><span class="n">PM</span><span class="w"> </span><span class="n">UTC</span><span class="w"></span>
-<span class="n">cmdline</span><span class="p">:</span><span class="w">        </span><span class="n">ovs</span><span class="o">-</span><span class="n">vswitchd</span><span class="w"> </span><span class="n">unix</span><span class="p">:</span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">openvswitch</span><span class="o">/</span><span class="n">db</span><span class="o">.</span><span class="n">sock</span><span class="w"> </span><span class="o">-</span><span class="n">vconsole</span><span class="p">:</span><span class="n">emer</span><span class="w"> </span><span class="o">-</span><span class="n">vsyslog</span><span class="p">:</span><span class="n">err</span><span class="w"> </span><span class="o">-</span><span class="n">vfile</span><span class="p">:</span><span class="n">info</span><span class="w"> </span><span class="o">--</span><span class="n">mlockall</span><span class="w"> </span><span class="o">--</span><span class="n">user</span><span class="w"> </span><span class="n">openvswitch</span><span class="p">:</span><span class="n">hugetlbfs</span><span class="w"> </span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">chdir</span><span class="w"> </span><span class="o">--</span><span class="nb">log</span><span class="o">-</span><span class="n">file</span><span class="o">=/</span><span class="k">var</span><span class="o">/</span><span class="nb">log</span><span class="o">/</span><span class="n">openvswitch</span><span class="o">/</span><span class="n">ovs</span><span class="o">-</span><span class="n">vswitchd</span><span class="o">.</span><span class="n">log</span><span class="w"> </span><span class="o">--</span><span class="n">pidfile</span><span class="o">=/</span><span class="k">var</span><span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">openvswitch</span><span class="o">/</span><span class="n">ovs</span><span class="o">-</span><span class="n">vswitchd</span><span class="o">.</span><span class="n">pid</span><span class="w"> </span><span class="o">--</span><span class="n">detach</span><span class="w"></span>
-<span class="n">package</span><span class="p">:</span><span class="w">        </span><span class="n">openvswitch</span><span class="o">-</span><span class="mf">2.9</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="mf">56.</span><span class="n">el7fdp</span><span class="w"></span>
-<span class="n">uid</span><span class="p">:</span><span class="w">            </span><span class="mi">993</span><span class="w"> </span><span class="p">(</span><span class="n">openvswitch</span><span class="p">)</span><span class="w"></span>
-<span class="n">count</span><span class="p">:</span><span class="w">          </span><span class="mi">1</span><span class="w"></span>
-<span class="n">Directory</span><span class="p">:</span><span class="w">      </span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">spool</span><span class="o">/</span><span class="n">abrt</span><span class="o">/</span><span class="n">ccpp</span><span class="o">-</span><span class="mi">2018</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">31</span><span class="o">-</span><span class="mi">17</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">12</span><span class="o">-</span><span class="mi">671118</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">overcloud</span><span class="o">-</span><span class="n">computedpdk</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># abrt-cli list</span>
+<span class="n">id</span><span class="w"> </span><span class="mi">60</span><span class="n">b0650c5db6225ab1debfba0f80bbdee60cef43</span>
+<span class="n">reason</span><span class="p">:</span><span class="w">         </span><span class="n">ovs</span><span class="o">-</span><span class="n">vswitchd</span><span class="w"> </span><span class="n">killed</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">SIGSEGV</span>
+<span class="n">time</span><span class="p">:</span><span class="w">           </span><span class="n">Mon</span><span class="w"> </span><span class="mi">31</span><span class="w"> </span><span class="n">Dec</span><span class="w"> </span><span class="mi">2018</span><span class="w"> </span><span class="mi">05</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">12</span><span class="w"> </span><span class="n">PM</span><span class="w"> </span><span class="n">UTC</span>
+<span class="n">cmdline</span><span class="p">:</span><span class="w">        </span><span class="n">ovs</span><span class="o">-</span><span class="n">vswitchd</span><span class="w"> </span><span class="n">unix</span><span class="p">:</span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">openvswitch</span><span class="o">/</span><span class="n">db</span><span class="o">.</span><span class="n">sock</span><span class="w"> </span><span class="o">-</span><span class="n">vconsole</span><span class="p">:</span><span class="n">emer</span><span class="w"> </span><span class="o">-</span><span class="n">vsyslog</span><span class="p">:</span><span class="n">err</span><span class="w"> </span><span class="o">-</span><span class="n">vfile</span><span class="p">:</span><span class="n">info</span><span class="w"> </span><span class="o">--</span><span class="n">mlockall</span><span class="w"> </span><span class="o">--</span><span class="n">user</span><span class="w"> </span><span class="n">openvswitch</span><span class="p">:</span><span class="n">hugetlbfs</span><span class="w"> </span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">chdir</span><span class="w"> </span><span class="o">--</span><span class="nb">log</span><span class="o">-</span><span class="n">file</span><span class="o">=/</span><span class="k">var</span><span class="o">/</span><span class="nb">log</span><span class="o">/</span><span class="n">openvswitch</span><span class="o">/</span><span class="n">ovs</span><span class="o">-</span><span class="n">vswitchd</span><span class="o">.</span><span class="n">log</span><span class="w"> </span><span class="o">--</span><span class="n">pidfile</span><span class="o">=/</span><span class="k">var</span><span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">openvswitch</span><span class="o">/</span><span class="n">ovs</span><span class="o">-</span><span class="n">vswitchd</span><span class="o">.</span><span class="n">pid</span><span class="w"> </span><span class="o">--</span><span class="n">detach</span>
+<span class="n">package</span><span class="p">:</span><span class="w">        </span><span class="n">openvswitch</span><span class="o">-</span><span class="mf">2.9</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="mf">56.</span><span class="n">el7fdp</span>
+<span class="n">uid</span><span class="p">:</span><span class="w">            </span><span class="mi">993</span><span class="w"> </span><span class="p">(</span><span class="n">openvswitch</span><span class="p">)</span>
+<span class="n">count</span><span class="p">:</span><span class="w">          </span><span class="mi">1</span>
+<span class="n">Directory</span><span class="p">:</span><span class="w">      </span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">spool</span><span class="o">/</span><span class="n">abrt</span><span class="o">/</span><span class="n">ccpp</span><span class="o">-</span><span class="mi">2018</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">31</span><span class="o">-</span><span class="mi">17</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">12</span><span class="o">-</span><span class="mi">671118</span>
+</code></pre></div></td></tr></table></div></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">overcloud</span><span class="o">-</span><span class="n">computedpdk</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># file !$</span><span class="w"></span>
-<span class="n">file</span><span class="w"> </span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">spool</span><span class="o">/</span><span class="n">abrt</span><span class="o">/</span><span class="n">ccpp</span><span class="o">-</span><span class="mi">2018</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">31</span><span class="o">-</span><span class="mi">17</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">12</span><span class="o">-</span><span class="mi">671118</span><span class="o">/</span><span class="n">coredump</span><span class="w"></span>
-<span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">spool</span><span class="o">/</span><span class="n">abrt</span><span class="o">/</span><span class="n">ccpp</span><span class="o">-</span><span class="mi">2018</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">31</span><span class="o">-</span><span class="mi">17</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">12</span><span class="o">-</span><span class="mi">671118</span><span class="o">/</span><span class="n">coredump</span><span class="p">:</span><span class="w"> </span><span class="n">ELF</span><span class="w"> </span><span class="mi">64</span><span class="o">-</span><span class="n">bit</span><span class="w"> </span><span class="n">LSB</span><span class="w"> </span><span class="n">core</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">x86</span><span class="o">-</span><span class="mi">64</span><span class="p">,</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">(</span><span class="n">SYSV</span><span class="p">),</span><span class="w"> </span><span class="n">SVR4</span><span class="o">-</span><span class="n">style</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="s1">&#39;ovs-vswitchd unix:/var/run/openvswitch/db.sock -vconsole:emer -vsyslog:err -vfi&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">real</span><span class="w"> </span><span class="n">uid</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">effective</span><span class="w"> </span><span class="n">uid</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">real</span><span class="w"> </span><span class="n">gid</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">effective</span><span class="w"> </span><span class="n">gid</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">execfn</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;/sbin/ovs-vswitchd&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">platform</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;x86_64&#39;</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">overcloud</span><span class="o">-</span><span class="n">computedpdk</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># file !$</span>
+<span class="n">file</span><span class="w"> </span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">spool</span><span class="o">/</span><span class="n">abrt</span><span class="o">/</span><span class="n">ccpp</span><span class="o">-</span><span class="mi">2018</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">31</span><span class="o">-</span><span class="mi">17</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">12</span><span class="o">-</span><span class="mi">671118</span><span class="o">/</span><span class="n">coredump</span>
+<span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">spool</span><span class="o">/</span><span class="n">abrt</span><span class="o">/</span><span class="n">ccpp</span><span class="o">-</span><span class="mi">2018</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">31</span><span class="o">-</span><span class="mi">17</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">12</span><span class="o">-</span><span class="mi">671118</span><span class="o">/</span><span class="n">coredump</span><span class="p">:</span><span class="w"> </span><span class="n">ELF</span><span class="w"> </span><span class="mi">64</span><span class="o">-</span><span class="n">bit</span><span class="w"> </span><span class="n">LSB</span><span class="w"> </span><span class="n">core</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">x86</span><span class="o">-</span><span class="mi">64</span><span class="p">,</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">(</span><span class="n">SYSV</span><span class="p">),</span><span class="w"> </span><span class="n">SVR4</span><span class="o">-</span><span class="n">style</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="s1">&#39;ovs-vswitchd unix:/var/run/openvswitch/db.sock -vconsole:emer -vsyslog:err -vfi&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">real</span><span class="w"> </span><span class="n">uid</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">effective</span><span class="w"> </span><span class="n">uid</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">real</span><span class="w"> </span><span class="n">gid</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">effective</span><span class="w"> </span><span class="n">gid</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">execfn</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;/sbin/ovs-vswitchd&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">platform</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;x86_64&#39;</span>
+</code></pre></div></td></tr></table></div>
 <h2 id="install-debuginfo-for-ovs">Install debuginfo for OVS</h2>
 <p>It's important that the right debuginfo be installed. 
 Otherwise, you will get a message like this from the script later down the road:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">(</span><span class="n">gdb</span><span class="p">)</span><span class="w"> </span><span class="n">ovs_dump_bridge</span><span class="w"> </span><span class="n">ports</span><span class="w"></span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">(</span><span class="n">gdb</span><span class="p">)</span><span class="w"> </span><span class="n">ovs_dump_bridge</span><span class="w"> </span><span class="n">ports</span>
 <span class="n">Can</span><span class="s1">&#39;t find all_bridges global variable, are you sure your debugging OVS?</span>
-</code></pre></div>
-</td></tr></table></p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>debuginfo-install $(rpm -qa | egrep &#39;^openvswitch-[0-9]&#39;)
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>debuginfo-install $(rpm -qa | egrep &#39;^openvswitch-[0-9]&#39;)
+</code></pre></div></td></tr></table></div>
 <h2 id="download-the-script">Download the script</h2>
 <p>It should be better to get the script from a source RPM. However, my version of OVS doesn't have the script yet. 
 Hence I'm directly downloading it:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>curl -o ovs_gdb.py \
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code>curl -o ovs_gdb.py \
   https://raw.githubusercontent.com/openvswitch/ovs/cd5b89a5a99c3ead973b168326eaef47d4e4c077/utilities/gdb/ovs_gdb.py
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <h2 id="open-core-dump-with-gdb">Open core dump with GDB</h2>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">gdb</span><span class="w"> </span><span class="o">$</span><span class="p">(</span><span class="n">which</span><span class="w"> </span><span class="n">ovs</span><span class="o">-</span><span class="n">vswitchd</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">spool</span><span class="o">/</span><span class="n">abrt</span><span class="o">/</span><span class="n">ccpp</span><span class="o">-</span><span class="mi">2018</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">31</span><span class="o">-</span><span class="mi">17</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">12</span><span class="o">-</span><span class="mi">671118</span><span class="o">/</span><span class="n">coredump</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">gdb</span><span class="w"> </span><span class="o">$</span><span class="p">(</span><span class="n">which</span><span class="w"> </span><span class="n">ovs</span><span class="o">-</span><span class="n">vswitchd</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">spool</span><span class="o">/</span><span class="n">abrt</span><span class="o">/</span><span class="n">ccpp</span><span class="o">-</span><span class="mi">2018</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">31</span><span class="o">-</span><span class="mi">17</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">12</span><span class="o">-</span><span class="mi">671118</span><span class="o">/</span><span class="n">coredump</span>
+</code></pre></div></td></tr></table></div>
 <p>Once at the prompt:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>source ovs_gdb.py
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>source ovs_gdb.py
+</code></pre></div></td></tr></table></div></p>
 <h2 id="using-the-debug-script">Using the debug script</h2>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1896,7 +1773,7 @@ Hence I'm directly downloading it:
 <span class="normal">13</span>
 <span class="normal">14</span>
 <span class="normal">15</span>
-<span class="normal">16</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>(gdb) ovs_dump_bridge
+<span class="normal">16</span></pre></div></td><td class="code"><div><pre><span></span><code>(gdb) ovs_dump_bridge
 (struct bridge *) 0x5563a14fd2b0: name = br-link0, type = netdev
 (struct bridge *) 0x5563a14fd8c0: name = br-int, type = netdev
 (gdb) ovs_dump_bridge ports
@@ -1912,8 +1789,7 @@ Hence I'm directly downloading it:
         (struct iface *) 0x5563a15839c0: name = 0x5563a1580790 &quot;int-br-link0&quot;, ofp_port = 1, netdev = (struct netdev *) 0x5563a1583620
     (struct port *) 0x5563a1584560: name = br-int, brige = (struct bridge *) 0x5563a14fd8c0
         (struct iface *) 0x5563a1584e70: name = 0x5563a1584ef0 &quot;br-int&quot;, ofp_port = 65534, netdev = (struct netdev *) 0x5563a1584150
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 
   <hr>
 <div class="md-source-file">
@@ -1926,54 +1802,25 @@ Hence I'm directly downloading it:
   </small>
 </div>
 
-              
-            </article>
-          </div>
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
         
       </main>
       
         <footer class="md-footer">
-  
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
-      
-        
-        <a href="../ovs-vxlan-tunnels-and-dscp/" class="md-footer__link md-footer__link--prev" aria-label="Previous: OVS VXLAN tunnels and DSCP" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              OVS VXLAN tunnels and DSCP
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../packet-tracing-with-ovn/" class="md-footer__link md-footer__link--next" aria-label="Next: Packet tracing with OVN" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              Packet tracing with OVN
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -1995,10 +1842,11 @@ Hence I'm directly downloading it:
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.467223ff.min.js"></script>
+      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
       
     
   </body>

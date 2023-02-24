@@ -12,8 +12,14 @@
       
         <link rel="canonical" href="https://andreaskaris.github.io/blog/linux/ipxe-boot-environment/">
       
+      
+        <link rel="prev" href="../hugepages/">
+      
+      
+        <link rel="next" href="../java-idrac-issues/">
+      
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.14">
     
     
       
@@ -21,16 +27,13 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2d9f7617.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#000000">
-        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
       
+      
+
     
     
     
@@ -43,10 +46,11 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
+    
     
     
   </head>
@@ -57,7 +61,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="pink">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink">
   
     
     
@@ -65,11 +69,6 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
-      
-        
-        <a href="#setting-up-an-ipxe-boot-environment-under-fedora" class="md-skip">
-          Skip to content
-        </a>
       
     </div>
     <div data-md-component="announce">
@@ -84,11 +83,11 @@
     <a href="../.." title="Andreas Karis Blog" class="md-header__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -121,7 +120,7 @@
           
             
 <nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-tabs__inner md-grid">
+  <div class="md-grid">
     <ul class="md-tabs__list">
       
         
@@ -258,7 +257,7 @@
     <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     Andreas Karis Blog
@@ -292,8 +291,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
       
       
         
@@ -316,7 +316,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Ceph" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
           Ceph
@@ -358,8 +358,9 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
       
       
         
@@ -402,7 +403,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Linux" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Linux
@@ -462,60 +463,13 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          iPXE boot environment on Fedora
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         iPXE boot environment on Fedora
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#install-dependencies" class="md-nav__link">
-    Install dependencies
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#setting-up-dnsmasq-and-tftp" class="md-nav__link">
-    Setting up dnsmasq and tftp
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configure-httpd-and-images" class="md-nav__link">
-    Configure httpd and images
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -637,8 +591,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
       
       
         
@@ -693,7 +648,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Networking" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           Networking
@@ -957,8 +912,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
       
       
         
@@ -1045,7 +1001,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenShift and Kubernetes" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_5">
           <span class="md-nav__icon md-icon"></span>
           OpenShift and Kubernetes
@@ -1533,8 +1489,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
       
       
         
@@ -1559,7 +1516,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenStack" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_6">
           <span class="md-nav__icon md-icon"></span>
           OpenStack
@@ -1613,8 +1570,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
       
       
         
@@ -1641,7 +1599,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Coding" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_7">
           <span class="md-nav__icon md-icon"></span>
           Coding
@@ -1715,37 +1673,6 @@
   
   
   
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#install-dependencies" class="md-nav__link">
-    Install dependencies
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#setting-up-dnsmasq-and-tftp" class="md-nav__link">
-    Setting up dnsmasq and tftp
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configure-httpd-and-images" class="md-nav__link">
-    Configure httpd and images
-  </a>
-  
-</li>
-      
-    </ul>
   
 </nav>
                   </div>
@@ -1753,10 +1680,11 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
 <h1 id="setting-up-an-ipxe-boot-environment-under-fedora">Setting up an iPXE boot environment under Fedora</h1>
@@ -1764,18 +1692,16 @@
 <p>The following steps are a manual walkthrough of the steps taken in <a href="https://github.com/andreaskaris/fedora-ipxe-container">https://github.com/andreaskaris/fedora-ipxe-container</a>.</p>
 <h2 id="install-dependencies">Install dependencies</h2>
 <p>Install required dependencies:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>yum install ipxe-bootimgs dnsmasq httpd -y
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>yum install ipxe-bootimgs dnsmasq httpd -y
+</code></pre></div></td></tr></table></div></p>
 <h2 id="setting-up-dnsmasq-and-tftp">Setting up dnsmasq and tftp</h2>
 <p>Create required directories:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>mkdir /tftpboot
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code>mkdir /tftpboot
 mkdir /dhcphosts
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p>Create the following configuration for dnsmasq and adjust according to your needs.
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1826,76 +1752,73 @@ mkdir /dhcphosts
 <span class="normal">49</span>
 <span class="normal">50</span>
 <span class="normal">51</span>
-<span class="normal">52</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">cat</span> <span class="o">&lt;&lt;</span><span class="s1">&#39;</span><span class="s">EOF</span><span class="s1">&#39;</span> <span class="o">&gt;</span> <span class="o">/</span><span class="nv">etc</span><span class="o">/</span><span class="nv">dnsmasq</span>.<span class="nv">conf</span>
-# <span class="nv">enable</span> <span class="nv">logs</span> <span class="k">if</span> <span class="nv">required</span>
+<span class="normal">52</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nv">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="s1">&#39;EOF&#39;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="nv">etc</span><span class="o">/</span><span class="nv">dnsmasq</span>.<span class="nv">conf</span>
+#<span class="w"> </span><span class="nv">enable</span><span class="w"> </span><span class="nv">logs</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nv">required</span>
 #<span class="nv">log</span><span class="o">-</span><span class="nv">queries</span>
 #<span class="nv">log</span><span class="o">-</span><span class="nv">dhcp</span>
 
-# <span class="nv">disable</span> <span class="nv">DNS</span> <span class="nv">server</span>
+#<span class="w"> </span><span class="nv">disable</span><span class="w"> </span><span class="nv">DNS</span><span class="w"> </span><span class="nv">server</span>
 <span class="nv">port</span><span class="o">=</span><span class="mi">0</span>
 
 <span class="nv">listen</span><span class="o">-</span><span class="nv">address</span><span class="o">=</span><span class="mi">192</span>.<span class="mi">168</span>.<span class="mi">123</span>.<span class="mi">1</span>
 <span class="nv">interface</span><span class="o">=</span><span class="nv">baremetal</span>
 
-# <span class="nv">enable</span> <span class="nv">built</span><span class="o">-</span><span class="nv">in</span> <span class="nv">tftp</span> <span class="nv">server</span>
+#<span class="w"> </span><span class="nv">enable</span><span class="w"> </span><span class="nv">built</span><span class="o">-</span><span class="nv">in</span><span class="w"> </span><span class="nv">tftp</span><span class="w"> </span><span class="nv">server</span>
 <span class="nv">enable</span><span class="o">-</span><span class="nv">tftp</span>
 <span class="nv">tftp</span><span class="o">-</span><span class="nv">root</span><span class="o">=/</span><span class="nv">tftpboot</span>
 
-# <span class="nv">DHCP</span> <span class="nv">range</span> <span class="mi">192</span>.<span class="mi">168</span>.<span class="mi">123</span>.<span class="mi">200</span> <span class="o">~</span> <span class="mi">192</span>.<span class="mi">168</span>.<span class="mi">123</span>.<span class="mi">250</span>
+#<span class="w"> </span><span class="nv">DHCP</span><span class="w"> </span><span class="nv">range</span><span class="w"> </span><span class="mi">192</span>.<span class="mi">168</span>.<span class="mi">123</span>.<span class="mi">200</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="mi">192</span>.<span class="mi">168</span>.<span class="mi">123</span>.<span class="mi">250</span>
 <span class="nv">dhcp</span><span class="o">-</span><span class="nv">range</span><span class="o">=</span><span class="mi">192</span>.<span class="mi">168</span>.<span class="mi">123</span>.<span class="mi">200</span>,<span class="mi">192</span>.<span class="mi">168</span>.<span class="mi">123</span>.<span class="mi">250</span>,<span class="mi">255</span>.<span class="mi">255</span>.<span class="mi">255</span>.<span class="mi">0</span>,<span class="mi">24</span><span class="nv">h</span>
 
-# <span class="nv">Default</span> <span class="nv">gateway</span>
+#<span class="w"> </span><span class="nv">Default</span><span class="w"> </span><span class="nv">gateway</span>
 <span class="nv">dhcp</span><span class="o">-</span><span class="nv">option</span><span class="o">=</span><span class="mi">3</span>,<span class="mi">192</span>.<span class="mi">168</span>.<span class="mi">123</span>.<span class="mi">1</span>
 
 <span class="nv">dhcp</span><span class="o">-</span><span class="nv">option</span><span class="o">=</span><span class="mi">6</span>,<span class="mi">192</span>.<span class="mi">168</span>.<span class="mi">123</span>.<span class="mi">1</span>
 
-# <span class="nv">Domain</span> <span class="nv">name</span> <span class="o">-</span> <span class="nv">homelab</span>.<span class="nv">net</span>
+#<span class="w"> </span><span class="nv">Domain</span><span class="w"> </span><span class="nv">name</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">homelab</span>.<span class="nv">net</span>
 <span class="nv">dhcp</span><span class="o">-</span><span class="nv">option</span><span class="o">=</span><span class="mi">15</span>,<span class="nv">example</span>.<span class="nv">com</span>
 
-# <span class="nv">Broadcast</span> <span class="nv">address</span>
+#<span class="w"> </span><span class="nv">Broadcast</span><span class="w"> </span><span class="nv">address</span>
 <span class="nv">dhcp</span><span class="o">-</span><span class="nv">option</span><span class="o">=</span><span class="mi">28</span>,<span class="mi">192</span>.<span class="mi">168</span>.<span class="mi">123</span>.<span class="mi">255</span>
 
-# <span class="nv">Set</span> <span class="nv">interface</span> <span class="nv">MTU</span> <span class="nv">to</span> <span class="mi">9000</span> <span class="nv">bytes</span> <span class="ss">(</span><span class="nv">jumbo</span> <span class="nv">frame</span><span class="ss">)</span>
-# <span class="nv">Enable</span> <span class="nv">only</span> <span class="nv">when</span> <span class="nv">your</span> <span class="nv">network</span> <span class="nv">supports</span> <span class="nv">it</span>
-# <span class="nv">dhcp</span><span class="o">-</span><span class="nv">option</span><span class="o">=</span><span class="mi">26</span>,<span class="mi">9000</span>
+#<span class="w"> </span><span class="nv">Set</span><span class="w"> </span><span class="nv">interface</span><span class="w"> </span><span class="nv">MTU</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="mi">9000</span><span class="w"> </span><span class="nv">bytes</span><span class="w"> </span><span class="ss">(</span><span class="nv">jumbo</span><span class="w"> </span><span class="nv">frame</span><span class="ss">)</span>
+#<span class="w"> </span><span class="nv">Enable</span><span class="w"> </span><span class="nv">only</span><span class="w"> </span><span class="nv">when</span><span class="w"> </span><span class="nv">your</span><span class="w"> </span><span class="nv">network</span><span class="w"> </span><span class="nv">supports</span><span class="w"> </span><span class="nv">it</span>
+#<span class="w"> </span><span class="nv">dhcp</span><span class="o">-</span><span class="nv">option</span><span class="o">=</span><span class="mi">26</span>,<span class="mi">9000</span>
 <span class="nv">dhcp</span><span class="o">-</span><span class="nv">option</span><span class="o">-</span><span class="nv">force</span><span class="o">=</span><span class="mi">26</span>,<span class="mi">9000</span>
 
 
-# <span class="nv">Tag</span> <span class="nv">dhcp</span> <span class="nv">request</span> <span class="nv">from</span> <span class="nv">iPXE</span>
+#<span class="w"> </span><span class="nv">Tag</span><span class="w"> </span><span class="nv">dhcp</span><span class="w"> </span><span class="nv">request</span><span class="w"> </span><span class="nv">from</span><span class="w"> </span><span class="nv">iPXE</span>
 <span class="nv">dhcp</span><span class="o">-</span><span class="nv">match</span><span class="o">=</span><span class="nv">set</span>:<span class="nv">ipxe</span>,<span class="mi">175</span>
 
-# <span class="nv">inspect</span> <span class="nv">the</span> <span class="nv">vendor</span> <span class="nv">class</span> <span class="nv">string</span> <span class="nv">and</span> <span class="nv">tag</span> <span class="nv">BIOS</span> <span class="nv">client</span>
+#<span class="w"> </span><span class="nv">inspect</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">vendor</span><span class="w"> </span><span class="nv">class</span><span class="w"> </span><span class="nv">string</span><span class="w"> </span><span class="nv">and</span><span class="w"> </span><span class="nv">tag</span><span class="w"> </span><span class="nv">BIOS</span><span class="w"> </span><span class="nv">client</span>
 <span class="nv">dhcp</span><span class="o">-</span><span class="nv">vendorclass</span><span class="o">=</span><span class="nv">BIOS</span>,<span class="nv">PXEClient</span>:<span class="nv">Arch</span>:<span class="mi">00000</span>
 
-# <span class="mi">1</span><span class="nv">st</span> <span class="nv">boot</span> <span class="nv">file</span> <span class="o">-</span> <span class="nv">Legacy</span> <span class="nv">BIOS</span> <span class="nv">client</span>
+#<span class="w"> </span><span class="mi">1</span><span class="nv">st</span><span class="w"> </span><span class="nv">boot</span><span class="w"> </span><span class="nv">file</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">Legacy</span><span class="w"> </span><span class="nv">BIOS</span><span class="w"> </span><span class="nv">client</span>
 <span class="nv">dhcp</span><span class="o">-</span><span class="nv">boot</span><span class="o">=</span><span class="nv">tag</span>:<span class="o">!</span><span class="nv">ipxe</span>,<span class="nv">tag</span>:<span class="nv">BIOS</span>,<span class="nv">undionly</span>.<span class="nv">kpxe</span>,<span class="mi">192</span>.<span class="mi">168</span>.<span class="mi">123</span>.<span class="mi">1</span>
 
-# <span class="mi">1</span><span class="nv">st</span> <span class="nv">boot</span> <span class="nv">file</span> <span class="o">-</span> <span class="nv">EFI</span> <span class="nv">client</span>
-# <span class="nv">at</span> <span class="nv">the</span> <span class="nv">moment</span> <span class="nv">all</span> <span class="nv">non</span><span class="o">-</span><span class="nv">BIOS</span> <span class="nv">clients</span> <span class="nv">are</span> <span class="nv">considered</span>
-# <span class="nv">EFI</span> <span class="nv">client</span>
+#<span class="w"> </span><span class="mi">1</span><span class="nv">st</span><span class="w"> </span><span class="nv">boot</span><span class="w"> </span><span class="nv">file</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">EFI</span><span class="w"> </span><span class="nv">client</span>
+#<span class="w"> </span><span class="nv">at</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">moment</span><span class="w"> </span><span class="nv">all</span><span class="w"> </span><span class="nv">non</span><span class="o">-</span><span class="nv">BIOS</span><span class="w"> </span><span class="nv">clients</span><span class="w"> </span><span class="nv">are</span><span class="w"> </span><span class="nv">considered</span>
+#<span class="w"> </span><span class="nv">EFI</span><span class="w"> </span><span class="nv">client</span>
 <span class="nv">dhcp</span><span class="o">-</span><span class="nv">boot</span><span class="o">=</span><span class="nv">tag</span>:<span class="o">!</span><span class="nv">ipxe</span>,<span class="nv">tag</span>:<span class="o">!</span><span class="nv">BIOS</span>,<span class="nv">ipxe</span>.<span class="nv">efi</span>,<span class="mi">192</span>.<span class="mi">168</span>.<span class="mi">123</span>.<span class="mi">1</span>
 
-# <span class="mi">2</span><span class="nv">nd</span> <span class="nv">boot</span> <span class="nv">file</span>
+#<span class="w"> </span><span class="mi">2</span><span class="nv">nd</span><span class="w"> </span><span class="nv">boot</span><span class="w"> </span><span class="nv">file</span>
 <span class="nv">dhcp</span><span class="o">-</span><span class="nv">boot</span><span class="o">=</span><span class="nv">tag</span>:<span class="nv">ipxe</span>,<span class="nv">menu</span><span class="o">/</span><span class="nv">boot</span>.<span class="nv">ipxe</span>
 <span class="nv">EOF</span>
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p>Within the DHCP range, create a range of static leases:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>cat &lt;&lt;&#39;EOF&#39; &gt; /dhcphosts/hosts 
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code>cat &lt;&lt;&#39;EOF&#39; &gt; /dhcphosts/hosts 
 52:54:00:00:00:01,192.168.123.200,node-0
 52:54:00:00:00:01,192.168.123.201,node-1
 EOF
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p>Run dnsmasq in the foreground for testing:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>/usr/sbin/dnsmasq -k --dhcp-hostsdir=/dhcphosts --bind-interfaces --log-facility=/dev/stdout
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>/usr/sbin/dnsmasq -k --dhcp-hostsdir=/dhcphosts --bind-interfaces --log-facility=/dev/stdout
+</code></pre></div></td></tr></table></div></p>
 <p>Obviously, this should better be run as a service:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1909,31 +1832,29 @@ EOF
 <span class="normal">12</span>
 <span class="normal">13</span>
 <span class="normal">14</span>
-<span class="normal">15</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="s1">&#39;EOF&#39;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="k">system</span><span class="o">/</span><span class="n">dnsmasq</span><span class="o">-</span><span class="n">custom</span><span class="p">.</span><span class="n">service</span><span class="w"> </span>
-<span class="o">[</span><span class="n">Unit</span><span class="o">]</span><span class="w"></span>
-<span class="n">Description</span><span class="o">=</span><span class="n">DNS</span><span class="w"> </span><span class="n">caching</span><span class="w"> </span><span class="n">server</span><span class="p">.</span><span class="w"></span>
-<span class="k">After</span><span class="o">=</span><span class="n">network</span><span class="p">.</span><span class="n">target</span><span class="w"></span>
+<span class="normal">15</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="s1">&#39;EOF&#39;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="k">system</span><span class="o">/</span><span class="n">dnsmasq</span><span class="o">-</span><span class="n">custom</span><span class="p">.</span><span class="n">service</span><span class="w"> </span>
+<span class="o">[</span><span class="n">Unit</span><span class="o">]</span>
+<span class="n">Description</span><span class="o">=</span><span class="n">DNS</span><span class="w"> </span><span class="n">caching</span><span class="w"> </span><span class="n">server</span><span class="p">.</span>
+<span class="k">After</span><span class="o">=</span><span class="n">network</span><span class="p">.</span><span class="n">target</span>
 
-<span class="o">[</span><span class="n">Service</span><span class="o">]</span><span class="w"></span>
-<span class="n">ExecStart</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">dnsmasq</span><span class="w"> </span><span class="o">-</span><span class="n">k</span><span class="w"> </span><span class="o">--</span><span class="n">dhcp</span><span class="o">-</span><span class="n">hostsdir</span><span class="o">=/</span><span class="n">dhcphosts</span><span class="w"> </span><span class="o">--</span><span class="n">bind</span><span class="o">-</span><span class="n">interfaces</span><span class="w"></span>
-<span class="n">Type</span><span class="o">=</span><span class="n">forking</span><span class="w"></span>
-<span class="n">PIDFile</span><span class="o">=/</span><span class="n">run</span><span class="o">/</span><span class="n">dnsmasq</span><span class="p">.</span><span class="n">pid</span><span class="w"></span>
+<span class="o">[</span><span class="n">Service</span><span class="o">]</span>
+<span class="n">ExecStart</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">dnsmasq</span><span class="w"> </span><span class="o">-</span><span class="n">k</span><span class="w"> </span><span class="o">--</span><span class="n">dhcp</span><span class="o">-</span><span class="n">hostsdir</span><span class="o">=/</span><span class="n">dhcphosts</span><span class="w"> </span><span class="o">--</span><span class="n">bind</span><span class="o">-</span><span class="n">interfaces</span>
+<span class="n">Type</span><span class="o">=</span><span class="n">forking</span>
+<span class="n">PIDFile</span><span class="o">=/</span><span class="n">run</span><span class="o">/</span><span class="n">dnsmasq</span><span class="p">.</span><span class="n">pid</span>
 
-<span class="o">[</span><span class="n">Install</span><span class="o">]</span><span class="w"></span>
-<span class="n">WantedBy</span><span class="o">=</span><span class="n">multi</span><span class="o">-</span><span class="k">user</span><span class="p">.</span><span class="n">target</span><span class="w"></span>
-<span class="n">EOF</span><span class="w"></span>
-<span class="n">systemctl</span><span class="w"> </span><span class="n">daemon</span><span class="o">-</span><span class="n">reload</span><span class="w"></span>
+<span class="o">[</span><span class="n">Install</span><span class="o">]</span>
+<span class="n">WantedBy</span><span class="o">=</span><span class="n">multi</span><span class="o">-</span><span class="k">user</span><span class="p">.</span><span class="n">target</span>
+<span class="n">EOF</span>
+<span class="n">systemctl</span><span class="w"> </span><span class="n">daemon</span><span class="o">-</span><span class="n">reload</span>
 <span class="n">systemctl</span><span class="w"> </span><span class="n">enable</span><span class="w"> </span><span class="c1">--now dnsmasq-custom</span>
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p>Create files <code class="highlight">/tftpboot/ipxe.efi</code>, <code class="highlight">/tftpboot/undionly.kpxe</code>:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>RUN cp /usr/share/ipxe/undionly.kpxe /tftpboot
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code>RUN cp /usr/share/ipxe/undionly.kpxe /tftpboot
 RUN cp /usr/share/ipxe/ipxe-x86_64.efi /tftpboot/ipxe.efi
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p>Create the PXE boot menu:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1958,25 +1879,25 @@ RUN cp /usr/share/ipxe/ipxe-x86_64.efi /tftpboot/ipxe.efi
 <span class="normal">23</span>
 <span class="normal">24</span>
 <span class="normal">25</span>
-<span class="normal">26</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>cat <span class="err">&lt;&lt;</span>&#39;EOF&#39; &gt; /tftpboot/menu/boot.ipxe 
-#!ipxe 
+<span class="normal">26</span></pre></div></td><td class="code"><div><pre><span></span><code>cat<span class="w"> </span><span class="err">&lt;&lt;</span>&#39;EOF&#39;<span class="w"> </span>&gt;<span class="w"> </span>/tftpboot/menu/boot.ipxe<span class="w"> </span>
+#!ipxe<span class="w"> </span>
 
-menu PXE Boot Options
+menu<span class="w"> </span>PXE<span class="w"> </span>Boot<span class="w"> </span>Options
 
-item fedora fedora
-item openshift-master openshift-master
-item openshift-bootstrap openshift-bootstrap
-item openshift-worker openshift-worker
+item<span class="w"> </span>fedora<span class="w"> </span>fedora
+item<span class="w"> </span>openshift-master<span class="w"> </span>openshift-master
+item<span class="w"> </span>openshift-bootstrap<span class="w"> </span>openshift-bootstrap
+item<span class="w"> </span>openshift-worker<span class="w"> </span>openshift-worker
 
-item shell iPXE shell
-item exit  Exit to BIOS
+item<span class="w"> </span>shell<span class="w"> </span>iPXE<span class="w"> </span>shell
+item<span class="w"> </span>exit<span class="w">  </span>Exit<span class="w"> </span>to<span class="w"> </span>BIOS
 
-choose --default exit --timeout 10000 option <span class="err">&amp;&amp;</span> goto <span class="cp">${</span><span class="n">option</span><span class="cp">}</span>
+choose<span class="w"> </span>--default<span class="w"> </span>exit<span class="w"> </span>--timeout<span class="w"> </span>10000<span class="w"> </span>option<span class="w"> </span><span class="err">&amp;&amp;</span><span class="w"> </span>goto<span class="w"> </span><span class="cp">${</span><span class="n">option</span><span class="cp">}</span>
 
 :fedora
-set server_root http://192.168.123.1:8081/fedora/
-initrd <span class="cp">${</span><span class="n">server_root</span><span class="cp">}</span>/initrd.img
-kernel <span class="cp">${</span><span class="n">server_root</span><span class="cp">}</span>/vmlinuz ip=dhcp ipv6.disable initrd=initrd.img inst.ks=<span class="cp">${</span><span class="n">server_root</span><span class="cp">}</span>/kickstart.cfg
+set<span class="w"> </span>server_root<span class="w"> </span>http://192.168.123.1:8081/fedora/
+initrd<span class="w"> </span><span class="cp">${</span><span class="n">server_root</span><span class="cp">}</span>/initrd.img
+kernel<span class="w"> </span><span class="cp">${</span><span class="n">server_root</span><span class="cp">}</span>/vmlinuz<span class="w"> </span>ip=dhcp<span class="w"> </span>ipv6.disable<span class="w"> </span>initrd=initrd.img<span class="w"> </span>inst.ks=<span class="cp">${</span><span class="n">server_root</span><span class="cp">}</span>/kickstart.cfg
 boot
 
 :shell
@@ -1984,15 +1905,13 @@ shell
 
 :exit
 exit
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <h2 id="configure-httpd-and-images">Configure httpd and images</h2>
 <p>Prepare httpd:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>systemctl enable --now httpd
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>systemctl enable --now httpd
+</code></pre></div></td></tr></table></div></p>
 <p>Now, download and add Fedora to be booted from iPXE:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2020,14 +1939,14 @@ exit
 <span class="normal">26</span>
 <span class="normal">27</span>
 <span class="normal">28</span>
-<span class="normal">29</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="err">&#39;</span><span class="n">EOF</span><span class="err">&#39;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">example_netinstall</span><span class="p">.</span><span class="n">sh</span><span class="w"></span>
+<span class="normal">29</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="err">&#39;</span><span class="n">EOF</span><span class="err">&#39;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">example_netinstall</span><span class="p">.</span><span class="n">sh</span>
 <span class="cp">#!/bin/bash</span>
 
-<span class="n">echo</span><span class="w"> </span><span class="s">&quot;Installing Fedora PXE boot image for debugging&quot;</span><span class="w"></span>
-<span class="n">curl</span><span class="w"> </span><span class="o">-</span><span class="n">L</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">fedora</span><span class="p">.</span><span class="n">iso</span><span class="w"> </span><span class="s">&quot;https://download.fedoraproject.org/pub/fedora/linux/releases/32/Server/x86_64/iso/Fedora-Server-dvd-x86_64-32-1.6.iso&quot;</span><span class="w"></span>
-<span class="n">mkdir</span><span class="w"> </span><span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">fedora</span><span class="w"></span>
-<span class="n">mkdir</span><span class="w"> </span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">html</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">dvd</span><span class="w"> </span><span class="o">-</span><span class="n">p</span><span class="w"></span>
-<span class="n">mount</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">loop</span><span class="w"> </span><span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">fedora</span><span class="p">.</span><span class="n">iso</span><span class="w"> </span><span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">fedora</span><span class="w"></span>
+<span class="n">echo</span><span class="w"> </span><span class="s">&quot;Installing Fedora PXE boot image for debugging&quot;</span>
+<span class="n">curl</span><span class="w"> </span><span class="o">-</span><span class="n">L</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">fedora</span><span class="p">.</span><span class="n">iso</span><span class="w"> </span><span class="s">&quot;https://download.fedoraproject.org/pub/fedora/linux/releases/32/Server/x86_64/iso/Fedora-Server-dvd-x86_64-32-1.6.iso&quot;</span>
+<span class="n">mkdir</span><span class="w"> </span><span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">fedora</span>
+<span class="n">mkdir</span><span class="w"> </span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">html</span><span class="o">/</span><span class="n">fedora</span><span class="o">/</span><span class="n">dvd</span><span class="w"> </span><span class="o">-</span><span class="n">p</span>
+<span class="n">mount</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">loop</span><span class="w"> </span><span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">fedora</span><span class="p">.</span><span class="n">iso</span><span class="w"> </span><span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">fedora</span>
 <span class="err">\</span><span class="n">cp</span><span class="w"> </span><span class="o">-</span><span class="n">a</span><span class="w"> </span><span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">fedora</span><span class="cm">/* /var/www/html/fedora/dvd/.</span>
 <span class="cm">\cp /var/www/html/fedora/dvd/images/pxeboot/* /var/www/html/fedora/.</span>
 <span class="cm">umount /mnt/fedora</span>
@@ -2049,8 +1968,7 @@ exit
 <span class="cm">%end</span>
 <span class="cm">EOF</span>
 <span class="cm">bash example_netinstall.sh</span>
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p>You should not be able to iPXE boot your server.</p>
 
   <hr>
@@ -2064,54 +1982,25 @@ exit
   </small>
 </div>
 
-              
-            </article>
-          </div>
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
         
       </main>
       
         <footer class="md-footer">
-  
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
-      
-        
-        <a href="../hugepages/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Hugepages" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Hugepages
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../java-idrac-issues/" class="md-footer__link md-footer__link--next" aria-label="Next: Java Idrac Issues" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              Java Idrac Issues
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -2133,10 +2022,11 @@ exit
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.467223ff.min.js"></script>
+      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
       
     
   </body>

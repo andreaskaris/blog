@@ -12,8 +12,14 @@
       
         <link rel="canonical" href="https://andreaskaris.github.io/blog/networking/juniper_x520/">
       
+      
+        <link rel="prev" href="../bonding_in_linux/">
+      
+      
+        <link rel="next" href="../haproxy-and-h2c/">
+      
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.14">
     
     
       
@@ -21,16 +27,13 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2d9f7617.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#000000">
-        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
       
+      
+
     
     
     
@@ -43,10 +46,11 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
+    
     
     
   </head>
@@ -57,7 +61,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="pink">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink">
   
     
     
@@ -65,11 +69,6 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
-      
-        
-        <a href="#juniper-commands" class="md-skip">
-          Skip to content
-        </a>
       
     </div>
     <div data-md-component="announce">
@@ -84,11 +83,11 @@
     <a href="../.." title="Andreas Karis Blog" class="md-header__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -121,7 +120,7 @@
           
             
 <nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-tabs__inner md-grid">
+  <div class="md-grid">
     <ul class="md-tabs__list">
       
         
@@ -258,7 +257,7 @@
     <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     Andreas Karis Blog
@@ -292,8 +291,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
       
       
         
@@ -316,7 +316,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Ceph" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
           Ceph
@@ -356,8 +356,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
       
       
         
@@ -400,7 +401,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Linux" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Linux
@@ -582,8 +583,9 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
       
       
         
@@ -638,7 +640,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Networking" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           Networking
@@ -712,73 +714,13 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Configure Juniper switch
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         Configure Juniper switch
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#how-to-label-interfaces-on-a-juniper-switch-with-x520-cards" class="md-nav__link">
-    How to label interfaces on a Juniper switch with X520 cards
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-to-configure-interface-vlans" class="md-nav__link">
-    How to configure interface VLANs
-  </a>
-  
-    <nav class="md-nav" aria-label="How to configure interface VLANs">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#access-vlans" class="md-nav__link">
-    Access VLANs
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trunks" class="md-nav__link">
-    Trunks
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -970,8 +912,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
       
       
         
@@ -1058,7 +1001,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenShift and Kubernetes" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_5">
           <span class="md-nav__icon md-icon"></span>
           OpenShift and Kubernetes
@@ -1546,8 +1489,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
       
       
         
@@ -1572,7 +1516,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenStack" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_6">
           <span class="md-nav__icon md-icon"></span>
           OpenStack
@@ -1626,8 +1570,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
       
       
         
@@ -1654,7 +1599,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Coding" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_7">
           <span class="md-nav__icon md-icon"></span>
           Coding
@@ -1728,50 +1673,6 @@
   
   
   
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#how-to-label-interfaces-on-a-juniper-switch-with-x520-cards" class="md-nav__link">
-    How to label interfaces on a Juniper switch with X520 cards
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-to-configure-interface-vlans" class="md-nav__link">
-    How to configure interface VLANs
-  </a>
-  
-    <nav class="md-nav" aria-label="How to configure interface VLANs">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#access-vlans" class="md-nav__link">
-    Access VLANs
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trunks" class="md-nav__link">
-    Trunks
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
   
 </nav>
                   </div>
@@ -1779,15 +1680,16 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
 <h1 id="juniper-commands">Juniper commands</h1>
 <p>The following commands were validated against a qfx5100-48s-6q with Junos 17.3R3-S4.2:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1807,50 +1709,45 @@
 <span class="normal">18</span>
 <span class="normal">19</span>
 <span class="normal">20</span>
-<span class="normal">21</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">root</span><span class="nv">@gss</span><span class="o">-</span><span class="n">sw02</span><span class="o">&gt;</span><span class="w"> </span><span class="n">show</span><span class="w"> </span><span class="n">version</span><span class="w"> </span>
-<span class="nl">fpc0</span><span class="p">:</span><span class="w"></span>
-<span class="o">--------------------------------------------------------------------------</span><span class="w"></span>
-<span class="nl">Hostname</span><span class="p">:</span><span class="w"> </span><span class="n">sw02</span><span class="w"></span>
-<span class="nl">Model</span><span class="p">:</span><span class="w"> </span><span class="n">qfx5100</span><span class="o">-</span><span class="mi">48</span><span class="n">s</span><span class="o">-</span><span class="mi">6</span><span class="n">q</span><span class="w"></span>
-<span class="nl">Junos</span><span class="p">:</span><span class="w"> </span><span class="mf">17.3</span><span class="n">R3</span><span class="o">-</span><span class="n">S4</span><span class="mf">.2</span><span class="w"></span>
-<span class="n">JUNOS</span><span class="w"> </span><span class="n">Base</span><span class="w"> </span><span class="n">OS</span><span class="w"> </span><span class="n">boot</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span><span class="w"></span>
-<span class="n">JUNOS</span><span class="w"> </span><span class="n">Base</span><span class="w"> </span><span class="n">OS</span><span class="w"> </span><span class="n">Software</span><span class="w"> </span><span class="n">Suite</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span><span class="w"></span>
-<span class="n">JUNOS</span><span class="w"> </span><span class="n">Crypto</span><span class="w"> </span><span class="n">Software</span><span class="w"> </span><span class="n">Suite</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span><span class="w"></span>
-<span class="n">JUNOS</span><span class="w"> </span><span class="n">Crypto</span><span class="w"> </span><span class="n">Software</span><span class="w"> </span><span class="n">Suite</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span><span class="w"></span>
-<span class="n">JUNOS</span><span class="w"> </span><span class="n">Online</span><span class="w"> </span><span class="n">Documentation</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span><span class="w"></span>
-<span class="n">JUNOS</span><span class="w"> </span><span class="n">Kernel</span><span class="w"> </span><span class="n">Software</span><span class="w"> </span><span class="n">Suite</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span><span class="w"></span>
-<span class="n">JUNOS</span><span class="w"> </span><span class="n">Packet</span><span class="w"> </span><span class="n">Forwarding</span><span class="w"> </span><span class="n">Engine</span><span class="w"> </span><span class="n">Support</span><span class="w"> </span><span class="p">(</span><span class="n">qfx</span><span class="o">-</span><span class="n">ex</span><span class="o">-</span><span class="n">x86</span><span class="o">-</span><span class="mi">32</span><span class="p">)</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span><span class="w"></span>
-<span class="n">JUNOS</span><span class="w"> </span><span class="n">Routing</span><span class="w"> </span><span class="n">Software</span><span class="w"> </span><span class="n">Suite</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span><span class="w"></span>
-<span class="n">JUNOS</span><span class="w"> </span><span class="n">jsd</span><span class="w"> </span><span class="o">[</span><span class="n">i386-17.3R3-S4.2-jet-1</span><span class="o">]</span><span class="w"></span>
-<span class="n">JUNOS</span><span class="w"> </span><span class="n">SDN</span><span class="w"> </span><span class="n">Software</span><span class="w"> </span><span class="n">Suite</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span><span class="w"></span>
-<span class="n">JUNOS</span><span class="w"> </span><span class="n">Enterprise</span><span class="w"> </span><span class="n">Software</span><span class="w"> </span><span class="n">Suite</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span><span class="w"></span>
-<span class="n">JUNOS</span><span class="w"> </span><span class="n">Web</span><span class="w"> </span><span class="n">Management</span><span class="w"> </span><span class="n">Platform</span><span class="w"> </span><span class="n">Package</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span><span class="w"></span>
-<span class="n">JUNOS</span><span class="w"> </span><span class="n">py</span><span class="o">-</span><span class="n">base</span><span class="o">-</span><span class="n">i386</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span><span class="w"></span>
-<span class="n">JUNOS</span><span class="w"> </span><span class="n">py</span><span class="o">-</span><span class="n">extensions</span><span class="o">-</span><span class="n">i386</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span><span class="w"></span>
-<span class="n">JUNOS</span><span class="w"> </span><span class="k">Host</span><span class="w"> </span><span class="n">Software</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="normal">21</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">root</span><span class="nv">@gss</span><span class="o">-</span><span class="n">sw02</span><span class="o">&gt;</span><span class="w"> </span><span class="n">show</span><span class="w"> </span><span class="n">version</span><span class="w"> </span>
+<span class="nl">fpc0</span><span class="p">:</span>
+<span class="o">--------------------------------------------------------------------------</span>
+<span class="nl">Hostname</span><span class="p">:</span><span class="w"> </span><span class="n">sw02</span>
+<span class="nl">Model</span><span class="p">:</span><span class="w"> </span><span class="n">qfx5100</span><span class="o">-</span><span class="mi">48</span><span class="n">s</span><span class="o">-</span><span class="mi">6</span><span class="n">q</span>
+<span class="nl">Junos</span><span class="p">:</span><span class="w"> </span><span class="mf">17.3</span><span class="n">R3</span><span class="o">-</span><span class="n">S4</span><span class="mf">.2</span>
+<span class="n">JUNOS</span><span class="w"> </span><span class="n">Base</span><span class="w"> </span><span class="n">OS</span><span class="w"> </span><span class="n">boot</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span>
+<span class="n">JUNOS</span><span class="w"> </span><span class="n">Base</span><span class="w"> </span><span class="n">OS</span><span class="w"> </span><span class="n">Software</span><span class="w"> </span><span class="n">Suite</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span>
+<span class="n">JUNOS</span><span class="w"> </span><span class="n">Crypto</span><span class="w"> </span><span class="n">Software</span><span class="w"> </span><span class="n">Suite</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span>
+<span class="n">JUNOS</span><span class="w"> </span><span class="n">Crypto</span><span class="w"> </span><span class="n">Software</span><span class="w"> </span><span class="n">Suite</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span>
+<span class="n">JUNOS</span><span class="w"> </span><span class="n">Online</span><span class="w"> </span><span class="n">Documentation</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span>
+<span class="n">JUNOS</span><span class="w"> </span><span class="n">Kernel</span><span class="w"> </span><span class="n">Software</span><span class="w"> </span><span class="n">Suite</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span>
+<span class="n">JUNOS</span><span class="w"> </span><span class="n">Packet</span><span class="w"> </span><span class="n">Forwarding</span><span class="w"> </span><span class="n">Engine</span><span class="w"> </span><span class="n">Support</span><span class="w"> </span><span class="p">(</span><span class="n">qfx</span><span class="o">-</span><span class="n">ex</span><span class="o">-</span><span class="n">x86</span><span class="o">-</span><span class="mi">32</span><span class="p">)</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span>
+<span class="n">JUNOS</span><span class="w"> </span><span class="n">Routing</span><span class="w"> </span><span class="n">Software</span><span class="w"> </span><span class="n">Suite</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span>
+<span class="n">JUNOS</span><span class="w"> </span><span class="n">jsd</span><span class="w"> </span><span class="o">[</span><span class="n">i386-17.3R3-S4.2-jet-1</span><span class="o">]</span>
+<span class="n">JUNOS</span><span class="w"> </span><span class="n">SDN</span><span class="w"> </span><span class="n">Software</span><span class="w"> </span><span class="n">Suite</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span>
+<span class="n">JUNOS</span><span class="w"> </span><span class="n">Enterprise</span><span class="w"> </span><span class="n">Software</span><span class="w"> </span><span class="n">Suite</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span>
+<span class="n">JUNOS</span><span class="w"> </span><span class="n">Web</span><span class="w"> </span><span class="n">Management</span><span class="w"> </span><span class="n">Platform</span><span class="w"> </span><span class="n">Package</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span>
+<span class="n">JUNOS</span><span class="w"> </span><span class="n">py</span><span class="o">-</span><span class="n">base</span><span class="o">-</span><span class="n">i386</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span>
+<span class="n">JUNOS</span><span class="w"> </span><span class="n">py</span><span class="o">-</span><span class="n">extensions</span><span class="o">-</span><span class="n">i386</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span>
+<span class="n">JUNOS</span><span class="w"> </span><span class="k">Host</span><span class="w"> </span><span class="n">Software</span><span class="w"> </span><span class="o">[</span><span class="n">17.3R3-S4.2</span><span class="o">]</span>
+</code></pre></div></td></tr></table></div></p>
 <h2 id="how-to-label-interfaces-on-a-juniper-switch-with-x520-cards">How to label interfaces on a Juniper switch with X520 cards</h2>
 <p>Enable console logging on the Juniper switch:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>root@-sw02&gt; monitor start messages | match ifOperStatus
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>root@-sw02&gt; monitor start messages | match ifOperStatus
+</code></pre></div></td></tr></table></div></p>
 <p>Disable console logging on the Juniper switch:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>root@-sw02&gt; monitor stop messages
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>root@-sw02&gt; monitor stop messages
+</code></pre></div></td></tr></table></div></p>
 <p>Flap server interface:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="mo">@02</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="err">#</span><span class="w">  </span><span class="n">ethtool</span><span class="w"> </span><span class="o">-</span><span class="n">r</span><span class="w"> </span><span class="n">p1p3</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="mo">@02</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="err">#</span><span class="w">  </span><span class="n">ethtool</span><span class="w"> </span><span class="o">-</span><span class="n">r</span><span class="w"> </span><span class="n">p1p3</span>
+</code></pre></div></td></tr></table></div></p>
 <p>This will log the following in the switch:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>root@-sw02&gt; Aug  9 05:40:40  -sw02 mib2d[2112]: SNMP_TRAP_LINK_DOWN: ifIndex 521, ifAdminStatus up(1), ifOperStatus down(2), ifName xe-0/0/2
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code>root@-sw02&gt; Aug  9 05:40:40  -sw02 mib2d[2112]: SNMP_TRAP_LINK_DOWN: ifIndex 521, ifAdminStatus up(1), ifOperStatus down(2), ifName xe-0/0/2
 Aug  9 05:40:40  -sw02 mib2d[2112]: SNMP_TRAP_LINK_UP: ifIndex 521, ifAdminStatus up(1), ifOperStatus up(1), ifName xe-0/0/2
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p>Now, one can set an interface description:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1869,47 +1766,45 @@ Aug  9 05:40:40  -sw02 mib2d[2112]: SNMP_TRAP_LINK_UP: ifIndex 521, ifAdminStatu
 <span class="normal">17</span>
 <span class="normal">18</span>
 <span class="normal">19</span>
-<span class="normal">20</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="o">&gt;</span><span class="w"> </span><span class="n">edit</span><span class="w">     </span>
-<span class="n">Entering</span><span class="w"> </span><span class="n">configuration</span><span class="w"> </span><span class="n">mode</span><span class="w"></span>
+<span class="normal">20</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="o">&gt;</span><span class="w"> </span><span class="n">edit</span><span class="w">     </span>
+<span class="n">Entering</span><span class="w"> </span><span class="n">configuration</span><span class="w"> </span><span class="n">mode</span>
 
-<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span><span class="w"></span>
+<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span>
 <span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">interfaces</span><span class="w"> </span><span class="n">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span><span class="w"> </span><span class="n">description</span><span class="w"> </span><span class="ss">&quot;02 p1p3&quot;</span><span class="w"> </span>
 
 <span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="k">commit</span><span class="w">  </span>
-<span class="n">configuration</span><span class="w"> </span><span class="k">check</span><span class="w"> </span><span class="n">succeeds</span><span class="w"></span>
-<span class="k">commit</span><span class="w"> </span><span class="n">complete</span><span class="w"></span>
+<span class="n">configuration</span><span class="w"> </span><span class="k">check</span><span class="w"> </span><span class="n">succeeds</span>
+<span class="k">commit</span><span class="w"> </span><span class="n">complete</span>
 
-<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span><span class="w"></span>
+<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span>
 <span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="k">exit</span><span class="w"> </span>
-<span class="n">Exiting</span><span class="w"> </span><span class="n">configuration</span><span class="w"> </span><span class="n">mode</span><span class="w"></span>
+<span class="n">Exiting</span><span class="w"> </span><span class="n">configuration</span><span class="w"> </span><span class="n">mode</span>
 
-<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="w"></span>
+<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span>
 <span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="o">&gt;</span><span class="w"> </span><span class="n">show</span><span class="w"> </span><span class="n">interfaces</span><span class="w"> </span><span class="n">descriptions</span><span class="w">    </span>
-<span class="n">Interface</span><span class="w">       </span><span class="k">Admin</span><span class="w"> </span><span class="n">Link</span><span class="w"> </span><span class="n">Description</span><span class="w"></span>
-<span class="n">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="w">        </span><span class="n">up</span><span class="w">    </span><span class="n">up</span><span class="w">   </span><span class="mi">01</span><span class="w"> </span><span class="n">p1p3</span><span class="w"></span>
-<span class="n">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">1</span><span class="w">        </span><span class="n">up</span><span class="w">    </span><span class="n">up</span><span class="w">   </span><span class="mi">01</span><span class="w"> </span><span class="n">p1p4</span><span class="w"></span>
-<span class="n">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span><span class="w">        </span><span class="n">up</span><span class="w">    </span><span class="n">up</span><span class="w">   </span><span class="mi">02</span><span class="w"> </span><span class="n">p1p3</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="n">Interface</span><span class="w">       </span><span class="k">Admin</span><span class="w"> </span><span class="n">Link</span><span class="w"> </span><span class="n">Description</span>
+<span class="n">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="w">        </span><span class="n">up</span><span class="w">    </span><span class="n">up</span><span class="w">   </span><span class="mi">01</span><span class="w"> </span><span class="n">p1p3</span>
+<span class="n">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">1</span><span class="w">        </span><span class="n">up</span><span class="w">    </span><span class="n">up</span><span class="w">   </span><span class="mi">01</span><span class="w"> </span><span class="n">p1p4</span>
+<span class="n">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span><span class="w">        </span><span class="n">up</span><span class="w">    </span><span class="n">up</span><span class="w">   </span><span class="mi">02</span><span class="w"> </span><span class="n">p1p3</span>
+</code></pre></div></td></tr></table></div></p>
 <h2 id="how-to-configure-interface-vlans">How to configure interface VLANs</h2>
 <h3 id="access-vlans">Access VLANs</h3>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
-<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span><span class="w"></span>
-<span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">interfaces</span><span class="w"> </span><span class="n">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="w"> </span><span class="n">unit</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="n">family</span><span class="w"></span>
-<span class="n">ethernet</span><span class="o">-</span><span class="n">switching</span><span class="w"> </span><span class="n">vlan</span><span class="w"> </span><span class="n">members</span><span class="w"> </span><span class="n">vlan259</span><span class="w"></span>
-<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span><span class="w"></span>
-<span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="k">commit</span><span class="w"></span>
-<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span><span class="w"></span>
-<span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="k">exit</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span>
+<span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">interfaces</span><span class="w"> </span><span class="n">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="w"> </span><span class="n">unit</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="n">family</span>
+<span class="n">ethernet</span><span class="o">-</span><span class="n">switching</span><span class="w"> </span><span class="n">vlan</span><span class="w"> </span><span class="n">members</span><span class="w"> </span><span class="n">vlan259</span>
+<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span>
+<span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="k">commit</span>
+<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span>
+<span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="k">exit</span>
+</code></pre></div></td></tr></table></div>
 <p>Verify:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1938,40 +1833,39 @@ Aug  9 05:40:40  -sw02 mib2d[2112]: SNMP_TRAP_LINK_UP: ifIndex 521, ifAdminStatu
 <span class="normal">27</span>
 <span class="normal">28</span>
 <span class="normal">29</span>
-<span class="normal">30</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>{<span class="nv">master</span>:<span class="mi">0</span>}
-<span class="nv">root</span>@<span class="o">-</span><span class="nv">sw02</span><span class="o">&gt;</span> <span class="k">show</span> <span class="nv">vlans</span> <span class="nv">brief</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code>{<span class="nv">master</span>:<span class="mi">0</span>}
+<span class="nv">root</span>@<span class="o">-</span><span class="nv">sw02</span><span class="o">&gt;</span><span class="w"> </span><span class="k">show</span><span class="w"> </span><span class="nv">vlans</span><span class="w"> </span><span class="nv">brief</span>
 
-<span class="nv">Routing</span> <span class="nv">instance</span>        <span class="nv">VLAN</span> <span class="nv">name</span>             <span class="nv">Tag</span>          <span class="nv">Interfaces</span>
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">default</span>               <span class="mi">1</span>
+<span class="nv">Routing</span><span class="w"> </span><span class="nv">instance</span><span class="w">        </span><span class="nv">VLAN</span><span class="w"> </span><span class="nv">name</span><span class="w">             </span><span class="nv">Tag</span><span class="w">          </span><span class="nv">Interfaces</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">default</span><span class="w">               </span><span class="mi">1</span>
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">native_vlan515</span>        <span class="mi">515</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">native_vlan515</span><span class="w">        </span><span class="mi">515</span>
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">vlan250</span>               <span class="mi">250</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan250</span><span class="w">               </span><span class="mi">250</span>
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">vlan251</span>               <span class="mi">251</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan251</span><span class="w">               </span><span class="mi">251</span>
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">vlan252</span>               <span class="mi">252</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan252</span><span class="w">               </span><span class="mi">252</span>
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">vlan253</span>               <span class="mi">253</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan253</span><span class="w">               </span><span class="mi">253</span>
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">vlan254</span>               <span class="mi">254</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan254</span><span class="w">               </span><span class="mi">254</span>
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">vlan255</span>               <span class="mi">255</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan255</span><span class="w">               </span><span class="mi">255</span>
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">vlan256</span>               <span class="mi">256</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan256</span><span class="w">               </span><span class="mi">256</span>
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">vlan257</span>               <span class="mi">257</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan257</span><span class="w">               </span><span class="mi">257</span>
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">vlan258</span>               <span class="mi">258</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan258</span><span class="w">               </span><span class="mi">258</span>
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">vlan259</span>               <span class="mi">259</span>
-                                                           <span class="nv">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span>.<span class="mi">0</span><span class="o">*</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan259</span><span class="w">               </span><span class="mi">259</span>
+<span class="w">                                                           </span><span class="nv">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span>.<span class="mi">0</span><span class="o">*</span>
 
 {<span class="nv">master</span>:<span class="mi">0</span>}
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <h3 id="trunks">Trunks</h3>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2026,66 +1920,65 @@ Aug  9 05:40:40  -sw02 mib2d[2112]: SNMP_TRAP_LINK_UP: ifIndex 521, ifAdminStatu
 <span class="normal">53</span>
 <span class="normal">54</span>
 <span class="normal">55</span>
-<span class="normal">56</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="o">&gt;</span><span class="w"> </span><span class="n">edit</span><span class="w"></span>
-<span class="n">Entering</span><span class="w"> </span><span class="n">configuration</span><span class="w"> </span><span class="n">mode</span><span class="w"></span>
-<span class="n">The</span><span class="w"> </span><span class="n">configuration</span><span class="w"> </span><span class="n">has</span><span class="w"> </span><span class="n">been</span><span class="w"> </span><span class="n">changed</span><span class="w"> </span><span class="n">but</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">committed</span><span class="w"></span>
+<span class="normal">56</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="o">&gt;</span><span class="w"> </span><span class="n">edit</span>
+<span class="n">Entering</span><span class="w"> </span><span class="n">configuration</span><span class="w"> </span><span class="n">mode</span>
+<span class="n">The</span><span class="w"> </span><span class="n">configuration</span><span class="w"> </span><span class="n">has</span><span class="w"> </span><span class="n">been</span><span class="w"> </span><span class="n">changed</span><span class="w"> </span><span class="n">but</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">committed</span>
 
-<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span><span class="w"></span>
-<span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">interfaces</span><span class="w"> </span><span class="n">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span><span class="w"> </span><span class="n">unit</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="n">ethernet</span><span class="o">-</span><span class="n">switching</span><span class="w"> </span><span class="n">vlan</span><span class="w"> </span><span class="n">members</span><span class="w"> </span><span class="o">[</span><span class="n"> 251 257-259 </span><span class="o">]</span><span class="w"></span>
+<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span>
+<span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">interfaces</span><span class="w"> </span><span class="n">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span><span class="w"> </span><span class="n">unit</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="n">ethernet</span><span class="o">-</span><span class="n">switching</span><span class="w"> </span><span class="n">vlan</span><span class="w"> </span><span class="n">members</span><span class="w"> </span><span class="o">[</span><span class="n"> 251 257-259 </span><span class="o">]</span>
 
-<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span><span class="w"></span>
-<span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">interfaces</span><span class="w"> </span><span class="n">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span><span class="w"> </span><span class="n">unit</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="n">ethernet</span><span class="o">-</span><span class="n">switching</span><span class="w"> </span><span class="n">interface</span><span class="o">-</span><span class="n">mode</span><span class="w"> </span><span class="n">trunk</span><span class="w"></span>
+<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span>
+<span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">interfaces</span><span class="w"> </span><span class="n">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span><span class="w"> </span><span class="n">unit</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="n">ethernet</span><span class="o">-</span><span class="n">switching</span><span class="w"> </span><span class="n">interface</span><span class="o">-</span><span class="n">mode</span><span class="w"> </span><span class="n">trunk</span>
 
-<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span><span class="w"></span>
-<span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">interfaces</span><span class="w"> </span><span class="n">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span><span class="w"> </span><span class="n">native</span><span class="o">-</span><span class="n">vlan</span><span class="o">-</span><span class="n">id</span><span class="w"> </span><span class="mi">259</span><span class="w"></span>
+<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span>
+<span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">interfaces</span><span class="w"> </span><span class="n">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span><span class="w"> </span><span class="n">native</span><span class="o">-</span><span class="n">vlan</span><span class="o">-</span><span class="n">id</span><span class="w"> </span><span class="mi">259</span>
 
-<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span><span class="w"></span>
-<span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="k">commit</span><span class="w"></span>
-<span class="o">[</span><span class="n">edit interfaces xe-0/0/2 unit 0 family</span><span class="o">]</span><span class="w"></span>
-<span class="w">  </span><span class="s1">&#39;ethernet-switching&#39;</span><span class="w"></span>
-<span class="w">    </span><span class="n">Family</span><span class="w"> </span><span class="n">ethernet</span><span class="o">-</span><span class="n">switching</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">rest</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">families</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">mutually</span><span class="w"> </span><span class="n">exclusive</span><span class="w"></span>
-<span class="nl">error</span><span class="p">:</span><span class="w"> </span><span class="k">commit</span><span class="w"> </span><span class="nl">failed</span><span class="p">:</span><span class="w"> </span><span class="p">(</span><span class="n">statements</span><span class="w"> </span><span class="k">constraint</span><span class="w"> </span><span class="k">check</span><span class="w"> </span><span class="n">failed</span><span class="p">)</span><span class="w"></span>
+<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span>
+<span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="k">commit</span>
+<span class="o">[</span><span class="n">edit interfaces xe-0/0/2 unit 0 family</span><span class="o">]</span>
+<span class="w">  </span><span class="s1">&#39;ethernet-switching&#39;</span>
+<span class="w">    </span><span class="n">Family</span><span class="w"> </span><span class="n">ethernet</span><span class="o">-</span><span class="n">switching</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">rest</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">families</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">mutually</span><span class="w"> </span><span class="n">exclusive</span>
+<span class="nl">error</span><span class="p">:</span><span class="w"> </span><span class="k">commit</span><span class="w"> </span><span class="nl">failed</span><span class="p">:</span><span class="w"> </span><span class="p">(</span><span class="n">statements</span><span class="w"> </span><span class="k">constraint</span><span class="w"> </span><span class="k">check</span><span class="w"> </span><span class="n">failed</span><span class="p">)</span>
 
-<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span><span class="w"></span>
-<span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="n">show</span><span class="w"> </span><span class="n">interfaces</span><span class="w"> </span><span class="n">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span><span class="w"></span>
-<span class="n">description</span><span class="w"> </span><span class="ss">&quot;02 p1p3&quot;</span><span class="p">;</span><span class="w"></span>
-<span class="n">native</span><span class="o">-</span><span class="n">vlan</span><span class="o">-</span><span class="n">id</span><span class="w"> </span><span class="mi">259</span><span class="p">;</span><span class="w"></span>
-<span class="n">unit</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">family</span><span class="w"> </span><span class="n">inet</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">dhcp</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
-<span class="w">            </span><span class="n">vendor</span><span class="o">-</span><span class="n">id</span><span class="w"> </span><span class="n">Juniper</span><span class="o">-</span><span class="n">qfx5100</span><span class="o">-</span><span class="mi">48</span><span class="n">s</span><span class="o">-</span><span class="mi">6</span><span class="n">q</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="err">}</span><span class="w"></span>
-<span class="w">    </span><span class="err">}</span><span class="w"></span>
-<span class="w">    </span><span class="err">##</span><span class="w"></span>
-<span class="w">    </span><span class="err">##</span><span class="w"> </span><span class="nl">Warning</span><span class="p">:</span><span class="w"> </span><span class="n">Family</span><span class="w"> </span><span class="n">ethernet</span><span class="o">-</span><span class="n">switching</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">rest</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">families</span><span class="w"> </span><span class="k">are</span><span class="w"></span>
-<span class="n">mutually</span><span class="w"> </span><span class="n">exclusive</span><span class="w"></span>
-<span class="w">    </span><span class="err">##</span><span class="w"></span>
-<span class="w">    </span><span class="n">family</span><span class="w"> </span><span class="n">ethernet</span><span class="o">-</span><span class="n">switching</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">interface</span><span class="o">-</span><span class="n">mode</span><span class="w"> </span><span class="n">trunk</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="n">vlan</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
-<span class="w">            </span><span class="n">members</span><span class="w"> </span><span class="o">[</span><span class="n"> 251 257-259 </span><span class="o">]</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="err">}</span><span class="w"></span>
-<span class="w">    </span><span class="err">}</span><span class="w"></span>
-<span class="err">}</span><span class="w"></span>
+<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span>
+<span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="n">show</span><span class="w"> </span><span class="n">interfaces</span><span class="w"> </span><span class="n">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span>
+<span class="n">description</span><span class="w"> </span><span class="ss">&quot;02 p1p3&quot;</span><span class="p">;</span>
+<span class="n">native</span><span class="o">-</span><span class="n">vlan</span><span class="o">-</span><span class="n">id</span><span class="w"> </span><span class="mi">259</span><span class="p">;</span>
+<span class="n">unit</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="err">{</span>
+<span class="w">    </span><span class="n">family</span><span class="w"> </span><span class="n">inet</span><span class="w"> </span><span class="err">{</span>
+<span class="w">        </span><span class="n">dhcp</span><span class="w"> </span><span class="err">{</span>
+<span class="w">            </span><span class="n">vendor</span><span class="o">-</span><span class="n">id</span><span class="w"> </span><span class="n">Juniper</span><span class="o">-</span><span class="n">qfx5100</span><span class="o">-</span><span class="mi">48</span><span class="n">s</span><span class="o">-</span><span class="mi">6</span><span class="n">q</span><span class="p">;</span>
+<span class="w">        </span><span class="err">}</span>
+<span class="w">    </span><span class="err">}</span>
+<span class="w">    </span><span class="err">##</span>
+<span class="w">    </span><span class="err">##</span><span class="w"> </span><span class="nl">Warning</span><span class="p">:</span><span class="w"> </span><span class="n">Family</span><span class="w"> </span><span class="n">ethernet</span><span class="o">-</span><span class="n">switching</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">rest</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">families</span><span class="w"> </span><span class="k">are</span>
+<span class="n">mutually</span><span class="w"> </span><span class="n">exclusive</span>
+<span class="w">    </span><span class="err">##</span>
+<span class="w">    </span><span class="n">family</span><span class="w"> </span><span class="n">ethernet</span><span class="o">-</span><span class="n">switching</span><span class="w"> </span><span class="err">{</span>
+<span class="w">        </span><span class="n">interface</span><span class="o">-</span><span class="n">mode</span><span class="w"> </span><span class="n">trunk</span><span class="p">;</span>
+<span class="w">        </span><span class="n">vlan</span><span class="w"> </span><span class="err">{</span>
+<span class="w">            </span><span class="n">members</span><span class="w"> </span><span class="o">[</span><span class="n"> 251 257-259 </span><span class="o">]</span><span class="p">;</span>
+<span class="w">        </span><span class="err">}</span>
+<span class="w">    </span><span class="err">}</span>
+<span class="err">}</span>
 
-<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span><span class="w"></span>
+<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span>
 
-<span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="k">delete</span><span class="w"> </span><span class="n">interfaces</span><span class="w"> </span><span class="n">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span><span class="w"> </span><span class="n">unit</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="n">inet</span><span class="w"></span>
+<span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="k">delete</span><span class="w"> </span><span class="n">interfaces</span><span class="w"> </span><span class="n">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span><span class="w"> </span><span class="n">unit</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="n">inet</span>
 
-<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span><span class="w"></span>
-<span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="k">commit</span><span class="w"></span>
-<span class="n">configuration</span><span class="w"> </span><span class="k">check</span><span class="w"> </span><span class="n">succeeds</span><span class="w"></span>
-<span class="k">commit</span><span class="w"> </span><span class="n">complete</span><span class="w"></span>
+<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span>
+<span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="k">commit</span>
+<span class="n">configuration</span><span class="w"> </span><span class="k">check</span><span class="w"> </span><span class="n">succeeds</span>
+<span class="k">commit</span><span class="w"> </span><span class="n">complete</span>
 
-<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span><span class="w"></span>
-<span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="k">exit</span><span class="w"></span>
-<span class="n">Exiting</span><span class="w"> </span><span class="n">configuration</span><span class="w"> </span><span class="n">mode</span><span class="w"></span>
+<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="o">[</span><span class="n">edit</span><span class="o">]</span>
+<span class="n">root</span><span class="err">@</span><span class="o">-</span><span class="n">sw02</span><span class="err">#</span><span class="w"> </span><span class="k">exit</span>
+<span class="n">Exiting</span><span class="w"> </span><span class="n">configuration</span><span class="w"> </span><span class="n">mode</span>
 
-<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table>
+<span class="err">{</span><span class="nl">master</span><span class="p">:</span><span class="mi">0</span><span class="err">}</span>
+</code></pre></div></td></tr></table></div>
 <p>Verification:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2115,39 +2008,38 @@ Aug  9 05:40:40  -sw02 mib2d[2112]: SNMP_TRAP_LINK_UP: ifIndex 521, ifAdminStatu
 <span class="normal">28</span>
 <span class="normal">29</span>
 <span class="normal">30</span>
-<span class="normal">31</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">root</span>@<span class="o">-</span><span class="nv">sw02</span><span class="o">&gt;</span> <span class="k">show</span> <span class="nv">vlans</span> <span class="nv">brief</span>
+<span class="normal">31</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nv">root</span>@<span class="o">-</span><span class="nv">sw02</span><span class="o">&gt;</span><span class="w"> </span><span class="k">show</span><span class="w"> </span><span class="nv">vlans</span><span class="w"> </span><span class="nv">brief</span>
 
-<span class="nv">Routing</span> <span class="nv">instance</span>        <span class="nv">VLAN</span> <span class="nv">name</span>             <span class="nv">Tag</span>          <span class="nv">Interfaces</span>
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">default</span>               <span class="mi">1</span>
+<span class="nv">Routing</span><span class="w"> </span><span class="nv">instance</span><span class="w">        </span><span class="nv">VLAN</span><span class="w"> </span><span class="nv">name</span><span class="w">             </span><span class="nv">Tag</span><span class="w">          </span><span class="nv">Interfaces</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">default</span><span class="w">               </span><span class="mi">1</span>
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">native_vlan515</span>        <span class="mi">515</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">native_vlan515</span><span class="w">        </span><span class="mi">515</span>
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">vlan250</span>               <span class="mi">250</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan250</span><span class="w">               </span><span class="mi">250</span>
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">vlan251</span>               <span class="mi">251</span>
-                                                           <span class="nv">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span>.<span class="mi">0</span>
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">vlan252</span>               <span class="mi">252</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan251</span><span class="w">               </span><span class="mi">251</span>
+<span class="w">                                                           </span><span class="nv">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span>.<span class="mi">0</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan252</span><span class="w">               </span><span class="mi">252</span>
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">vlan253</span>               <span class="mi">253</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan253</span><span class="w">               </span><span class="mi">253</span>
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">vlan254</span>               <span class="mi">254</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan254</span><span class="w">               </span><span class="mi">254</span>
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">vlan255</span>               <span class="mi">255</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan255</span><span class="w">               </span><span class="mi">255</span>
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">vlan256</span>               <span class="mi">256</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan256</span><span class="w">               </span><span class="mi">256</span>
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">vlan257</span>               <span class="mi">257</span>
-                                                           <span class="nv">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span>.<span class="mi">0</span>
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">vlan258</span>               <span class="mi">258</span>
-                                                           <span class="nv">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span>.<span class="mi">0</span>
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span>          <span class="nv">vlan259</span>               <span class="mi">259</span>
-                                                           <span class="nv">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span>.<span class="mi">0</span><span class="o">*</span>
-                                                           <span class="nv">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span>.<span class="mi">0</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan257</span><span class="w">               </span><span class="mi">257</span>
+<span class="w">                                                           </span><span class="nv">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span>.<span class="mi">0</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan258</span><span class="w">               </span><span class="mi">258</span>
+<span class="w">                                                           </span><span class="nv">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span>.<span class="mi">0</span>
+<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan259</span><span class="w">               </span><span class="mi">259</span>
+<span class="w">                                                           </span><span class="nv">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span>.<span class="mi">0</span><span class="o">*</span>
+<span class="w">                                                           </span><span class="nv">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span>.<span class="mi">0</span>
 
 {<span class="nv">master</span>:<span class="mi">0</span>}
 <span class="nv">root</span>@<span class="o">-</span><span class="nv">sw02</span><span class="o">&gt;</span>
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 
   <hr>
 <div class="md-source-file">
@@ -2160,54 +2052,25 @@ Aug  9 05:40:40  -sw02 mib2d[2112]: SNMP_TRAP_LINK_UP: ifIndex 521, ifAdminStatu
   </small>
 </div>
 
-              
-            </article>
-          </div>
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
         
       </main>
       
         <footer class="md-footer">
-  
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
-      
-        
-        <a href="../bonding_in_linux/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Bonding in Linux" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Bonding in Linux
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../haproxy-and-h2c/" class="md-footer__link md-footer__link--next" aria-label="Next: haproxy and HTTP/2" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              haproxy and HTTP/2
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -2229,10 +2092,11 @@ Aug  9 05:40:40  -sw02 mib2d[2112]: SNMP_TRAP_LINK_UP: ifIndex 521, ifAdminStatu
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.467223ff.min.js"></script>
+      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
       
     
   </body>

@@ -12,8 +12,14 @@
       
         <link rel="canonical" href="https://andreaskaris.github.io/blog/openshift/private-registry/">
       
+      
+        <link rel="prev" href="../patch-service-loadbalancer-ingress-ip/">
+      
+      
+        <link rel="next" href="../proxy-ocp-4.5/">
+      
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.14">
     
     
       
@@ -21,16 +27,13 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2d9f7617.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#000000">
-        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
       
+      
+
     
     
     
@@ -43,10 +46,11 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
+    
     
     
   </head>
@@ -57,7 +61,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="pink">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink">
   
     
     
@@ -65,11 +69,6 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
-      
-        
-        <a href="#setting-up-a-private-registry" class="md-skip">
-          Skip to content
-        </a>
       
     </div>
     <div data-md-component="announce">
@@ -84,11 +83,11 @@
     <a href="../.." title="Andreas Karis Blog" class="md-header__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -121,7 +120,7 @@
           
             
 <nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-tabs__inner md-grid">
+  <div class="md-grid">
     <ul class="md-tabs__list">
       
         
@@ -258,7 +257,7 @@
     <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     Andreas Karis Blog
@@ -292,8 +291,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
       
       
         
@@ -316,7 +316,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Ceph" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
           Ceph
@@ -356,8 +356,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
       
       
         
@@ -400,7 +401,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Linux" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Linux
@@ -580,8 +581,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
       
       
         
@@ -636,7 +638,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Networking" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           Networking
@@ -902,8 +904,9 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
       
       
         
@@ -990,7 +993,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenShift and Kubernetes" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_5">
           <span class="md-nav__icon md-icon"></span>
           OpenShift and Kubernetes
@@ -1330,101 +1333,13 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Private container registry
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         Private container registry
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#generating-certificate-authority-and-registry-certificates" class="md-nav__link">
-    Generating certificate authority and registry certificates
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#starting-the-registry" class="md-nav__link">
-    Starting the registry
-  </a>
-  
-    <nav class="md-nav" aria-label="Starting the registry">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#password-protection" class="md-nav__link">
-    Password protection
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#no-password-protection" class="md-nav__link">
-    No password protection
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#generating-a-systemd-service-for-the-registry" class="md-nav__link">
-    Generating a systemd service for the registry
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuring-the-firewall" class="md-nav__link">
-    Configuring the firewall
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#verification" class="md-nav__link">
-    Verification
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -1574,8 +1489,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
       
       
         
@@ -1600,7 +1516,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenStack" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_6">
           <span class="md-nav__icon md-icon"></span>
           OpenStack
@@ -1654,8 +1570,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
       
       
         
@@ -1682,7 +1599,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Coding" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_7">
           <span class="md-nav__icon md-icon"></span>
           Coding
@@ -1756,78 +1673,6 @@
   
   
   
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    Prerequisites
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#generating-certificate-authority-and-registry-certificates" class="md-nav__link">
-    Generating certificate authority and registry certificates
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#starting-the-registry" class="md-nav__link">
-    Starting the registry
-  </a>
-  
-    <nav class="md-nav" aria-label="Starting the registry">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#password-protection" class="md-nav__link">
-    Password protection
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#no-password-protection" class="md-nav__link">
-    No password protection
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#generating-a-systemd-service-for-the-registry" class="md-nav__link">
-    Generating a systemd service for the registry
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuring-the-firewall" class="md-nav__link">
-    Configuring the firewall
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#verification" class="md-nav__link">
-    Verification
-  </a>
-  
-</li>
-      
-    </ul>
   
 </nav>
                   </div>
@@ -1835,21 +1680,21 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
 <h1 id="setting-up-a-private-registry">Setting up a private registry</h1>
 <h4 id="prerequisites">Prerequisites</h4>
 <p>After creating a virtual machine that will serve as a registry, install podman and httpd-tools:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">mirror</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># sudo yum -y install podman httpd-tools</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">mirror</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># sudo yum -y install podman httpd-tools</span>
+</code></pre></div></td></tr></table></div></p>
 <h4 id="generating-certificate-authority-and-registry-certificates">Generating certificate authority and registry certificates</h4>
 <p>Now, generate a self-signed CA:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1858,26 +1703,24 @@
 <span class="normal"> 7</span>
 <span class="normal"> 8</span>
 <span class="normal"> 9</span>
-<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@mirror ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">mkdir</span><span class="w"> </span><span class="n">CA</span><span class="w"></span>
-<span class="o">[</span><span class="n">root@mirror ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cd</span><span class="w"> </span><span class="n">CA</span><span class="w"></span>
-<span class="o">[</span><span class="n">root@mirror CA</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">openssl</span><span class="w"> </span><span class="n">genrsa</span><span class="w"> </span><span class="o">-</span><span class="k">out</span><span class="w"> </span><span class="n">rootCA</span><span class="p">.</span><span class="k">key</span><span class="w"> </span><span class="mi">4096</span><span class="w"></span>
-<span class="p">(...)</span><span class="w"></span>
-<span class="o">[</span><span class="n">root@mirror CA</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">openssl</span><span class="w"> </span><span class="n">req</span><span class="w"> </span><span class="o">-</span><span class="n">x509</span><span class="w"> </span><span class="o">-</span><span class="k">new</span><span class="w"> </span><span class="o">-</span><span class="n">nodes</span><span class="w"> </span><span class="o">-</span><span class="k">key</span><span class="w"> </span><span class="n">rootCA</span><span class="p">.</span><span class="k">key</span><span class="w"> </span><span class="o">-</span><span class="n">sha256</span><span class="w"> </span><span class="o">-</span><span class="n">days</span><span class="w"> </span><span class="mi">10240</span><span class="w"> </span><span class="o">-</span><span class="k">out</span><span class="w"> </span><span class="n">rootCA</span><span class="p">.</span><span class="n">crt</span><span class="w"> </span><span class="o">-</span><span class="n">subj</span><span class="w"> </span><span class="ss">&quot;/C=CA/ST=Arctica/L=Northpole/O=Acme Inc/OU=DevOps/CN=www.example.com/emailAddress=dev@www.example.com&quot;</span><span class="w"></span>
-<span class="p">(...)</span><span class="w"></span>
-<span class="o">[</span><span class="n">root@mirror CA</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">ll</span><span class="w"></span>
-<span class="n">total</span><span class="w"> </span><span class="mi">8</span><span class="w"></span>
-<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">--</span><span class="n">r</span><span class="o">--</span><span class="p">.</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="mi">1960</span><span class="w"> </span><span class="n">Feb</span><span class="w">  </span><span class="mi">3</span><span class="w"> </span><span class="mi">09</span><span class="err">:</span><span class="mi">47</span><span class="w"> </span><span class="n">rootCA</span><span class="p">.</span><span class="n">crt</span><span class="w"></span>
+<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@mirror ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">mkdir</span><span class="w"> </span><span class="n">CA</span>
+<span class="o">[</span><span class="n">root@mirror ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cd</span><span class="w"> </span><span class="n">CA</span>
+<span class="o">[</span><span class="n">root@mirror CA</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">openssl</span><span class="w"> </span><span class="n">genrsa</span><span class="w"> </span><span class="o">-</span><span class="k">out</span><span class="w"> </span><span class="n">rootCA</span><span class="p">.</span><span class="k">key</span><span class="w"> </span><span class="mi">4096</span>
+<span class="p">(...)</span>
+<span class="o">[</span><span class="n">root@mirror CA</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">openssl</span><span class="w"> </span><span class="n">req</span><span class="w"> </span><span class="o">-</span><span class="n">x509</span><span class="w"> </span><span class="o">-</span><span class="k">new</span><span class="w"> </span><span class="o">-</span><span class="n">nodes</span><span class="w"> </span><span class="o">-</span><span class="k">key</span><span class="w"> </span><span class="n">rootCA</span><span class="p">.</span><span class="k">key</span><span class="w"> </span><span class="o">-</span><span class="n">sha256</span><span class="w"> </span><span class="o">-</span><span class="n">days</span><span class="w"> </span><span class="mi">10240</span><span class="w"> </span><span class="o">-</span><span class="k">out</span><span class="w"> </span><span class="n">rootCA</span><span class="p">.</span><span class="n">crt</span><span class="w"> </span><span class="o">-</span><span class="n">subj</span><span class="w"> </span><span class="ss">&quot;/C=CA/ST=Arctica/L=Northpole/O=Acme Inc/OU=DevOps/CN=www.example.com/emailAddress=dev@www.example.com&quot;</span>
+<span class="p">(...)</span>
+<span class="o">[</span><span class="n">root@mirror CA</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">ll</span>
+<span class="n">total</span><span class="w"> </span><span class="mi">8</span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">--</span><span class="n">r</span><span class="o">--</span><span class="p">.</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="mi">1960</span><span class="w"> </span><span class="n">Feb</span><span class="w">  </span><span class="mi">3</span><span class="w"> </span><span class="mi">09</span><span class="err">:</span><span class="mi">47</span><span class="w"> </span><span class="n">rootCA</span><span class="p">.</span><span class="n">crt</span>
 <span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="c1">--r--. 1 root root 3311 Feb  3 09:45 rootCA.key</span>
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p>Trust this rootCA on the mirror registry node and on the node where you are running the OpenShift installer:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>sudo cp rootCA.crt  /etc/pki/ca-trust/source/anchors/
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code>sudo cp rootCA.crt  /etc/pki/ca-trust/source/anchors/
 sudo update-ca-trust extract
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p>Create a certificate signing request:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1906,56 +1749,53 @@ sudo update-ca-trust extract
 <span class="normal">27</span>
 <span class="normal">28</span>
 <span class="normal">29</span>
-<span class="normal">30</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">mkdir</span><span class="w"> </span><span class="n">certificates</span><span class="w"></span>
-<span class="n">cd</span><span class="w"> </span><span class="n">certificates</span><span class="w"></span>
+<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">mkdir</span><span class="w"> </span><span class="n">certificates</span>
+<span class="n">cd</span><span class="w"> </span><span class="n">certificates</span>
 <span class="n">cat</span><span class="o">&lt;&lt;</span><span class="s1">&#39;EOF&#39;</span><span class="o">&gt;</span><span class="n">config</span><span class="w"> </span>
-<span class="o">[</span><span class="n"> req </span><span class="o">]</span><span class="w"></span>
-<span class="n">distinguished_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">req_distinguished_name</span><span class="w"></span>
-<span class="n">prompt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">no</span><span class="w"></span>
-<span class="n">req_extensions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v3_req</span><span class="w"></span>
+<span class="o">[</span><span class="n"> req </span><span class="o">]</span>
+<span class="n">distinguished_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">req_distinguished_name</span>
+<span class="n">prompt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">no</span>
+<span class="n">req_extensions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v3_req</span>
 
-<span class="o">[</span><span class="n"> req_distinguished_name </span><span class="o">]</span><span class="w"></span>
-<span class="n">C</span><span class="o">=</span><span class="ss">&quot;DE&quot;</span><span class="w"></span>
-<span class="n">ST</span><span class="o">=</span><span class="ss">&quot;NRW&quot;</span><span class="w"></span>
-<span class="n">L</span><span class="o">=</span><span class="ss">&quot;Dusseldorf&quot;</span><span class="w"></span>
-<span class="n">O</span><span class="o">=</span><span class="ss">&quot;Acme Inc.&quot;</span><span class="w"></span>
-<span class="n">CN</span><span class="o">=</span><span class="ss">&quot;192.0.2.100&quot;</span><span class="w"></span>
-<span class="n">emailAddress</span><span class="o">=</span><span class="ss">&quot;akaris@example.com&quot;</span><span class="w"></span>
+<span class="o">[</span><span class="n"> req_distinguished_name </span><span class="o">]</span>
+<span class="n">C</span><span class="o">=</span><span class="ss">&quot;DE&quot;</span>
+<span class="n">ST</span><span class="o">=</span><span class="ss">&quot;NRW&quot;</span>
+<span class="n">L</span><span class="o">=</span><span class="ss">&quot;Dusseldorf&quot;</span>
+<span class="n">O</span><span class="o">=</span><span class="ss">&quot;Acme Inc.&quot;</span>
+<span class="n">CN</span><span class="o">=</span><span class="ss">&quot;192.0.2.100&quot;</span>
+<span class="n">emailAddress</span><span class="o">=</span><span class="ss">&quot;akaris@example.com&quot;</span>
 
-<span class="o">[</span><span class="n"> v3_req </span><span class="o">]</span><span class="w"></span>
+<span class="o">[</span><span class="n"> v3_req </span><span class="o">]</span>
 
-<span class="n">#basicConstraints</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nl">CA</span><span class="p">:</span><span class="k">FALSE</span><span class="w"></span>
-<span class="n">keyUsage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nonRepudiation</span><span class="p">,</span><span class="w"> </span><span class="n">digitalSignature</span><span class="p">,</span><span class="w"> </span><span class="n">keyEncipherment</span><span class="w"></span>
-<span class="n">subjectAltName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">@alt_names</span><span class="w"></span>
+<span class="n">#basicConstraints</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nl">CA</span><span class="p">:</span><span class="k">FALSE</span>
+<span class="n">keyUsage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nonRepudiation</span><span class="p">,</span><span class="w"> </span><span class="n">digitalSignature</span><span class="p">,</span><span class="w"> </span><span class="n">keyEncipherment</span>
+<span class="n">subjectAltName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">@alt_names</span>
 
-<span class="o">[</span><span class="n">alt_names</span><span class="o">]</span><span class="w"></span>
-<span class="n">DNS</span><span class="mf">.1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">192.0.2.100</span><span class="w"></span>
-<span class="n">IP</span><span class="mf">.1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">192.0.2.100</span><span class="w"></span>
-<span class="n">DNS</span><span class="mf">.2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">192.0.3.100</span><span class="w"></span>
-<span class="n">IP</span><span class="mf">.2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">192.0.3.100</span><span class="w"></span>
-<span class="n">EOF</span><span class="w"></span>
-<span class="n">openssl</span><span class="w"> </span><span class="n">genrsa</span><span class="w"> </span><span class="o">-</span><span class="k">out</span><span class="w"> </span><span class="k">domain</span><span class="p">.</span><span class="k">key</span><span class="w"> </span><span class="mi">4096</span><span class="w"></span>
-<span class="n">openssl</span><span class="w"> </span><span class="n">req</span><span class="w"> </span><span class="o">-</span><span class="k">new</span><span class="w"> </span><span class="o">-</span><span class="k">key</span><span class="w"> </span><span class="k">domain</span><span class="p">.</span><span class="k">key</span><span class="w"> </span><span class="o">-</span><span class="n">nodes</span><span class="w"> </span><span class="o">-</span><span class="k">out</span><span class="w"> </span><span class="k">domain</span><span class="p">.</span><span class="n">csr</span><span class="w"> </span><span class="o">-</span><span class="n">config</span><span class="w"> </span><span class="n">config</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="o">[</span><span class="n">alt_names</span><span class="o">]</span>
+<span class="n">DNS</span><span class="mf">.1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">192.0.2.100</span>
+<span class="n">IP</span><span class="mf">.1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">192.0.2.100</span>
+<span class="n">DNS</span><span class="mf">.2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">192.0.3.100</span>
+<span class="n">IP</span><span class="mf">.2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">192.0.3.100</span>
+<span class="n">EOF</span>
+<span class="n">openssl</span><span class="w"> </span><span class="n">genrsa</span><span class="w"> </span><span class="o">-</span><span class="k">out</span><span class="w"> </span><span class="k">domain</span><span class="p">.</span><span class="k">key</span><span class="w"> </span><span class="mi">4096</span>
+<span class="n">openssl</span><span class="w"> </span><span class="n">req</span><span class="w"> </span><span class="o">-</span><span class="k">new</span><span class="w"> </span><span class="o">-</span><span class="k">key</span><span class="w"> </span><span class="k">domain</span><span class="p">.</span><span class="k">key</span><span class="w"> </span><span class="o">-</span><span class="n">nodes</span><span class="w"> </span><span class="o">-</span><span class="k">out</span><span class="w"> </span><span class="k">domain</span><span class="p">.</span><span class="n">csr</span><span class="w"> </span><span class="o">-</span><span class="n">config</span><span class="w"> </span><span class="n">config</span>
+</code></pre></div></td></tr></table></div></p>
 <p>Verify the CSR:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@mirror certificates</span><span class="o">]</span><span class="err">#</span><span class="w">  </span><span class="n">openssl</span><span class="w"> </span><span class="n">req</span><span class="w"> </span><span class="o">-</span><span class="ow">in</span><span class="w"> </span><span class="k">domain</span><span class="p">.</span><span class="n">csr</span><span class="w"> </span><span class="o">-</span><span class="n">noout</span><span class="w"> </span><span class="o">-</span><span class="nc">text</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="n">dns</span><span class="w"></span>
-<span class="w">                </span><span class="nl">DNS</span><span class="p">:</span><span class="mf">192.0.2.100</span><span class="p">,</span><span class="w"> </span><span class="n">IP</span><span class="w"> </span><span class="nl">Address</span><span class="p">:</span><span class="mf">192.0.2.100</span><span class="p">,</span><span class="w"> </span><span class="nl">DNS</span><span class="p">:</span><span class="mf">192.0.3.100</span><span class="p">,</span><span class="w"> </span><span class="n">IP</span><span class="w"> </span><span class="nl">Address</span><span class="p">:</span><span class="mf">192.0.3.100</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@mirror certificates</span><span class="o">]</span><span class="err">#</span><span class="w">  </span><span class="n">openssl</span><span class="w"> </span><span class="n">req</span><span class="w"> </span><span class="o">-</span><span class="ow">in</span><span class="w"> </span><span class="k">domain</span><span class="p">.</span><span class="n">csr</span><span class="w"> </span><span class="o">-</span><span class="n">noout</span><span class="w"> </span><span class="o">-</span><span class="nc">text</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="n">dns</span>
+<span class="w">                </span><span class="nl">DNS</span><span class="p">:</span><span class="mf">192.0.2.100</span><span class="p">,</span><span class="w"> </span><span class="n">IP</span><span class="w"> </span><span class="nl">Address</span><span class="p">:</span><span class="mf">192.0.2.100</span><span class="p">,</span><span class="w"> </span><span class="nl">DNS</span><span class="p">:</span><span class="mf">192.0.3.100</span><span class="p">,</span><span class="w"> </span><span class="n">IP</span><span class="w"> </span><span class="nl">Address</span><span class="p">:</span><span class="mf">192.0.3.100</span>
+</code></pre></div></td></tr></table></div></p>
 <p>Sign your certificate with the rootCA key and force the SAN entries:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
-<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@mirror certificates</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">openssl</span><span class="w"> </span><span class="n">x509</span><span class="w"> </span><span class="o">-</span><span class="n">req</span><span class="w"> </span><span class="o">-</span><span class="ow">in</span><span class="w"> </span><span class="k">domain</span><span class="p">.</span><span class="n">csr</span><span class="w"> </span><span class="o">-</span><span class="n">CA</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="n">rootCA</span><span class="p">.</span><span class="n">crt</span><span class="w"> </span><span class="o">-</span><span class="n">CAkey</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="n">rootCA</span><span class="p">.</span><span class="k">key</span><span class="w"> </span><span class="o">-</span><span class="n">CAcreateserial</span><span class="w"> </span><span class="o">-</span><span class="k">out</span><span class="w"> </span><span class="k">domain</span><span class="p">.</span><span class="n">crt</span><span class="w"> </span><span class="o">-</span><span class="n">days</span><span class="w"> </span><span class="mi">3650</span><span class="w"> </span><span class="o">-</span><span class="n">sha256</span><span class="w"> </span><span class="o">-</span><span class="n">extensions</span><span class="w"> </span><span class="n">v3_req</span><span class="w"> </span><span class="o">-</span><span class="n">extfile</span><span class="w"> </span><span class="n">config</span><span class="w"> </span>
-<span class="n">Signature</span><span class="w"> </span><span class="n">ok</span><span class="w"></span>
-<span class="n">subject</span><span class="o">=</span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DE</span><span class="p">,</span><span class="w"> </span><span class="n">ST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NRW</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Dusseldorf</span><span class="p">,</span><span class="w"> </span><span class="n">O</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Acme</span><span class="w"> </span><span class="n">Inc</span><span class="p">.,</span><span class="w"> </span><span class="n">CN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">192.0.2.100</span><span class="p">,</span><span class="w"> </span><span class="n">emailAddress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">akaris</span><span class="nv">@example</span><span class="p">.</span><span class="n">com</span><span class="w"></span>
-<span class="n">Getting</span><span class="w"> </span><span class="n">CA</span><span class="w"> </span><span class="n">Private</span><span class="w"> </span><span class="k">Key</span><span class="w"></span>
-<span class="n">Enter</span><span class="w"> </span><span class="n">pass</span><span class="w"> </span><span class="n">phrase</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="n">rootCA</span><span class="p">.</span><span class="k">key</span><span class="err">:</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@mirror certificates</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">openssl</span><span class="w"> </span><span class="n">x509</span><span class="w"> </span><span class="o">-</span><span class="n">req</span><span class="w"> </span><span class="o">-</span><span class="ow">in</span><span class="w"> </span><span class="k">domain</span><span class="p">.</span><span class="n">csr</span><span class="w"> </span><span class="o">-</span><span class="n">CA</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="n">rootCA</span><span class="p">.</span><span class="n">crt</span><span class="w"> </span><span class="o">-</span><span class="n">CAkey</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="n">rootCA</span><span class="p">.</span><span class="k">key</span><span class="w"> </span><span class="o">-</span><span class="n">CAcreateserial</span><span class="w"> </span><span class="o">-</span><span class="k">out</span><span class="w"> </span><span class="k">domain</span><span class="p">.</span><span class="n">crt</span><span class="w"> </span><span class="o">-</span><span class="n">days</span><span class="w"> </span><span class="mi">3650</span><span class="w"> </span><span class="o">-</span><span class="n">sha256</span><span class="w"> </span><span class="o">-</span><span class="n">extensions</span><span class="w"> </span><span class="n">v3_req</span><span class="w"> </span><span class="o">-</span><span class="n">extfile</span><span class="w"> </span><span class="n">config</span><span class="w"> </span>
+<span class="n">Signature</span><span class="w"> </span><span class="n">ok</span>
+<span class="n">subject</span><span class="o">=</span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DE</span><span class="p">,</span><span class="w"> </span><span class="n">ST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NRW</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Dusseldorf</span><span class="p">,</span><span class="w"> </span><span class="n">O</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Acme</span><span class="w"> </span><span class="n">Inc</span><span class="p">.,</span><span class="w"> </span><span class="n">CN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">192.0.2.100</span><span class="p">,</span><span class="w"> </span><span class="n">emailAddress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">akaris</span><span class="nv">@example</span><span class="p">.</span><span class="n">com</span>
+<span class="n">Getting</span><span class="w"> </span><span class="n">CA</span><span class="w"> </span><span class="n">Private</span><span class="w"> </span><span class="k">Key</span>
+<span class="n">Enter</span><span class="w"> </span><span class="n">pass</span><span class="w"> </span><span class="n">phrase</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="n">rootCA</span><span class="p">.</span><span class="k">key</span><span class="err">:</span>
+</code></pre></div></td></tr></table></div></p>
 <p>See:</p>
 <ul>
 <li>
@@ -1966,40 +1806,35 @@ sudo update-ca-trust extract
 </li>
 </ul>
 <p>Then, trust the certificate and make sure that it passes verification and that it contains the SAN entries:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@mirror certificates</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">openssl</span><span class="w"> </span><span class="n">x509</span><span class="w"> </span><span class="o">-</span><span class="ow">in</span><span class="w"> </span><span class="k">domain</span><span class="p">.</span><span class="n">crt</span><span class="w"> </span><span class="o">-</span><span class="n">noout</span><span class="w"> </span><span class="o">-</span><span class="nc">text</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">IP</span><span class="w"></span>
-<span class="w">                </span><span class="nl">DNS</span><span class="p">:</span><span class="mf">192.0.2.100</span><span class="p">,</span><span class="w"> </span><span class="n">IP</span><span class="w"> </span><span class="nl">Address</span><span class="p">:</span><span class="mf">192.0.2.100</span><span class="p">,</span><span class="w"> </span><span class="nl">DNS</span><span class="p">:</span><span class="mf">192.0.3.100</span><span class="p">,</span><span class="w"> </span><span class="n">IP</span><span class="w"> </span><span class="nl">Address</span><span class="p">:</span><span class="mf">192.0.3.100</span><span class="w"></span>
-<span class="o">[</span><span class="n">root@mirror certificates</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">openssl</span><span class="w"> </span><span class="n">verify</span><span class="w"> </span><span class="o">-</span><span class="n">verbose</span><span class="w"> </span><span class="k">domain</span><span class="p">.</span><span class="n">crt</span><span class="w"></span>
-<span class="k">domain</span><span class="p">.</span><span class="nl">crt</span><span class="p">:</span><span class="w"> </span><span class="n">OK</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@mirror certificates</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">openssl</span><span class="w"> </span><span class="n">x509</span><span class="w"> </span><span class="o">-</span><span class="ow">in</span><span class="w"> </span><span class="k">domain</span><span class="p">.</span><span class="n">crt</span><span class="w"> </span><span class="o">-</span><span class="n">noout</span><span class="w"> </span><span class="o">-</span><span class="nc">text</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">IP</span>
+<span class="w">                </span><span class="nl">DNS</span><span class="p">:</span><span class="mf">192.0.2.100</span><span class="p">,</span><span class="w"> </span><span class="n">IP</span><span class="w"> </span><span class="nl">Address</span><span class="p">:</span><span class="mf">192.0.2.100</span><span class="p">,</span><span class="w"> </span><span class="nl">DNS</span><span class="p">:</span><span class="mf">192.0.3.100</span><span class="p">,</span><span class="w"> </span><span class="n">IP</span><span class="w"> </span><span class="nl">Address</span><span class="p">:</span><span class="mf">192.0.3.100</span>
+<span class="o">[</span><span class="n">root@mirror certificates</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">openssl</span><span class="w"> </span><span class="n">verify</span><span class="w"> </span><span class="o">-</span><span class="n">verbose</span><span class="w"> </span><span class="k">domain</span><span class="p">.</span><span class="n">crt</span>
+<span class="k">domain</span><span class="p">.</span><span class="nl">crt</span><span class="p">:</span><span class="w"> </span><span class="n">OK</span>
+</code></pre></div></td></tr></table></div></p>
 <p>In case of issues with certificate verification, verify the cert directly against the root CA file to determine the failure domain:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@mirror certificates</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">openssl</span><span class="w"> </span><span class="n">verify</span><span class="w"> </span><span class="o">-</span><span class="n">CAfile</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="n">rootCA</span><span class="p">.</span><span class="n">crt</span><span class="w"> </span><span class="k">domain</span><span class="p">.</span><span class="n">crt</span><span class="w"> </span>
-<span class="k">domain</span><span class="p">.</span><span class="nl">crt</span><span class="p">:</span><span class="w"> </span><span class="n">OK</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@mirror certificates</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">openssl</span><span class="w"> </span><span class="n">verify</span><span class="w"> </span><span class="o">-</span><span class="n">CAfile</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="n">rootCA</span><span class="p">.</span><span class="n">crt</span><span class="w"> </span><span class="k">domain</span><span class="p">.</span><span class="n">crt</span><span class="w"> </span>
+<span class="k">domain</span><span class="p">.</span><span class="nl">crt</span><span class="p">:</span><span class="w"> </span><span class="n">OK</span>
+</code></pre></div></td></tr></table></div></p>
 <p>Generate directories for the registry:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">sudo</span><span class="w"> </span><span class="n">mkdir</span><span class="w"> </span><span class="o">-</span><span class="n">p</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="p">{</span><span class="n">auth</span><span class="p">,</span><span class="n">certs</span><span class="p">,</span><span class="n">data</span><span class="p">}</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">sudo</span><span class="w"> </span><span class="n">mkdir</span><span class="w"> </span><span class="o">-</span><span class="n">p</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="p">{</span><span class="n">auth</span><span class="p">,</span><span class="n">certs</span><span class="p">,</span><span class="n">data</span><span class="p">}</span>
+</code></pre></div></td></tr></table></div></p>
 <p>Copy the certificate into /opt/registry/certs as described in the documentation:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">sudo</span><span class="w"> </span><span class="n">cp</span><span class="w"> </span><span class="n">domain</span><span class="p">.</span><span class="n">key</span><span class="w">  </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">certs</span><span class="o">/</span><span class="w"></span>
-<span class="n">sudo</span><span class="w"> </span><span class="n">cp</span><span class="w"> </span><span class="n">domain</span><span class="p">.</span><span class="n">crt</span><span class="w">  </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">certs</span><span class="o">/</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">sudo</span><span class="w"> </span><span class="n">cp</span><span class="w"> </span><span class="n">domain</span><span class="p">.</span><span class="n">key</span><span class="w">  </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">certs</span><span class="o">/</span>
+<span class="n">sudo</span><span class="w"> </span><span class="n">cp</span><span class="w"> </span><span class="n">domain</span><span class="p">.</span><span class="n">crt</span><span class="w">  </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">certs</span><span class="o">/</span>
+</code></pre></div></td></tr></table></div></p>
 <h4 id="starting-the-registry">Starting the registry</h4>
 <p>You have 2 options here. Password protect your registry, or don't.</p>
 <h5 id="password-protection">Password protection</h5>
 <p>Generate a username and password and store in an htpasswd file for authentication with the registry, e.g. <code class="highlight">root</code> / <code class="highlight">password</code>:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">sudo</span><span class="w"> </span><span class="n">htpasswd</span><span class="w"> </span><span class="o">-</span><span class="n">bBc</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">auth</span><span class="o">/</span><span class="n">htpasswd</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">password</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">sudo</span><span class="w"> </span><span class="n">htpasswd</span><span class="w"> </span><span class="o">-</span><span class="n">bBc</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">auth</span><span class="o">/</span><span class="n">htpasswd</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">password</span>
+</code></pre></div></td></tr></table></div></p>
 <p>Run the containter with:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
@@ -2007,50 +1842,47 @@ sudo update-ca-trust extract
 <span class="normal">6</span>
 <span class="normal">7</span>
 <span class="normal">8</span>
-<span class="normal">9</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">sudo</span><span class="w"> </span><span class="n">podman</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="o">--</span><span class="n">name</span><span class="w"> </span><span class="n">mirror</span><span class="o">-</span><span class="n">registry</span><span class="w"> </span>\<span class="w"></span>
-<span class="w">  </span><span class="o">-</span><span class="n">p</span><span class="w"> </span><span class="mi">5000</span><span class="p">:</span><span class="mi">5000</span><span class="w"> </span><span class="o">-</span><span class="n">v</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">data</span><span class="p">:</span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">registry</span><span class="p">:</span><span class="n">z</span><span class="w">      </span>\<span class="w"></span>
-<span class="w">  </span><span class="o">-</span><span class="n">v</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">auth</span><span class="p">:</span><span class="o">/</span><span class="n">auth</span><span class="p">:</span><span class="n">z</span><span class="w">      </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="s2">&quot;REGISTRY_AUTH=htpasswd&quot;</span><span class="w">      </span>\<span class="w"></span>
-<span class="w">  </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="s2">&quot;REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm&quot;</span><span class="w">      </span>\<span class="w"></span>
-<span class="w">  </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="n">REGISTRY_AUTH_HTPASSWD_PATH</span><span class="o">=/</span><span class="n">auth</span><span class="o">/</span><span class="n">htpasswd</span><span class="w">      </span>\<span class="w"></span>
-<span class="w">  </span><span class="o">-</span><span class="n">v</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">certs</span><span class="p">:</span><span class="o">/</span><span class="n">certs</span><span class="p">:</span><span class="n">z</span><span class="w">      </span>\<span class="w"></span>
-<span class="w">  </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="n">REGISTRY_HTTP_TLS_CERTIFICATE</span><span class="o">=/</span><span class="n">certs</span><span class="o">/</span><span class="n">domain</span><span class="o">.</span><span class="n">crt</span><span class="w">      </span>\<span class="w"></span>
-<span class="w">  </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="n">REGISTRY_HTTP_TLS_KEY</span><span class="o">=/</span><span class="n">certs</span><span class="o">/</span><span class="n">domain</span><span class="o">.</span><span class="n">key</span><span class="w">      </span>\<span class="w"></span>
-<span class="w">  </span><span class="o">-</span><span class="n">d</span><span class="w"> </span><span class="n">docker</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">library</span><span class="o">/</span><span class="n">registry</span><span class="p">:</span><span class="mi">2</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">sudo</span><span class="w"> </span><span class="n">podman</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="o">--</span><span class="n">name</span><span class="w"> </span><span class="n">mirror</span><span class="o">-</span><span class="n">registry</span><span class="w"> </span>\
+<span class="w">  </span><span class="o">-</span><span class="n">p</span><span class="w"> </span><span class="mi">5000</span><span class="p">:</span><span class="mi">5000</span><span class="w"> </span><span class="o">-</span><span class="n">v</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">data</span><span class="p">:</span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">registry</span><span class="p">:</span><span class="n">z</span><span class="w">      </span>\
+<span class="w">  </span><span class="o">-</span><span class="n">v</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">auth</span><span class="p">:</span><span class="o">/</span><span class="n">auth</span><span class="p">:</span><span class="n">z</span><span class="w">      </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="s2">&quot;REGISTRY_AUTH=htpasswd&quot;</span><span class="w">      </span>\
+<span class="w">  </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="s2">&quot;REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm&quot;</span><span class="w">      </span>\
+<span class="w">  </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="n">REGISTRY_AUTH_HTPASSWD_PATH</span><span class="o">=/</span><span class="n">auth</span><span class="o">/</span><span class="n">htpasswd</span><span class="w">      </span>\
+<span class="w">  </span><span class="o">-</span><span class="n">v</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">certs</span><span class="p">:</span><span class="o">/</span><span class="n">certs</span><span class="p">:</span><span class="n">z</span><span class="w">      </span>\
+<span class="w">  </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="n">REGISTRY_HTTP_TLS_CERTIFICATE</span><span class="o">=/</span><span class="n">certs</span><span class="o">/</span><span class="n">domain</span><span class="o">.</span><span class="n">crt</span><span class="w">      </span>\
+<span class="w">  </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="n">REGISTRY_HTTP_TLS_KEY</span><span class="o">=/</span><span class="n">certs</span><span class="o">/</span><span class="n">domain</span><span class="o">.</span><span class="n">key</span><span class="w">      </span>\
+<span class="w">  </span><span class="o">-</span><span class="n">d</span><span class="w"> </span><span class="n">docker</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">library</span><span class="o">/</span><span class="n">registry</span><span class="p">:</span><span class="mi">2</span>
+</code></pre></div></td></tr></table></div></p>
 <h5 id="no-password-protection">No password protection</h5>
 <p>Simply run the containter with:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
-<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">sudo</span><span class="w"> </span><span class="n">podman</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="o">--</span><span class="n">name</span><span class="w"> </span><span class="n">mirror</span><span class="o">-</span><span class="n">registry</span><span class="w"> </span>\<span class="w"></span>
-<span class="w">  </span><span class="o">-</span><span class="n">p</span><span class="w"> </span><span class="mi">5000</span><span class="p">:</span><span class="mi">5000</span><span class="w"> </span><span class="o">-</span><span class="n">v</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">data</span><span class="p">:</span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">registry</span><span class="p">:</span><span class="n">z</span><span class="w">      </span>\<span class="w"></span>
-<span class="w">  </span><span class="o">-</span><span class="n">v</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">certs</span><span class="p">:</span><span class="o">/</span><span class="n">certs</span><span class="p">:</span><span class="n">z</span><span class="w">      </span>\<span class="w"></span>
-<span class="w">  </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="n">REGISTRY_HTTP_TLS_CERTIFICATE</span><span class="o">=/</span><span class="n">certs</span><span class="o">/</span><span class="n">domain</span><span class="o">.</span><span class="n">crt</span><span class="w">      </span>\<span class="w"></span>
-<span class="w">  </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="n">REGISTRY_HTTP_TLS_KEY</span><span class="o">=/</span><span class="n">certs</span><span class="o">/</span><span class="n">domain</span><span class="o">.</span><span class="n">key</span><span class="w">      </span>\<span class="w"></span>
-<span class="w">  </span><span class="o">-</span><span class="n">d</span><span class="w"> </span><span class="n">docker</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">library</span><span class="o">/</span><span class="n">registry</span><span class="p">:</span><span class="mi">2</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">sudo</span><span class="w"> </span><span class="n">podman</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="o">--</span><span class="n">name</span><span class="w"> </span><span class="n">mirror</span><span class="o">-</span><span class="n">registry</span><span class="w"> </span>\
+<span class="w">  </span><span class="o">-</span><span class="n">p</span><span class="w"> </span><span class="mi">5000</span><span class="p">:</span><span class="mi">5000</span><span class="w"> </span><span class="o">-</span><span class="n">v</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">data</span><span class="p">:</span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">registry</span><span class="p">:</span><span class="n">z</span><span class="w">      </span>\
+<span class="w">  </span><span class="o">-</span><span class="n">v</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">registry</span><span class="o">/</span><span class="n">certs</span><span class="p">:</span><span class="o">/</span><span class="n">certs</span><span class="p">:</span><span class="n">z</span><span class="w">      </span>\
+<span class="w">  </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="n">REGISTRY_HTTP_TLS_CERTIFICATE</span><span class="o">=/</span><span class="n">certs</span><span class="o">/</span><span class="n">domain</span><span class="o">.</span><span class="n">crt</span><span class="w">      </span>\
+<span class="w">  </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="n">REGISTRY_HTTP_TLS_KEY</span><span class="o">=/</span><span class="n">certs</span><span class="o">/</span><span class="n">domain</span><span class="o">.</span><span class="n">key</span><span class="w">      </span>\
+<span class="w">  </span><span class="o">-</span><span class="n">d</span><span class="w"> </span><span class="n">docker</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">library</span><span class="o">/</span><span class="n">registry</span><span class="p">:</span><span class="mi">2</span>
+</code></pre></div></td></tr></table></div></p>
 <h5 id="generating-a-systemd-service-for-the-registry">Generating a systemd service for the registry</h5>
 <p>Generate a service file so that the container autostarts:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
-<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">kind</span><span class="w"> </span><span class="n">certificates</span><span class="p">]</span><span class="c1"># podman generate systemd --name mirror-registry &gt; /etc/systemd/system/mirror-registry-container.service</span><span class="w"></span>
-<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">kind</span><span class="w"> </span><span class="n">certificates</span><span class="p">]</span><span class="c1"># systemctl daemon-reload</span><span class="w"></span>
-<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">kind</span><span class="w"> </span><span class="n">certificates</span><span class="p">]</span><span class="c1"># systemctl enable --now mirror-registry-container</span><span class="w"></span>
-<span class="n">Created</span><span class="w"> </span><span class="n">symlink</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">wants</span><span class="o">/</span><span class="n">mirror</span><span class="o">-</span><span class="n">registry</span><span class="o">-</span><span class="n">container</span><span class="o">.</span><span class="n">service</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">mirror</span><span class="o">-</span><span class="n">registry</span><span class="o">-</span><span class="n">container</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="w"></span>
-<span class="n">Created</span><span class="w"> </span><span class="n">symlink</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">default</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">wants</span><span class="o">/</span><span class="n">mirror</span><span class="o">-</span><span class="n">registry</span><span class="o">-</span><span class="n">container</span><span class="o">.</span><span class="n">service</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">mirror</span><span class="o">-</span><span class="n">registry</span><span class="o">-</span><span class="n">container</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">kind</span><span class="w"> </span><span class="n">certificates</span><span class="p">]</span><span class="c1"># podman generate systemd --name mirror-registry &gt; /etc/systemd/system/mirror-registry-container.service</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">kind</span><span class="w"> </span><span class="n">certificates</span><span class="p">]</span><span class="c1"># systemctl daemon-reload</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">kind</span><span class="w"> </span><span class="n">certificates</span><span class="p">]</span><span class="c1"># systemctl enable --now mirror-registry-container</span>
+<span class="n">Created</span><span class="w"> </span><span class="n">symlink</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">wants</span><span class="o">/</span><span class="n">mirror</span><span class="o">-</span><span class="n">registry</span><span class="o">-</span><span class="n">container</span><span class="o">.</span><span class="n">service</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">mirror</span><span class="o">-</span><span class="n">registry</span><span class="o">-</span><span class="n">container</span><span class="o">.</span><span class="n">service</span><span class="o">.</span>
+<span class="n">Created</span><span class="w"> </span><span class="n">symlink</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">default</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">wants</span><span class="o">/</span><span class="n">mirror</span><span class="o">-</span><span class="n">registry</span><span class="o">-</span><span class="n">container</span><span class="o">.</span><span class="n">service</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">mirror</span><span class="o">-</span><span class="n">registry</span><span class="o">-</span><span class="n">container</span><span class="o">.</span><span class="n">service</span><span class="o">.</span>
+</code></pre></div></td></tr></table></div></p>
 <h4 id="configuring-the-firewall">Configuring the firewall</h4>
 <p>Open the firewall with iptables or firewall-cmd as describe in the documentation. In my case, I'm not running a firewall so this step is not needed.</p>
 <h4 id="verification">Verification</h4>
 <p>Then, verify:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2064,29 +1896,27 @@ sudo update-ca-trust extract
 <span class="normal">12</span>
 <span class="normal">13</span>
 <span class="normal">14</span>
-<span class="normal">15</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@mirror ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">openssl</span><span class="w"> </span><span class="n">s_client</span><span class="w"> </span><span class="o">-</span><span class="k">connect</span><span class="w"> </span><span class="mf">192.0.2.100</span><span class="err">:</span><span class="mi">5000</span><span class="w"></span>
-<span class="n">CONNECTED</span><span class="p">(</span><span class="mi">00000003</span><span class="p">)</span><span class="w"></span>
-<span class="n">Can</span><span class="err">&#39;</span><span class="n">t</span><span class="w"> </span><span class="k">use</span><span class="w"> </span><span class="n">SSL_get_servername</span><span class="w"></span>
-<span class="k">depth</span><span class="o">=</span><span class="mi">1</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DE</span><span class="p">,</span><span class="w"> </span><span class="n">ST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NRW</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Acme</span><span class="p">.</span><span class="n">Inc</span><span class="p">,</span><span class="w"> </span><span class="n">O</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">Default</span><span class="w"> </span><span class="n">Company</span><span class="w"> </span><span class="n">Ltd</span><span class="p">,</span><span class="w"> </span><span class="n">OU</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">acme</span><span class="p">.</span><span class="n">root</span><span class="w"></span>
-<span class="n">verify</span><span class="w"> </span><span class="k">return</span><span class="err">:</span><span class="mi">1</span><span class="w"></span>
-<span class="k">depth</span><span class="o">=</span><span class="mi">0</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DE</span><span class="p">,</span><span class="w"> </span><span class="n">ST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NRW</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Dusseldorf</span><span class="p">,</span><span class="w"> </span><span class="n">O</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Acme</span><span class="w"> </span><span class="n">Inc</span><span class="p">.,</span><span class="w"> </span><span class="n">CN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">192.0.2.100</span><span class="p">,</span><span class="w"> </span><span class="n">emailAddress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">akaris</span><span class="nv">@example</span><span class="p">.</span><span class="n">com</span><span class="w"></span>
-<span class="n">verify</span><span class="w"> </span><span class="k">return</span><span class="err">:</span><span class="mi">1</span><span class="w"></span>
-<span class="o">---</span><span class="w"></span>
-<span class="n">Certificate</span><span class="w"> </span><span class="n">chain</span><span class="w"></span>
-<span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="nl">s</span><span class="p">:</span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DE</span><span class="p">,</span><span class="w"> </span><span class="n">ST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NRW</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Dusseldorf</span><span class="p">,</span><span class="w"> </span><span class="n">O</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Acme</span><span class="w"> </span><span class="n">Inc</span><span class="p">.,</span><span class="w"> </span><span class="n">CN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">192.0.2.100</span><span class="p">,</span><span class="w"> </span><span class="n">emailAddress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">akaris</span><span class="nv">@example</span><span class="p">.</span><span class="n">com</span><span class="w"></span>
-<span class="w">   </span><span class="nl">i</span><span class="p">:</span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DE</span><span class="p">,</span><span class="w"> </span><span class="n">ST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NRW</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Acme</span><span class="p">.</span><span class="n">Inc</span><span class="p">,</span><span class="w"> </span><span class="n">O</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">Default</span><span class="w"> </span><span class="n">Company</span><span class="w"> </span><span class="n">Ltd</span><span class="p">,</span><span class="w"> </span><span class="n">OU</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">acme</span><span class="p">.</span><span class="n">root</span><span class="w"></span>
-<span class="o">---</span><span class="w"></span>
-<span class="p">(...)</span><span class="w"></span>
-<span class="nl">Verification</span><span class="p">:</span><span class="w"> </span><span class="n">OK</span><span class="w"></span>
-<span class="p">(...)</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="normal">15</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@mirror ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">openssl</span><span class="w"> </span><span class="n">s_client</span><span class="w"> </span><span class="o">-</span><span class="k">connect</span><span class="w"> </span><span class="mf">192.0.2.100</span><span class="err">:</span><span class="mi">5000</span>
+<span class="n">CONNECTED</span><span class="p">(</span><span class="mi">00000003</span><span class="p">)</span>
+<span class="n">Can</span><span class="err">&#39;</span><span class="n">t</span><span class="w"> </span><span class="k">use</span><span class="w"> </span><span class="n">SSL_get_servername</span>
+<span class="k">depth</span><span class="o">=</span><span class="mi">1</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DE</span><span class="p">,</span><span class="w"> </span><span class="n">ST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NRW</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Acme</span><span class="p">.</span><span class="n">Inc</span><span class="p">,</span><span class="w"> </span><span class="n">O</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">Default</span><span class="w"> </span><span class="n">Company</span><span class="w"> </span><span class="n">Ltd</span><span class="p">,</span><span class="w"> </span><span class="n">OU</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">acme</span><span class="p">.</span><span class="n">root</span>
+<span class="n">verify</span><span class="w"> </span><span class="k">return</span><span class="err">:</span><span class="mi">1</span>
+<span class="k">depth</span><span class="o">=</span><span class="mi">0</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DE</span><span class="p">,</span><span class="w"> </span><span class="n">ST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NRW</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Dusseldorf</span><span class="p">,</span><span class="w"> </span><span class="n">O</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Acme</span><span class="w"> </span><span class="n">Inc</span><span class="p">.,</span><span class="w"> </span><span class="n">CN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">192.0.2.100</span><span class="p">,</span><span class="w"> </span><span class="n">emailAddress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">akaris</span><span class="nv">@example</span><span class="p">.</span><span class="n">com</span>
+<span class="n">verify</span><span class="w"> </span><span class="k">return</span><span class="err">:</span><span class="mi">1</span>
+<span class="o">---</span>
+<span class="n">Certificate</span><span class="w"> </span><span class="n">chain</span>
+<span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="nl">s</span><span class="p">:</span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DE</span><span class="p">,</span><span class="w"> </span><span class="n">ST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NRW</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Dusseldorf</span><span class="p">,</span><span class="w"> </span><span class="n">O</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Acme</span><span class="w"> </span><span class="n">Inc</span><span class="p">.,</span><span class="w"> </span><span class="n">CN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">192.0.2.100</span><span class="p">,</span><span class="w"> </span><span class="n">emailAddress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">akaris</span><span class="nv">@example</span><span class="p">.</span><span class="n">com</span>
+<span class="w">   </span><span class="nl">i</span><span class="p">:</span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DE</span><span class="p">,</span><span class="w"> </span><span class="n">ST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NRW</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Acme</span><span class="p">.</span><span class="n">Inc</span><span class="p">,</span><span class="w"> </span><span class="n">O</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">Default</span><span class="w"> </span><span class="n">Company</span><span class="w"> </span><span class="n">Ltd</span><span class="p">,</span><span class="w"> </span><span class="n">OU</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">acme</span><span class="p">.</span><span class="n">root</span>
+<span class="o">---</span>
+<span class="p">(...)</span>
+<span class="nl">Verification</span><span class="p">:</span><span class="w"> </span><span class="n">OK</span>
+<span class="p">(...)</span>
+</code></pre></div></td></tr></table></div></p>
 <p>And make sure that curl does not report an issue:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@mirror certificates</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">curl</span><span class="w"> </span><span class="o">-</span><span class="n">u</span><span class="w"> </span><span class="nl">root</span><span class="p">:</span><span class="n">password</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="mf">192.0.2.100</span><span class="err">:</span><span class="mi">5000</span><span class="o">/</span><span class="n">v2</span><span class="o">/</span><span class="n">_catalog</span><span class="w"></span>
-<span class="err">{</span><span class="ss">&quot;repositories&quot;</span><span class="err">:[]}</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@mirror certificates</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">curl</span><span class="w"> </span><span class="o">-</span><span class="n">u</span><span class="w"> </span><span class="nl">root</span><span class="p">:</span><span class="n">password</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="mf">192.0.2.100</span><span class="err">:</span><span class="mi">5000</span><span class="o">/</span><span class="n">v2</span><span class="o">/</span><span class="n">_catalog</span>
+<span class="err">{</span><span class="ss">&quot;repositories&quot;</span><span class="err">:[]}</span>
+</code></pre></div></td></tr></table></div></p>
 <p>If using a separate installation server, make sure that the same verification works from there.</p>
 
   <hr>
@@ -2100,54 +1930,25 @@ sudo update-ca-trust extract
   </small>
 </div>
 
-              
-            </article>
-          </div>
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
         
       </main>
       
         <footer class="md-footer">
-  
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
-      
-        
-        <a href="../patch-service-loadbalancer-ingress-ip/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Patch status.loadBalancer.ingress IP manually" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Patch status.loadBalancer.ingress IP manually
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../proxy-ocp-4.5/" class="md-footer__link md-footer__link--next" aria-label="Next: Proxy OCP 4.5" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              Proxy OCP 4.5
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -2169,10 +1970,11 @@ sudo update-ca-trust extract
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.467223ff.min.js"></script>
+      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
       
     
   </body>

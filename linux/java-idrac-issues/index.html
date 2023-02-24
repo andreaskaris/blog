@@ -12,8 +12,14 @@
       
         <link rel="canonical" href="https://andreaskaris.github.io/blog/linux/java-idrac-issues/">
       
+      
+        <link rel="prev" href="../ipxe-boot-environment/">
+      
+      
+        <link rel="next" href="../meson/">
+      
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.14">
     
     
       
@@ -21,16 +27,13 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2d9f7617.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#000000">
-        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
       
+      
+
     
     
     
@@ -43,10 +46,11 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
+    
     
     
   </head>
@@ -57,7 +61,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="pink">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink">
   
     
     
@@ -65,11 +69,6 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
-      
-        
-        <a href="#issues-with-dell-idrac-and-workaround" class="md-skip">
-          Skip to content
-        </a>
       
     </div>
     <div data-md-component="announce">
@@ -84,11 +83,11 @@
     <a href="../.." title="Andreas Karis Blog" class="md-header__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -121,7 +120,7 @@
           
             
 <nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-tabs__inner md-grid">
+  <div class="md-grid">
     <ul class="md-tabs__list">
       
         
@@ -258,7 +257,7 @@
     <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     Andreas Karis Blog
@@ -292,8 +291,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
       
       
         
@@ -316,7 +316,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Ceph" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
           Ceph
@@ -358,8 +358,9 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
       
       
         
@@ -402,7 +403,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Linux" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Linux
@@ -476,42 +477,13 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Java Idrac Issues
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         Java Idrac Issues
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#issues-with-dell-idrac-and-workaround" class="md-nav__link">
-    Issues with Dell iDrac and workaround
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -619,8 +591,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
       
       
         
@@ -675,7 +648,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Networking" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           Networking
@@ -939,8 +912,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
       
       
         
@@ -1027,7 +1001,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenShift and Kubernetes" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_5">
           <span class="md-nav__icon md-icon"></span>
           OpenShift and Kubernetes
@@ -1515,8 +1489,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
       
       
         
@@ -1541,7 +1516,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenStack" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_6">
           <span class="md-nav__icon md-icon"></span>
           OpenStack
@@ -1595,8 +1570,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
       
       
         
@@ -1623,7 +1599,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Coding" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_7">
           <span class="md-nav__icon md-icon"></span>
           Coding
@@ -1698,38 +1674,24 @@
   
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#issues-with-dell-idrac-and-workaround" class="md-nav__link">
-    Issues with Dell iDrac and workaround
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
   <h1>Java Idrac Issues</h1>
 
 <h2 id="issues-with-dell-idrac-and-workaround">Issues with Dell iDrac and workaround</h2>
 <p>Since my upgrade to Fedora 33, some of our iDrac servers wouldn't accept keyboard input any more.
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1798,83 +1760,81 @@
 <span class="normal">67</span>
 <span class="normal">68</span>
 <span class="normal">69</span>
-<span class="normal">70</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">akaris@linux cases</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">libexec</span><span class="o">/</span><span class="n">icedtea</span><span class="o">-</span><span class="n">web</span><span class="o">/</span><span class="n">javaws</span><span class="w"> </span><span class="n">viewer</span><span class="p">.</span><span class="n">jnlp</span><span class="w"> </span>
-<span class="n">selected</span><span class="w"> </span><span class="nl">jre</span><span class="p">:</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">jvm</span><span class="o">/</span><span class="n">jre</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="n">openjdk</span><span class="w"></span>
-<span class="nl">WARNING</span><span class="p">:</span><span class="w"> </span><span class="n">package</span><span class="w"> </span><span class="n">javax</span><span class="p">.</span><span class="n">jnlp</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="w"></span>
-<span class="n">Fri</span><span class="w"> </span><span class="n">Feb</span><span class="w"> </span><span class="mi">19</span><span class="w"> </span><span class="mi">18</span><span class="err">:</span><span class="mi">32</span><span class="err">:</span><span class="mi">21</span><span class="w"> </span><span class="n">CET</span><span class="w"> </span><span class="mi">2021</span><span class="w"> </span><span class="o">[</span><span class="n">INFO   </span><span class="o">]</span><span class="w"> </span><span class="n">net</span><span class="p">.</span><span class="n">sourceforge</span><span class="p">.</span><span class="n">jnlp</span><span class="p">.</span><span class="n">runtime</span><span class="p">.</span><span class="nl">EnvironmentPrinter</span><span class="p">:</span><span class="w"> </span><span class="n">OpenWebStartLauncher</span><span class="w"> </span><span class="k">called</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="nl">args</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="n">viewer.jnlp</span><span class="o">]</span><span class="p">.</span><span class="w"></span>
-<span class="n">Fri</span><span class="w"> </span><span class="n">Feb</span><span class="w"> </span><span class="mi">19</span><span class="w"> </span><span class="mi">18</span><span class="err">:</span><span class="mi">32</span><span class="err">:</span><span class="mi">21</span><span class="w"> </span><span class="n">CET</span><span class="w"> </span><span class="mi">2021</span><span class="w"> </span><span class="o">[</span><span class="n">INFO   </span><span class="o">]</span><span class="w"> </span><span class="n">net</span><span class="p">.</span><span class="n">sourceforge</span><span class="p">.</span><span class="n">jnlp</span><span class="p">.</span><span class="n">runtime</span><span class="p">.</span><span class="nl">EnvironmentPrinter</span><span class="p">:</span><span class="w"> </span><span class="nl">OS</span><span class="p">:</span><span class="w"> </span><span class="n">Linux</span><span class="w"></span>
-<span class="n">Fri</span><span class="w"> </span><span class="n">Feb</span><span class="w"> </span><span class="mi">19</span><span class="w"> </span><span class="mi">18</span><span class="err">:</span><span class="mi">32</span><span class="err">:</span><span class="mi">21</span><span class="w"> </span><span class="n">CET</span><span class="w"> </span><span class="mi">2021</span><span class="w"> </span><span class="o">[</span><span class="n">INFO   </span><span class="o">]</span><span class="w"> </span><span class="n">net</span><span class="p">.</span><span class="n">sourceforge</span><span class="p">.</span><span class="n">jnlp</span><span class="p">.</span><span class="n">runtime</span><span class="p">.</span><span class="nl">EnvironmentPrinter</span><span class="p">:</span><span class="w"> </span><span class="n">Java</span><span class="w"> </span><span class="n">Runtime</span><span class="w"> </span><span class="n">Red</span><span class="w"> </span><span class="n">Hat</span><span class="p">,</span><span class="w"> </span><span class="n">Inc</span><span class="p">.</span><span class="o">-</span><span class="mf">11.0.10</span><span class="w"></span>
-<span class="p">(...)</span><span class="w"></span>
+<span class="normal">70</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">akaris@linux cases</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">libexec</span><span class="o">/</span><span class="n">icedtea</span><span class="o">-</span><span class="n">web</span><span class="o">/</span><span class="n">javaws</span><span class="w"> </span><span class="n">viewer</span><span class="p">.</span><span class="n">jnlp</span><span class="w"> </span>
+<span class="n">selected</span><span class="w"> </span><span class="nl">jre</span><span class="p">:</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">jvm</span><span class="o">/</span><span class="n">jre</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="n">openjdk</span>
+<span class="nl">WARNING</span><span class="p">:</span><span class="w"> </span><span class="n">package</span><span class="w"> </span><span class="n">javax</span><span class="p">.</span><span class="n">jnlp</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span>
+<span class="n">Fri</span><span class="w"> </span><span class="n">Feb</span><span class="w"> </span><span class="mi">19</span><span class="w"> </span><span class="mi">18</span><span class="err">:</span><span class="mi">32</span><span class="err">:</span><span class="mi">21</span><span class="w"> </span><span class="n">CET</span><span class="w"> </span><span class="mi">2021</span><span class="w"> </span><span class="o">[</span><span class="n">INFO   </span><span class="o">]</span><span class="w"> </span><span class="n">net</span><span class="p">.</span><span class="n">sourceforge</span><span class="p">.</span><span class="n">jnlp</span><span class="p">.</span><span class="n">runtime</span><span class="p">.</span><span class="nl">EnvironmentPrinter</span><span class="p">:</span><span class="w"> </span><span class="n">OpenWebStartLauncher</span><span class="w"> </span><span class="k">called</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="nl">args</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="n">viewer.jnlp</span><span class="o">]</span><span class="p">.</span>
+<span class="n">Fri</span><span class="w"> </span><span class="n">Feb</span><span class="w"> </span><span class="mi">19</span><span class="w"> </span><span class="mi">18</span><span class="err">:</span><span class="mi">32</span><span class="err">:</span><span class="mi">21</span><span class="w"> </span><span class="n">CET</span><span class="w"> </span><span class="mi">2021</span><span class="w"> </span><span class="o">[</span><span class="n">INFO   </span><span class="o">]</span><span class="w"> </span><span class="n">net</span><span class="p">.</span><span class="n">sourceforge</span><span class="p">.</span><span class="n">jnlp</span><span class="p">.</span><span class="n">runtime</span><span class="p">.</span><span class="nl">EnvironmentPrinter</span><span class="p">:</span><span class="w"> </span><span class="nl">OS</span><span class="p">:</span><span class="w"> </span><span class="n">Linux</span>
+<span class="n">Fri</span><span class="w"> </span><span class="n">Feb</span><span class="w"> </span><span class="mi">19</span><span class="w"> </span><span class="mi">18</span><span class="err">:</span><span class="mi">32</span><span class="err">:</span><span class="mi">21</span><span class="w"> </span><span class="n">CET</span><span class="w"> </span><span class="mi">2021</span><span class="w"> </span><span class="o">[</span><span class="n">INFO   </span><span class="o">]</span><span class="w"> </span><span class="n">net</span><span class="p">.</span><span class="n">sourceforge</span><span class="p">.</span><span class="n">jnlp</span><span class="p">.</span><span class="n">runtime</span><span class="p">.</span><span class="nl">EnvironmentPrinter</span><span class="p">:</span><span class="w"> </span><span class="n">Java</span><span class="w"> </span><span class="n">Runtime</span><span class="w"> </span><span class="n">Red</span><span class="w"> </span><span class="n">Hat</span><span class="p">,</span><span class="w"> </span><span class="n">Inc</span><span class="p">.</span><span class="o">-</span><span class="mf">11.0.10</span>
+<span class="p">(...)</span>
 
-<span class="w"> </span><span class="n">Client</span><span class="w"> </span><span class="nl">random</span><span class="p">:</span><span class="w"> </span><span class="mi">1741975</span><span class="w"></span>
-<span class="w"> </span><span class="n">KVM</span><span class="w"> </span><span class="k">session</span><span class="w"> </span><span class="k">state</span><span class="w"> </span><span class="n">SESSION_RUNNING</span><span class="w"></span>
-<span class="w"> </span><span class="n">KVM</span><span class="w"> </span><span class="k">session</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">running</span><span class="p">.</span><span class="w"></span>
-<span class="k">Exception</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">thread</span><span class="w"> </span><span class="ss">&quot;AWT-EventQueue-1&quot;</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">lang</span><span class="p">.</span><span class="nl">NoSuchMethodError</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;java.awt.peer.ComponentPeer java.awt.Window.getPeer()&#39;</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">com</span><span class="p">.</span><span class="n">avocent</span><span class="p">.</span><span class="n">kvm</span><span class="p">.</span><span class="n">nativekeyboard</span><span class="p">.</span><span class="n">NativeKVM</span><span class="p">.</span><span class="n">a</span><span class="p">(</span><span class="k">Unknown</span><span class="w"> </span><span class="n">Source</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">com</span><span class="p">.</span><span class="n">avocent</span><span class="p">.</span><span class="n">kvm</span><span class="p">.</span><span class="n">nativekeyboard</span><span class="p">.</span><span class="n">b</span><span class="p">.</span><span class="n">a</span><span class="p">(</span><span class="k">Unknown</span><span class="w"> </span><span class="n">Source</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">com</span><span class="p">.</span><span class="n">avocent</span><span class="p">.</span><span class="n">kvm</span><span class="p">.</span><span class="n">nativekeyboard</span><span class="p">.</span><span class="n">b</span><span class="p">.</span><span class="n">b</span><span class="p">(</span><span class="k">Unknown</span><span class="w"> </span><span class="n">Source</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">com</span><span class="p">.</span><span class="n">avocent</span><span class="p">.</span><span class="n">kvm</span><span class="p">.</span><span class="n">nativekeyboard</span><span class="p">.</span><span class="n">b</span><span class="p">.</span><span class="n">windowOpened</span><span class="p">(</span><span class="k">Unknown</span><span class="w"> </span><span class="n">Source</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">AWTEventMulticaster</span><span class="p">.</span><span class="n">windowOpened</span><span class="p">(</span><span class="n">AWTEventMulticaster</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">348</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="k">Window</span><span class="p">.</span><span class="n">processWindowEvent</span><span class="p">(</span><span class="k">Window</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">2075</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">javax</span><span class="p">.</span><span class="n">swing</span><span class="p">.</span><span class="n">JFrame</span><span class="p">.</span><span class="n">processWindowEvent</span><span class="p">(</span><span class="n">JFrame</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">298</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="k">Window</span><span class="p">.</span><span class="n">processEvent</span><span class="p">(</span><span class="k">Window</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">2037</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">Component</span><span class="p">.</span><span class="n">dispatchEventImpl</span><span class="p">(</span><span class="n">Component</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">5011</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">Container</span><span class="p">.</span><span class="n">dispatchEventImpl</span><span class="p">(</span><span class="n">Container</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">2321</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="k">Window</span><span class="p">.</span><span class="n">dispatchEventImpl</span><span class="p">(</span><span class="k">Window</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">2772</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">Component</span><span class="p">.</span><span class="n">dispatchEvent</span><span class="p">(</span><span class="n">Component</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">4843</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventQueue</span><span class="p">.</span><span class="n">dispatchEventImpl</span><span class="p">(</span><span class="n">EventQueue</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">772</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventQueue</span><span class="err">$</span><span class="mf">4.</span><span class="n">run</span><span class="p">(</span><span class="n">EventQueue</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">721</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventQueue</span><span class="err">$</span><span class="mf">4.</span><span class="n">run</span><span class="p">(</span><span class="n">EventQueue</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">715</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">base</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">AccessController</span><span class="p">.</span><span class="n">doPrivileged</span><span class="p">(</span><span class="n">Native</span><span class="w"> </span><span class="k">Method</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">base</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">ProtectionDomain</span><span class="err">$</span><span class="n">JavaSecurityAccessImpl</span><span class="p">.</span><span class="n">doIntersectionPrivilege</span><span class="p">(</span><span class="n">ProtectionDomain</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">85</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">base</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">ProtectionDomain</span><span class="err">$</span><span class="n">JavaSecurityAccessImpl</span><span class="p">.</span><span class="n">doIntersectionPrivilege</span><span class="p">(</span><span class="n">ProtectionDomain</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">95</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventQueue</span><span class="err">$</span><span class="mf">5.</span><span class="n">run</span><span class="p">(</span><span class="n">EventQueue</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">745</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventQueue</span><span class="err">$</span><span class="mf">5.</span><span class="n">run</span><span class="p">(</span><span class="n">EventQueue</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">743</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">base</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">AccessController</span><span class="p">.</span><span class="n">doPrivileged</span><span class="p">(</span><span class="n">Native</span><span class="w"> </span><span class="k">Method</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">base</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">ProtectionDomain</span><span class="err">$</span><span class="n">JavaSecurityAccessImpl</span><span class="p">.</span><span class="n">doIntersectionPrivilege</span><span class="p">(</span><span class="n">ProtectionDomain</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">85</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventQueue</span><span class="p">.</span><span class="n">dispatchEvent</span><span class="p">(</span><span class="n">EventQueue</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">742</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="n">pumpOneEventForFilters</span><span class="p">(</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">203</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="n">pumpEventsForFilter</span><span class="p">(</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">124</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="n">pumpEventsForHierarchy</span><span class="p">(</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">113</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="n">pumpEvents</span><span class="p">(</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">109</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="n">pumpEvents</span><span class="p">(</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">101</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">90</span><span class="p">)</span><span class="w"></span>
-<span class="w"> </span><span class="n">Video</span><span class="w"> </span><span class="k">connect</span><span class="w"> </span><span class="nl">status</span><span class="p">:</span><span class="w"> </span><span class="k">true</span><span class="w"></span>
-<span class="n">CoreSessionListener</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="k">state</span><span class="w"> </span><span class="n">running</span><span class="w"></span>
+<span class="w"> </span><span class="n">Client</span><span class="w"> </span><span class="nl">random</span><span class="p">:</span><span class="w"> </span><span class="mi">1741975</span>
+<span class="w"> </span><span class="n">KVM</span><span class="w"> </span><span class="k">session</span><span class="w"> </span><span class="k">state</span><span class="w"> </span><span class="n">SESSION_RUNNING</span>
+<span class="w"> </span><span class="n">KVM</span><span class="w"> </span><span class="k">session</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">running</span><span class="p">.</span>
+<span class="k">Exception</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">thread</span><span class="w"> </span><span class="ss">&quot;AWT-EventQueue-1&quot;</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">lang</span><span class="p">.</span><span class="nl">NoSuchMethodError</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;java.awt.peer.ComponentPeer java.awt.Window.getPeer()&#39;</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">com</span><span class="p">.</span><span class="n">avocent</span><span class="p">.</span><span class="n">kvm</span><span class="p">.</span><span class="n">nativekeyboard</span><span class="p">.</span><span class="n">NativeKVM</span><span class="p">.</span><span class="n">a</span><span class="p">(</span><span class="k">Unknown</span><span class="w"> </span><span class="n">Source</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">com</span><span class="p">.</span><span class="n">avocent</span><span class="p">.</span><span class="n">kvm</span><span class="p">.</span><span class="n">nativekeyboard</span><span class="p">.</span><span class="n">b</span><span class="p">.</span><span class="n">a</span><span class="p">(</span><span class="k">Unknown</span><span class="w"> </span><span class="n">Source</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">com</span><span class="p">.</span><span class="n">avocent</span><span class="p">.</span><span class="n">kvm</span><span class="p">.</span><span class="n">nativekeyboard</span><span class="p">.</span><span class="n">b</span><span class="p">.</span><span class="n">b</span><span class="p">(</span><span class="k">Unknown</span><span class="w"> </span><span class="n">Source</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">com</span><span class="p">.</span><span class="n">avocent</span><span class="p">.</span><span class="n">kvm</span><span class="p">.</span><span class="n">nativekeyboard</span><span class="p">.</span><span class="n">b</span><span class="p">.</span><span class="n">windowOpened</span><span class="p">(</span><span class="k">Unknown</span><span class="w"> </span><span class="n">Source</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">AWTEventMulticaster</span><span class="p">.</span><span class="n">windowOpened</span><span class="p">(</span><span class="n">AWTEventMulticaster</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">348</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="k">Window</span><span class="p">.</span><span class="n">processWindowEvent</span><span class="p">(</span><span class="k">Window</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">2075</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">javax</span><span class="p">.</span><span class="n">swing</span><span class="p">.</span><span class="n">JFrame</span><span class="p">.</span><span class="n">processWindowEvent</span><span class="p">(</span><span class="n">JFrame</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">298</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="k">Window</span><span class="p">.</span><span class="n">processEvent</span><span class="p">(</span><span class="k">Window</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">2037</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">Component</span><span class="p">.</span><span class="n">dispatchEventImpl</span><span class="p">(</span><span class="n">Component</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">5011</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">Container</span><span class="p">.</span><span class="n">dispatchEventImpl</span><span class="p">(</span><span class="n">Container</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">2321</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="k">Window</span><span class="p">.</span><span class="n">dispatchEventImpl</span><span class="p">(</span><span class="k">Window</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">2772</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">Component</span><span class="p">.</span><span class="n">dispatchEvent</span><span class="p">(</span><span class="n">Component</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">4843</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventQueue</span><span class="p">.</span><span class="n">dispatchEventImpl</span><span class="p">(</span><span class="n">EventQueue</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">772</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventQueue</span><span class="err">$</span><span class="mf">4.</span><span class="n">run</span><span class="p">(</span><span class="n">EventQueue</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">721</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventQueue</span><span class="err">$</span><span class="mf">4.</span><span class="n">run</span><span class="p">(</span><span class="n">EventQueue</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">715</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">base</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">AccessController</span><span class="p">.</span><span class="n">doPrivileged</span><span class="p">(</span><span class="n">Native</span><span class="w"> </span><span class="k">Method</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">base</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">ProtectionDomain</span><span class="err">$</span><span class="n">JavaSecurityAccessImpl</span><span class="p">.</span><span class="n">doIntersectionPrivilege</span><span class="p">(</span><span class="n">ProtectionDomain</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">85</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">base</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">ProtectionDomain</span><span class="err">$</span><span class="n">JavaSecurityAccessImpl</span><span class="p">.</span><span class="n">doIntersectionPrivilege</span><span class="p">(</span><span class="n">ProtectionDomain</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">95</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventQueue</span><span class="err">$</span><span class="mf">5.</span><span class="n">run</span><span class="p">(</span><span class="n">EventQueue</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">745</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventQueue</span><span class="err">$</span><span class="mf">5.</span><span class="n">run</span><span class="p">(</span><span class="n">EventQueue</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">743</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">base</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">AccessController</span><span class="p">.</span><span class="n">doPrivileged</span><span class="p">(</span><span class="n">Native</span><span class="w"> </span><span class="k">Method</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">base</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">security</span><span class="p">.</span><span class="n">ProtectionDomain</span><span class="err">$</span><span class="n">JavaSecurityAccessImpl</span><span class="p">.</span><span class="n">doIntersectionPrivilege</span><span class="p">(</span><span class="n">ProtectionDomain</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">85</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventQueue</span><span class="p">.</span><span class="n">dispatchEvent</span><span class="p">(</span><span class="n">EventQueue</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">742</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="n">pumpOneEventForFilters</span><span class="p">(</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">203</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="n">pumpEventsForFilter</span><span class="p">(</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">124</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="n">pumpEventsForHierarchy</span><span class="p">(</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">113</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="n">pumpEvents</span><span class="p">(</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">109</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="n">pumpEvents</span><span class="p">(</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">101</span><span class="p">)</span>
+<span class="w">    </span><span class="k">at</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="n">desktop</span><span class="o">/</span><span class="n">java</span><span class="p">.</span><span class="n">awt</span><span class="p">.</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">EventDispatchThread</span><span class="p">.</span><span class="nl">java</span><span class="p">:</span><span class="mi">90</span><span class="p">)</span>
+<span class="w"> </span><span class="n">Video</span><span class="w"> </span><span class="k">connect</span><span class="w"> </span><span class="nl">status</span><span class="p">:</span><span class="w"> </span><span class="k">true</span>
+<span class="n">CoreSessionListener</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="k">state</span><span class="w"> </span><span class="n">running</span>
 <span class="ow">in</span><span class="w"> </span><span class="n">CoreSessionListner</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="n">fireOnSessionStateChanged</span><span class="w"> </span>
-<span class="n">APCP</span><span class="w"> </span><span class="mi">8100</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="n">recvd</span><span class="p">.</span><span class="w"> </span><span class="nl">Status</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w"> </span><span class="n">KVM</span><span class="w"> </span><span class="k">session</span><span class="w"> </span><span class="k">state</span><span class="w"> </span><span class="n">SESSION_RUNNING</span><span class="w"></span>
-<span class="w"> </span><span class="n">KVM</span><span class="w"> </span><span class="k">session</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">running</span><span class="p">.</span><span class="w"></span>
+<span class="n">APCP</span><span class="w"> </span><span class="mi">8100</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="n">recvd</span><span class="p">.</span><span class="w"> </span><span class="nl">Status</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="w"> </span><span class="n">KVM</span><span class="w"> </span><span class="k">session</span><span class="w"> </span><span class="k">state</span><span class="w"> </span><span class="n">SESSION_RUNNING</span>
+<span class="w"> </span><span class="n">KVM</span><span class="w"> </span><span class="k">session</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">running</span><span class="p">.</span>
 <span class="ow">in</span><span class="w"> </span><span class="n">CoreSessionListner</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="n">fireOnSessionStateChanged</span><span class="w"> </span>
-<span class="w"> </span><span class="n">KVM</span><span class="w"> </span><span class="k">session</span><span class="w"> </span><span class="k">state</span><span class="w"> </span><span class="n">SESSION_RUNNING</span><span class="w"></span>
-<span class="w"> </span><span class="n">KVM</span><span class="w"> </span><span class="k">session</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">running</span><span class="p">.</span><span class="w"></span>
-<span class="n">process</span><span class="p">()</span><span class="w"> </span><span class="nl">DisplayResolutionResponse</span><span class="p">:</span><span class="w"> </span><span class="n">resolution</span><span class="w"> </span><span class="n">change</span><span class="w"> </span><span class="o">[</span><span class="n">1024x768</span><span class="o">]</span><span class="w"></span>
-<span class="w"> </span><span class="k">Call</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">resize</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">outside</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="n">thread</span><span class="p">.</span><span class="w"></span>
-<span class="o">**</span><span class="w"> </span><span class="nf">Max</span><span class="w"> </span><span class="k">Size</span><span class="err">:</span><span class="w"> </span><span class="n">W</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1920</span><span class="w"> </span><span class="n">H</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1053</span><span class="w"></span>
-<span class="w"> </span><span class="k">Call</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">resize</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">outside</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="n">thread</span><span class="p">.</span><span class="w"></span>
-<span class="o">**</span><span class="w"> </span><span class="k">Window</span><span class="w"> </span><span class="n">Pref</span><span class="w"> </span><span class="k">Size</span><span class="err">:</span><span class="w"> </span><span class="n">W</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="n">H</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">841</span><span class="w"></span>
-<span class="o">**</span><span class="w"> </span><span class="nf">Max</span><span class="w"> </span><span class="k">Size</span><span class="err">:</span><span class="w"> </span><span class="n">W</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1920</span><span class="w"> </span><span class="n">H</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1053</span><span class="w"></span>
-<span class="o">**</span><span class="w"> </span><span class="k">Window</span><span class="w"> </span><span class="n">Pref</span><span class="w"> </span><span class="k">Size</span><span class="err">:</span><span class="w"> </span><span class="n">W</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="n">H</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">841</span><span class="w"></span>
-<span class="n">Boot</span><span class="w"> </span><span class="nl">Device</span><span class="p">:</span><span class="w"> </span><span class="k">Local</span><span class="err">:</span><span class="w"></span>
-<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_0</span><span class="w"></span>
-<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_1</span><span class="w"></span>
-<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_6</span><span class="w"></span>
-<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_15</span><span class="w"></span>
-<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_5</span><span class="w"></span>
-<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_2</span><span class="w"></span>
-<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_7</span><span class="w"></span>
-<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_8</span><span class="w"></span>
-<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_16</span><span class="w"></span>
-<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_18</span><span class="w"></span>
-<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_17</span><span class="w"></span>
-<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_19</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="w"> </span><span class="n">KVM</span><span class="w"> </span><span class="k">session</span><span class="w"> </span><span class="k">state</span><span class="w"> </span><span class="n">SESSION_RUNNING</span>
+<span class="w"> </span><span class="n">KVM</span><span class="w"> </span><span class="k">session</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">running</span><span class="p">.</span>
+<span class="n">process</span><span class="p">()</span><span class="w"> </span><span class="nl">DisplayResolutionResponse</span><span class="p">:</span><span class="w"> </span><span class="n">resolution</span><span class="w"> </span><span class="n">change</span><span class="w"> </span><span class="o">[</span><span class="n">1024x768</span><span class="o">]</span>
+<span class="w"> </span><span class="k">Call</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">resize</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">outside</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="n">thread</span><span class="p">.</span>
+<span class="o">**</span><span class="w"> </span><span class="nf">Max</span><span class="w"> </span><span class="k">Size</span><span class="err">:</span><span class="w"> </span><span class="n">W</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1920</span><span class="w"> </span><span class="n">H</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1053</span>
+<span class="w"> </span><span class="k">Call</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">resize</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">outside</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="n">thread</span><span class="p">.</span>
+<span class="o">**</span><span class="w"> </span><span class="k">Window</span><span class="w"> </span><span class="n">Pref</span><span class="w"> </span><span class="k">Size</span><span class="err">:</span><span class="w"> </span><span class="n">W</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="n">H</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">841</span>
+<span class="o">**</span><span class="w"> </span><span class="nf">Max</span><span class="w"> </span><span class="k">Size</span><span class="err">:</span><span class="w"> </span><span class="n">W</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1920</span><span class="w"> </span><span class="n">H</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1053</span>
+<span class="o">**</span><span class="w"> </span><span class="k">Window</span><span class="w"> </span><span class="n">Pref</span><span class="w"> </span><span class="k">Size</span><span class="err">:</span><span class="w"> </span><span class="n">W</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="n">H</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">841</span>
+<span class="n">Boot</span><span class="w"> </span><span class="nl">Device</span><span class="p">:</span><span class="w"> </span><span class="k">Local</span><span class="err">:</span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_0</span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_1</span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_6</span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_15</span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_5</span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_2</span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_7</span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_8</span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_16</span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_18</span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_17</span>
+<span class="w">   </span><span class="n">Resource</span><span class="w"> </span><span class="k">Key</span><span class="err">:</span><span class="w"> </span><span class="n">NextBoot_19</span>
+</code></pre></div></td></tr></table></div></p>
 <p>I installed Adopt JDK 8 to fix this: https://adoptopenjdk.net/installation.html?variant=openjdk8&amp;jvmVariant=hotspot#x64_linux-jdk</p>
 <p>Execute the following command to configure icdetea:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ /usr/libexec/icedtea-web/itweb-settings
-</code></pre></div>
-</td></tr></table>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>$<span class="w"> </span>/usr/libexec/icedtea-web/itweb-settings
+</code></pre></div></td></tr></table></div>
 <p>Adopt openJDK in JVM Settings and connect with openjdk.</p>
 <p>See: https://translate.google.com/translate?sl=auto&amp;tl=en&amp;u=https://minimonk.net/10111</p>
 
@@ -1889,54 +1849,25 @@
   </small>
 </div>
 
-              
-            </article>
-          </div>
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
         
       </main>
       
         <footer class="md-footer">
-  
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
-      
-        
-        <a href="../ipxe-boot-environment/" class="md-footer__link md-footer__link--prev" aria-label="Previous: iPXE boot environment on Fedora" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              iPXE boot environment on Fedora
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../meson/" class="md-footer__link md-footer__link--next" aria-label="Next: meson" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              meson
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -1958,10 +1889,11 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.467223ff.min.js"></script>
+      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
       
     
   </body>

@@ -12,8 +12,14 @@
       
         <link rel="canonical" href="https://andreaskaris.github.io/blog/openstack/using_clouds_yaml/">
       
+      
+        <link rel="prev" href="../reattach_to_running_deployment/">
+      
+      
+        <link rel="next" href="../../coding/">
+      
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.14">
     
     
       
@@ -21,16 +27,13 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2d9f7617.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#000000">
-        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
       
+      
+
     
     
     
@@ -43,10 +46,11 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
+    
     
     
   </head>
@@ -57,7 +61,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="pink">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink">
   
     
     
@@ -65,11 +69,6 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
-      
-        
-        <a href="#cloudsyaml-how-to-generate-and-use-it" class="md-skip">
-          Skip to content
-        </a>
       
     </div>
     <div data-md-component="announce">
@@ -84,11 +83,11 @@
     <a href="../.." title="Andreas Karis Blog" class="md-header__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -121,7 +120,7 @@
           
             
 <nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-tabs__inner md-grid">
+  <div class="md-grid">
     <ul class="md-tabs__list">
       
         
@@ -258,7 +257,7 @@
     <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     Andreas Karis Blog
@@ -292,8 +291,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
       
       
         
@@ -316,7 +316,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Ceph" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
           Ceph
@@ -356,8 +356,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
       
       
         
@@ -400,7 +401,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Linux" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Linux
@@ -580,8 +581,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
       
       
         
@@ -636,7 +638,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Networking" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           Networking
@@ -900,8 +902,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
       
       
         
@@ -988,7 +991,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenShift and Kubernetes" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_5">
           <span class="md-nav__icon md-icon"></span>
           OpenShift and Kubernetes
@@ -1478,8 +1481,9 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" checked>
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
       
       
         
@@ -1504,7 +1508,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenStack" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_6">
           <span class="md-nav__icon md-icon"></span>
           OpenStack
@@ -1536,86 +1540,13 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Using clouds.yaml
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         Using clouds.yaml
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#how-to-generate-and-use-cloudsyaml" class="md-nav__link">
-    How to generate and use clouds.yaml
-  </a>
-  
-    <nav class="md-nav" aria-label="How to generate and use clouds.yaml">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#downloading-from-horizon" class="md-nav__link">
-    Downloading from horizon
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#manually-creating-the-file" class="md-nav__link">
-    Manually creating the file
-  </a>
-  
-    <nav class="md-nav" aria-label="Manually creating the file">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#further-details" class="md-nav__link">
-    Further details
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-cloudsyaml" class="md-nav__link">
-    Using clouds.yaml
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -1639,8 +1570,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
       
       
         
@@ -1667,7 +1599,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Coding" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_7">
           <span class="md-nav__icon md-icon"></span>
           Coding
@@ -1741,63 +1673,6 @@
   
   
   
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#how-to-generate-and-use-cloudsyaml" class="md-nav__link">
-    How to generate and use clouds.yaml
-  </a>
-  
-    <nav class="md-nav" aria-label="How to generate and use clouds.yaml">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#downloading-from-horizon" class="md-nav__link">
-    Downloading from horizon
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#manually-creating-the-file" class="md-nav__link">
-    Manually creating the file
-  </a>
-  
-    <nav class="md-nav" aria-label="Manually creating the file">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#further-details" class="md-nav__link">
-    Further details
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-cloudsyaml" class="md-nav__link">
-    Using clouds.yaml
-  </a>
-  
-</li>
-      
-    </ul>
   
 </nav>
                   </div>
@@ -1805,10 +1680,11 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
 <h1 id="cloudsyaml-how-to-generate-and-use-it">clouds.yaml - how to generate and use it</h1>
@@ -1819,24 +1695,22 @@ Then, click on "Download OpenStack RC File" and select to download the "clouds.y
 <p><img alt="Download clouds.yaml file" src="/src/clouds_yaml.png" /></p>
 <p>Then, copy this file into the current Director as <code class="highlight">clouds.yaml</code>. </p>
 <p>This file will need one minor modification, as the password needs to be added to:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
-<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>clouds:
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code>clouds:
   &lt;cloud identifier&gt;:
     auth:
 (...)
       password: VrcxVu7RmZAzpzKUaHmcMv22q
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p>Test it with:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>openstack --os-cloud &lt;cloud identifier&gt; token issue
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>openstack --os-cloud &lt;cloud identifier&gt; token issue
+</code></pre></div></td></tr></table></div></p>
 <h3 id="manually-creating-the-file">Manually creating the file</h3>
 <p>Use the following script:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1855,13 +1729,13 @@ Then, click on "Download OpenStack RC File" and select to download the "clouds.y
 <span class="normal">17</span>
 <span class="normal">18</span>
 <span class="normal">19</span>
-<span class="normal">20</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+<span class="normal">20</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="ch">#!/bin/bash</span>
 
-<span class="nb">source</span> /home/stack/overcloudrc
+<span class="nb">source</span><span class="w"> </span>/home/stack/overcloudrc
 
-<span class="nv">PROJECT_ID</span><span class="o">=</span><span class="k">$(</span>openstack project list <span class="p">|</span> grep <span class="nv">$OS_PROJECT_NAME</span> <span class="p">|</span> awk <span class="s1">&#39;{print $2}&#39;</span><span class="k">)</span>
+<span class="nv">PROJECT_ID</span><span class="o">=</span><span class="k">$(</span>openstack<span class="w"> </span>project<span class="w"> </span>list<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="nv">$OS_PROJECT_NAME</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $2}&#39;</span><span class="k">)</span>
 
-cat <span class="s">&lt;&lt; EOF &gt; clouds.yaml</span>
+cat<span class="w"> </span><span class="s">&lt;&lt; EOF &gt; clouds.yaml</span>
 <span class="s">clouds:</span>
 <span class="s">  openstack:</span>
 <span class="s">    auth:</span>
@@ -1875,11 +1749,10 @@ cat <span class="s">&lt;&lt; EOF &gt; clouds.yaml</span>
 <span class="s">    interface: &quot;public&quot;</span>
 <span class="s">    identity_api_version: $OS_IDENTITY_API_VERSION</span>
 <span class="s">EOF</span>
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <h4 id="further-details">Further details</h4>
 <p>Look at <code class="highlight">overcloudrc</code>:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1904,7 +1777,7 @@ cat <span class="s">&lt;&lt; EOF &gt; clouds.yaml</span>
 <span class="normal">23</span>
 <span class="normal">24</span>
 <span class="normal">25</span>
-<span class="normal">26</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="s s-Atom">stack@undercloud</span><span class="o">-</span><span class="mi">0</span> <span class="s s-Atom">~</span><span class="p">]</span><span class="err">$</span> <span class="s s-Atom">cat</span> <span class="s s-Atom">overcloudrc</span> 
+<span class="normal">26</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="s s-Atom">stack@undercloud</span><span class="o">-</span><span class="mi">0</span> <span class="o">~</span><span class="p">]</span><span class="err">$</span> <span class="s s-Atom">cat</span> <span class="s s-Atom">overcloudrc</span> 
 <span class="s s-Atom">#</span> <span class="nv">Clear</span> <span class="s s-Atom">any</span> <span class="s s-Atom">old</span> <span class="s s-Atom">environment</span> <span class="s s-Atom">that</span> <span class="s s-Atom">may</span> <span class="s s-Atom">conflict</span><span class="p">.</span>
 <span class="s s-Atom">for</span> <span class="s s-Atom">key</span> <span class="s s-Atom">in</span> <span class="err">$</span><span class="p">(</span> <span class="s s-Atom">set</span> <span class="p">|</span> <span class="s s-Atom">awk</span> <span class="s s-Atom">&#39;{FS=&quot;=&quot;}  /^OS_/ {print $1}&#39;</span> <span class="p">);</span> <span class="s s-Atom">do</span> <span class="s s-Atom">unset</span> <span class="err">$</span><span class="s s-Atom">key</span> <span class="p">;</span> <span class="s s-Atom">done</span>
 <span class="s s-Atom">export</span> <span class="nv">OS_NO_CACHE</span><span class="o">=</span><span class="nv">True</span>
@@ -1914,7 +1787,7 @@ cat <span class="s">&lt;&lt; EOF &gt; clouds.yaml</span>
 <span class="s s-Atom">export</span> <span class="nv">OS_USER_DOMAIN_NAME</span><span class="o">=</span><span class="nv">Default</span>
 <span class="s s-Atom">export</span> <span class="nv">OS_VOLUME_API_VERSION</span><span class="o">=</span><span class="mi">3</span>
 <span class="s s-Atom">export</span> <span class="nv">OS_CLOUDNAME</span><span class="o">=</span><span class="s s-Atom">overcloud</span>
-<span class="s s-Atom">export</span> <span class="nv">OS_AUTH_URL</span><span class="o">=</span><span class="nn">http</span><span class="p">:</span><span class="o">//</span><span class="mf">172.16.0.199</span><span class="s s-Atom">:</span><span class="mi">5000</span><span class="o">//</span><span class="s s-Atom">v3</span>
+<span class="s s-Atom">export</span> <span class="nv">OS_AUTH_URL</span><span class="o">=</span><span class="s s-Atom">http</span><span class="p">:</span><span class="o">//</span><span class="mf">172.16.0.199</span><span class="o">:</span><span class="mi">5000</span><span class="o">//</span><span class="s s-Atom">v3</span>
 <span class="s s-Atom">export</span> <span class="nv">NOVA_VERSION</span><span class="o">=</span><span class="mf">1.1</span>
 <span class="s s-Atom">export</span> <span class="nv">OS_IMAGE_API_VERSION</span><span class="o">=</span><span class="mi">2</span>
 <span class="s s-Atom">export</span> <span class="nv">OS_PASSWORD</span><span class="o">=</span><span class="nv">VrcxVu7RmZAzpzKUaHmcMv22q</span>
@@ -1926,18 +1799,16 @@ cat <span class="s">&lt;&lt; EOF &gt; clouds.yaml</span>
 
 <span class="s s-Atom">#</span> <span class="nv">Add</span> <span class="nv">OS_CLOUDNAME</span> <span class="s s-Atom">to</span> <span class="nv">PS1</span>
 <span class="s s-Atom">if</span> <span class="p">[</span> <span class="o">-</span><span class="s s-Atom">z</span> <span class="s2">&quot;${CLOUDPROMPT_ENABLED:-}&quot;</span> <span class="p">];</span> <span class="s s-Atom">then</span>
-    <span class="s s-Atom">export</span> <span class="nv">PS1</span><span class="s s-Atom">=</span><span class="err">$</span><span class="p">{</span><span class="nv">PS1</span><span class="p">:-</span><span class="s2">&quot;&quot;</span><span class="p">}</span>
-    <span class="s s-Atom">export</span> <span class="nv">PS1</span><span class="s s-Atom">=\</span><span class="err">$</span><span class="p">{</span><span class="nv">OS_CLOUDNAME</span><span class="s s-Atom">:+</span><span class="err">&quot;</span><span class="p">(</span><span class="s s-Atom">\</span><span class="err">$</span><span class="nv">OS_CLOUDNAME</span><span class="p">)</span><span class="err">&quot;</span><span class="p">}</span><span class="s s-Atom">\</span> <span class="err">$</span><span class="nv">PS1</span>
+    <span class="s s-Atom">export</span> <span class="nv">PS1</span><span class="s s-Atom">=</span><span class="err">$</span><span class="p">{</span><span class="nv">PS1</span><span class="o">:-</span><span class="s2">&quot;&quot;</span><span class="p">}</span>
+    <span class="s s-Atom">export</span> <span class="nv">PS1</span><span class="s s-Atom">=\</span><span class="err">$</span><span class="p">{</span><span class="nv">OS_CLOUDNAME</span><span class="o">:</span><span class="s s-Atom">+</span><span class="err">&quot;</span><span class="p">(</span><span class="s s-Atom">\</span><span class="err">$</span><span class="nv">OS_CLOUDNAME</span><span class="p">)</span><span class="err">&quot;</span><span class="p">}</span><span class="s s-Atom">\</span> <span class="err">$</span><span class="nv">PS1</span>
     <span class="s s-Atom">export</span> <span class="nv">CLOUDPROMPT_ENABLED</span><span class="o">=</span><span class="mi">1</span>
 <span class="s s-Atom">fi</span>
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p>Get the project id with:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>openstack project list | grep $OS_PROJECT_NAME | awk &#39;{print $2}&#39;
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>openstack project list | grep $OS_PROJECT_NAME | awk &#39;{print $2}&#39;
+</code></pre></div></td></tr></table></div></p>
 <p>Generate clouds.yaml with the above credentials. Adjust this to use the actual configuration and credentials as obtained from overcloudrc:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1950,25 +1821,24 @@ cat <span class="s">&lt;&lt; EOF &gt; clouds.yaml</span>
 <span class="normal">11</span>
 <span class="normal">12</span>
 <span class="normal">13</span>
-<span class="normal">14</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="p">&#39;</span><span class="n">EOF</span><span class="p">&#39;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">clouds</span><span class="p">.</span><span class="n">yaml</span><span class="w"></span>
-<span class="nl">clouds:</span><span class="w"></span>
-<span class="w">  </span><span class="nl">openstack:</span><span class="w"></span>
-<span class="w">    </span><span class="nl">auth:</span><span class="w"></span>
+<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="p">&#39;</span><span class="n">EOF</span><span class="p">&#39;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">clouds</span><span class="p">.</span><span class="n">yaml</span>
+<span class="nl">clouds:</span>
+<span class="w">  </span><span class="nl">openstack:</span>
+<span class="w">    </span><span class="nl">auth:</span>
 <span class="w">      </span><span class="nl">auth_url:</span><span class="w"> </span><span class="nl">http:</span><span class="c1">//172.16.0.199:5000//v3</span>
-<span class="w">      </span><span class="nl">username:</span><span class="w"> </span><span class="s">&quot;admin&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="nl">password:</span><span class="w"> </span><span class="n">VrcxVu7RmZAzpzKUaHmcMv22q</span><span class="w"></span>
-<span class="w">      </span><span class="nl">project_name:</span><span class="w"> </span><span class="s">&quot;admin&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="nl">project_id:</span><span class="w"> </span><span class="s">&quot;a416f556938f454f849da42faa317cd3&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="nl">user_domain_name:</span><span class="w"> </span><span class="s">&quot;Default&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nl">region_name:</span><span class="w"> </span><span class="s">&quot;regionOne&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nl">interface:</span><span class="w"> </span><span class="s">&quot;public&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nl">identity_api_version:</span><span class="w"> </span><span class="mh">3</span><span class="w"></span>
-<span class="n">EOF</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="w">      </span><span class="nl">username:</span><span class="w"> </span><span class="s">&quot;admin&quot;</span>
+<span class="w">      </span><span class="nl">password:</span><span class="w"> </span><span class="n">VrcxVu7RmZAzpzKUaHmcMv22q</span>
+<span class="w">      </span><span class="nl">project_name:</span><span class="w"> </span><span class="s">&quot;admin&quot;</span>
+<span class="w">      </span><span class="nl">project_id:</span><span class="w"> </span><span class="s">&quot;a416f556938f454f849da42faa317cd3&quot;</span>
+<span class="w">      </span><span class="nl">user_domain_name:</span><span class="w"> </span><span class="s">&quot;Default&quot;</span>
+<span class="w">    </span><span class="nl">region_name:</span><span class="w"> </span><span class="s">&quot;regionOne&quot;</span>
+<span class="w">    </span><span class="nl">interface:</span><span class="w"> </span><span class="s">&quot;public&quot;</span>
+<span class="w">    </span><span class="nl">identity_api_version:</span><span class="w"> </span><span class="mh">3</span>
+<span class="n">EOF</span>
+</code></pre></div></td></tr></table></div></p>
 <h2 id="using-cloudsyaml">Using clouds.yaml</h2>
 <p>With the <code class="highlight">openstack</code> CLI, use clouds.yaml by providing <code class="highlight">--os-cloud &lt;cloud identifier from YAML file&gt;</code>:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1982,23 +1852,22 @@ cat <span class="s">&lt;&lt; EOF &gt; clouds.yaml</span>
 <span class="normal">12</span>
 <span class="normal">13</span>
 <span class="normal">14</span>
-<span class="normal">15</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">[</span><span class="c">stack@undercloud</span><span class="nb">-</span><span class="c">0 ~</span><span class="k">]</span><span class="c">$ openstack </span><span class="nb">--</span><span class="c">os</span><span class="nb">-</span><span class="c">cloud openstack token issue</span>
-<span class="nb">+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+</span><span class="c"></span>
+<span class="normal">15</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">[</span><span class="c">stack@undercloud</span><span class="nb">-</span><span class="c">0 ~</span><span class="k">]</span><span class="c">$ openstack </span><span class="nb">--</span><span class="c">os</span><span class="nb">-</span><span class="c">cloud openstack token issue</span>
+<span class="nb">+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+</span>
 <span class="c">| Field      | Value                                                                                                                                                                                   |</span>
-<span class="nb">+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+</span><span class="c"></span>
+<span class="nb">+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+</span>
 <span class="c">| expires    | 2019</span><span class="nb">-</span><span class="c">10</span><span class="nb">-</span><span class="c">26T11:18:10</span><span class="nb">+</span><span class="c">0000                                                                                                                                                                |</span>
 <span class="c">| id         | gAAAAABdtB1i8wnsh</span><span class="nb">-</span><span class="c">pkN6fGMFD5vX7bcvxWms__01c9FFeDp3U</span><span class="nb">-</span><span class="c">iG6NB31NJc9QhVxVB7WB9_D5J9gwGX91TIdMEiqmhTuI66Wz8eGkw</span><span class="nb">-</span><span class="c">jxoiAR81y1UYskPrORlAj4Vl0u2L7bifalN7VnPoWu6ISgDCIhd1vF6BZwtU1NrLpfT0KBqMX83_Q |</span>
 <span class="c">| project_id | a40944973ca8466cb30faeb669646359                                                                                                                                                        |</span>
 <span class="c">| user_id    | f41f1e1433744957985eef31d5d64309                                                                                                                                                        |</span>
-<span class="nb">+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+</span><span class="c"></span>
+<span class="nb">+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+</span>
 <span class="k">[</span><span class="c">stack@undercloud</span><span class="nb">-</span><span class="c">0 ~</span><span class="k">]</span><span class="c">$ openstack </span><span class="nb">--</span><span class="c">os</span><span class="nb">-</span><span class="c">cloud openstack network list</span>
-<span class="nb">+--------------------------------------+----------+---------+</span><span class="c"></span>
+<span class="nb">+--------------------------------------+----------+---------+</span>
 <span class="c">| ID                                   | Name     | Subnets |</span>
-<span class="nb">+--------------------------------------+----------+---------+</span><span class="c"></span>
+<span class="nb">+--------------------------------------+----------+---------+</span>
 <span class="c">| a01c429e</span><span class="nb">-</span><span class="c">9095</span><span class="nb">-</span><span class="c">4838</span><span class="nb">-</span><span class="c">8ff9</span><span class="nb">-</span><span class="c">c14ed0683025 | private1 |         |</span>
-<span class="nb">+--------------------------------------+----------+---------+</span><span class="c"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="nb">+--------------------------------------+----------+---------+</span>
+</code></pre></div></td></tr></table></div></p>
 
   <hr>
 <div class="md-source-file">
@@ -2011,54 +1880,25 @@ cat <span class="s">&lt;&lt; EOF &gt; clouds.yaml</span>
   </small>
 </div>
 
-              
-            </article>
-          </div>
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
         
       </main>
       
         <footer class="md-footer">
-  
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
-      
-        
-        <a href="../reattach_to_running_deployment/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Reattach to running deployment" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Reattach to running deployment
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../../coding/" class="md-footer__link md-footer__link--next" aria-label="Next: Coding" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              Coding
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -2080,10 +1920,11 @@ cat <span class="s">&lt;&lt; EOF &gt; clouds.yaml</span>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.467223ff.min.js"></script>
+      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
       
     
   </body>

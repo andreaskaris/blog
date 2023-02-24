@@ -12,8 +12,14 @@
       
         <link rel="canonical" href="https://andreaskaris.github.io/blog/openshift/ocp-custom-release-image/">
       
+      
+        <link rel="prev" href="../analyzing-cni/">
+      
+      
+        <link rel="next" href="../cpu-manager-with-custom-machine-config-pool/">
+      
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.14">
     
     
       
@@ -21,16 +27,13 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2d9f7617.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#000000">
-        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
       
+      
+
     
     
     
@@ -43,10 +46,11 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
+    
     
     
   </head>
@@ -57,7 +61,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="pink">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink">
   
     
     
@@ -65,11 +69,6 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
-      
-        
-        <a href="#building-custom-release-images-for-openshift" class="md-skip">
-          Skip to content
-        </a>
       
     </div>
     <div data-md-component="announce">
@@ -84,11 +83,11 @@
     <a href="../.." title="Andreas Karis Blog" class="md-header__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -121,7 +120,7 @@
           
             
 <nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-tabs__inner md-grid">
+  <div class="md-grid">
     <ul class="md-tabs__list">
       
         
@@ -258,7 +257,7 @@
     <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     Andreas Karis Blog
@@ -292,8 +291,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
       
       
         
@@ -316,7 +316,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Ceph" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
           Ceph
@@ -356,8 +356,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
       
       
         
@@ -400,7 +401,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Linux" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Linux
@@ -580,8 +581,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
       
       
         
@@ -636,7 +638,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Networking" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           Networking
@@ -902,8 +904,9 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
       
       
         
@@ -990,7 +993,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenShift and Kubernetes" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_5">
           <span class="md-nav__icon md-icon"></span>
           OpenShift and Kubernetes
@@ -1036,103 +1039,13 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Building custom release images for OpenShift
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         Building custom release images for OpenShift
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#building-custom-release-images-for-openshift" class="md-nav__link">
-    Building custom release images for OpenShift
-  </a>
-  
-    <nav class="md-nav" aria-label="Building custom release images for OpenShift">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#using-custom-container-image-for-a-specific-component-operator" class="md-nav__link">
-    Using custom container image for a specific component / operator
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#prerequisite-quayio-repositories" class="md-nav__link">
-    Prerequisite: quay.io repositories
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#prerequsiste-log-into-all-registries" class="md-nav__link">
-    Prerequsiste: log into all registries
-  </a>
-  
-    <nav class="md-nav" aria-label="Prerequsiste: log into all registries">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#prerequisite-creating-a-custom-component-image" class="md-nav__link">
-    Prerequisite: creating a custom component image
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#using-oc-adm-release" class="md-nav__link">
-    Using oc adm release
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#using-buildah" class="md-nav__link">
-    Using buildah
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#verification" class="md-nav__link">
-    Verification
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -1576,8 +1489,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
       
       
         
@@ -1602,7 +1516,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenStack" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_6">
           <span class="md-nav__icon md-icon"></span>
           OpenStack
@@ -1656,8 +1570,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
       
       
         
@@ -1684,7 +1599,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Coding" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_7">
           <span class="md-nav__icon md-icon"></span>
           Coding
@@ -1759,92 +1674,17 @@
   
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#building-custom-release-images-for-openshift" class="md-nav__link">
-    Building custom release images for OpenShift
-  </a>
-  
-    <nav class="md-nav" aria-label="Building custom release images for OpenShift">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#using-custom-container-image-for-a-specific-component-operator" class="md-nav__link">
-    Using custom container image for a specific component / operator
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#prerequisite-quayio-repositories" class="md-nav__link">
-    Prerequisite: quay.io repositories
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#prerequsiste-log-into-all-registries" class="md-nav__link">
-    Prerequsiste: log into all registries
-  </a>
-  
-    <nav class="md-nav" aria-label="Prerequsiste: log into all registries">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#prerequisite-creating-a-custom-component-image" class="md-nav__link">
-    Prerequisite: creating a custom component image
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#using-oc-adm-release" class="md-nav__link">
-    Using oc adm release
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#using-buildah" class="md-nav__link">
-    Using buildah
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#verification" class="md-nav__link">
-    Verification
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
   <h1>Building custom release images for OpenShift</h1>
@@ -1863,35 +1703,31 @@
 <h4 id="prerequisite-creating-a-custom-component-image">Prerequisite: creating a custom component image</h4>
 <p>For the following example, I will rebuild the <code class="highlight">baremetal-runtimecfg</code> container with some custom modifications. We will then build an <code class="highlight">ocp-release</code> image to deploy the payload at installation time.</p>
 <p>Clone the repository:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>git clone https://github.com/openshift/baremetal-runtimecfg.git
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code>git clone https://github.com/openshift/baremetal-runtimecfg.git
 cd baremetal-runtimecfg
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p>Customize the code. Then, build the image:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>make image IMAGE_REPO=akaris IMAGE_NAME=baremetal-runtimecfg
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code>make image IMAGE_REPO=akaris IMAGE_NAME=baremetal-runtimecfg
 make push IMAGE_REPO=akaris IMAGE_NAME=baremetal-runtimecfg
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p>We will also need the SHA of that image:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ podman inspect quay.io/akaris/baremetal-runtimecfg:latest <span class="p">|</span> grep <span class="s1">&#39;&quot;Digest&quot;&#39;</span>
-          <span class="s2">&quot;Digest&quot;</span>: <span class="s2">&quot;sha256:9a83210b0536661a826fbddb6be9dcf5cebf16d91e5fe7687b741166ab69c3c2&quot;</span>
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code>$<span class="w"> </span>podman<span class="w"> </span>inspect<span class="w"> </span>quay.io/akaris/baremetal-runtimecfg:latest<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;&quot;Digest&quot;&#39;</span>
+<span class="w">          </span><span class="s2">&quot;Digest&quot;</span>:<span class="w"> </span><span class="s2">&quot;sha256:9a83210b0536661a826fbddb6be9dcf5cebf16d91e5fe7687b741166ab69c3c2&quot;</span>
+</code></pre></div></td></tr></table></div></p>
 <h4 id="using-oc-adm-release">Using oc adm release</h4>
 <p>If you want to use a custom container image for a specific component or operator then this can easily be achieved with the <code class="highlight">oc adm release</code> command. Unfortunately, this feature is not extremely well documented.</p>
 <p>Extract the OCP release - in this case, I am going to use the latest 4.12 release condidate that was available at time of this writing:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">mkdir</span><span class="w"> </span><span class="n">payload</span><span class="w"></span>
-<span class="n">cd</span><span class="w"> </span><span class="n">payload</span><span class="w"></span>
-<span class="n">oc</span><span class="w"> </span><span class="n">adm</span><span class="w"> </span><span class="n">release</span><span class="w"> </span><span class="n">new</span><span class="w"> </span><span class="o">--</span><span class="n">from</span><span class="o">-</span><span class="n">release</span><span class="w"> </span><span class="n">quay</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">openshift</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="n">dev</span><span class="o">/</span><span class="n">ocp</span><span class="o">-</span><span class="n">release</span><span class="p">:</span><span class="mf">4.12</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">ec</span><span class="o">.</span><span class="mi">4</span><span class="o">-</span><span class="n">x86_64</span><span class="w"> </span><span class="o">--</span><span class="n">dir</span><span class="w"> </span><span class="o">.</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">mkdir</span><span class="w"> </span><span class="n">payload</span>
+<span class="n">cd</span><span class="w"> </span><span class="n">payload</span>
+<span class="n">oc</span><span class="w"> </span><span class="n">adm</span><span class="w"> </span><span class="n">release</span><span class="w"> </span><span class="n">new</span><span class="w"> </span><span class="o">--</span><span class="n">from</span><span class="o">-</span><span class="n">release</span><span class="w"> </span><span class="n">quay</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">openshift</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="n">dev</span><span class="o">/</span><span class="n">ocp</span><span class="o">-</span><span class="n">release</span><span class="p">:</span><span class="mf">4.12</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">ec</span><span class="o">.</span><span class="mi">4</span><span class="o">-</span><span class="n">x86_64</span><span class="w"> </span><span class="o">--</span><span class="n">dir</span><span class="w"> </span><span class="o">.</span>
+</code></pre></div></td></tr></table></div></p>
 <p>Now, modify the <code class="highlight">image-references</code> and point to the new <code class="highlight">baremetal-runtimecfg</code> image - change the <code class="highlight">name</code> to match the new container location and SHA:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1907,54 +1743,49 @@ make push IMAGE_REPO=akaris IMAGE_NAME=baremetal-runtimecfg
 <span class="normal">14</span>
 <span class="normal">15</span>
 <span class="normal">16</span>
-<span class="normal">17</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="w">   </span><span class="mi">458</span><span class="w">       </span><span class="err">{</span><span class="w"></span>
-<span class="w">   </span><span class="mi">459</span><span class="w">         </span><span class="ss">&quot;name&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;baremetal-runtimecfg&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="mi">460</span><span class="w">         </span><span class="ss">&quot;annotations&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
-<span class="w">   </span><span class="mi">461</span><span class="w">           </span><span class="ss">&quot;io.openshift.build.commit.id&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;4f1174e010f295ae64e1f6eba2e786542d0863b3&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="mi">462</span><span class="w">           </span><span class="ss">&quot;io.openshift.build.commit.ref&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="mi">463</span><span class="w">           </span><span class="ss">&quot;io.openshift.build.source-location&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;https://github.com/openshift/baremetal-runtimecfg&quot;</span><span class="w"></span>
-<span class="w">   </span><span class="mi">464</span><span class="w">         </span><span class="err">}</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="mi">465</span><span class="w">         </span><span class="ss">&quot;from&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
-<span class="w">   </span><span class="mi">466</span><span class="w">           </span><span class="ss">&quot;kind&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;DockerImage&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="mi">467</span><span class="w">           </span><span class="ss">&quot;name&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;quay.io/akaris/baremetal-runtimecfg@sha256:9a83210b0536661a826fbddb6be9dcf5cebf16d91e5fe768       7b741166ab69c3c2&quot;</span><span class="w"></span>
-<span class="w">   </span><span class="mi">468</span><span class="w">         </span><span class="err">}</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="mi">469</span><span class="w">         </span><span class="ss">&quot;generation&quot;</span><span class="err">:</span><span class="w"> </span><span class="k">null</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="mi">470</span><span class="w">         </span><span class="ss">&quot;importPolicy&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{}</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="mi">471</span><span class="w">         </span><span class="ss">&quot;referencePolicy&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
-<span class="w">   </span><span class="mi">472</span><span class="w">           </span><span class="ss">&quot;type&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;&quot;</span><span class="w"></span>
-<span class="w">   </span><span class="mi">473</span><span class="w">         </span><span class="err">}</span><span class="w"></span>
-<span class="w">   </span><span class="mi">474</span><span class="w">       </span><span class="err">}</span><span class="p">,</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="normal">17</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="w">   </span><span class="mi">458</span><span class="w">       </span><span class="err">{</span>
+<span class="w">   </span><span class="mi">459</span><span class="w">         </span><span class="ss">&quot;name&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;baremetal-runtimecfg&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="mi">460</span><span class="w">         </span><span class="ss">&quot;annotations&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{</span>
+<span class="w">   </span><span class="mi">461</span><span class="w">           </span><span class="ss">&quot;io.openshift.build.commit.id&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;4f1174e010f295ae64e1f6eba2e786542d0863b3&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="mi">462</span><span class="w">           </span><span class="ss">&quot;io.openshift.build.commit.ref&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="mi">463</span><span class="w">           </span><span class="ss">&quot;io.openshift.build.source-location&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;https://github.com/openshift/baremetal-runtimecfg&quot;</span>
+<span class="w">   </span><span class="mi">464</span><span class="w">         </span><span class="err">}</span><span class="p">,</span>
+<span class="w">   </span><span class="mi">465</span><span class="w">         </span><span class="ss">&quot;from&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{</span>
+<span class="w">   </span><span class="mi">466</span><span class="w">           </span><span class="ss">&quot;kind&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;DockerImage&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="mi">467</span><span class="w">           </span><span class="ss">&quot;name&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;quay.io/akaris/baremetal-runtimecfg@sha256:9a83210b0536661a826fbddb6be9dcf5cebf16d91e5fe768       7b741166ab69c3c2&quot;</span>
+<span class="w">   </span><span class="mi">468</span><span class="w">         </span><span class="err">}</span><span class="p">,</span>
+<span class="w">   </span><span class="mi">469</span><span class="w">         </span><span class="ss">&quot;generation&quot;</span><span class="err">:</span><span class="w"> </span><span class="k">null</span><span class="p">,</span>
+<span class="w">   </span><span class="mi">470</span><span class="w">         </span><span class="ss">&quot;importPolicy&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{}</span><span class="p">,</span>
+<span class="w">   </span><span class="mi">471</span><span class="w">         </span><span class="ss">&quot;referencePolicy&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{</span>
+<span class="w">   </span><span class="mi">472</span><span class="w">           </span><span class="ss">&quot;type&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;&quot;</span>
+<span class="w">   </span><span class="mi">473</span><span class="w">         </span><span class="err">}</span>
+<span class="w">   </span><span class="mi">474</span><span class="w">       </span><span class="err">}</span><span class="p">,</span>
+</code></pre></div></td></tr></table></div></p>
 <p>Now, build a new release from the directory contents - this will take a little while but the image will eventually be pushed to your registr:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>oc adm release new  --from-dir . --to-image quay.io/akaris/ocp-release:test
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>oc adm release new  --from-dir . --to-image quay.io/akaris/ocp-release:test
+</code></pre></div></td></tr></table></div></p>
 <p>Inspect the newly created ocp-release image:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="w"> </span><span class="n">podman</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="o">--</span><span class="n">rm</span><span class="w"> </span><span class="o">-</span><span class="n">it</span><span class="w"> </span><span class="o">--</span><span class="n">entrypoint</span><span class="o">=/</span><span class="n">bin</span><span class="o">/</span><span class="n">grep</span><span class="w"> </span><span class="n">quay</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">akaris</span><span class="o">/</span><span class="n">ocp</span><span class="o">-</span><span class="k">release</span><span class="err">:</span><span class="n">test</span><span class="w"> </span><span class="n">runtimecfg</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="k">release</span><span class="o">-</span><span class="n">manifests</span><span class="o">/</span><span class="nc">image</span><span class="o">-</span><span class="k">references</span><span class="w"></span>
-<span class="w">        </span><span class="ss">&quot;name&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;baremetal-runtimecfg&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="ss">&quot;io.openshift.build.source-location&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;https://github.com/openshift/baremetal-runtimecfg&quot;</span><span class="w"></span>
-<span class="w">          </span><span class="ss">&quot;name&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;quay.io/akaris/baremetal-runtimecfg@sha256:9a83210b0536661a826fbddb6be9dcf5cebf16d91e5fe7687b741166ab69c3c2&quot;</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="w"> </span><span class="n">podman</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="o">--</span><span class="n">rm</span><span class="w"> </span><span class="o">-</span><span class="n">it</span><span class="w"> </span><span class="o">--</span><span class="n">entrypoint</span><span class="o">=/</span><span class="n">bin</span><span class="o">/</span><span class="n">grep</span><span class="w"> </span><span class="n">quay</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">akaris</span><span class="o">/</span><span class="n">ocp</span><span class="o">-</span><span class="k">release</span><span class="err">:</span><span class="n">test</span><span class="w"> </span><span class="n">runtimecfg</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="k">release</span><span class="o">-</span><span class="n">manifests</span><span class="o">/</span><span class="nc">image</span><span class="o">-</span><span class="k">references</span>
+<span class="w">        </span><span class="ss">&quot;name&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;baremetal-runtimecfg&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="ss">&quot;io.openshift.build.source-location&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;https://github.com/openshift/baremetal-runtimecfg&quot;</span>
+<span class="w">          </span><span class="ss">&quot;name&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;quay.io/akaris/baremetal-runtimecfg@sha256:9a83210b0536661a826fbddb6be9dcf5cebf16d91e5fe7687b741166ab69c3c2&quot;</span>
+</code></pre></div></td></tr></table></div></p>
 <p>Create a new <code class="highlight">openshift-install</code> command:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">oc</span><span class="w"> </span><span class="n">adm</span><span class="w"> </span><span class="n">release</span><span class="w"> </span><span class="n">extract</span><span class="w"> </span><span class="o">--</span><span class="n">tools</span><span class="w"> </span><span class="n">quay</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">akaris</span><span class="o">/</span><span class="n">ocp</span><span class="o">-</span><span class="n">release</span><span class="p">:</span><span class="n">test</span><span class="w"></span>
-<span class="n">tar</span><span class="w"> </span><span class="o">-</span><span class="n">xf</span><span class="w"> </span><span class="n">openshift</span><span class="o">-</span><span class="n">install</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="mf">0.0</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="mi">2022</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">19</span><span class="o">-</span><span class="mf">104245.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">oc</span><span class="w"> </span><span class="n">adm</span><span class="w"> </span><span class="n">release</span><span class="w"> </span><span class="n">extract</span><span class="w"> </span><span class="o">--</span><span class="n">tools</span><span class="w"> </span><span class="n">quay</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">akaris</span><span class="o">/</span><span class="n">ocp</span><span class="o">-</span><span class="n">release</span><span class="p">:</span><span class="n">test</span>
+<span class="n">tar</span><span class="w"> </span><span class="o">-</span><span class="n">xf</span><span class="w"> </span><span class="n">openshift</span><span class="o">-</span><span class="n">install</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="mf">0.0</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="mi">2022</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">19</span><span class="o">-</span><span class="mf">104245.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+</code></pre></div></td></tr></table></div></p>
 <p>And install the cluster with the custom release payload:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>./openshift-install create cluster --dir=install-config --log-level=debug
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>./openshift-install create cluster --dir=install-config --log-level=debug
+</code></pre></div></td></tr></table></div></p>
 <h4 id="using-buildah">Using buildah</h4>
 <p>It is also possible to use buildah to achieve the exact same outcome. TBD.</p>
 <h4 id="verification">Verification</h4>
 <p>After installation, you can check the <code class="highlight">nodeip-configuration service</code> on one of your nodes. It will contain a reference to the new image:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1987,9 +1818,9 @@ make push IMAGE_REPO=akaris IMAGE_NAME=baremetal-runtimecfg
 <span class="normal">31</span>
 <span class="normal">32</span>
 <span class="normal">33</span>
-<span class="normal">34</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="err">$</span> <span class="s s-Atom">cat</span> <span class="o">/</span><span class="s s-Atom">etc</span><span class="o">/</span><span class="s s-Atom">systemd</span><span class="o">/</span><span class="s s-Atom">system</span><span class="o">/</span><span class="s s-Atom">nodeip</span><span class="o">-</span><span class="s s-Atom">configuration</span><span class="p">.</span><span class="s s-Atom">service</span>
+<span class="normal">34</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="err">$</span> <span class="s s-Atom">cat</span> <span class="o">/</span><span class="s s-Atom">etc</span><span class="o">/</span><span class="s s-Atom">systemd</span><span class="o">/</span><span class="s s-Atom">system</span><span class="o">/</span><span class="s s-Atom">nodeip</span><span class="o">-</span><span class="s s-Atom">configuration</span><span class="p">.</span><span class="s s-Atom">service</span>
 <span class="p">[</span><span class="nv">Unit</span><span class="p">]</span>
-<span class="nv">Description</span><span class="o">=</span><span class="nv">Writes</span> <span class="nv">IP</span> <span class="s s-Atom">address</span> <span class="s s-Atom">configuration</span> <span class="s s-Atom">so</span> <span class="s s-Atom">that</span> <span class="s s-Atom">kubelet</span> <span class="s s-Atom">and</span> <span class="s s-Atom">crio</span> <span class="s s-Atom">services</span> <span class="s s-Atom">select</span> <span class="s s-Atom">a</span> <span class="s s-Atom">valid</span> <span class="s s-Atom">node</span> <span class="nv">IP</span>
+<span class="nv">Description</span><span class="o">=</span><span class="nv">Writes</span> <span class="nv">IP</span> <span class="s s-Atom">address</span> <span class="s s-Atom">configuration</span> <span class="s s-Atom">so</span> <span class="s s-Atom">that</span> <span class="s s-Atom">kubelet</span> <span class="s s-Atom">and</span> <span class="s s-Atom">crio</span> <span class="s s-Atom">services</span> <span class="s s-Atom">select</span> <span class="s s-Atom">a</span> <span class="nb">val</span><span class="s s-Atom">id</span> <span class="s s-Atom">node</span> <span class="nv">IP</span>
 <span class="nv">Wants</span><span class="o">=</span><span class="s s-Atom">network</span><span class="o">-</span><span class="s s-Atom">online</span><span class="p">.</span><span class="s s-Atom">target</span> <span class="s s-Atom">crio</span><span class="o">-</span><span class="s s-Atom">wipe</span><span class="p">.</span><span class="s s-Atom">service</span>
 <span class="nv">After</span><span class="o">=</span><span class="s s-Atom">network</span><span class="o">-</span><span class="s s-Atom">online</span><span class="p">.</span><span class="s s-Atom">target</span> <span class="s s-Atom">ignition</span><span class="o">-</span><span class="s s-Atom">firstboot</span><span class="o">-</span><span class="s s-Atom">complete</span><span class="p">.</span><span class="s s-Atom">service</span> <span class="s s-Atom">crio</span><span class="o">-</span><span class="s s-Atom">wipe</span><span class="p">.</span><span class="s s-Atom">service</span>
 <span class="nv">Before</span><span class="o">=</span><span class="s s-Atom">kubelet</span><span class="p">.</span><span class="s s-Atom">service</span> <span class="s s-Atom">crio</span><span class="p">.</span><span class="s s-Atom">service</span>
@@ -2006,12 +1837,12 @@ make push IMAGE_REPO=akaris IMAGE_NAME=baremetal-runtimecfg
   <span class="s s-Atom">--authfile</span> <span class="o">/</span><span class="s s-Atom">var</span><span class="o">/</span><span class="s s-Atom">lib</span><span class="o">/</span><span class="s s-Atom">kubelet</span><span class="o">/</span><span class="s s-Atom">config</span><span class="p">.</span><span class="s s-Atom">json</span> <span class="s s-Atom">\</span>
   <span class="s s-Atom">--net</span><span class="o">=</span><span class="s s-Atom">host</span> <span class="s s-Atom">\</span>
   <span class="s s-Atom">--security</span><span class="o">-</span><span class="s s-Atom">opt</span> <span class="s s-Atom">label</span><span class="o">=</span><span class="s s-Atom">disable</span> <span class="s s-Atom">\</span>
-  <span class="s s-Atom">--volume</span> <span class="o">/</span><span class="s s-Atom">etc</span><span class="o">/</span><span class="s s-Atom">systemd</span><span class="o">/</span><span class="nn">system</span><span class="p">:</span><span class="o">/</span><span class="s s-Atom">etc</span><span class="o">/</span><span class="s s-Atom">systemd</span><span class="o">/</span><span class="s s-Atom">system</span> <span class="s s-Atom">\</span>
-  <span class="s s-Atom">quay</span><span class="p">.</span><span class="s s-Atom">io</span><span class="o">/</span><span class="s s-Atom">akaris</span><span class="o">/</span><span class="s s-Atom">baremetal</span><span class="o">-</span><span class="s s-Atom">runtimecfg@sha256:</span><span class="mi">9</span><span class="s s-Atom">a83210b0536661a826fbddb6be9dcf5cebf16d91e5fe7687b741166ab69c3c2</span> <span class="s s-Atom">\</span>
+  <span class="s s-Atom">--volume</span> <span class="o">/</span><span class="s s-Atom">etc</span><span class="o">/</span><span class="s s-Atom">systemd</span><span class="o">/</span><span class="s s-Atom">system</span><span class="p">:</span><span class="o">/</span><span class="s s-Atom">etc</span><span class="o">/</span><span class="s s-Atom">systemd</span><span class="o">/</span><span class="s s-Atom">system</span> <span class="s s-Atom">\</span>
+  <span class="s s-Atom">quay</span><span class="p">.</span><span class="s s-Atom">io</span><span class="o">/</span><span class="s s-Atom">akaris</span><span class="o">/</span><span class="s s-Atom">baremetal</span><span class="o">-</span><span class="s s-Atom">runtimecfg@sha256</span><span class="o">:</span><span class="mi">9</span><span class="s s-Atom">a83210b0536661a826fbddb6be9dcf5cebf16d91e5fe7687b741166ab69c3c2</span> <span class="s s-Atom">\</span>
   <span class="s s-Atom">node</span><span class="o">-</span><span class="s s-Atom">ip</span> <span class="s s-Atom">\</span>
   <span class="s s-Atom">set</span> <span class="s s-Atom">\</span>
   <span class="s s-Atom">--retry</span><span class="o">-</span><span class="s s-Atom">on</span><span class="o">-</span><span class="s s-Atom">failure</span> <span class="s s-Atom">\</span>
-  <span class="err">$</span><span class="p">{</span><span class="nv">NODEIP_HINT</span><span class="p">:-</span><span class="err">$</span><span class="p">{</span><span class="nv">KUBELET_NODEIP_HINT</span><span class="p">:-}};</span> <span class="s s-Atom">\</span>
+  <span class="err">$</span><span class="p">{</span><span class="nv">NODEIP_HINT</span><span class="o">:-</span><span class="err">$</span><span class="p">{</span><span class="nv">KUBELET_NODEIP_HINT</span><span class="o">:-</span><span class="p">}};</span> <span class="s s-Atom">\</span>
   <span class="s s-Atom">do</span> <span class="s s-Atom">\</span>
   <span class="s s-Atom">sleep</span> <span class="mi">5</span><span class="p">;</span> <span class="s s-Atom">\</span>
   <span class="s s-Atom">done</span><span class="err">&quot;</span>
@@ -2021,8 +1852,7 @@ make push IMAGE_REPO=akaris IMAGE_NAME=baremetal-runtimecfg
 
 <span class="p">[</span><span class="nv">Install</span><span class="p">]</span>
 <span class="nv">RequiredBy</span><span class="o">=</span><span class="s s-Atom">kubelet</span><span class="p">.</span><span class="s s-Atom">service</span>
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 
   <hr>
 <div class="md-source-file">
@@ -2035,54 +1865,25 @@ make push IMAGE_REPO=akaris IMAGE_NAME=baremetal-runtimecfg
   </small>
 </div>
 
-              
-            </article>
-          </div>
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
         
       </main>
       
         <footer class="md-footer">
-  
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
-      
-        
-        <a href="../analyzing-cni/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Analyzing CNI calls" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Analyzing CNI calls
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../cpu-manager-with-custom-machine-config-pool/" class="md-footer__link md-footer__link--next" aria-label="Next: CPU manager with custom MachineConfigPool" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              CPU manager with custom MachineConfigPool
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -2104,10 +1905,11 @@ make push IMAGE_REPO=akaris IMAGE_NAME=baremetal-runtimecfg
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.467223ff.min.js"></script>
+      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
       
     
   </body>

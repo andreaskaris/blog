@@ -12,8 +12,14 @@
       
         <link rel="canonical" href="https://andreaskaris.github.io/blog/ceph/ceph-manual-test/">
       
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../../linux/">
+      
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.14">
     
     
       
@@ -21,16 +27,13 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2d9f7617.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#000000">
-        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
       
+      
+
     
     
     
@@ -43,10 +46,11 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
+    
     
     
   </head>
@@ -57,7 +61,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="pink">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink">
   
     
     
@@ -65,11 +69,6 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
-      
-        
-        <a href="#using-ceph-with-qemu-kvm-manually" class="md-skip">
-          Skip to content
-        </a>
       
     </div>
     <div data-md-component="announce">
@@ -84,11 +83,11 @@
     <a href="../.." title="Andreas Karis Blog" class="md-header__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -121,7 +120,7 @@
           
             
 <nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-tabs__inner md-grid">
+  <div class="md-grid">
     <ul class="md-tabs__list">
       
         
@@ -258,7 +257,7 @@
     <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     Andreas Karis Blog
@@ -294,8 +293,9 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
       
       
         
@@ -318,7 +318,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Ceph" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
           Ceph
@@ -336,94 +336,13 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Ceph manual test with qemu
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         Ceph manual test with qemu
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#install-ceph" class="md-nav__link">
-    Install Ceph
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installing-ceph-credentials-to-etcceph" class="md-nav__link">
-    Installing ceph credentials to /etc/ceph
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#creating-a-pool" class="md-nav__link">
-    Creating a pool
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#downloading-and-customizing-rhel-qcow2" class="md-nav__link">
-    Downloading and customizing RHEL qcow2
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#converting-and-uploading-image-into-ceph-pool" class="md-nav__link">
-    Converting and uploading image into Ceph pool
-  </a>
-  
-    <nav class="md-nav" aria-label="Converting and uploading image into Ceph pool">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#booting-a-vm-from-the-raw-ceph-image-with-qemu-kvm" class="md-nav__link">
-    Booting a VM from the raw Ceph image with QEMU-KVM
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#booting-a-vm-from-the-raw-ceph-image-with-libvirt" class="md-nav__link">
-    Booting a VM from the raw Ceph image with libvirt
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -447,8 +366,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
       
       
         
@@ -491,7 +411,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Linux" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Linux
@@ -671,8 +591,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
       
       
         
@@ -727,7 +648,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Networking" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           Networking
@@ -991,8 +912,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
       
       
         
@@ -1079,7 +1001,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenShift and Kubernetes" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_5">
           <span class="md-nav__icon md-icon"></span>
           OpenShift and Kubernetes
@@ -1567,8 +1489,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
       
       
         
@@ -1593,7 +1516,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenStack" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_6">
           <span class="md-nav__icon md-icon"></span>
           OpenStack
@@ -1647,8 +1570,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
       
       
         
@@ -1675,7 +1599,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Coding" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_7">
           <span class="md-nav__icon md-icon"></span>
           Coding
@@ -1749,71 +1673,6 @@
   
   
   
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#install-ceph" class="md-nav__link">
-    Install Ceph
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installing-ceph-credentials-to-etcceph" class="md-nav__link">
-    Installing ceph credentials to /etc/ceph
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#creating-a-pool" class="md-nav__link">
-    Creating a pool
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#downloading-and-customizing-rhel-qcow2" class="md-nav__link">
-    Downloading and customizing RHEL qcow2
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#converting-and-uploading-image-into-ceph-pool" class="md-nav__link">
-    Converting and uploading image into Ceph pool
-  </a>
-  
-    <nav class="md-nav" aria-label="Converting and uploading image into Ceph pool">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#booting-a-vm-from-the-raw-ceph-image-with-qemu-kvm" class="md-nav__link">
-    Booting a VM from the raw Ceph image with QEMU-KVM
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#booting-a-vm-from-the-raw-ceph-image-with-libvirt" class="md-nav__link">
-    Booting a VM from the raw Ceph image with libvirt
-  </a>
-  
-</li>
-      
-    </ul>
   
 </nav>
                   </div>
@@ -1821,10 +1680,11 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
 <h1 id="using-ceph-with-qemu-kvm-manually">Using Ceph with qemu-kvm manually</h1>
@@ -1834,34 +1694,29 @@
 <h2 id="installing-ceph-credentials-to-etcceph">Installing ceph credentials to /etc/ceph</h2>
 <p>Make sure that all required ceph credentials are in /etc/ceph. In this case, I copied them directly from /etc/ceph on one of my monitor nodes.</p>
 <h2 id="creating-a-pool">Creating a pool</h2>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>ceph osd pool create rbd-pool 128
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code>ceph osd pool create rbd-pool 128
 rbd pool init rbd-pool
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 <h2 id="downloading-and-customizing-rhel-qcow2">Downloading and customizing RHEL qcow2</h2>
 <p>Download the RHEL qcow2 from <a href="https://access.redhat.com">https://access.redhat.com</a>, e.g.: <a href="https://access.redhat.com/downloads/content/69/ver=/rhel---7/7.7/x86_64/product-software">https://access.redhat.com/downloads/content/69/ver=/rhel---7/7.7/x86_64/product-software</a></p>
 <p>Install libguestfs-tools:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">yum</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">libguestfs</span><span class="o">-</span><span class="n">tools</span><span class="w"> </span><span class="o">-</span><span class="n">y</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">yum</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">libguestfs</span><span class="o">-</span><span class="n">tools</span><span class="w"> </span><span class="o">-</span><span class="n">y</span>
+</code></pre></div></td></tr></table></div></p>
 <p>Change the root password of the image:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">virt</span><span class="o">-</span><span class="n">customize</span><span class="w"> </span><span class="o">-</span><span class="n">a</span><span class="w"> </span><span class="n">rhel</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="mf">7.8</span><span class="o">-</span><span class="n">beta</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">x86_64</span><span class="o">-</span><span class="n">kvm</span><span class="o">.</span><span class="n">qcow2</span><span class="w"> </span><span class="o">--</span><span class="n">password</span><span class="w"> </span><span class="n">root</span><span class="p">:</span><span class="n">password</span><span class="w"></span>
-<span class="c1"># or, if needed:</span><span class="w"></span>
-<span class="c1"># export LIBGUESTFS_BACKEND=direct ; virt-customize -a rhel-server-7.8-beta-1-x86_64-kvm.qcow2 --password root:password</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">virt</span><span class="o">-</span><span class="n">customize</span><span class="w"> </span><span class="o">-</span><span class="n">a</span><span class="w"> </span><span class="n">rhel</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="mf">7.8</span><span class="o">-</span><span class="n">beta</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">x86_64</span><span class="o">-</span><span class="n">kvm</span><span class="o">.</span><span class="n">qcow2</span><span class="w"> </span><span class="o">--</span><span class="n">password</span><span class="w"> </span><span class="n">root</span><span class="p">:</span><span class="n">password</span>
+<span class="c1"># or, if needed:</span>
+<span class="c1"># export LIBGUESTFS_BACKEND=direct ; virt-customize -a rhel-server-7.8-beta-1-x86_64-kvm.qcow2 --password root:password</span>
+</code></pre></div></td></tr></table></div></p>
 <h2 id="converting-and-uploading-image-into-ceph-pool">Converting and uploading image into Ceph pool</h2>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>qemu-img convert -f qcow2 -O raw rhel-server-7.8-beta-1-x86_64-kvm.qcow2 rbd:rbd-pool/rhel-server
-</code></pre></div>
-</td></tr></table>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>qemu-img convert -f qcow2 -O raw rhel-server-7.8-beta-1-x86_64-kvm.qcow2 rbd:rbd-pool/rhel-server
+</code></pre></div></td></tr></table></div>
 <h4 id="booting-a-vm-from-the-raw-ceph-image-with-qemu-kvm">Booting a VM from the raw Ceph image with QEMU-KVM</h4>
 <p>Start a VM that directly uses the uploaded image from the Ceph pool:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>/usr/libexec/qemu-kvm -drive file=rbd:rbd-pool/rhel-server -nographic -m 1024
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>/usr/libexec/qemu-kvm -drive file=rbd:rbd-pool/rhel-server -nographic -m 1024
+</code></pre></div></td></tr></table></div></p>
 <p>To get out of qemu-kvm, type <code class="highlight">CTRL-a x</code></p>
 <p>You should be able to log into the image with credentials: <code class="highlight">root</code> / <code class="highlight">password</code></p>
 <blockquote>
@@ -1870,21 +1725,20 @@ rbd pool init rbd-pool
 <h2 id="booting-a-vm-from-the-raw-ceph-image-with-libvirt">Booting a VM from the raw Ceph image with libvirt</h2>
 <p>See:
 <a href="https://blog.modest-destiny.com/posts/kvm-libvirt-add-ceph-rbd-pool/">https://blog.modest-destiny.com/posts/kvm-libvirt-add-ceph-rbd-pool/</a></p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
-<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">undercloud</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># DISK_SIZE=$(qemu-img  info rhel-server-7.8-beta-1-x86_64-kvm.raw | awk -F &#39;[(|)]&#39; &#39;/virtual size/ {print $(NF-1)}&#39; | awk &#39;{print $1}&#39;)</span><span class="w"></span>
-<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">undercloud</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># virsh vol-create-as $CEPH_POOL rhel $DISK_SIZE --format raw</span><span class="w"></span>
-<span class="n">Vol</span><span class="w"> </span><span class="n">rhel</span><span class="w"> </span><span class="n">created</span><span class="w"></span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">undercloud</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># DISK_SIZE=$(qemu-img  info rhel-server-7.8-beta-1-x86_64-kvm.raw | awk -F &#39;[(|)]&#39; &#39;/virtual size/ {print $(NF-1)}&#39; | awk &#39;{print $1}&#39;)</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">undercloud</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># virsh vol-create-as $CEPH_POOL rhel $DISK_SIZE --format raw</span>
+<span class="n">Vol</span><span class="w"> </span><span class="n">rhel</span><span class="w"> </span><span class="n">created</span>
 
-<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">undercloud</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># virsh vol-upload --pool $CEPH_POOL rhel rhel-server-7.8-beta-1-x86_64-kvm.raw</span><span class="w"></span>
-<span class="n">error</span><span class="p">:</span><span class="w"> </span><span class="n">cannot</span><span class="w"> </span><span class="n">upload</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">volume</span><span class="w"> </span><span class="n">rhel</span><span class="w"></span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">undercloud</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># virsh vol-upload --pool $CEPH_POOL rhel rhel-server-7.8-beta-1-x86_64-kvm.raw</span>
+<span class="n">error</span><span class="p">:</span><span class="w"> </span><span class="n">cannot</span><span class="w"> </span><span class="n">upload</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">volume</span><span class="w"> </span><span class="n">rhel</span>
 <span class="n">error</span><span class="p">:</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">function</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">supported</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">connection</span><span class="w"> </span><span class="n">driver</span><span class="p">:</span><span class="w"> </span><span class="n">storage</span><span class="w"> </span><span class="n">pool</span><span class="w"> </span><span class="n">doesn</span><span class="s1">&#39;t support volume upload</span>
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 
   <hr>
 <div class="md-source-file">
@@ -1897,54 +1751,25 @@ rbd pool init rbd-pool
   </small>
 </div>
 
-              
-            </article>
-          </div>
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
         
       </main>
       
         <footer class="md-footer">
-  
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
-      
-        
-        <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Ceph" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Ceph
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../../linux/" class="md-footer__link md-footer__link--next" aria-label="Next: Linux" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              Linux
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -1966,10 +1791,11 @@ rbd pool init rbd-pool
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.467223ff.min.js"></script>
+      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
       
     
   </body>

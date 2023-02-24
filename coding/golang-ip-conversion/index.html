@@ -12,8 +12,12 @@
       
         <link rel="canonical" href="https://andreaskaris.github.io/blog/coding/golang-ip-conversion/">
       
+      
+        <link rel="prev" href="../vimrc/">
+      
+      
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.14">
     
     
       
@@ -21,16 +25,13 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2d9f7617.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#000000">
-        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
       
+      
+
     
     
     
@@ -43,10 +44,11 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
+    
     
     
   </head>
@@ -57,7 +59,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="pink">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink">
   
     
     
@@ -65,11 +67,6 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
-      
-        
-        <a href="#ip-address-conversion-with-golang" class="md-skip">
-          Skip to content
-        </a>
       
     </div>
     <div data-md-component="announce">
@@ -84,11 +81,11 @@
     <a href="../.." title="Andreas Karis Blog" class="md-header__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -121,7 +118,7 @@
           
             
 <nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-tabs__inner md-grid">
+  <div class="md-grid">
     <ul class="md-tabs__list">
       
         
@@ -258,7 +255,7 @@
     <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     Andreas Karis Blog
@@ -292,8 +289,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
       
       
         
@@ -316,7 +314,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Ceph" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
           Ceph
@@ -356,8 +354,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
       
       
         
@@ -400,7 +399,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Linux" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Linux
@@ -580,8 +579,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
       
       
         
@@ -636,7 +636,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Networking" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           Networking
@@ -900,8 +900,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
       
       
         
@@ -988,7 +989,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenShift and Kubernetes" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_5">
           <span class="md-nav__icon md-icon"></span>
           OpenShift and Kubernetes
@@ -1476,8 +1477,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
       
       
         
@@ -1502,7 +1504,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenStack" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_6">
           <span class="md-nav__icon md-icon"></span>
           OpenStack
@@ -1558,8 +1560,9 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" checked>
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
       
       
         
@@ -1586,7 +1589,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Coding" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_7">
           <span class="md-nav__icon md-icon"></span>
           Coding
@@ -1632,62 +1635,13 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Golang IP address conversion
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         Golang IP address conversion
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#ip-address-conversion-with-golang" class="md-nav__link">
-    IP address conversion with golang
-  </a>
-  
-    <nav class="md-nav" aria-label="IP address conversion with golang">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#finding-an-ip-networks-broadcast-ip" class="md-nav__link">
-    Finding an IP network's broadcast IP
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#finding-all-ips-in-a-subnet" class="md-nav__link">
-    Finding all IPs in a subnet
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -1718,51 +1672,17 @@
   
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#ip-address-conversion-with-golang" class="md-nav__link">
-    IP address conversion with golang
-  </a>
-  
-    <nav class="md-nav" aria-label="IP address conversion with golang">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#finding-an-ip-networks-broadcast-ip" class="md-nav__link">
-    Finding an IP network's broadcast IP
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#finding-all-ips-in-a-subnet" class="md-nav__link">
-    Finding all IPs in a subnet
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
   <h1>Golang IP address conversion</h1>
@@ -1770,7 +1690,7 @@
 <h2 id="ip-address-conversion-with-golang">IP address conversion with golang</h2>
 <h3 id="finding-an-ip-networks-broadcast-ip">Finding an IP network's broadcast IP</h3>
 <p>The following function calculates the broadcast IP for both IPv4 and IPv6 networks:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1784,25 +1704,24 @@
 <span class="normal">12</span>
 <span class="normal">13</span>
 <span class="normal">14</span>
-<span class="normal">15</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">func</span><span class="w"> </span><span class="n">subnetBroadcastIP</span><span class="p">(</span><span class="n">ipnet</span><span class="w"> </span><span class="n">net</span><span class="p">.</span><span class="n">IPNet</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">net</span><span class="p">.</span><span class="n">IP</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">byteIp</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="err">[]</span><span class="n">byte</span><span class="p">(</span><span class="n">ipnet</span><span class="p">.</span><span class="n">IP</span><span class="p">)</span><span class="w">                </span><span class="o">//</span><span class="w"> </span><span class="err">[]</span><span class="n">byte</span><span class="w"> </span><span class="n">representation</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">IP</span><span class="w"></span>
-<span class="w">    </span><span class="n">byteMask</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="err">[]</span><span class="n">byte</span><span class="p">(</span><span class="n">ipnet</span><span class="p">.</span><span class="n">Mask</span><span class="p">)</span><span class="w">            </span><span class="o">//</span><span class="w"> </span><span class="err">[]</span><span class="n">byte</span><span class="w"> </span><span class="n">representation</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">mask</span><span class="w"></span>
-<span class="w">    </span><span class="n">byteTargetIp</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">make</span><span class="p">(</span><span class="err">[]</span><span class="n">byte</span><span class="p">,</span><span class="w"> </span><span class="nf">len</span><span class="p">(</span><span class="n">byteIp</span><span class="p">))</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="err">[]</span><span class="n">byte</span><span class="w"> </span><span class="n">holding</span><span class="w"> </span><span class="n">target</span><span class="w"> </span><span class="n">IP</span><span class="w"></span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="n">byteIp</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
-<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">mask</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">give</span><span class="w"> </span><span class="n">us</span><span class="w"> </span><span class="ow">all</span><span class="w"> </span><span class="n">fixed</span><span class="w"> </span><span class="n">bits</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">subnet</span><span class="w"> </span><span class="p">(</span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">given</span><span class="w"> </span><span class="n">byte</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">inverted</span><span class="w"> </span><span class="n">mask</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">give</span><span class="w"> </span><span class="n">us</span><span class="w"> </span><span class="ow">all</span><span class="w"> </span><span class="n">moving</span><span class="w"> </span><span class="n">bits</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">subnet</span><span class="w"> </span><span class="p">(</span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">given</span><span class="w"> </span><span class="n">byte</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="n">invertedMask</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">byteMask</span><span class="o">[</span><span class="n">k</span><span class="o">]</span><span class="w"> </span><span class="o">^</span><span class="w"> </span><span class="mh">0xff</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">inverted</span><span class="w"> </span><span class="n">mask</span><span class="w"> </span><span class="n">byte</span><span class="w"></span>
+<span class="normal">15</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">func</span><span class="w"> </span><span class="n">subnetBroadcastIP</span><span class="p">(</span><span class="n">ipnet</span><span class="w"> </span><span class="n">net</span><span class="p">.</span><span class="n">IPNet</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">net</span><span class="p">.</span><span class="n">IP</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="p">)</span><span class="w"> </span><span class="err">{</span>
+<span class="w">    </span><span class="n">byteIp</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="err">[]</span><span class="n">byte</span><span class="p">(</span><span class="n">ipnet</span><span class="p">.</span><span class="n">IP</span><span class="p">)</span><span class="w">                </span><span class="o">//</span><span class="w"> </span><span class="err">[]</span><span class="n">byte</span><span class="w"> </span><span class="n">representation</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">IP</span>
+<span class="w">    </span><span class="n">byteMask</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="err">[]</span><span class="n">byte</span><span class="p">(</span><span class="n">ipnet</span><span class="p">.</span><span class="n">Mask</span><span class="p">)</span><span class="w">            </span><span class="o">//</span><span class="w"> </span><span class="err">[]</span><span class="n">byte</span><span class="w"> </span><span class="n">representation</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">mask</span>
+<span class="w">    </span><span class="n">byteTargetIp</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">make</span><span class="p">(</span><span class="err">[]</span><span class="n">byte</span><span class="p">,</span><span class="w"> </span><span class="nf">len</span><span class="p">(</span><span class="n">byteIp</span><span class="p">))</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="err">[]</span><span class="n">byte</span><span class="w"> </span><span class="n">holding</span><span class="w"> </span><span class="n">target</span><span class="w"> </span><span class="n">IP</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="n">byteIp</span><span class="w"> </span><span class="err">{</span>
+<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">mask</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">give</span><span class="w"> </span><span class="n">us</span><span class="w"> </span><span class="ow">all</span><span class="w"> </span><span class="n">fixed</span><span class="w"> </span><span class="n">bits</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">subnet</span><span class="w"> </span><span class="p">(</span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">given</span><span class="w"> </span><span class="n">byte</span><span class="p">)</span>
+<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">inverted</span><span class="w"> </span><span class="n">mask</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">give</span><span class="w"> </span><span class="n">us</span><span class="w"> </span><span class="ow">all</span><span class="w"> </span><span class="n">moving</span><span class="w"> </span><span class="n">bits</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">subnet</span><span class="w"> </span><span class="p">(</span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">given</span><span class="w"> </span><span class="n">byte</span><span class="p">)</span>
+<span class="w">        </span><span class="n">invertedMask</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">byteMask</span><span class="o">[</span><span class="n">k</span><span class="o">]</span><span class="w"> </span><span class="o">^</span><span class="w"> </span><span class="mh">0xff</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">inverted</span><span class="w"> </span><span class="n">mask</span><span class="w"> </span><span class="n">byte</span>
 
-<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">broadcastIP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">networkIP</span><span class="w"> </span><span class="n">added</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">inverted</span><span class="w"> </span><span class="n">mask</span><span class="w"></span>
-<span class="w">        </span><span class="n">byteTargetIp</span><span class="o">[</span><span class="n">k</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">byteIp</span><span class="o">[</span><span class="n">k</span><span class="o">]&amp;</span><span class="n">byteMask</span><span class="o">[</span><span class="n">k</span><span class="o">]</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">invertedMask</span><span class="w"></span>
-<span class="w">    </span><span class="err">}</span><span class="w"></span>
+<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">broadcastIP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">networkIP</span><span class="w"> </span><span class="n">added</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">inverted</span><span class="w"> </span><span class="n">mask</span>
+<span class="w">        </span><span class="n">byteTargetIp</span><span class="o">[</span><span class="n">k</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">byteIp</span><span class="o">[</span><span class="n">k</span><span class="o">]&amp;</span><span class="n">byteMask</span><span class="o">[</span><span class="n">k</span><span class="o">]</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">invertedMask</span>
+<span class="w">    </span><span class="err">}</span>
 
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">net</span><span class="p">.</span><span class="n">IP</span><span class="p">(</span><span class="n">byteTargetIp</span><span class="p">),</span><span class="w"> </span><span class="n">nil</span><span class="w"></span>
-<span class="err">}</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">net</span><span class="p">.</span><span class="n">IP</span><span class="p">(</span><span class="n">byteTargetIp</span><span class="p">),</span><span class="w"> </span><span class="n">nil</span>
+<span class="err">}</span>
+</code></pre></div></td></tr></table></div></p>
 <p>In order to understand the aforementioned example better, here is a longer version (the if / else block is useless and hence removed):
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1835,44 +1754,43 @@
 <span class="normal">31</span>
 <span class="normal">32</span>
 <span class="normal">33</span>
-<span class="normal">34</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">func</span><span class="w"> </span><span class="n">subnetBroadcastIP</span><span class="p">(</span><span class="n">ipnet</span><span class="w"> </span><span class="n">net</span><span class="p">.</span><span class="n">IPNet</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">net</span><span class="p">.</span><span class="n">IP</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
-<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">ipv4</span><span class="w"></span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">ipnet</span><span class="p">.</span><span class="n">IP</span><span class="p">.</span><span class="n">To4</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">nil</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
-<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">uint32</span><span class="w"></span>
-<span class="w">        </span><span class="n">ipBits</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="nc">binary</span><span class="p">.</span><span class="n">BigEndian</span><span class="p">.</span><span class="n">Uint32</span><span class="p">(</span><span class="n">ipnet</span><span class="p">.</span><span class="n">IP</span><span class="p">.</span><span class="n">To4</span><span class="p">())</span><span class="w"></span>
+<span class="normal">34</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">func</span><span class="w"> </span><span class="n">subnetBroadcastIP</span><span class="p">(</span><span class="n">ipnet</span><span class="w"> </span><span class="n">net</span><span class="p">.</span><span class="n">IPNet</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">net</span><span class="p">.</span><span class="n">IP</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="p">)</span><span class="w"> </span><span class="err">{</span>
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">ipv4</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">ipnet</span><span class="p">.</span><span class="n">IP</span><span class="p">.</span><span class="n">To4</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">nil</span><span class="w"> </span><span class="err">{</span>
+<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">uint32</span>
+<span class="w">        </span><span class="n">ipBits</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="nc">binary</span><span class="p">.</span><span class="n">BigEndian</span><span class="p">.</span><span class="n">Uint32</span><span class="p">(</span><span class="n">ipnet</span><span class="p">.</span><span class="n">IP</span><span class="p">.</span><span class="n">To4</span><span class="p">())</span>
 
-<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">mask</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">give</span><span class="w"> </span><span class="n">us</span><span class="w"> </span><span class="ow">all</span><span class="w"> </span><span class="n">fixed</span><span class="w"> </span><span class="n">bits</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">subnet</span><span class="w"></span>
-<span class="w">        </span><span class="n">maskBits</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="nc">binary</span><span class="p">.</span><span class="n">BigEndian</span><span class="p">.</span><span class="n">Uint32</span><span class="p">(</span><span class="n">ipnet</span><span class="p">.</span><span class="n">Mask</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">mask</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">give</span><span class="w"> </span><span class="n">us</span><span class="w"> </span><span class="ow">all</span><span class="w"> </span><span class="n">fixed</span><span class="w"> </span><span class="n">bits</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">subnet</span>
+<span class="w">        </span><span class="n">maskBits</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="nc">binary</span><span class="p">.</span><span class="n">BigEndian</span><span class="p">.</span><span class="n">Uint32</span><span class="p">(</span><span class="n">ipnet</span><span class="p">.</span><span class="n">Mask</span><span class="p">)</span>
 
-<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">inverted</span><span class="w"> </span><span class="n">mask</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">give</span><span class="w"> </span><span class="n">us</span><span class="w"> </span><span class="ow">all</span><span class="w"> </span><span class="n">moving</span><span class="w"> </span><span class="n">bits</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">subnet</span><span class="w"></span>
-<span class="w">        </span><span class="n">invertedMaskBits</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">maskBits</span><span class="w"> </span><span class="o">^</span><span class="w"> </span><span class="mh">0xffffffff</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">xor</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">mask</span><span class="w"></span>
+<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">inverted</span><span class="w"> </span><span class="n">mask</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">give</span><span class="w"> </span><span class="n">us</span><span class="w"> </span><span class="ow">all</span><span class="w"> </span><span class="n">moving</span><span class="w"> </span><span class="n">bits</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">subnet</span>
+<span class="w">        </span><span class="n">invertedMaskBits</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">maskBits</span><span class="w"> </span><span class="o">^</span><span class="w"> </span><span class="mh">0xffffffff</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">xor</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">mask</span>
 
-<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">network</span><span class="w"> </span><span class="n">ip</span><span class="w"></span>
-<span class="w">        </span><span class="n">networkIpBits</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">ipBits</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">maskBits</span><span class="w"></span>
+<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">network</span><span class="w"> </span><span class="n">ip</span>
+<span class="w">        </span><span class="n">networkIpBits</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">ipBits</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">maskBits</span>
 
-<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">broadcastIP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">networkIP</span><span class="w"> </span><span class="n">added</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">inverted</span><span class="w"> </span><span class="n">mask</span><span class="w"></span>
-<span class="w">        </span><span class="n">broadcastIpBits</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">networkIpBits</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">invertedMaskBits</span><span class="w"></span>
+<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">broadcastIP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">networkIP</span><span class="w"> </span><span class="n">added</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">inverted</span><span class="w"> </span><span class="n">mask</span>
+<span class="w">        </span><span class="n">broadcastIpBits</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">networkIpBits</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">invertedMaskBits</span>
 
-<span class="w">        </span><span class="n">broadcastIp</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">make</span><span class="p">(</span><span class="n">net</span><span class="p">.</span><span class="n">IP</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="nc">binary</span><span class="p">.</span><span class="n">BigEndian</span><span class="p">.</span><span class="n">PutUint32</span><span class="p">(</span><span class="n">broadcastIp</span><span class="p">,</span><span class="w"> </span><span class="n">broadcastIpBits</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">broadcastIp</span><span class="p">,</span><span class="w"> </span><span class="n">nil</span><span class="w"></span>
-<span class="w">    </span><span class="err">}</span><span class="w"></span>
-<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">ipv6</span><span class="w"></span>
-<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">conversion</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">actually</span><span class="w"> </span><span class="n">easier</span><span class="p">,</span><span class="w"> </span><span class="n">follows</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">same</span><span class="w"> </span><span class="n">principle</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">above</span><span class="w"></span>
-<span class="w">    </span><span class="n">byteIp</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="err">[]</span><span class="n">byte</span><span class="p">(</span><span class="n">ipnet</span><span class="p">.</span><span class="n">IP</span><span class="p">)</span><span class="w">                </span><span class="o">//</span><span class="w"> </span><span class="err">[]</span><span class="n">byte</span><span class="w"> </span><span class="n">representation</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">IP</span><span class="w"></span>
-<span class="w">    </span><span class="n">byteMask</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="err">[]</span><span class="n">byte</span><span class="p">(</span><span class="n">ipnet</span><span class="p">.</span><span class="n">Mask</span><span class="p">)</span><span class="w">            </span><span class="o">//</span><span class="w"> </span><span class="err">[]</span><span class="n">byte</span><span class="w"> </span><span class="n">representation</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">mask</span><span class="w"></span>
-<span class="w">    </span><span class="n">byteTargetIp</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">make</span><span class="p">(</span><span class="err">[]</span><span class="n">byte</span><span class="p">,</span><span class="w"> </span><span class="nf">len</span><span class="p">(</span><span class="n">byteIp</span><span class="p">))</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="err">[]</span><span class="n">byte</span><span class="w"> </span><span class="n">holding</span><span class="w"> </span><span class="n">target</span><span class="w"> </span><span class="n">IP</span><span class="w"></span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="n">byteIp</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">invertedMask</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">byteMask</span><span class="o">[</span><span class="n">k</span><span class="o">]</span><span class="w"> </span><span class="o">^</span><span class="w"> </span><span class="mh">0xff</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">inverted</span><span class="w"> </span><span class="n">mask</span><span class="w"> </span><span class="n">byte</span><span class="w"></span>
-<span class="w">        </span><span class="n">byteTargetIp</span><span class="o">[</span><span class="n">k</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">byteIp</span><span class="o">[</span><span class="n">k</span><span class="o">]&amp;</span><span class="n">byteMask</span><span class="o">[</span><span class="n">k</span><span class="o">]</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">invertedMask</span><span class="w"></span>
-<span class="w">    </span><span class="err">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">broadcastIp</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">make</span><span class="p">(</span><span class="n">net</span><span class="p">.</span><span class="n">IP</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span>
+<span class="w">        </span><span class="nc">binary</span><span class="p">.</span><span class="n">BigEndian</span><span class="p">.</span><span class="n">PutUint32</span><span class="p">(</span><span class="n">broadcastIp</span><span class="p">,</span><span class="w"> </span><span class="n">broadcastIpBits</span><span class="p">)</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">broadcastIp</span><span class="p">,</span><span class="w"> </span><span class="n">nil</span>
+<span class="w">    </span><span class="err">}</span>
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">ipv6</span>
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">conversion</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">actually</span><span class="w"> </span><span class="n">easier</span><span class="p">,</span><span class="w"> </span><span class="n">follows</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">same</span><span class="w"> </span><span class="n">principle</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">above</span>
+<span class="w">    </span><span class="n">byteIp</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="err">[]</span><span class="n">byte</span><span class="p">(</span><span class="n">ipnet</span><span class="p">.</span><span class="n">IP</span><span class="p">)</span><span class="w">                </span><span class="o">//</span><span class="w"> </span><span class="err">[]</span><span class="n">byte</span><span class="w"> </span><span class="n">representation</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">IP</span>
+<span class="w">    </span><span class="n">byteMask</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="err">[]</span><span class="n">byte</span><span class="p">(</span><span class="n">ipnet</span><span class="p">.</span><span class="n">Mask</span><span class="p">)</span><span class="w">            </span><span class="o">//</span><span class="w"> </span><span class="err">[]</span><span class="n">byte</span><span class="w"> </span><span class="n">representation</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">mask</span>
+<span class="w">    </span><span class="n">byteTargetIp</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">make</span><span class="p">(</span><span class="err">[]</span><span class="n">byte</span><span class="p">,</span><span class="w"> </span><span class="nf">len</span><span class="p">(</span><span class="n">byteIp</span><span class="p">))</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="err">[]</span><span class="n">byte</span><span class="w"> </span><span class="n">holding</span><span class="w"> </span><span class="n">target</span><span class="w"> </span><span class="n">IP</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="n">byteIp</span><span class="w"> </span><span class="err">{</span>
+<span class="w">        </span><span class="n">invertedMask</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">byteMask</span><span class="o">[</span><span class="n">k</span><span class="o">]</span><span class="w"> </span><span class="o">^</span><span class="w"> </span><span class="mh">0xff</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">inverted</span><span class="w"> </span><span class="n">mask</span><span class="w"> </span><span class="n">byte</span>
+<span class="w">        </span><span class="n">byteTargetIp</span><span class="o">[</span><span class="n">k</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">byteIp</span><span class="o">[</span><span class="n">k</span><span class="o">]&amp;</span><span class="n">byteMask</span><span class="o">[</span><span class="n">k</span><span class="o">]</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">invertedMask</span>
+<span class="w">    </span><span class="err">}</span>
 
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">net</span><span class="p">.</span><span class="n">IP</span><span class="p">(</span><span class="n">byteTargetIp</span><span class="p">),</span><span class="w"> </span><span class="n">nil</span><span class="w"></span>
-<span class="err">}</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">net</span><span class="p">.</span><span class="n">IP</span><span class="p">(</span><span class="n">byteTargetIp</span><span class="p">),</span><span class="w"> </span><span class="n">nil</span>
+<span class="err">}</span>
+</code></pre></div></td></tr></table></div></p>
 <h3 id="finding-all-ips-in-a-subnet">Finding all IPs in a subnet</h3>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1904,41 +1822,40 @@
 <span class="normal">30</span>
 <span class="normal">31</span>
 <span class="normal">32</span>
-<span class="normal">33</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">func</span><span class="w"> </span><span class="n">subnetIPs</span><span class="p">(</span><span class="n">ipnet</span><span class="w"> </span><span class="n">net</span><span class="o">.</span><span class="n">IPNet</span><span class="p">)</span><span class="w"> </span><span class="p">([]</span><span class="n">net</span><span class="o">.</span><span class="n">IP</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">ipList</span><span class="w"> </span><span class="p">[]</span><span class="n">net</span><span class="o">.</span><span class="n">IP</span><span class="w"></span>
-<span class="w">        </span><span class="n">ip</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">ipnet</span><span class="o">.</span><span class="n">IP</span><span class="w"></span>
-<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="n">ipnet</span><span class="o">.</span><span class="n">Contains</span><span class="p">(</span><span class="n">ip</span><span class="p">);</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">incIP</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="normal">33</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">func</span><span class="w"> </span><span class="n">subnetIPs</span><span class="p">(</span><span class="n">ipnet</span><span class="w"> </span><span class="n">net</span><span class="o">.</span><span class="n">IPNet</span><span class="p">)</span><span class="w"> </span><span class="p">([]</span><span class="n">net</span><span class="o">.</span><span class="n">IP</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">ipList</span><span class="w"> </span><span class="p">[]</span><span class="n">net</span><span class="o">.</span><span class="n">IP</span>
+<span class="w">        </span><span class="n">ip</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">ipnet</span><span class="o">.</span><span class="n">IP</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="n">ipnet</span><span class="o">.</span><span class="n">Contains</span><span class="p">(</span><span class="n">ip</span><span class="p">);</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">incIP</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                </span><span class="n">ipList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">append</span><span class="p">(</span><span class="n">ipList</span><span class="p">,</span><span class="w"> </span><span class="n">ip</span><span class="p">)</span><span class="w"> </span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">ipList</span><span class="p">,</span><span class="w"> </span><span class="n">nil</span><span class="w"> </span>
-<span class="p">}</span><span class="w"></span>
+<span class="p">}</span>
 
-<span class="k">func</span><span class="w"> </span><span class="n">incIP</span><span class="p">(</span><span class="n">ip</span><span class="w"> </span><span class="n">net</span><span class="o">.</span><span class="n">IP</span><span class="p">)</span><span class="w"> </span><span class="n">net</span><span class="o">.</span><span class="n">IP</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">allocate</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">new</span><span class="w"> </span><span class="n">IP</span><span class="w"></span>
-<span class="w">        </span><span class="n">newIp</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">make</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="n">IP</span><span class="p">,</span><span class="w"> </span><span class="n">len</span><span class="p">(</span><span class="n">ip</span><span class="p">))</span><span class="w"></span>
+<span class="k">func</span><span class="w"> </span><span class="n">incIP</span><span class="p">(</span><span class="n">ip</span><span class="w"> </span><span class="n">net</span><span class="o">.</span><span class="n">IP</span><span class="p">)</span><span class="w"> </span><span class="n">net</span><span class="o">.</span><span class="n">IP</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">allocate</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">new</span><span class="w"> </span><span class="n">IP</span>
+<span class="w">        </span><span class="n">newIp</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">make</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="n">IP</span><span class="p">,</span><span class="w"> </span><span class="n">len</span><span class="p">(</span><span class="n">ip</span><span class="p">))</span>
 <span class="w">        </span><span class="n">copy</span><span class="p">(</span><span class="n">newIp</span><span class="p">,</span><span class="w"> </span><span class="n">ip</span><span class="p">)</span><span class="w"> </span>
 
-<span class="w">        </span><span class="n">byteIp</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="n">byte</span><span class="p">(</span><span class="n">newIp</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="n">l</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">len</span><span class="p">(</span><span class="n">byteIp</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="n">byteIp</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="n">byte</span><span class="p">(</span><span class="n">newIp</span><span class="p">)</span>
+<span class="w">        </span><span class="n">l</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">len</span><span class="p">(</span><span class="n">byteIp</span><span class="p">)</span>
 <span class="w">        </span><span class="k">var</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span>
-<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="nb">range</span><span class="w"> </span><span class="n">byteIp</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                </span><span class="o">//</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">rightmost</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="n">first</span><span class="w"></span>
-<span class="w">                </span><span class="o">//</span><span class="w"> </span><span class="n">increment</span><span class="w"> </span><span class="n">it</span><span class="w"></span>
-<span class="w">                </span><span class="o">//</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">256</span><span class="p">,</span><span class="w"> </span><span class="n">then</span><span class="w"> </span><span class="n">no</span><span class="w"> </span><span class="n">overflow</span><span class="w"> </span><span class="n">happened</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">increment</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="k">break</span><span class="w"></span>
-<span class="w">                </span><span class="o">//</span><span class="w"> </span><span class="k">else</span><span class="p">,</span><span class="w"> </span><span class="k">continue</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">next</span><span class="w"> </span><span class="n">field</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">byte</span><span class="w"></span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="nb">range</span><span class="w"> </span><span class="n">byteIp</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="o">//</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">rightmost</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="n">first</span>
+<span class="w">                </span><span class="o">//</span><span class="w"> </span><span class="n">increment</span><span class="w"> </span><span class="n">it</span>
+<span class="w">                </span><span class="o">//</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">256</span><span class="p">,</span><span class="w"> </span><span class="n">then</span><span class="w"> </span><span class="n">no</span><span class="w"> </span><span class="n">overflow</span><span class="w"> </span><span class="n">happened</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">increment</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="k">break</span>
+<span class="w">                </span><span class="o">//</span><span class="w"> </span><span class="k">else</span><span class="p">,</span><span class="w"> </span><span class="k">continue</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">next</span><span class="w"> </span><span class="n">field</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">byte</span>
 <span class="w">                </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">k</span><span class="w"> </span>
-<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="n">byteIp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mh">0xff</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                        </span><span class="n">byteIp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">++</span><span class="w"></span>
-<span class="w">                        </span><span class="k">break</span><span class="w"></span>
-<span class="w">                </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="n">byteIp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mh">0xff</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="n">byteIp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">++</span>
+<span class="w">                        </span><span class="k">break</span>
+<span class="w">                </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                        </span><span class="n">byteIp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span>
-<span class="w">                </span><span class="p">}</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">net</span><span class="o">.</span><span class="n">IP</span><span class="p">(</span><span class="n">byteIp</span><span class="p">)</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">net</span><span class="o">.</span><span class="n">IP</span><span class="p">(</span><span class="n">byteIp</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
 
   <hr>
 <div class="md-source-file">
@@ -1951,39 +1868,25 @@
   </small>
 </div>
 
-              
-            </article>
-          </div>
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
         
       </main>
       
         <footer class="md-footer">
-  
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
-      
-        
-        <a href="../vimrc/" class="md-footer__link md-footer__link--prev" aria-label="Previous: My vimrc" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              My vimrc
-            </div>
-          </div>
-        </a>
-      
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -2005,10 +1908,11 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.467223ff.min.js"></script>
+      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
       
     
   </body>

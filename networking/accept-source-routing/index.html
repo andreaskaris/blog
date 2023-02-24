@@ -12,8 +12,14 @@
       
         <link rel="canonical" href="https://andreaskaris.github.io/blog/networking/accept-source-routing/">
       
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../arp_and_the_neighbor_table/">
+      
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.14">
     
     
       
@@ -21,16 +27,13 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2d9f7617.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#000000">
-        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
       
+      
+
     
     
     
@@ -43,10 +46,11 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
+    
     
     
   </head>
@@ -57,7 +61,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="pink">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink">
   
     
     
@@ -65,11 +69,6 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
-      
-        
-        <a href="#accept-source-routing" class="md-skip">
-          Skip to content
-        </a>
       
     </div>
     <div data-md-component="announce">
@@ -84,11 +83,11 @@
     <a href="../.." title="Andreas Karis Blog" class="md-header__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -121,7 +120,7 @@
           
             
 <nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-tabs__inner md-grid">
+  <div class="md-grid">
     <ul class="md-tabs__list">
       
         
@@ -258,7 +257,7 @@
     <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     Andreas Karis Blog
@@ -292,8 +291,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
       
       
         
@@ -316,7 +316,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Ceph" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
           Ceph
@@ -356,8 +356,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
       
       
         
@@ -400,7 +401,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Linux" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Linux
@@ -582,8 +583,9 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
       
       
         
@@ -638,7 +640,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Networking" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           Networking
@@ -656,80 +658,13 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Accept Source Routing
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         Accept Source Routing
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#ipv4" class="md-nav__link">
-    IPv4
-  </a>
-  
-    <nav class="md-nav" aria-label="IPv4">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#test-setup" class="md-nav__link">
-    Test setup
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#testing-in-a-live-system-source-routing-disabled" class="md-nav__link">
-    Testing in a live system - source routing disabled
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#testing-in-a-live-system-source-routing-enabled" class="md-nav__link">
-    Testing in a live system - source routing enabled
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ipv6" class="md-nav__link">
-    IPv6
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -977,8 +912,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
       
       
         
@@ -1065,7 +1001,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenShift and Kubernetes" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_5">
           <span class="md-nav__icon md-icon"></span>
           OpenShift and Kubernetes
@@ -1553,8 +1489,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
       
       
         
@@ -1579,7 +1516,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenStack" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_6">
           <span class="md-nav__icon md-icon"></span>
           OpenStack
@@ -1633,8 +1570,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
       
       
         
@@ -1661,7 +1599,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Coding" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_7">
           <span class="md-nav__icon md-icon"></span>
           Coding
@@ -1735,57 +1673,6 @@
   
   
   
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#ipv4" class="md-nav__link">
-    IPv4
-  </a>
-  
-    <nav class="md-nav" aria-label="IPv4">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#test-setup" class="md-nav__link">
-    Test setup
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#testing-in-a-live-system-source-routing-disabled" class="md-nav__link">
-    Testing in a live system - source routing disabled
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#testing-in-a-live-system-source-routing-enabled" class="md-nav__link">
-    Testing in a live system - source routing enabled
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ipv6" class="md-nav__link">
-    IPv6
-  </a>
-  
-</li>
-      
-    </ul>
   
 </nav>
                   </div>
@@ -1793,17 +1680,18 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
 <h1 id="accept-source-routing">Accept source routing</h1>
 <p><strong>Note:</strong> I could only test this for IPv4. For IPv6, the kernel seems to be hardened by default.</p>
 <h2 id="ipv4">IPv4</h2>
 <p>On RHEL, the default settings for IPv4 will look something like this:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1813,7 +1701,7 @@
 <span class="normal"> 8</span>
 <span class="normal"> 9</span>
 <span class="normal">10</span>
-<span class="normal">11</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code># sysctl -a | grep source_route | grep ipv4
+<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code># sysctl -a | grep source_route | grep ipv4
 net.ipv4.conf.all.accept_source_route = 0
 net.ipv4.conf.br-ext.accept_source_route = 1
 net.ipv4.conf.br-vxlan.accept_source_route = 1
@@ -1824,24 +1712,22 @@ net.ipv4.conf.eth1.accept_source_route = 1
 net.ipv4.conf.lo.accept_source_route = 1
 net.ipv4.conf.ovs-system.accept_source_route = 1
 net.ipv4.conf.vxlan_sys_4789.accept_source_route = 1
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p><code class="highlight">net.ipv4.conf.all.accept_source_route = 0</code> will override anything else.</p>
 <p>The documentation clearly states that this is a logical AND relationship:
 <a href="https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt">https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt</a>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
-<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>accept_source_route - BOOLEAN
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code>accept_source_route - BOOLEAN
     Accept packets with SRR option.
     conf/all/accept_source_route must also be set to TRUE to accept packets
     with SRR option on the interface
     default TRUE (router)
         FALSE (host)
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p>Having a look at the kernel code:</p>
 <ul>
 <li><a href="https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/include/linux/inetdevice.h#L103">https://github.com/torvalds/linux/blob/8efd0d9c316af470377894a6a0f9ff63ce18c177/include/linux/inetdevice.h#L103</a></li>
@@ -1858,7 +1744,7 @@ net.ipv4.conf.vxlan_sys_4789.accept_source_route = 1
 </ul>
 <h3 id="test-setup">Test setup</h3>
 <p>I tested with forwarding on:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1867,20 +1753,19 @@ net.ipv4.conf.vxlan_sys_4789.accept_source_route = 1
 <span class="normal"> 7</span>
 <span class="normal"> 8</span>
 <span class="normal"> 9</span>
-<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">sysctl</span><span class="w"> </span><span class="o">-</span><span class="n">a</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">ip_forward</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">ip_forward</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">ip_forward_update_priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">ip_forward_use_pmtu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">sysctl</span><span class="w"> </span><span class="o">-</span><span class="n">a</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">forward</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">eth0</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth0</span><span class="p">.</span><span class="n">bc_forwarding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth0</span><span class="p">.</span><span class="n">forwarding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth0</span><span class="p">.</span><span class="n">mc_forwarding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv6</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth0</span><span class="p">.</span><span class="n">forwarding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv6</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth0</span><span class="p">.</span><span class="n">mc_forwarding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">sysctl</span><span class="w"> </span><span class="o">-</span><span class="n">a</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">ip_forward</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">ip_forward</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">ip_forward_update_priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">ip_forward_use_pmtu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">sysctl</span><span class="w"> </span><span class="o">-</span><span class="n">a</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">forward</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">eth0</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth0</span><span class="p">.</span><span class="n">bc_forwarding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth0</span><span class="p">.</span><span class="n">forwarding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth0</span><span class="p">.</span><span class="n">mc_forwarding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv6</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth0</span><span class="p">.</span><span class="n">forwarding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv6</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth0</span><span class="p">.</span><span class="n">mc_forwarding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+</code></pre></div></td></tr></table></div></p>
 <p>The traceroute command <code class="highlight">traceroute -I 192.168.122.6 -g 192.168.122.6</code> that I'm using below yields the following IPv4 header + ICMP message:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1929,61 +1814,60 @@ net.ipv4.conf.vxlan_sys_4789.accept_source_route = 1
 <span class="normal">47</span>
 <span class="normal">48</span>
 <span class="normal">49</span>
-<span class="normal">50</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">(...)</span><span class="w"></span>
-<span class="n">Internet</span><span class="w"> </span><span class="n">Protocol</span><span class="w"> </span><span class="n">Version</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="n">Src</span><span class="o">:</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="p">,</span><span class="w"> </span><span class="n">Dst</span><span class="o">:</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="p">,</span><span class="w"> </span><span class="n">Via</span><span class="o">:</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="w">    </span><span class="mo">0100</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Version</span><span class="o">:</span><span class="w"> </span><span class="mi">4</span><span class="w"></span>
-<span class="w">    </span><span class="p">....</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Header</span><span class="w"> </span><span class="n">Length</span><span class="o">:</span><span class="w"> </span><span class="mi">32</span><span class="w"> </span><span class="n">bytes</span><span class="w"> </span><span class="p">(</span><span class="mi">8</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">Differentiated</span><span class="w"> </span><span class="n">Services</span><span class="w"> </span><span class="n">Field</span><span class="o">:</span><span class="w"> </span><span class="mh">0x00</span><span class="w"> </span><span class="p">(</span><span class="n">DSCP</span><span class="o">:</span><span class="w"> </span><span class="n">CS0</span><span class="p">,</span><span class="w"> </span><span class="n">ECN</span><span class="o">:</span><span class="w"> </span><span class="n">Not</span><span class="o">-</span><span class="n">ECT</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="mo">0000</span><span class="w"> </span><span class="mf">00.</span><span class="p">.</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Differentiated</span><span class="w"> </span><span class="n">Services</span><span class="w"> </span><span class="n">Codepoint</span><span class="o">:</span><span class="w"> </span><span class="n">Default</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="p">....</span><span class="w"> </span><span class="p">.</span><span class="mf">.00</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Explicit</span><span class="w"> </span><span class="n">Congestion</span><span class="w"> </span><span class="n">Notification</span><span class="o">:</span><span class="w"> </span><span class="n">Not</span><span class="w"> </span><span class="n">ECN</span><span class="o">-</span><span class="n">Capable</span><span class="w"> </span><span class="n">Transport</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">Total</span><span class="w"> </span><span class="n">Length</span><span class="o">:</span><span class="w"> </span><span class="mi">72</span><span class="w"></span>
-<span class="w">    </span><span class="nl">Identification</span><span class="p">:</span><span class="w"> </span><span class="mh">0x8307</span><span class="w"> </span><span class="p">(</span><span class="mi">33543</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="nl">Flags</span><span class="p">:</span><span class="w"> </span><span class="mh">0x0000</span><span class="w"></span>
-<span class="w">        </span><span class="mf">0.</span><span class="p">..</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Reserved</span><span class="w"> </span><span class="n">bit</span><span class="o">:</span><span class="w"> </span><span class="n">Not</span><span class="w"> </span><span class="n">set</span><span class="w"></span>
-<span class="w">        </span><span class="mf">.0</span><span class="p">..</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Don</span><span class="err">&#39;</span><span class="n">t</span><span class="w"> </span><span class="n">fragment</span><span class="o">:</span><span class="w"> </span><span class="n">Not</span><span class="w"> </span><span class="n">set</span><span class="w"></span>
-<span class="w">        </span><span class="p">.</span><span class="mf">.0</span><span class="p">.</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">More</span><span class="w"> </span><span class="n">fragments</span><span class="o">:</span><span class="w"> </span><span class="n">Not</span><span class="w"> </span><span class="n">set</span><span class="w"></span>
-<span class="w">        </span><span class="p">..</span><span class="mf">.0</span><span class="w"> </span><span class="mo">0000</span><span class="w"> </span><span class="mo">0000</span><span class="w"> </span><span class="mo">0000</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Fragment</span><span class="w"> </span><span class="n">offset</span><span class="o">:</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">    </span><span class="n">Time</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">live</span><span class="o">:</span><span class="w"> </span><span class="mi">6</span><span class="w"></span>
-<span class="w">    </span><span class="nl">Protocol</span><span class="p">:</span><span class="w"> </span><span class="n">ICMP</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">Header</span><span class="w"> </span><span class="n">checksum</span><span class="o">:</span><span class="w"> </span><span class="mh">0x3770</span><span class="w"> </span><span class="p">[</span><span class="n">validation</span><span class="w"> </span><span class="n">disabled</span><span class="p">]</span><span class="w"></span>
-<span class="w">    </span><span class="p">[</span><span class="n">Header</span><span class="w"> </span><span class="n">checksum</span><span class="w"> </span><span class="n">status</span><span class="o">:</span><span class="w"> </span><span class="n">Unverified</span><span class="p">]</span><span class="w"></span>
-<span class="w">    </span><span class="nl">Source</span><span class="p">:</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"></span>
-<span class="w">    </span><span class="n">Current</span><span class="w"> </span><span class="n">Route</span><span class="o">:</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="w">    </span><span class="nl">Options</span><span class="p">:</span><span class="w"> </span><span class="p">(</span><span class="mi">12</span><span class="w"> </span><span class="n">bytes</span><span class="p">),</span><span class="w"> </span><span class="n">Loose</span><span class="w"> </span><span class="n">Source</span><span class="w"> </span><span class="n">Route</span><span class="w"></span>
-<span class="w">        </span><span class="n">IP</span><span class="w"> </span><span class="n">Option</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">No</span><span class="o">-</span><span class="n">Operation</span><span class="w"> </span><span class="p">(</span><span class="n">NOP</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="nl">Type</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">                </span><span class="mf">0.</span><span class="p">..</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Copy</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">fragmentation</span><span class="o">:</span><span class="w"> </span><span class="n">No</span><span class="w"></span>
-<span class="w">                </span><span class="mf">.00</span><span class="p">.</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">Class</span><span class="o">:</span><span class="w"> </span><span class="n">Control</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">..</span><span class="mf">.0</span><span class="w"> </span><span class="mo">0001</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Number</span><span class="o">:</span><span class="w"> </span><span class="n">No</span><span class="o">-</span><span class="n">Operation</span><span class="w"> </span><span class="p">(</span><span class="n">NOP</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="n">IP</span><span class="w"> </span><span class="n">Option</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Loose</span><span class="w"> </span><span class="n">Source</span><span class="w"> </span><span class="n">Route</span><span class="w"> </span><span class="p">(</span><span class="mi">11</span><span class="w"> </span><span class="n">bytes</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="nl">Type</span><span class="p">:</span><span class="w"> </span><span class="mi">131</span><span class="w"></span>
-<span class="w">                </span><span class="mf">1.</span><span class="p">..</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Copy</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">fragmentation</span><span class="o">:</span><span class="w"> </span><span class="n">Yes</span><span class="w"></span>
-<span class="w">                </span><span class="mf">.00</span><span class="p">.</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">Class</span><span class="o">:</span><span class="w"> </span><span class="n">Control</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="p">..</span><span class="mf">.0</span><span class="w"> </span><span class="mo">0011</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Number</span><span class="o">:</span><span class="w"> </span><span class="n">Loose</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="nl">Length</span><span class="p">:</span><span class="w"> </span><span class="mi">11</span><span class="w"></span>
-<span class="w">            </span><span class="nl">Pointer</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="w"></span>
-<span class="w">            </span><span class="n">Source</span><span class="w"> </span><span class="n">Route</span><span class="o">:</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="p">(</span><span class="n">next</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="nl">Destination</span><span class="p">:</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">Internet</span><span class="w"> </span><span class="n">Control</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="n">Protocol</span><span class="w"></span>
-<span class="w">    </span><span class="nl">Type</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="p">(</span><span class="n">Echo</span><span class="w"> </span><span class="p">(</span><span class="n">ping</span><span class="p">)</span><span class="w"> </span><span class="n">request</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="nl">Code</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">    </span><span class="nl">Checksum</span><span class="p">:</span><span class="w"> </span><span class="mh">0x822c</span><span class="w"> </span><span class="p">[</span><span class="n">correct</span><span class="p">]</span><span class="w"></span>
-<span class="w">    </span><span class="p">[</span><span class="n">Checksum</span><span class="w"> </span><span class="n">Status</span><span class="o">:</span><span class="w"> </span><span class="n">Good</span><span class="p">]</span><span class="w"></span>
-<span class="w">    </span><span class="n">Identifier</span><span class="w"> </span><span class="p">(</span><span class="n">BE</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="mi">62</span><span class="w"> </span><span class="p">(</span><span class="mh">0x003e</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">Identifier</span><span class="w"> </span><span class="p">(</span><span class="n">LE</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="mi">15872</span><span class="w"> </span><span class="p">(</span><span class="mh">0x3e00</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">Sequence</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="p">(</span><span class="n">BE</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="mi">16</span><span class="w"> </span><span class="p">(</span><span class="mh">0x0010</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">Sequence</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="p">(</span><span class="n">LE</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="mi">4096</span><span class="w"> </span><span class="p">(</span><span class="mh">0x1000</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">Data</span><span class="w"> </span><span class="p">(</span><span class="mi">32</span><span class="w"> </span><span class="n">bytes</span><span class="p">)</span><span class="w"></span>
+<span class="normal">50</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">(...)</span>
+<span class="n">Internet</span><span class="w"> </span><span class="n">Protocol</span><span class="w"> </span><span class="n">Version</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="n">Src</span><span class="o">:</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="p">,</span><span class="w"> </span><span class="n">Dst</span><span class="o">:</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="p">,</span><span class="w"> </span><span class="n">Via</span><span class="o">:</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="w">    </span><span class="mo">0100</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Version</span><span class="o">:</span><span class="w"> </span><span class="mi">4</span>
+<span class="w">    </span><span class="p">....</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Header</span><span class="w"> </span><span class="n">Length</span><span class="o">:</span><span class="w"> </span><span class="mi">32</span><span class="w"> </span><span class="n">bytes</span><span class="w"> </span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="w">    </span><span class="n">Differentiated</span><span class="w"> </span><span class="n">Services</span><span class="w"> </span><span class="n">Field</span><span class="o">:</span><span class="w"> </span><span class="mh">0x00</span><span class="w"> </span><span class="p">(</span><span class="n">DSCP</span><span class="o">:</span><span class="w"> </span><span class="n">CS0</span><span class="p">,</span><span class="w"> </span><span class="n">ECN</span><span class="o">:</span><span class="w"> </span><span class="n">Not</span><span class="o">-</span><span class="n">ECT</span><span class="p">)</span>
+<span class="w">        </span><span class="mo">0000</span><span class="w"> </span><span class="mf">00.</span><span class="p">.</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Differentiated</span><span class="w"> </span><span class="n">Services</span><span class="w"> </span><span class="n">Codepoint</span><span class="o">:</span><span class="w"> </span><span class="n">Default</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="w">        </span><span class="p">....</span><span class="w"> </span><span class="p">.</span><span class="mf">.00</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Explicit</span><span class="w"> </span><span class="n">Congestion</span><span class="w"> </span><span class="n">Notification</span><span class="o">:</span><span class="w"> </span><span class="n">Not</span><span class="w"> </span><span class="n">ECN</span><span class="o">-</span><span class="n">Capable</span><span class="w"> </span><span class="n">Transport</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="n">Total</span><span class="w"> </span><span class="n">Length</span><span class="o">:</span><span class="w"> </span><span class="mi">72</span>
+<span class="w">    </span><span class="nl">Identification</span><span class="p">:</span><span class="w"> </span><span class="mh">0x8307</span><span class="w"> </span><span class="p">(</span><span class="mi">33543</span><span class="p">)</span>
+<span class="w">    </span><span class="nl">Flags</span><span class="p">:</span><span class="w"> </span><span class="mh">0x0000</span>
+<span class="w">        </span><span class="mf">0.</span><span class="p">..</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Reserved</span><span class="w"> </span><span class="n">bit</span><span class="o">:</span><span class="w"> </span><span class="n">Not</span><span class="w"> </span><span class="n">set</span>
+<span class="w">        </span><span class="mf">.0</span><span class="p">..</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Don</span><span class="err">&#39;</span><span class="n">t</span><span class="w"> </span><span class="n">fragment</span><span class="o">:</span><span class="w"> </span><span class="n">Not</span><span class="w"> </span><span class="n">set</span>
+<span class="w">        </span><span class="p">.</span><span class="mf">.0</span><span class="p">.</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">More</span><span class="w"> </span><span class="n">fragments</span><span class="o">:</span><span class="w"> </span><span class="n">Not</span><span class="w"> </span><span class="n">set</span>
+<span class="w">        </span><span class="p">..</span><span class="mf">.0</span><span class="w"> </span><span class="mo">0000</span><span class="w"> </span><span class="mo">0000</span><span class="w"> </span><span class="mo">0000</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Fragment</span><span class="w"> </span><span class="n">offset</span><span class="o">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">    </span><span class="n">Time</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">live</span><span class="o">:</span><span class="w"> </span><span class="mi">6</span>
+<span class="w">    </span><span class="nl">Protocol</span><span class="p">:</span><span class="w"> </span><span class="n">ICMP</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">    </span><span class="n">Header</span><span class="w"> </span><span class="n">checksum</span><span class="o">:</span><span class="w"> </span><span class="mh">0x3770</span><span class="w"> </span><span class="p">[</span><span class="n">validation</span><span class="w"> </span><span class="n">disabled</span><span class="p">]</span>
+<span class="w">    </span><span class="p">[</span><span class="n">Header</span><span class="w"> </span><span class="n">checksum</span><span class="w"> </span><span class="n">status</span><span class="o">:</span><span class="w"> </span><span class="n">Unverified</span><span class="p">]</span>
+<span class="w">    </span><span class="nl">Source</span><span class="p">:</span><span class="w"> </span><span class="mf">192.168.122.1</span>
+<span class="w">    </span><span class="n">Current</span><span class="w"> </span><span class="n">Route</span><span class="o">:</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="w">    </span><span class="nl">Options</span><span class="p">:</span><span class="w"> </span><span class="p">(</span><span class="mi">12</span><span class="w"> </span><span class="n">bytes</span><span class="p">),</span><span class="w"> </span><span class="n">Loose</span><span class="w"> </span><span class="n">Source</span><span class="w"> </span><span class="n">Route</span>
+<span class="w">        </span><span class="n">IP</span><span class="w"> </span><span class="n">Option</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">No</span><span class="o">-</span><span class="n">Operation</span><span class="w"> </span><span class="p">(</span><span class="n">NOP</span><span class="p">)</span>
+<span class="w">            </span><span class="nl">Type</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">                </span><span class="mf">0.</span><span class="p">..</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Copy</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">fragmentation</span><span class="o">:</span><span class="w"> </span><span class="n">No</span>
+<span class="w">                </span><span class="mf">.00</span><span class="p">.</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">Class</span><span class="o">:</span><span class="w"> </span><span class="n">Control</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="w">                </span><span class="p">..</span><span class="mf">.0</span><span class="w"> </span><span class="mo">0001</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Number</span><span class="o">:</span><span class="w"> </span><span class="n">No</span><span class="o">-</span><span class="n">Operation</span><span class="w"> </span><span class="p">(</span><span class="n">NOP</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">        </span><span class="n">IP</span><span class="w"> </span><span class="n">Option</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Loose</span><span class="w"> </span><span class="n">Source</span><span class="w"> </span><span class="n">Route</span><span class="w"> </span><span class="p">(</span><span class="mi">11</span><span class="w"> </span><span class="n">bytes</span><span class="p">)</span>
+<span class="w">            </span><span class="nl">Type</span><span class="p">:</span><span class="w"> </span><span class="mi">131</span>
+<span class="w">                </span><span class="mf">1.</span><span class="p">..</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Copy</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">fragmentation</span><span class="o">:</span><span class="w"> </span><span class="n">Yes</span>
+<span class="w">                </span><span class="mf">.00</span><span class="p">.</span><span class="w"> </span><span class="p">....</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">Class</span><span class="o">:</span><span class="w"> </span><span class="n">Control</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="w">                </span><span class="p">..</span><span class="mf">.0</span><span class="w"> </span><span class="mo">0011</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Number</span><span class="o">:</span><span class="w"> </span><span class="n">Loose</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="w">            </span><span class="nl">Length</span><span class="p">:</span><span class="w"> </span><span class="mi">11</span>
+<span class="w">            </span><span class="nl">Pointer</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span>
+<span class="w">            </span><span class="n">Source</span><span class="w"> </span><span class="n">Route</span><span class="o">:</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="p">(</span><span class="n">next</span><span class="p">)</span>
+<span class="w">            </span><span class="nl">Destination</span><span class="p">:</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">Internet</span><span class="w"> </span><span class="n">Control</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="n">Protocol</span>
+<span class="w">    </span><span class="nl">Type</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="p">(</span><span class="n">Echo</span><span class="w"> </span><span class="p">(</span><span class="n">ping</span><span class="p">)</span><span class="w"> </span><span class="n">request</span><span class="p">)</span>
+<span class="w">    </span><span class="nl">Code</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">    </span><span class="nl">Checksum</span><span class="p">:</span><span class="w"> </span><span class="mh">0x822c</span><span class="w"> </span><span class="p">[</span><span class="n">correct</span><span class="p">]</span>
+<span class="w">    </span><span class="p">[</span><span class="n">Checksum</span><span class="w"> </span><span class="n">Status</span><span class="o">:</span><span class="w"> </span><span class="n">Good</span><span class="p">]</span>
+<span class="w">    </span><span class="n">Identifier</span><span class="w"> </span><span class="p">(</span><span class="n">BE</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="mi">62</span><span class="w"> </span><span class="p">(</span><span class="mh">0x003e</span><span class="p">)</span>
+<span class="w">    </span><span class="n">Identifier</span><span class="w"> </span><span class="p">(</span><span class="n">LE</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="mi">15872</span><span class="w"> </span><span class="p">(</span><span class="mh">0x3e00</span><span class="p">)</span>
+<span class="w">    </span><span class="n">Sequence</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="p">(</span><span class="n">BE</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="mi">16</span><span class="w"> </span><span class="p">(</span><span class="mh">0x0010</span><span class="p">)</span>
+<span class="w">    </span><span class="n">Sequence</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="p">(</span><span class="n">LE</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="mi">4096</span><span class="w"> </span><span class="p">(</span><span class="mh">0x1000</span><span class="p">)</span>
+<span class="w">    </span><span class="n">Data</span><span class="w"> </span><span class="p">(</span><span class="mi">32</span><span class="w"> </span><span class="n">bytes</span><span class="p">)</span>
 
-<span class="mo">0000</span><span class="w">  </span><span class="mi">48</span><span class="w"> </span><span class="mi">49</span><span class="w"> </span><span class="mi">4</span><span class="n">a</span><span class="w"> </span><span class="mi">4</span><span class="n">b</span><span class="w"> </span><span class="mi">4</span><span class="n">c</span><span class="w"> </span><span class="mi">4</span><span class="n">d</span><span class="w"> </span><span class="mi">4</span><span class="n">e</span><span class="w"> </span><span class="mf">4f</span><span class="w"> </span><span class="mi">50</span><span class="w"> </span><span class="mi">51</span><span class="w"> </span><span class="mi">52</span><span class="w"> </span><span class="mi">53</span><span class="w"> </span><span class="mi">54</span><span class="w"> </span><span class="mi">55</span><span class="w"> </span><span class="mi">56</span><span class="w"> </span><span class="mi">57</span><span class="w">   </span><span class="n">HIJKLMNOPQRSTUVW</span><span class="w"></span>
-<span class="mo">0010</span><span class="w">  </span><span class="mi">58</span><span class="w"> </span><span class="mi">59</span><span class="w"> </span><span class="mi">5</span><span class="n">a</span><span class="w"> </span><span class="mi">5</span><span class="n">b</span><span class="w"> </span><span class="mi">5</span><span class="n">c</span><span class="w"> </span><span class="mi">5</span><span class="n">d</span><span class="w"> </span><span class="mi">5</span><span class="n">e</span><span class="w"> </span><span class="mf">5f</span><span class="w"> </span><span class="mi">60</span><span class="w"> </span><span class="mi">61</span><span class="w"> </span><span class="mi">62</span><span class="w"> </span><span class="mi">63</span><span class="w"> </span><span class="mi">64</span><span class="w"> </span><span class="mi">65</span><span class="w"> </span><span class="mi">66</span><span class="w"> </span><span class="mi">67</span><span class="w">   </span><span class="n">XYZ</span><span class="p">[</span><span class="err">\</span><span class="p">]</span><span class="o">^</span><span class="n">_</span><span class="err">`</span><span class="n">abcdefg</span><span class="w"></span>
-<span class="w">        </span><span class="nl">Data</span><span class="p">:</span><span class="w"> </span><span class="mi">48494</span><span class="n">a4b4c4d4e4f505152535455565758595a5b5c5d5e5f</span><span class="p">...</span><span class="w"></span>
-<span class="w">        </span><span class="p">[</span><span class="n">Length</span><span class="o">:</span><span class="w"> </span><span class="mi">32</span><span class="p">]</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="mo">0000</span><span class="w">  </span><span class="mi">48</span><span class="w"> </span><span class="mi">49</span><span class="w"> </span><span class="mi">4</span><span class="n">a</span><span class="w"> </span><span class="mi">4</span><span class="n">b</span><span class="w"> </span><span class="mi">4</span><span class="n">c</span><span class="w"> </span><span class="mi">4</span><span class="n">d</span><span class="w"> </span><span class="mi">4</span><span class="n">e</span><span class="w"> </span><span class="mf">4f</span><span class="w"> </span><span class="mi">50</span><span class="w"> </span><span class="mi">51</span><span class="w"> </span><span class="mi">52</span><span class="w"> </span><span class="mi">53</span><span class="w"> </span><span class="mi">54</span><span class="w"> </span><span class="mi">55</span><span class="w"> </span><span class="mi">56</span><span class="w"> </span><span class="mi">57</span><span class="w">   </span><span class="n">HIJKLMNOPQRSTUVW</span>
+<span class="mo">0010</span><span class="w">  </span><span class="mi">58</span><span class="w"> </span><span class="mi">59</span><span class="w"> </span><span class="mi">5</span><span class="n">a</span><span class="w"> </span><span class="mi">5</span><span class="n">b</span><span class="w"> </span><span class="mi">5</span><span class="n">c</span><span class="w"> </span><span class="mi">5</span><span class="n">d</span><span class="w"> </span><span class="mi">5</span><span class="n">e</span><span class="w"> </span><span class="mf">5f</span><span class="w"> </span><span class="mi">60</span><span class="w"> </span><span class="mi">61</span><span class="w"> </span><span class="mi">62</span><span class="w"> </span><span class="mi">63</span><span class="w"> </span><span class="mi">64</span><span class="w"> </span><span class="mi">65</span><span class="w"> </span><span class="mi">66</span><span class="w"> </span><span class="mi">67</span><span class="w">   </span><span class="n">XYZ</span><span class="p">[</span><span class="err">\</span><span class="p">]</span><span class="o">^</span><span class="n">_</span><span class="err">`</span><span class="n">abcdefg</span>
+<span class="w">        </span><span class="nl">Data</span><span class="p">:</span><span class="w"> </span><span class="mi">48494</span><span class="n">a4b4c4d4e4f505152535455565758595a5b5c5d5e5f</span><span class="p">...</span>
+<span class="w">        </span><span class="p">[</span><span class="n">Length</span><span class="o">:</span><span class="w"> </span><span class="mi">32</span><span class="p">]</span>
+</code></pre></div></td></tr></table></div></p>
 <h3 id="testing-in-a-live-system-source-routing-disabled">Testing in a live system - source routing disabled</h3>
 <p>Here's how this can be tested, on my CentOS 8.4 system:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2002,49 +1886,47 @@ net.ipv4.conf.vxlan_sys_4789.accept_source_route = 1
 <span class="normal">17</span>
 <span class="normal">18</span>
 <span class="normal">19</span>
-<span class="normal">20</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="w">    </span><span class="n">inet</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="o">/</span><span class="mi">24</span><span class="w"> </span><span class="n">brd</span><span class="w"> </span><span class="mf">192.168.122.255</span><span class="w"> </span><span class="k">scope</span><span class="w"> </span><span class="k">global</span><span class="w"> </span><span class="k">dynamic</span><span class="w"> </span><span class="n">noprefixroute</span><span class="w"> </span><span class="n">eth0</span><span class="w"></span>
-<span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">sysctl</span><span class="w"> </span><span class="o">-</span><span class="n">a</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">source_route</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">ipv4</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="ow">all</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br</span><span class="o">-</span><span class="n">ext</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br</span><span class="o">-</span><span class="n">vxlan</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br0</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="k">default</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth0</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth1</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">lo</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">ovs</span><span class="o">-</span><span class="k">system</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">vxlan_sys_4789</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">dropwatch</span><span class="w"> </span><span class="o">-</span><span class="n">lkas</span><span class="w"></span>
-<span class="n">Initalizing</span><span class="w"> </span><span class="n">kallsyms</span><span class="w"> </span><span class="n">db</span><span class="w"></span>
-<span class="n">dropwatch</span><span class="o">&gt;</span><span class="w"> </span><span class="k">start</span><span class="w"></span>
-<span class="n">Enabling</span><span class="w"> </span><span class="n">monitoring</span><span class="p">...</span><span class="w"></span>
-<span class="n">Kernel</span><span class="w"> </span><span class="n">monitoring</span><span class="w"> </span><span class="n">activated</span><span class="p">.</span><span class="w"></span>
-<span class="n">Issue</span><span class="w"> </span><span class="n">Ctrl</span><span class="o">-</span><span class="n">C</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">stop</span><span class="w"> </span><span class="n">monitoring</span><span class="w"></span>
-<span class="p">(...)</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="normal">20</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="w">    </span><span class="n">inet</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="o">/</span><span class="mi">24</span><span class="w"> </span><span class="n">brd</span><span class="w"> </span><span class="mf">192.168.122.255</span><span class="w"> </span><span class="k">scope</span><span class="w"> </span><span class="k">global</span><span class="w"> </span><span class="k">dynamic</span><span class="w"> </span><span class="n">noprefixroute</span><span class="w"> </span><span class="n">eth0</span>
+<span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">sysctl</span><span class="w"> </span><span class="o">-</span><span class="n">a</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">source_route</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">ipv4</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="ow">all</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br</span><span class="o">-</span><span class="n">ext</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br</span><span class="o">-</span><span class="n">vxlan</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br0</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="k">default</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth0</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth1</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">lo</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">ovs</span><span class="o">-</span><span class="k">system</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">vxlan_sys_4789</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">dropwatch</span><span class="w"> </span><span class="o">-</span><span class="n">lkas</span>
+<span class="n">Initalizing</span><span class="w"> </span><span class="n">kallsyms</span><span class="w"> </span><span class="n">db</span>
+<span class="n">dropwatch</span><span class="o">&gt;</span><span class="w"> </span><span class="k">start</span>
+<span class="n">Enabling</span><span class="w"> </span><span class="n">monitoring</span><span class="p">...</span>
+<span class="n">Kernel</span><span class="w"> </span><span class="n">monitoring</span><span class="w"> </span><span class="n">activated</span><span class="p">.</span>
+<span class="n">Issue</span><span class="w"> </span><span class="n">Ctrl</span><span class="o">-</span><span class="n">C</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">stop</span><span class="w"> </span><span class="n">monitoring</span>
+<span class="p">(...)</span>
+</code></pre></div></td></tr></table></div></p>
 <p>Now, go to a second CLI, and run:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
 <span class="normal">7</span>
-<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">akaris@linux ~</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">traceroute</span><span class="w"> </span><span class="o">-</span><span class="n">I</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="o">-</span><span class="n">g</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">traceroute</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">),</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="n">hops</span><span class="w"> </span><span class="nf">max</span><span class="p">,</span><span class="w"> </span><span class="mi">72</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">packets</span><span class="o">^</span><span class="n">C</span><span class="w"></span>
-<span class="o">[</span><span class="n">akaris@linux ~</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">timeout</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">traceroute</span><span class="w"> </span><span class="o">-</span><span class="n">I</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="o">-</span><span class="n">g</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">traceroute</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">),</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="n">hops</span><span class="w"> </span><span class="nf">max</span><span class="p">,</span><span class="w"> </span><span class="mi">72</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">packets</span><span class="w"></span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">akaris@linux ~</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">traceroute</span><span class="w"> </span><span class="o">-</span><span class="n">I</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="o">-</span><span class="n">g</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">traceroute</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">),</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="n">hops</span><span class="w"> </span><span class="nf">max</span><span class="p">,</span><span class="w"> </span><span class="mi">72</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">packets</span><span class="o">^</span><span class="n">C</span>
+<span class="o">[</span><span class="n">akaris@linux ~</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">timeout</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">traceroute</span><span class="w"> </span><span class="o">-</span><span class="n">I</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="o">-</span><span class="n">g</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">traceroute</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">),</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="n">hops</span><span class="w"> </span><span class="nf">max</span><span class="p">,</span><span class="w"> </span><span class="mi">72</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">packets</span>
 <span class="o">[</span><span class="n">akaris@linux ~</span><span class="o">]</span><span class="err">$</span><span class="w"> </span>
-<span class="o">[</span><span class="n">akaris@linux ~</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">timeout</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">traceroute</span><span class="w"> </span><span class="o">-</span><span class="n">I</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="o">-</span><span class="n">g</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">traceroute</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">),</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="n">hops</span><span class="w"> </span><span class="nf">max</span><span class="p">,</span><span class="w"> </span><span class="mi">72</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">packets</span><span class="w"></span>
+<span class="o">[</span><span class="n">akaris@linux ~</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">timeout</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">traceroute</span><span class="w"> </span><span class="o">-</span><span class="n">I</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="o">-</span><span class="n">g</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">traceroute</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">),</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="n">hops</span><span class="w"> </span><span class="nf">max</span><span class="p">,</span><span class="w"> </span><span class="mi">72</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">packets</span>
 <span class="o">[</span><span class="n">akaris@linux ~</span><span class="o">]</span><span class="err">$</span><span class="w"> </span>
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p>As you can see, the traceroute will fail, and dropwatch on the first CLI will report 16 drops
 from the traceroute in ip_rcv_finish:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2061,7 +1943,7 @@ from the traceroute in ip_rcv_finish:
 <span class="normal">15</span>
 <span class="normal">16</span>
 <span class="normal">17</span>
-<span class="normal">18</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>(...)
+<span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span><code>(...)
 2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
 16 drops at ip_rcv_finish+20d (0xffffffff8625274d)
 2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
@@ -2079,23 +1961,21 @@ from the traceroute in ip_rcv_finish:
 2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
 ^CGot a stop message
 dropwatch&gt; stop
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p>You can also enable log martians (yes, <em>this</em> one is OR'ed, ironically) ...
 <a href="https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt">https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt</a>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
-<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">log_martians</span> <span class="o">-</span> <span class="nv">BOOLEAN</span>
-    <span class="nv">Log</span> <span class="nv">packets</span> <span class="nv">with</span> <span class="nv">impossible</span> <span class="nv">addresses</span> <span class="nv">to</span> <span class="nv">kernel</span> <span class="nv">log</span>.
-    <span class="nv">log_martians</span> <span class="k">for</span> <span class="nv">the</span> <span class="nv">interface</span> <span class="nv">will</span> <span class="nv">be</span> <span class="nv">enabled</span> <span class="k">if</span> <span class="nv">at</span> <span class="nv">least</span> <span class="nv">one</span> <span class="nv">of</span>
-    <span class="nv">conf</span><span class="o">/</span>{<span class="nv">all</span>,<span class="nv">interface</span>}<span class="o">/</span><span class="nv">log_martians</span> <span class="nv">is</span> <span class="nv">set</span> <span class="nv">to</span> <span class="nv">TRUE</span>,
-    <span class="nv">it</span> <span class="nv">will</span> <span class="nv">be</span> <span class="nv">disabled</span> <span class="nv">otherwise</span>
-</code></pre></div>
-</td></tr></table></p>
-<p>And upon source route drop, one will be able to see messages containing string <code class="highlight"><span class="n">IPv4</span><span class="o">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="n">option</span><span class="w"></span></code> in the logs:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nv">log_martians</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">BOOLEAN</span>
+<span class="w">    </span><span class="nv">Log</span><span class="w"> </span><span class="nv">packets</span><span class="w"> </span><span class="nv">with</span><span class="w"> </span><span class="nv">impossible</span><span class="w"> </span><span class="nv">addresses</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">kernel</span><span class="w"> </span><span class="nv">log</span>.
+<span class="w">    </span><span class="nv">log_martians</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">interface</span><span class="w"> </span><span class="nv">will</span><span class="w"> </span><span class="nv">be</span><span class="w"> </span><span class="nv">enabled</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nv">at</span><span class="w"> </span><span class="nv">least</span><span class="w"> </span><span class="nv">one</span><span class="w"> </span><span class="nv">of</span>
+<span class="w">    </span><span class="nv">conf</span><span class="o">/</span>{<span class="nv">all</span>,<span class="nv">interface</span>}<span class="o">/</span><span class="nv">log_martians</span><span class="w"> </span><span class="nv">is</span><span class="w"> </span><span class="nv">set</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">TRUE</span>,
+<span class="w">    </span><span class="nv">it</span><span class="w"> </span><span class="nv">will</span><span class="w"> </span><span class="nv">be</span><span class="w"> </span><span class="nv">disabled</span><span class="w"> </span><span class="nv">otherwise</span>
+</code></pre></div></td></tr></table></div></p>
+<p>And upon source route drop, one will be able to see messages containing string <code class="highlight"><span class="n">IPv4</span><span class="o">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="n">option</span></code> in the logs:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2153,70 +2033,69 @@ dropwatch&gt; stop
 <span class="normal">56</span>
 <span class="normal">57</span>
 <span class="normal">58</span>
-<span class="normal">59</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">sysctl</span><span class="w"> </span><span class="o">-</span><span class="n">w</span><span class="w"> </span><span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="ow">all</span><span class="p">.</span><span class="n">log_martians</span><span class="o">=</span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="ow">all</span><span class="p">.</span><span class="n">log_martians</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">sysctl</span><span class="w"> </span><span class="o">-</span><span class="n">a</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">martians</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="ow">all</span><span class="p">.</span><span class="n">log_martians</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br</span><span class="o">-</span><span class="n">ext</span><span class="p">.</span><span class="n">log_martians</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br</span><span class="o">-</span><span class="n">vxlan</span><span class="p">.</span><span class="n">log_martians</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br0</span><span class="p">.</span><span class="n">log_martians</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="k">default</span><span class="p">.</span><span class="n">log_martians</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth0</span><span class="p">.</span><span class="n">log_martians</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth1</span><span class="p">.</span><span class="n">log_martians</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">lo</span><span class="p">.</span><span class="n">log_martians</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">ovs</span><span class="o">-</span><span class="k">system</span><span class="p">.</span><span class="n">log_martians</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">vxlan_sys_4789</span><span class="p">.</span><span class="n">log_martians</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">sysctl</span><span class="w"> </span><span class="o">-</span><span class="n">a</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">source_route</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">ipv4</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="ow">all</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br</span><span class="o">-</span><span class="n">ext</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br</span><span class="o">-</span><span class="n">vxlan</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br0</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="k">default</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth0</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth1</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">lo</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">ovs</span><span class="o">-</span><span class="k">system</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">vxlan_sys_4789</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">journalctl</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"></span>
-<span class="p">(...</span><span class="w"> </span><span class="n">sending</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="n">packets</span><span class="w"> </span><span class="n">here</span><span class="w"> </span><span class="p">...)</span><span class="w"></span>
+<span class="normal">59</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">sysctl</span><span class="w"> </span><span class="o">-</span><span class="n">w</span><span class="w"> </span><span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="ow">all</span><span class="p">.</span><span class="n">log_martians</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="ow">all</span><span class="p">.</span><span class="n">log_martians</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">sysctl</span><span class="w"> </span><span class="o">-</span><span class="n">a</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">martians</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="ow">all</span><span class="p">.</span><span class="n">log_martians</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br</span><span class="o">-</span><span class="n">ext</span><span class="p">.</span><span class="n">log_martians</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br</span><span class="o">-</span><span class="n">vxlan</span><span class="p">.</span><span class="n">log_martians</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br0</span><span class="p">.</span><span class="n">log_martians</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="k">default</span><span class="p">.</span><span class="n">log_martians</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth0</span><span class="p">.</span><span class="n">log_martians</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth1</span><span class="p">.</span><span class="n">log_martians</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">lo</span><span class="p">.</span><span class="n">log_martians</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">ovs</span><span class="o">-</span><span class="k">system</span><span class="p">.</span><span class="n">log_martians</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">vxlan_sys_4789</span><span class="p">.</span><span class="n">log_martians</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">sysctl</span><span class="w"> </span><span class="o">-</span><span class="n">a</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">source_route</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">ipv4</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="ow">all</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br</span><span class="o">-</span><span class="n">ext</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br</span><span class="o">-</span><span class="n">vxlan</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br0</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="k">default</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth0</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth1</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">lo</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">ovs</span><span class="o">-</span><span class="k">system</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">vxlan_sys_4789</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">journalctl</span><span class="w"> </span><span class="o">-</span><span class="n">f</span>
+<span class="p">(...</span><span class="w"> </span><span class="n">sending</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="n">packets</span><span class="w"> </span><span class="n">here</span><span class="w"> </span><span class="p">...)</span>
 
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="n">CROND</span><span class="o">[</span><span class="n">17134</span><span class="o">]</span><span class="err">:</span><span class="w"> </span><span class="p">(</span><span class="n">root</span><span class="p">)</span><span class="w"> </span><span class="n">CMD</span><span class="w"> </span><span class="p">(</span><span class="n">run</span><span class="o">-</span><span class="n">parts</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">cron</span><span class="p">.</span><span class="n">hourly</span><span class="p">)</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="n">run</span><span class="o">-</span><span class="n">parts</span><span class="o">[</span><span class="n">17137</span><span class="o">]</span><span class="err">:</span><span class="w"> </span><span class="p">(</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">cron</span><span class="p">.</span><span class="n">hourly</span><span class="p">)</span><span class="w"> </span><span class="n">starting</span><span class="w"> </span><span class="mi">0</span><span class="n">anacron</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="n">anacron</span><span class="o">[</span><span class="n">17143</span><span class="o">]</span><span class="err">:</span><span class="w"> </span><span class="n">Anacron</span><span class="w"> </span><span class="n">started</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="mi">2022</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">21</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="n">run</span><span class="o">-</span><span class="n">parts</span><span class="o">[</span><span class="n">17145</span><span class="o">]</span><span class="err">:</span><span class="w"> </span><span class="p">(</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">cron</span><span class="p">.</span><span class="n">hourly</span><span class="p">)</span><span class="w"> </span><span class="n">finished</span><span class="w"> </span><span class="mi">0</span><span class="n">anacron</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="n">anacron</span><span class="o">[</span><span class="n">17143</span><span class="o">]</span><span class="err">:</span><span class="w"> </span><span class="n">Will</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="n">job</span><span class="w"> </span><span class="err">`</span><span class="n">cron</span><span class="p">.</span><span class="n">daily</span><span class="err">&#39;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="nf">min</span><span class="p">.</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="n">anacron</span><span class="o">[</span><span class="n">17143</span><span class="o">]</span><span class="err">:</span><span class="w"> </span><span class="n">Jobs</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">executed</span><span class="w"> </span><span class="n">sequentially</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">net_ratelimit</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="n">callbacks</span><span class="w"> </span><span class="n">suppressed</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="n">CROND</span><span class="o">[</span><span class="n">17134</span><span class="o">]</span><span class="err">:</span><span class="w"> </span><span class="p">(</span><span class="n">root</span><span class="p">)</span><span class="w"> </span><span class="n">CMD</span><span class="w"> </span><span class="p">(</span><span class="n">run</span><span class="o">-</span><span class="n">parts</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">cron</span><span class="p">.</span><span class="n">hourly</span><span class="p">)</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="n">run</span><span class="o">-</span><span class="n">parts</span><span class="o">[</span><span class="n">17137</span><span class="o">]</span><span class="err">:</span><span class="w"> </span><span class="p">(</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">cron</span><span class="p">.</span><span class="n">hourly</span><span class="p">)</span><span class="w"> </span><span class="n">starting</span><span class="w"> </span><span class="mi">0</span><span class="n">anacron</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="n">anacron</span><span class="o">[</span><span class="n">17143</span><span class="o">]</span><span class="err">:</span><span class="w"> </span><span class="n">Anacron</span><span class="w"> </span><span class="n">started</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="mi">2022</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">21</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="n">run</span><span class="o">-</span><span class="n">parts</span><span class="o">[</span><span class="n">17145</span><span class="o">]</span><span class="err">:</span><span class="w"> </span><span class="p">(</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">cron</span><span class="p">.</span><span class="n">hourly</span><span class="p">)</span><span class="w"> </span><span class="n">finished</span><span class="w"> </span><span class="mi">0</span><span class="n">anacron</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="n">anacron</span><span class="o">[</span><span class="n">17143</span><span class="o">]</span><span class="err">:</span><span class="w"> </span><span class="n">Will</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="n">job</span><span class="w"> </span><span class="err">`</span><span class="n">cron</span><span class="p">.</span><span class="n">daily</span><span class="err">&#39;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="nf">min</span><span class="p">.</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="n">anacron</span><span class="o">[</span><span class="n">17143</span><span class="o">]</span><span class="err">:</span><span class="w"> </span><span class="n">Jobs</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">executed</span><span class="w"> </span><span class="n">sequentially</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">net_ratelimit</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="n">callbacks</span><span class="w"> </span><span class="n">suppressed</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">01</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span>
 
-<span class="p">(...</span><span class="w"> </span><span class="n">sending</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="n">packets</span><span class="w"> </span><span class="n">here</span><span class="w"> </span><span class="p">...)</span><span class="w"></span>
+<span class="p">(...</span><span class="w"> </span><span class="n">sending</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="n">packets</span><span class="w"> </span><span class="n">here</span><span class="w"> </span><span class="p">...)</span>
 
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">net_ratelimit</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="n">callbacks</span><span class="w"> </span><span class="n">suppressed</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="o">^</span><span class="n">C</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">net_ratelimit</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="n">callbacks</span><span class="w"> </span><span class="n">suppressed</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">Jan</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="mi">10</span><span class="err">:</span><span class="mi">01</span><span class="err">:</span><span class="mi">08</span><span class="w"> </span><span class="n">centos84</span><span class="w"> </span><span class="nl">kernel</span><span class="p">:</span><span class="w"> </span><span class="nl">IPv4</span><span class="p">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="k">option</span><span class="w"> </span><span class="mf">192.168.122.1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="o">^</span><span class="n">C</span>
+</code></pre></div></td></tr></table></div></p>
 <h3 id="testing-in-a-live-system-source-routing-enabled">Testing in a live system - source routing enabled</h3>
 <p>Now, I tested enabling source routing with <code class="highlight">net.ipv4.conf.all.accept_source_route = 1</code>:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2235,30 +2114,29 @@ dropwatch&gt; stop
 <span class="normal">17</span>
 <span class="normal">18</span>
 <span class="normal">19</span>
-<span class="normal">20</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">sysctl</span><span class="w"> </span><span class="o">-</span><span class="n">w</span><span class="w"> </span><span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="ow">all</span><span class="p">.</span><span class="n">accept_source_route</span><span class="o">=</span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="ow">all</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">sysctl</span><span class="w"> </span><span class="o">-</span><span class="n">a</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">source_route</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">ipv4</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="ow">all</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br</span><span class="o">-</span><span class="n">ext</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br</span><span class="o">-</span><span class="n">vxlan</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br0</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="k">default</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth0</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth1</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">lo</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">ovs</span><span class="o">-</span><span class="k">system</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">vxlan_sys_4789</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">dropwatch</span><span class="w"> </span><span class="o">-</span><span class="n">lkas</span><span class="w"></span>
-<span class="n">Initalizing</span><span class="w"> </span><span class="n">kallsyms</span><span class="w"> </span><span class="n">db</span><span class="w"></span>
-<span class="n">dropwatch</span><span class="o">&gt;</span><span class="w"> </span><span class="k">start</span><span class="w"></span>
-<span class="n">Enabling</span><span class="w"> </span><span class="n">monitoring</span><span class="p">...</span><span class="w"></span>
-<span class="n">Kernel</span><span class="w"> </span><span class="n">monitoring</span><span class="w"> </span><span class="n">activated</span><span class="p">.</span><span class="w"></span>
-<span class="n">Issue</span><span class="w"> </span><span class="n">Ctrl</span><span class="o">-</span><span class="n">C</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">stop</span><span class="w"> </span><span class="n">monitoring</span><span class="w"></span>
-<span class="p">(...)</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="normal">20</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">sysctl</span><span class="w"> </span><span class="o">-</span><span class="n">w</span><span class="w"> </span><span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="ow">all</span><span class="p">.</span><span class="n">accept_source_route</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="ow">all</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">sysctl</span><span class="w"> </span><span class="o">-</span><span class="n">a</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">source_route</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">ipv4</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="ow">all</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br</span><span class="o">-</span><span class="n">ext</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br</span><span class="o">-</span><span class="n">vxlan</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">br0</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="k">default</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth0</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">eth1</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">lo</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">ovs</span><span class="o">-</span><span class="k">system</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">net</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">vxlan_sys_4789</span><span class="p">.</span><span class="n">accept_source_route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="o">[</span><span class="n">root@centos84 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">dropwatch</span><span class="w"> </span><span class="o">-</span><span class="n">lkas</span>
+<span class="n">Initalizing</span><span class="w"> </span><span class="n">kallsyms</span><span class="w"> </span><span class="n">db</span>
+<span class="n">dropwatch</span><span class="o">&gt;</span><span class="w"> </span><span class="k">start</span>
+<span class="n">Enabling</span><span class="w"> </span><span class="n">monitoring</span><span class="p">...</span>
+<span class="n">Kernel</span><span class="w"> </span><span class="n">monitoring</span><span class="w"> </span><span class="n">activated</span><span class="p">.</span>
+<span class="n">Issue</span><span class="w"> </span><span class="n">Ctrl</span><span class="o">-</span><span class="n">C</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">stop</span><span class="w"> </span><span class="n">monitoring</span>
+<span class="p">(...)</span>
+</code></pre></div></td></tr></table></div></p>
 <p>Now, my traceroute with the source route option set works:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2273,26 +2151,25 @@ dropwatch&gt; stop
 <span class="normal">13</span>
 <span class="normal">14</span>
 <span class="normal">15</span>
-<span class="normal">16</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">akaris@linux ~</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">timeout</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">traceroute</span><span class="w"> </span><span class="o">-</span><span class="n">I</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="o">-</span><span class="n">g</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">traceroute</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">),</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="n">hops</span><span class="w"> </span><span class="nf">max</span><span class="p">,</span><span class="w"> </span><span class="mi">72</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">packets</span><span class="w"></span>
-<span class="w"> </span><span class="mi">1</span><span class="w">  </span><span class="n">centos84</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">)</span><span class="w">  </span><span class="mf">0.526</span><span class="w"> </span><span class="n">ms</span><span class="w">  </span><span class="mf">0.509</span><span class="w"> </span><span class="n">ms</span><span class="w">  </span><span class="mf">0.494</span><span class="w"> </span><span class="n">ms</span><span class="w"></span>
-<span class="o">[</span><span class="n">akaris@linux ~</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">timeout</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">traceroute</span><span class="w"> </span><span class="o">-</span><span class="n">I</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="o">-</span><span class="n">g</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">traceroute</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">),</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="n">hops</span><span class="w"> </span><span class="nf">max</span><span class="p">,</span><span class="w"> </span><span class="mi">72</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">packets</span><span class="w"></span>
-<span class="w"> </span><span class="mi">1</span><span class="w">  </span><span class="n">centos84</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">)</span><span class="w">  </span><span class="mf">0.459</span><span class="w"> </span><span class="n">ms</span><span class="w">  </span><span class="mf">0.433</span><span class="w"> </span><span class="n">ms</span><span class="w">  </span><span class="mf">0.425</span><span class="w"> </span><span class="n">ms</span><span class="w"></span>
-<span class="o">[</span><span class="n">akaris@linux ~</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">timeout</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">traceroute</span><span class="w"> </span><span class="o">-</span><span class="n">I</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="o">-</span><span class="n">g</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">traceroute</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">),</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="n">hops</span><span class="w"> </span><span class="nf">max</span><span class="p">,</span><span class="w"> </span><span class="mi">72</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">packets</span><span class="w"></span>
-<span class="w"> </span><span class="mi">1</span><span class="w">  </span><span class="n">centos84</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">)</span><span class="w">  </span><span class="mf">0.424</span><span class="w"> </span><span class="n">ms</span><span class="w">  </span><span class="mf">0.388</span><span class="w"> </span><span class="n">ms</span><span class="w">  </span><span class="mf">0.387</span><span class="w"> </span><span class="n">ms</span><span class="w"></span>
-<span class="o">[</span><span class="n">akaris@linux ~</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">timeout</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">traceroute</span><span class="w"> </span><span class="o">-</span><span class="n">I</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="o">-</span><span class="n">g</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">traceroute</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">),</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="n">hops</span><span class="w"> </span><span class="nf">max</span><span class="p">,</span><span class="w"> </span><span class="mi">72</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">packets</span><span class="w"></span>
-<span class="w"> </span><span class="mi">1</span><span class="w">  </span><span class="n">centos84</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">)</span><span class="w">  </span><span class="mf">0.475</span><span class="w"> </span><span class="n">ms</span><span class="w">  </span><span class="mf">0.460</span><span class="w"> </span><span class="n">ms</span><span class="w">  </span><span class="mf">0.455</span><span class="w"> </span><span class="n">ms</span><span class="w"></span>
-<span class="o">[</span><span class="n">akaris@linux ~</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">timeout</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">traceroute</span><span class="w"> </span><span class="o">-</span><span class="n">I</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="o">-</span><span class="n">g</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"></span>
-<span class="n">traceroute</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">),</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="n">hops</span><span class="w"> </span><span class="nf">max</span><span class="p">,</span><span class="w"> </span><span class="mi">72</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">packets</span><span class="w"></span>
-<span class="w"> </span><span class="mi">1</span><span class="w">  </span><span class="n">centos84</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">)</span><span class="w">  </span><span class="mf">0.571</span><span class="w"> </span><span class="n">ms</span><span class="w">  </span><span class="mf">0.546</span><span class="w"> </span><span class="n">ms</span><span class="w">  </span><span class="mf">0.538</span><span class="w"> </span><span class="n">ms</span><span class="w"></span>
+<span class="normal">16</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">akaris@linux ~</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">timeout</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">traceroute</span><span class="w"> </span><span class="o">-</span><span class="n">I</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="o">-</span><span class="n">g</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">traceroute</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">),</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="n">hops</span><span class="w"> </span><span class="nf">max</span><span class="p">,</span><span class="w"> </span><span class="mi">72</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">packets</span>
+<span class="w"> </span><span class="mi">1</span><span class="w">  </span><span class="n">centos84</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">)</span><span class="w">  </span><span class="mf">0.526</span><span class="w"> </span><span class="n">ms</span><span class="w">  </span><span class="mf">0.509</span><span class="w"> </span><span class="n">ms</span><span class="w">  </span><span class="mf">0.494</span><span class="w"> </span><span class="n">ms</span>
+<span class="o">[</span><span class="n">akaris@linux ~</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">timeout</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">traceroute</span><span class="w"> </span><span class="o">-</span><span class="n">I</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="o">-</span><span class="n">g</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">traceroute</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">),</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="n">hops</span><span class="w"> </span><span class="nf">max</span><span class="p">,</span><span class="w"> </span><span class="mi">72</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">packets</span>
+<span class="w"> </span><span class="mi">1</span><span class="w">  </span><span class="n">centos84</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">)</span><span class="w">  </span><span class="mf">0.459</span><span class="w"> </span><span class="n">ms</span><span class="w">  </span><span class="mf">0.433</span><span class="w"> </span><span class="n">ms</span><span class="w">  </span><span class="mf">0.425</span><span class="w"> </span><span class="n">ms</span>
+<span class="o">[</span><span class="n">akaris@linux ~</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">timeout</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">traceroute</span><span class="w"> </span><span class="o">-</span><span class="n">I</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="o">-</span><span class="n">g</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">traceroute</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">),</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="n">hops</span><span class="w"> </span><span class="nf">max</span><span class="p">,</span><span class="w"> </span><span class="mi">72</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">packets</span>
+<span class="w"> </span><span class="mi">1</span><span class="w">  </span><span class="n">centos84</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">)</span><span class="w">  </span><span class="mf">0.424</span><span class="w"> </span><span class="n">ms</span><span class="w">  </span><span class="mf">0.388</span><span class="w"> </span><span class="n">ms</span><span class="w">  </span><span class="mf">0.387</span><span class="w"> </span><span class="n">ms</span>
+<span class="o">[</span><span class="n">akaris@linux ~</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">timeout</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">traceroute</span><span class="w"> </span><span class="o">-</span><span class="n">I</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="o">-</span><span class="n">g</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">traceroute</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">),</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="n">hops</span><span class="w"> </span><span class="nf">max</span><span class="p">,</span><span class="w"> </span><span class="mi">72</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">packets</span>
+<span class="w"> </span><span class="mi">1</span><span class="w">  </span><span class="n">centos84</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">)</span><span class="w">  </span><span class="mf">0.475</span><span class="w"> </span><span class="n">ms</span><span class="w">  </span><span class="mf">0.460</span><span class="w"> </span><span class="n">ms</span><span class="w">  </span><span class="mf">0.455</span><span class="w"> </span><span class="n">ms</span>
+<span class="o">[</span><span class="n">akaris@linux ~</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">timeout</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">traceroute</span><span class="w"> </span><span class="o">-</span><span class="n">I</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="o">-</span><span class="n">g</span><span class="w"> </span><span class="mf">192.168.122.6</span>
+<span class="n">traceroute</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="mf">192.168.122.6</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">),</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="n">hops</span><span class="w"> </span><span class="nf">max</span><span class="p">,</span><span class="w"> </span><span class="mi">72</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">packets</span>
+<span class="w"> </span><span class="mi">1</span><span class="w">  </span><span class="n">centos84</span><span class="w"> </span><span class="p">(</span><span class="mf">192.168.122.6</span><span class="p">)</span><span class="w">  </span><span class="mf">0.571</span><span class="w"> </span><span class="n">ms</span><span class="w">  </span><span class="mf">0.546</span><span class="w"> </span><span class="n">ms</span><span class="w">  </span><span class="mf">0.538</span><span class="w"> </span><span class="n">ms</span>
 <span class="o">[</span><span class="n">akaris@linux ~</span><span class="o">]</span><span class="err">$</span><span class="w"> </span>
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p>And dropwatch only shows unrelated drops elsewhere:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2301,7 +2178,7 @@ dropwatch&gt; stop
 <span class="normal"> 7</span>
 <span class="normal"> 8</span>
 <span class="normal"> 9</span>
-<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>(...)
+<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code>(...)
 2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
 2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
 2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
@@ -2311,12 +2188,11 @@ dropwatch&gt; stop
 2 drops at __init_scratch_end+37b6e440 (0xffffffffc076e440)
 ^CGot a stop message
 dropwatch&gt; 
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p>And the kernel with martian logging on does not report anything.</p>
 <h2 id="ipv6">IPv6</h2>
 <p>For IPv6, the default settings on RHEL for source routing will yield something like this:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2326,7 +2202,7 @@ dropwatch&gt;
 <span class="normal"> 8</span>
 <span class="normal"> 9</span>
 <span class="normal">10</span>
-<span class="normal">11</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code># sysctl -a | grep source_route | grep ipv6
+<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code># sysctl -a | grep source_route | grep ipv6
 net.ipv6.conf.all.accept_source_route = 0
 net.ipv6.conf.br-ext.accept_source_route = 0
 net.ipv6.conf.br-vxlan.accept_source_route = 0
@@ -2337,25 +2213,23 @@ net.ipv6.conf.eth1.accept_source_route = 0
 net.ipv6.conf.lo.accept_source_route = 0
 net.ipv6.conf.ovs-system.accept_source_route = 0
 net.ipv6.conf.vxlan_sys_4789.accept_source_route = 0
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p>For IPv6, I tried crafting RH0 type packets, but failed miserably at the task. With that said, the kernel only ever accepts RH2 and the default is off, anyway: 
 <a href="https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt">https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt</a>:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
-<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">accept_source_route</span> <span class="o">-</span> <span class="nv">INTEGER</span>
-    <span class="nv">Accept</span> <span class="nv">source</span> <span class="nv">routing</span> <span class="ss">(</span><span class="nv">routing</span> <span class="nv">extension</span> <span class="nv">header</span><span class="ss">)</span>.
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nv">accept_source_route</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">INTEGER</span>
+<span class="w">    </span><span class="nv">Accept</span><span class="w"> </span><span class="nv">source</span><span class="w"> </span><span class="nv">routing</span><span class="w"> </span><span class="ss">(</span><span class="nv">routing</span><span class="w"> </span><span class="nv">extension</span><span class="w"> </span><span class="nv">header</span><span class="ss">)</span>.
 
-    <span class="o">&gt;=</span> <span class="mi">0</span>: <span class="nv">Accept</span> <span class="nv">only</span> <span class="nv">routing</span> <span class="nv">header</span> <span class="nv">type</span> <span class="mi">2</span>.
-    <span class="o">&lt;</span> <span class="mi">0</span>: <span class="k">Do</span> <span class="nv">not</span> <span class="nv">accept</span> <span class="nv">routing</span> <span class="nv">header</span>.
+<span class="w">    </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span>:<span class="w"> </span><span class="nv">Accept</span><span class="w"> </span><span class="nv">only</span><span class="w"> </span><span class="nv">routing</span><span class="w"> </span><span class="nv">header</span><span class="w"> </span><span class="nv">type</span><span class="w"> </span><span class="mi">2</span>.
+<span class="w">    </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span>:<span class="w"> </span><span class="k">Do</span><span class="w"> </span><span class="nv">not</span><span class="w"> </span><span class="nv">accept</span><span class="w"> </span><span class="nv">routing</span><span class="w"> </span><span class="nv">header</span>.
 
-    <span class="nv">Default</span>: <span class="mi">0</span>
-</code></pre></div>
-</td></tr></table>
+<span class="w">    </span><span class="nv">Default</span>:<span class="w"> </span><span class="mi">0</span>
+</code></pre></div></td></tr></table></div>
 It looks like this was merged 14 years ago, so we should be good ;-) <a href="https://github.com/torvalds/linux/commit/bb4dbf9e61d0801927e7df2569bb3dd8287ea301">https://github.com/torvalds/linux/commit/bb4dbf9e61d0801927e7df2569bb3dd8287ea301</a>
 The following article on LWN might be of interest, too: <a href="https://lwn.net/Articles/232781/">https://lwn.net/Articles/232781/</a></p>
 <p>But then, a more thorough test could use scapy or some other tool to actually craft a corret packet.</p>
@@ -2373,54 +2247,25 @@ The following article on LWN might be of interest, too: <a href="https://lwn.net
   </small>
 </div>
 
-              
-            </article>
-          </div>
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
         
       </main>
       
         <footer class="md-footer">
-  
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
-      
-        
-        <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Networking" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Networking
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../arp_and_the_neighbor_table/" class="md-footer__link md-footer__link--next" aria-label="Next: ARP and the Neighbor table" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              ARP and the Neighbor table
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -2442,10 +2287,11 @@ The following article on LWN might be of interest, too: <a href="https://lwn.net
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.467223ff.min.js"></script>
+      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
       
     
   </body>

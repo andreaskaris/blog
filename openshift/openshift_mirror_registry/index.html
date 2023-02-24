@@ -12,8 +12,14 @@
       
         <link rel="canonical" href="https://andreaskaris.github.io/blog/openshift/openshift_mirror_registry/">
       
+      
+        <link rel="prev" href="../ingress-controller-sharding-on-separate-vip/">
+      
+      
+        <link rel="next" href="../istio-1.6-on-ocp.4.x/">
+      
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.14">
     
     
       
@@ -21,16 +27,13 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2d9f7617.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#000000">
-        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
       
+      
+
     
     
     
@@ -43,10 +46,11 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
+    
     
     
   </head>
@@ -57,7 +61,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="pink">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink">
   
     
     
@@ -65,11 +69,6 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
-      
-        
-        <a href="#openshift-mirror-registry-setup" class="md-skip">
-          Skip to content
-        </a>
       
     </div>
     <div data-md-component="announce">
@@ -84,11 +83,11 @@
     <a href="../.." title="Andreas Karis Blog" class="md-header__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -121,7 +120,7 @@
           
             
 <nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-tabs__inner md-grid">
+  <div class="md-grid">
     <ul class="md-tabs__list">
       
         
@@ -258,7 +257,7 @@
     <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
     Andreas Karis Blog
@@ -292,8 +291,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
       
       
         
@@ -316,7 +316,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Ceph" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
           Ceph
@@ -356,8 +356,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
       
       
         
@@ -400,7 +401,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Linux" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Linux
@@ -580,8 +581,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
       
       
         
@@ -636,7 +638,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Networking" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           Networking
@@ -902,8 +904,9 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
       
       
         
@@ -990,7 +993,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenShift and Kubernetes" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_5">
           <span class="md-nav__icon md-icon"></span>
           OpenShift and Kubernetes
@@ -1204,80 +1207,13 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Installing a cluster with a mirror registry
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         Installing a cluster with a mirror registry
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#setting-up-a-private-registry-server" class="md-nav__link">
-    Setting up a private registry server
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#mirroring-openshift-container-images-into-private-registry-and-preparing-openshift-install" class="md-nav__link">
-    Mirroring OpenShift container images into private registry and preparing openshift-install
-  </a>
-  
-    <nav class="md-nav" aria-label="Mirroring OpenShift container images into private registry and preparing openshift-install">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#merging-the-pull-secrets" class="md-nav__link">
-    Merging the pull secrets
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mirroring-the-container-images" class="md-nav__link">
-    Mirroring the container images
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installing-a-disconnected-cluster" class="md-nav__link">
-    Installing a disconnected cluster
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -1553,8 +1489,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
       
       
         
@@ -1579,7 +1516,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="OpenStack" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_6">
           <span class="md-nav__icon md-icon"></span>
           OpenStack
@@ -1633,8 +1570,9 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
       
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
       
       
         
@@ -1661,7 +1599,7 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Coding" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_7">
           <span class="md-nav__icon md-icon"></span>
           Coding
@@ -1735,57 +1673,6 @@
   
   
   
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#setting-up-a-private-registry-server" class="md-nav__link">
-    Setting up a private registry server
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#mirroring-openshift-container-images-into-private-registry-and-preparing-openshift-install" class="md-nav__link">
-    Mirroring OpenShift container images into private registry and preparing openshift-install
-  </a>
-  
-    <nav class="md-nav" aria-label="Mirroring OpenShift container images into private registry and preparing openshift-install">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#merging-the-pull-secrets" class="md-nav__link">
-    Merging the pull secrets
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mirroring-the-container-images" class="md-nav__link">
-    Mirroring the container images
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installing-a-disconnected-cluster" class="md-nav__link">
-    Installing a disconnected cluster
-  </a>
-  
-</li>
-      
-    </ul>
   
 </nav>
                   </div>
@@ -1793,10 +1680,11 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
 <h1 id="openshift-mirror-registry-setup">OpenShift mirror registry setup</h1>
@@ -1814,7 +1702,7 @@
 <h3 id="merging-the-pull-secrets">Merging the pull secrets</h3>
 <p>Download your pull-secret from <a href="https://cloud.redhat.com/openshift/install/pull-secret">https://cloud.redhat.com/openshift/install/pull-secret</a>.</p>
 <p>At time of this writing, a bug makes this procedure a bit more clumsy: <a href="https://bugzilla.redhat.com/show_bug.cgi?id=1866588">https://bugzilla.redhat.com/show_bug.cgi?id=1866588</a></p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
@@ -1822,21 +1710,20 @@
 <span class="normal">6</span>
 <span class="normal">7</span>
 <span class="normal">8</span>
-<span class="normal">9</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc registry login --to ./pull-secret.json --registry <span class="s2">&quot;192.0.2.100:5000&quot;</span> --auth-basic<span class="o">=</span>root:password
-error: Missing or incomplete configuration info.  Please point to an existing, <span class="nb">complete</span> config file:
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code>$<span class="w"> </span>oc<span class="w"> </span>registry<span class="w"> </span>login<span class="w"> </span>--to<span class="w"> </span>./pull-secret.json<span class="w"> </span>--registry<span class="w"> </span><span class="s2">&quot;192.0.2.100:5000&quot;</span><span class="w"> </span>--auth-basic<span class="o">=</span>root:password
+error:<span class="w"> </span>Missing<span class="w"> </span>or<span class="w"> </span>incomplete<span class="w"> </span>configuration<span class="w"> </span>info.<span class="w">  </span>Please<span class="w"> </span>point<span class="w"> </span>to<span class="w"> </span>an<span class="w"> </span>existing,<span class="w"> </span><span class="nb">complete</span><span class="w"> </span>config<span class="w"> </span>file:
 
 
-  <span class="m">1</span>. Via the command-line flag --kubeconfig
-  <span class="m">2</span>. Via the KUBECONFIG environment variable
-  <span class="m">3</span>. In your home directory as ~/.kube/config
+<span class="w">  </span><span class="m">1</span>.<span class="w"> </span>Via<span class="w"> </span>the<span class="w"> </span>command-line<span class="w"> </span>flag<span class="w"> </span>--kubeconfig
+<span class="w">  </span><span class="m">2</span>.<span class="w"> </span>Via<span class="w"> </span>the<span class="w"> </span>KUBECONFIG<span class="w"> </span>environment<span class="w"> </span>variable
+<span class="w">  </span><span class="m">3</span>.<span class="w"> </span>In<span class="w"> </span>your<span class="w"> </span>home<span class="w"> </span>directory<span class="w"> </span>as<span class="w"> </span>~/.kube/config
 
-To view or setup config directly use the <span class="s1">&#39;config&#39;</span> command.
-</code></pre></div>
-</td></tr></table>
+To<span class="w"> </span>view<span class="w"> </span>or<span class="w"> </span>setup<span class="w"> </span>config<span class="w"> </span>directly<span class="w"> </span>use<span class="w"> </span>the<span class="w"> </span><span class="s1">&#39;config&#39;</span><span class="w"> </span>command.
+</code></pre></div></td></tr></table></div>
 <p>Instead, either follow:
 <a href="https://docs.openshift.com/container-platform/4.2/installing/install_config/installing-restricted-networks-preparations.html#installation-adding-registry-pull-secret_installing-restricted-networks-preparations">https://docs.openshift.com/container-platform/4.2/installing/install_config/installing-restricted-networks-preparations.html#installation-adding-registry-pull-secret_installing-restricted-networks-preparations</a></p>
 <p>Or, more elegantly, create a pull secret with podman:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1845,29 +1732,26 @@ To view or setup config directly use the <span class="s1">&#39;config&#39;</span
 <span class="normal"> 7</span>
 <span class="normal"> 8</span>
 <span class="normal"> 9</span>
-<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ podman login -u root -p password --authfile pull-secret-podman.json https://192.0.2.100:5000
-WARNING! Using --password via the cli is insecure. Please consider using --password-stdin
-Login Succeeded!
-$ cat pull-secret-podman.json
+<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code>$<span class="w"> </span>podman<span class="w"> </span>login<span class="w"> </span>-u<span class="w"> </span>root<span class="w"> </span>-p<span class="w"> </span>password<span class="w"> </span>--authfile<span class="w"> </span>pull-secret-podman.json<span class="w"> </span>https://192.0.2.100:5000
+WARNING!<span class="w"> </span>Using<span class="w"> </span>--password<span class="w"> </span>via<span class="w"> </span>the<span class="w"> </span>cli<span class="w"> </span>is<span class="w"> </span>insecure.<span class="w"> </span>Please<span class="w"> </span>consider<span class="w"> </span>using<span class="w"> </span>--password-stdin
+Login<span class="w"> </span>Succeeded!
+$<span class="w"> </span>cat<span class="w"> </span>pull-secret-podman.json
 <span class="o">{</span>
-    <span class="s2">&quot;auths&quot;</span>: <span class="o">{</span>
-        <span class="s2">&quot;192.0.2.100:5000&quot;</span>: <span class="o">{</span>
-            <span class="s2">&quot;auth&quot;</span>: <span class="s2">&quot;cm9vdDpwYXNzd29yZA==&quot;</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="w">    </span><span class="s2">&quot;auths&quot;</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="s2">&quot;192.0.2.100:5000&quot;</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="s2">&quot;auth&quot;</span>:<span class="w"> </span><span class="s2">&quot;cm9vdDpwYXNzd29yZA==&quot;</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+</code></pre></div></td></tr></table></div></p>
 <p>Install jq
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>sudo yum install jq -y
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>sudo yum install jq -y
+</code></pre></div></td></tr></table></div></p>
 <p>Then, merge both secrets:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">jq</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="o">--</span><span class="n">argjson</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="s2">&quot;$(jq .auths pull-secret-podman.json)&quot;</span><span class="w"> </span><span class="s1">&#39;.auths += $var&#39;</span><span class="w"> </span><span class="n">pull</span><span class="o">-</span><span class="n">secret</span><span class="o">.</span><span class="n">json</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">pull</span><span class="o">-</span><span class="n">secret</span><span class="o">-</span><span class="n">merged</span><span class="o">.</span><span class="n">json</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">jq</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="o">--</span><span class="n">argjson</span><span class="w"> </span><span class="k">var</span><span class="w"> </span><span class="s2">&quot;$(jq .auths pull-secret-podman.json)&quot;</span><span class="w"> </span><span class="s1">&#39;.auths += $var&#39;</span><span class="w"> </span><span class="n">pull</span><span class="o">-</span><span class="n">secret</span><span class="o">.</span><span class="n">json</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">pull</span><span class="o">-</span><span class="n">secret</span><span class="o">-</span><span class="n">merged</span><span class="o">.</span><span class="n">json</span>
+</code></pre></div></td></tr></table></div></p>
 <h3 id="mirroring-the-container-images">Mirroring the container images</h3>
 <p>Get <code class="highlight">$OCP_RELEASE</code> from <a href="https://quay.io/repository/openshift-release-dev/ocp-release?tag=latest&amp;tab=tags">https://quay.io/repository/openshift-release-dev/ocp-release?tag=latest&amp;tab=tags</a> and export required env variables, e.g.:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
@@ -1875,30 +1759,27 @@ $ cat pull-secret-podman.json
 <span class="normal">6</span>
 <span class="normal">7</span>
 <span class="normal">8</span>
-<span class="normal">9</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">mirror</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1">#  env | egrep &#39;OCP|LOCAL|PRODUCT|RELEASE&#39;</span><span class="w"></span>
-<span class="k">export</span><span class="w"> </span><span class="n">RELEASE_NAME</span><span class="o">=</span><span class="n">ocp</span><span class="o">-</span><span class="n">release</span><span class="w"></span>
-<span class="k">export</span><span class="w"> </span><span class="n">LOCAL_SECRET_JSON</span><span class="o">=</span><span class="n">pull</span><span class="o">-</span><span class="n">secret</span><span class="o">-</span><span class="n">merged</span><span class="o">.</span><span class="n">json</span><span class="w"></span>
-<span class="k">export</span><span class="w"> </span><span class="n">OCP_RELEASE</span><span class="o">=</span><span class="mf">4.5</span><span class="o">.</span><span class="mi">9</span><span class="w"></span>
-<span class="k">export</span><span class="w"> </span><span class="n">PRODUCT_REPO</span><span class="o">=</span><span class="n">openshift</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="n">dev</span><span class="w"></span>
-<span class="k">export</span><span class="w"> </span><span class="n">LOCAL_REPOSITORY</span><span class="o">=</span><span class="n">ocp4</span><span class="o">/</span><span class="n">openshift4</span><span class="w"></span>
-<span class="k">export</span><span class="w"> </span><span class="n">LOCAL_REGISTRY</span><span class="o">=</span><span class="mf">192.0</span><span class="o">.</span><span class="mf">2.100</span><span class="p">:</span><span class="mi">5000</span><span class="w"></span>
-<span class="k">export</span><span class="w"> </span><span class="n">ARCHITECTURE</span><span class="o">=</span><span class="n">x86_64</span><span class="w"></span>
-<span class="k">export</span><span class="w"> </span><span class="n">REMOVABLE_MEDIA_PATH</span><span class="o">=</span><span class="n">removable_media</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">mirror</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1">#  env | egrep &#39;OCP|LOCAL|PRODUCT|RELEASE&#39;</span>
+<span class="k">export</span><span class="w"> </span><span class="n">RELEASE_NAME</span><span class="o">=</span><span class="n">ocp</span><span class="o">-</span><span class="n">release</span>
+<span class="k">export</span><span class="w"> </span><span class="n">LOCAL_SECRET_JSON</span><span class="o">=</span><span class="n">pull</span><span class="o">-</span><span class="n">secret</span><span class="o">-</span><span class="n">merged</span><span class="o">.</span><span class="n">json</span>
+<span class="k">export</span><span class="w"> </span><span class="n">OCP_RELEASE</span><span class="o">=</span><span class="mf">4.5</span><span class="o">.</span><span class="mi">9</span>
+<span class="k">export</span><span class="w"> </span><span class="n">PRODUCT_REPO</span><span class="o">=</span><span class="n">openshift</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="n">dev</span>
+<span class="k">export</span><span class="w"> </span><span class="n">LOCAL_REPOSITORY</span><span class="o">=</span><span class="n">ocp4</span><span class="o">/</span><span class="n">openshift4</span>
+<span class="k">export</span><span class="w"> </span><span class="n">LOCAL_REGISTRY</span><span class="o">=</span><span class="mf">192.0</span><span class="o">.</span><span class="mf">2.100</span><span class="p">:</span><span class="mi">5000</span>
+<span class="k">export</span><span class="w"> </span><span class="n">ARCHITECTURE</span><span class="o">=</span><span class="n">x86_64</span>
+<span class="k">export</span><span class="w"> </span><span class="n">REMOVABLE_MEDIA_PATH</span><span class="o">=</span><span class="n">removable_media</span>
+</code></pre></div></td></tr></table></div></p>
 <p>If you want to simulate the removable media steps, create a directory to simulate removable media and export the variable:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="n">REMOVABLE_MEDIA_PATH</span><span class="o">=</span><span class="n">removable_media</span><span class="w"></span>
-<span class="n">mkdir</span><span class="w"> </span><span class="n">removable_media</span><span class="w"></span>
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="n">REMOVABLE_MEDIA_PATH</span><span class="o">=</span><span class="n">removable_media</span>
+<span class="n">mkdir</span><span class="w"> </span><span class="n">removable_media</span>
+</code></pre></div></td></tr></table></div></p>
 <p>Now, continue with the rest of the instructions from <a href="https://docs.openshift.com/container-platform/4.5/installing/install_config/installing-restricted-networks-preparations.html#installation-mirror-repository_installing-restricted-networks-preparations">https://docs.openshift.com/container-platform/4.5/installing/install_config/installing-restricted-networks-preparations.html#installation-mirror-repository_installing-restricted-networks-preparations</a></p>
 <p>For example:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc adm -a <span class="si">${</span><span class="nv">LOCAL_SECRET_JSON</span><span class="si">}</span> release mirror      --from<span class="o">=</span>quay.io/<span class="si">${</span><span class="nv">PRODUCT_REPO</span><span class="si">}</span>/<span class="si">${</span><span class="nv">RELEASE_NAME</span><span class="si">}</span>:<span class="si">${</span><span class="nv">OCP_RELEASE</span><span class="si">}</span>-<span class="si">${</span><span class="nv">ARCHITECTURE</span><span class="si">}</span>      --to<span class="o">=</span><span class="si">${</span><span class="nv">LOCAL_REGISTRY</span><span class="si">}</span>/<span class="si">${</span><span class="nv">LOCAL_REPOSITORY</span><span class="si">}</span>      --to-release-image<span class="o">=</span><span class="si">${</span><span class="nv">LOCAL_REGISTRY</span><span class="si">}</span>/<span class="si">${</span><span class="nv">LOCAL_REPOSITORY</span><span class="si">}</span>:<span class="si">${</span><span class="nv">OCP_RELEASE</span><span class="si">}</span>-<span class="si">${</span><span class="nv">ARCHITECTURE</span><span class="si">}</span>
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>$<span class="w"> </span>oc<span class="w"> </span>adm<span class="w"> </span>-a<span class="w"> </span><span class="si">${</span><span class="nv">LOCAL_SECRET_JSON</span><span class="si">}</span><span class="w"> </span>release<span class="w"> </span>mirror<span class="w">      </span>--from<span class="o">=</span>quay.io/<span class="si">${</span><span class="nv">PRODUCT_REPO</span><span class="si">}</span>/<span class="si">${</span><span class="nv">RELEASE_NAME</span><span class="si">}</span>:<span class="si">${</span><span class="nv">OCP_RELEASE</span><span class="si">}</span>-<span class="si">${</span><span class="nv">ARCHITECTURE</span><span class="si">}</span><span class="w">      </span>--to<span class="o">=</span><span class="si">${</span><span class="nv">LOCAL_REGISTRY</span><span class="si">}</span>/<span class="si">${</span><span class="nv">LOCAL_REPOSITORY</span><span class="si">}</span><span class="w">      </span>--to-release-image<span class="o">=</span><span class="si">${</span><span class="nv">LOCAL_REGISTRY</span><span class="si">}</span>/<span class="si">${</span><span class="nv">LOCAL_REPOSITORY</span><span class="si">}</span>:<span class="si">${</span><span class="nv">OCP_RELEASE</span><span class="si">}</span>-<span class="si">${</span><span class="nv">ARCHITECTURE</span><span class="si">}</span>
+</code></pre></div></td></tr></table></div></p>
 <p>After mirroring the images, the following instructions will be presented:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1927,41 +1808,40 @@ $ cat pull-secret-podman.json
 <span class="normal">27</span>
 <span class="normal">28</span>
 <span class="normal">29</span>
-<span class="normal">30</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="ss">(</span>...<span class="ss">)</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="ss">(</span>...<span class="ss">)</span>
 <span class="nv">Success</span>
-<span class="nv">Update</span> <span class="nv">image</span>:  <span class="mi">192</span>.<span class="mi">0</span>.<span class="mi">2</span>.<span class="mi">100</span>:<span class="mi">5000</span><span class="o">/</span><span class="nv">ocp4</span><span class="o">/</span><span class="nv">openshift4</span>:<span class="mi">4</span>.<span class="mi">5</span>.<span class="mi">9</span><span class="o">-</span><span class="nv">x86_64</span>
-<span class="nv">Mirror</span> <span class="nv">prefix</span>: <span class="mi">192</span>.<span class="mi">0</span>.<span class="mi">2</span>.<span class="mi">100</span>:<span class="mi">5000</span><span class="o">/</span><span class="nv">ocp4</span><span class="o">/</span><span class="nv">openshift4</span>
+<span class="nv">Update</span><span class="w"> </span><span class="nv">image</span>:<span class="w">  </span><span class="mi">192</span>.<span class="mi">0</span>.<span class="mi">2</span>.<span class="mi">100</span>:<span class="mi">5000</span><span class="o">/</span><span class="nv">ocp4</span><span class="o">/</span><span class="nv">openshift4</span>:<span class="mi">4</span>.<span class="mi">5</span>.<span class="mi">9</span><span class="o">-</span><span class="nv">x86_64</span>
+<span class="nv">Mirror</span><span class="w"> </span><span class="nv">prefix</span>:<span class="w"> </span><span class="mi">192</span>.<span class="mi">0</span>.<span class="mi">2</span>.<span class="mi">100</span>:<span class="mi">5000</span><span class="o">/</span><span class="nv">ocp4</span><span class="o">/</span><span class="nv">openshift4</span>
 
-<span class="nv">To</span> <span class="nv">use</span> <span class="nv">the</span> <span class="nv">new</span> <span class="nv">mirrored</span> <span class="nv">repository</span> <span class="nv">to</span> <span class="nv">install</span>, <span class="nv">add</span> <span class="nv">the</span> <span class="nv">following</span> <span class="nv">section</span> <span class="nv">to</span> <span class="nv">the</span> <span class="nv">install</span><span class="o">-</span><span class="nv">config</span>.<span class="nv">yaml</span>:
+<span class="nv">To</span><span class="w"> </span><span class="nv">use</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">new</span><span class="w"> </span><span class="nv">mirrored</span><span class="w"> </span><span class="nv">repository</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">install</span>,<span class="w"> </span><span class="nv">add</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">following</span><span class="w"> </span><span class="nv">section</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">install</span><span class="o">-</span><span class="nv">config</span>.<span class="nv">yaml</span>:
 
 <span class="nv">imageContentSources</span>:
-<span class="o">-</span> <span class="nv">mirrors</span>:
-  <span class="o">-</span> <span class="mi">192</span>.<span class="mi">0</span>.<span class="mi">2</span>.<span class="mi">100</span>:<span class="mi">5000</span><span class="o">/</span><span class="nv">ocp4</span><span class="o">/</span><span class="nv">openshift4</span>
-  <span class="nv">source</span>: <span class="nv">quay</span>.<span class="nv">io</span><span class="o">/</span><span class="nv">openshift</span><span class="o">-</span><span class="nv">release</span><span class="o">-</span><span class="nv">dev</span><span class="o">/</span><span class="nv">ocp</span><span class="o">-</span><span class="nv">release</span>
-<span class="o">-</span> <span class="nv">mirrors</span>:
-  <span class="o">-</span> <span class="mi">192</span>.<span class="mi">0</span>.<span class="mi">2</span>.<span class="mi">100</span>:<span class="mi">5000</span><span class="o">/</span><span class="nv">ocp4</span><span class="o">/</span><span class="nv">openshift4</span>
-  <span class="nv">source</span>: <span class="nv">quay</span>.<span class="nv">io</span><span class="o">/</span><span class="nv">openshift</span><span class="o">-</span><span class="nv">release</span><span class="o">-</span><span class="nv">dev</span><span class="o">/</span><span class="nv">ocp</span><span class="o">-</span><span class="nv">v4</span>.<span class="mi">0</span><span class="o">-</span><span class="nv">art</span><span class="o">-</span><span class="nv">dev</span>
+<span class="o">-</span><span class="w"> </span><span class="nv">mirrors</span>:
+<span class="w">  </span><span class="o">-</span><span class="w"> </span><span class="mi">192</span>.<span class="mi">0</span>.<span class="mi">2</span>.<span class="mi">100</span>:<span class="mi">5000</span><span class="o">/</span><span class="nv">ocp4</span><span class="o">/</span><span class="nv">openshift4</span>
+<span class="w">  </span><span class="nv">source</span>:<span class="w"> </span><span class="nv">quay</span>.<span class="nv">io</span><span class="o">/</span><span class="nv">openshift</span><span class="o">-</span><span class="nv">release</span><span class="o">-</span><span class="nv">dev</span><span class="o">/</span><span class="nv">ocp</span><span class="o">-</span><span class="nv">release</span>
+<span class="o">-</span><span class="w"> </span><span class="nv">mirrors</span>:
+<span class="w">  </span><span class="o">-</span><span class="w"> </span><span class="mi">192</span>.<span class="mi">0</span>.<span class="mi">2</span>.<span class="mi">100</span>:<span class="mi">5000</span><span class="o">/</span><span class="nv">ocp4</span><span class="o">/</span><span class="nv">openshift4</span>
+<span class="w">  </span><span class="nv">source</span>:<span class="w"> </span><span class="nv">quay</span>.<span class="nv">io</span><span class="o">/</span><span class="nv">openshift</span><span class="o">-</span><span class="nv">release</span><span class="o">-</span><span class="nv">dev</span><span class="o">/</span><span class="nv">ocp</span><span class="o">-</span><span class="nv">v4</span>.<span class="mi">0</span><span class="o">-</span><span class="nv">art</span><span class="o">-</span><span class="nv">dev</span>
 
 
-<span class="nv">To</span> <span class="nv">use</span> <span class="nv">the</span> <span class="nv">new</span> <span class="nv">mirrored</span> <span class="nv">repository</span> <span class="k">for</span> <span class="nv">upgrades</span>, <span class="nv">use</span> <span class="nv">the</span> <span class="nv">following</span> <span class="nv">to</span> <span class="nv">create</span> <span class="nv">an</span> <span class="nv">ImageContentSourcePolicy</span>:
+<span class="nv">To</span><span class="w"> </span><span class="nv">use</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">new</span><span class="w"> </span><span class="nv">mirrored</span><span class="w"> </span><span class="nv">repository</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">upgrades</span>,<span class="w"> </span><span class="nv">use</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">following</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">create</span><span class="w"> </span><span class="nv">an</span><span class="w"> </span><span class="nv">ImageContentSourcePolicy</span>:
 
-<span class="nv">apiVersion</span>: <span class="nv">operator</span>.<span class="nv">openshift</span>.<span class="nv">io</span><span class="o">/</span><span class="nv">v1alpha1</span>
-<span class="nv">kind</span>: <span class="nv">ImageContentSourcePolicy</span>
+<span class="nv">apiVersion</span>:<span class="w"> </span><span class="nv">operator</span>.<span class="nv">openshift</span>.<span class="nv">io</span><span class="o">/</span><span class="nv">v1alpha1</span>
+<span class="nv">kind</span>:<span class="w"> </span><span class="nv">ImageContentSourcePolicy</span>
 <span class="nv">metadata</span>:
-  <span class="nv">name</span>: <span class="nv">example</span>
+<span class="w">  </span><span class="nv">name</span>:<span class="w"> </span><span class="nv">example</span>
 <span class="nv">spec</span>:
-  <span class="nv">repositoryDigestMirrors</span>:
-  <span class="o">-</span> <span class="nv">mirrors</span>:
-    <span class="o">-</span> <span class="mi">192</span>.<span class="mi">0</span>.<span class="mi">2</span>.<span class="mi">100</span>:<span class="mi">5000</span><span class="o">/</span><span class="nv">ocp4</span><span class="o">/</span><span class="nv">openshift4</span>
-    <span class="nv">source</span>: <span class="nv">quay</span>.<span class="nv">io</span><span class="o">/</span><span class="nv">openshift</span><span class="o">-</span><span class="nv">release</span><span class="o">-</span><span class="nv">dev</span><span class="o">/</span><span class="nv">ocp</span><span class="o">-</span><span class="nv">release</span>
-  <span class="o">-</span> <span class="nv">mirrors</span>:
-    <span class="o">-</span> <span class="mi">192</span>.<span class="mi">0</span>.<span class="mi">2</span>.<span class="mi">100</span>:<span class="mi">5000</span><span class="o">/</span><span class="nv">ocp4</span><span class="o">/</span><span class="nv">openshift4</span>
-    <span class="nv">source</span>: <span class="nv">quay</span>.<span class="nv">io</span><span class="o">/</span><span class="nv">openshift</span><span class="o">-</span><span class="nv">release</span><span class="o">-</span><span class="nv">dev</span><span class="o">/</span><span class="nv">ocp</span><span class="o">-</span><span class="nv">v4</span>.<span class="mi">0</span><span class="o">-</span><span class="nv">art</span><span class="o">-</span><span class="nv">dev</span>
-</code></pre></div>
-</td></tr></table></p>
+<span class="w">  </span><span class="nv">repositoryDigestMirrors</span>:
+<span class="w">  </span><span class="o">-</span><span class="w"> </span><span class="nv">mirrors</span>:
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="mi">192</span>.<span class="mi">0</span>.<span class="mi">2</span>.<span class="mi">100</span>:<span class="mi">5000</span><span class="o">/</span><span class="nv">ocp4</span><span class="o">/</span><span class="nv">openshift4</span>
+<span class="w">    </span><span class="nv">source</span>:<span class="w"> </span><span class="nv">quay</span>.<span class="nv">io</span><span class="o">/</span><span class="nv">openshift</span><span class="o">-</span><span class="nv">release</span><span class="o">-</span><span class="nv">dev</span><span class="o">/</span><span class="nv">ocp</span><span class="o">-</span><span class="nv">release</span>
+<span class="w">  </span><span class="o">-</span><span class="w"> </span><span class="nv">mirrors</span>:
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="mi">192</span>.<span class="mi">0</span>.<span class="mi">2</span>.<span class="mi">100</span>:<span class="mi">5000</span><span class="o">/</span><span class="nv">ocp4</span><span class="o">/</span><span class="nv">openshift4</span>
+<span class="w">    </span><span class="nv">source</span>:<span class="w"> </span><span class="nv">quay</span>.<span class="nv">io</span><span class="o">/</span><span class="nv">openshift</span><span class="o">-</span><span class="nv">release</span><span class="o">-</span><span class="nv">dev</span><span class="o">/</span><span class="nv">ocp</span><span class="o">-</span><span class="nv">v4</span>.<span class="mi">0</span><span class="o">-</span><span class="nv">art</span><span class="o">-</span><span class="nv">dev</span>
+</code></pre></div></td></tr></table></div></p>
 <p>Make sure to save these instructions for later.</p>
 <p>Verify contents of the local registry:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">  1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">  1</span>
 <span class="normal">  2</span>
 <span class="normal">  3</span>
 <span class="normal">  4</span>
@@ -2088,22 +1968,22 @@ $ cat pull-secret-podman.json
 <span class="normal">125</span>
 <span class="normal">126</span>
 <span class="normal">127</span>
-<span class="normal">128</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="err">$</span> <span class="s s-Atom">curl</span> <span class="o">-</span><span class="s s-Atom">u</span> <span class="nn">root</span><span class="p">:</span><span class="s s-Atom">password</span> <span class="nn">https</span><span class="p">:</span><span class="o">//</span><span class="mf">192.0.2.100</span><span class="s s-Atom">:</span><span class="mi">5000</span><span class="o">/</span><span class="s s-Atom">v2/</span><span class="k">_</span><span class="s s-Atom">catalog</span> <span class="p">|</span> <span class="s s-Atom">jq</span>
+<span class="normal">128</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="err">$</span> <span class="s s-Atom">curl</span> <span class="o">-</span><span class="s s-Atom">u</span> <span class="s s-Atom">root</span><span class="p">:</span><span class="s s-Atom">password</span> <span class="s s-Atom">https</span><span class="p">:</span><span class="o">//</span><span class="mf">192.0.2.100</span><span class="o">:</span><span class="mi">5000</span><span class="o">/</span><span class="s s-Atom">v2/</span><span class="k">_</span><span class="s s-Atom">catalog</span> <span class="p">|</span> <span class="s s-Atom">jq</span>
   <span class="c1">% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current</span>
                                  <span class="nv">Dload</span>  <span class="nv">Upload</span>   <span class="nv">Total</span>   <span class="nv">Spent</span>    <span class="nv">Left</span>  <span class="nv">Speed</span>
 <span class="mi">100</span>    <span class="mi">37</span>  <span class="mi">100</span>    <span class="mi">37</span>    <span class="mi">0</span>     <span class="mi">0</span>   <span class="mi">1121</span>      <span class="mi">0</span> <span class="s s-Atom">--:--:--</span> <span class="s s-Atom">--:--:--</span> <span class="s s-Atom">--:--:--</span>  <span class="mi">1121</span>
 <span class="p">{</span>
-  <span class="s2">&quot;repositories&quot;</span><span class="s s-Atom">:</span> <span class="p">[</span>
+  <span class="s2">&quot;repositories&quot;</span><span class="o">:</span> <span class="p">[</span>
     <span class="s2">&quot;ocp4/openshift4&quot;</span>
   <span class="p">]</span>
 <span class="p">}</span>
-<span class="err">$</span> <span class="s s-Atom">curl</span> <span class="o">-</span><span class="s s-Atom">u</span> <span class="nn">root</span><span class="p">:</span><span class="s s-Atom">password</span> <span class="nn">https</span><span class="p">:</span><span class="o">//</span><span class="mf">192.0.2.100</span><span class="s s-Atom">:</span><span class="mi">5000</span><span class="o">/</span><span class="s s-Atom">v2</span><span class="o">/</span><span class="s s-Atom">ocp4</span><span class="o">/</span><span class="s s-Atom">openshift4</span><span class="o">/</span><span class="s s-Atom">tags</span><span class="o">/</span><span class="s s-Atom">list</span> <span class="p">|</span> <span class="s s-Atom">jq</span>
+<span class="err">$</span> <span class="s s-Atom">curl</span> <span class="o">-</span><span class="s s-Atom">u</span> <span class="s s-Atom">root</span><span class="p">:</span><span class="s s-Atom">password</span> <span class="s s-Atom">https</span><span class="p">:</span><span class="o">//</span><span class="mf">192.0.2.100</span><span class="o">:</span><span class="mi">5000</span><span class="o">/</span><span class="s s-Atom">v2</span><span class="o">/</span><span class="s s-Atom">ocp4</span><span class="o">/</span><span class="s s-Atom">openshift4</span><span class="o">/</span><span class="s s-Atom">tags</span><span class="o">/</span><span class="s s-Atom">list</span> <span class="p">|</span> <span class="s s-Atom">jq</span>
   <span class="c1">% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current</span>
                                  <span class="nv">Dload</span>  <span class="nv">Upload</span>   <span class="nv">Total</span>   <span class="nv">Spent</span>    <span class="nv">Left</span>  <span class="nv">Speed</span>
 <span class="mi">100</span>  <span class="mi">3241</span>  <span class="mi">100</span>  <span class="mi">3241</span>    <span class="mi">0</span>     <span class="mi">0</span>   <span class="mi">102</span><span class="s s-Atom">k</span>      <span class="mi">0</span> <span class="s s-Atom">--:--:--</span> <span class="s s-Atom">--:--:--</span> <span class="s s-Atom">--:--:--</span>  <span class="mi">102</span><span class="s s-Atom">k</span>
 <span class="p">{</span>
-  <span class="s2">&quot;name&quot;</span><span class="s s-Atom">:</span> <span class="s2">&quot;ocp4/openshift4&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;tags&quot;</span><span class="s s-Atom">:</span> <span class="p">[</span>
+  <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;ocp4/openshift4&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;tags&quot;</span><span class="o">:</span> <span class="p">[</span>
     <span class="s2">&quot;4.5.9-kube-storage-version-migrator&quot;</span><span class="p">,</span>
     <span class="s2">&quot;4.5.9-csi-snapshot-controller&quot;</span><span class="p">,</span>
     <span class="s2">&quot;4.5.9-cluster-kube-apiserver-operator&quot;</span><span class="p">,</span>
@@ -2216,23 +2096,20 @@ $ cat pull-secret-podman.json
     <span class="s2">&quot;4.5.9-cluster-network-operator&quot;</span>
   <span class="p">]</span>
 <span class="p">}</span>
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p>Now, extract the new <code class="highlight">openshift-install</code> command:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ oc adm -a <span class="si">${</span><span class="nv">LOCAL_SECRET_JSON</span><span class="si">}</span> release extract --command<span class="o">=</span>openshift-install <span class="s2">&quot;</span><span class="si">${</span><span class="nv">LOCAL_REGISTRY</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">LOCAL_REPOSITORY</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">OCP_RELEASE</span><span class="si">}</span><span class="s2">-</span><span class="si">${</span><span class="nv">ARCHITECTURE</span><span class="si">}</span><span class="s2"></span>
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>$<span class="w"> </span>oc<span class="w"> </span>adm<span class="w"> </span>-a<span class="w"> </span><span class="si">${</span><span class="nv">LOCAL_SECRET_JSON</span><span class="si">}</span><span class="w"> </span>release<span class="w"> </span>extract<span class="w"> </span>--command<span class="o">=</span>openshift-install<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">LOCAL_REGISTRY</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">LOCAL_REPOSITORY</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">OCP_RELEASE</span><span class="si">}</span><span class="s2">-</span><span class="si">${</span><span class="nv">ARCHITECTURE</span><span class="si">}</span>
+</code></pre></div></td></tr></table></div></p>
 <p>The resulting file can be found in the current working directory:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ ls openshift-install
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code>$<span class="w"> </span>ls<span class="w"> </span>openshift-install
 openshift-install
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <h2 id="installing-a-disconnected-cluster">Installing a disconnected cluster</h2>
 <p>Once the new openshift-install client was created, continue with the actual cluster installation.</p>
 <p>For example, on AWS, use <a href="https://docs.openshift.com/container-platform/4.5/installing/installing_aws/installing-restricted-networks-aws.html#installing-restricted-networks-aws">https://docs.openshift.com/container-platform/4.5/installing/installing_aws/installing-restricted-networks-aws.html#installing-restricted-networks-aws</a></p>
 <p>Create and then modify the <code class="highlight">install-config.yaml</code> file on the installation server. Make sure to add <code class="highlight">imageContentSources</code> (from the output of the last command) and also add the rootCA to the <code class="highlight">additionalTrustBundle</code>:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -2250,7 +2127,7 @@ openshift-install
 <span class="normal">16</span>
 <span class="normal">17</span>
 <span class="normal">18</span>
-<span class="normal">19</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">cat</span> <span class="n">install</span><span class="o">-</span><span class="n">config</span><span class="p">.</span><span class="n">yaml</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">cat</span> <span class="n">install</span><span class="o">-</span><span class="n">config</span><span class="p">.</span><span class="n">yaml</span>
 <span class="p">(...)</span>
 <span class="n">imageContentSources</span><span class="p">:</span>
 <span class="o">-</span> <span class="n">mirrors</span><span class="p">:</span>
@@ -2269,17 +2146,14 @@ openshift-install
   <span class="n">TFVS2yQvfvvYSzW6tQE9UphVIiXeQhGhl7</span><span class="o">+</span><span class="n">TQ1wgoHRQL3pZRwxX9PrT</span>
   <span class="o">-----</span><span class="kr">END</span> <span class="n">CERTIFICATE</span><span class="o">-----</span>
 <span class="p">(...)</span>
-</code></pre></div>
-</td></tr></table></p>
+</code></pre></div></td></tr></table></div></p>
 <p>Also, make sure to modify the <code class="highlight">pullSecret</code> section in install-config.yaml to include the credentials for the custom registry:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>pullSecret: &#39;(... contents of pull-secret-merged.json ...)&#39;
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>pullSecret: &#39;(... contents of pull-secret-merged.json ...)&#39;
+</code></pre></div></td></tr></table></div></p>
 <p>Steps for modifying <code class="highlight">install-config.yaml</code> can be found in <a href="https://docs.openshift.com/container-platform/4.5/installing/installing_aws/installing-restricted-networks-aws.html#installation-generate-aws-user-infra-install-config_installing-restricted-networks-aws">https://docs.openshift.com/container-platform/4.5/installing/installing_aws/installing-restricted-networks-aws.html#installation-generate-aws-user-infra-install-config_installing-restricted-networks-aws</a></p>
 <p>Follow any further steps from the restricted installation documentation. Finally, run the installation. Use the custom <code class="highlight">openshift-install</code> binary that was generated earlier:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code> ./openshift-install create cluster --dir=install-config/ --log-level=debug
-</code></pre></div>
-</td></tr></table></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code> ./openshift-install create cluster --dir=install-config/ --log-level=debug
+</code></pre></div></td></tr></table></div></p>
 
   <hr>
 <div class="md-source-file">
@@ -2292,54 +2166,25 @@ openshift-install
   </small>
 </div>
 
-              
-            </article>
-          </div>
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
         
       </main>
       
         <footer class="md-footer">
-  
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
-      
-        
-        <a href="../ingress-controller-sharding-on-separate-vip/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Ingress Controller Sharding on separate VIP" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Ingress Controller Sharding on separate VIP
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../istio-1.6-on-ocp.4.x/" class="md-footer__link md-footer__link--next" aria-label="Next: Istio 1.6 on OpenShift 4.x" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              Istio 1.6 on OpenShift 4.x
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -2361,10 +2206,11 @@ openshift-install
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.467223ff.min.js"></script>
+      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
       
     
   </body>

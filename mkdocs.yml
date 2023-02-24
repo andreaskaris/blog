@@ -1,4 +1,6 @@
 site_name: Andreas Karis Blog
+site_description: Andreas Karis' blog about anything Kubernetes, OpenShift, Linux and Networking
+site_url: https://andreaskaris.github.io/blog/
 theme: 
   name: material
   palette:
@@ -8,6 +10,7 @@ theme:
     - toc.integrate
 plugins:
   - git-revision-date-localized
+  - rss
 # hide:
 #   - toc
 markdown_extensions:

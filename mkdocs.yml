@@ -7,10 +7,22 @@ theme:
     primary: black
     accent: pink
   features:
-    - toc.integrate
+    - navigation.tabs
+    - navigation.sections
+    - navigation.prune
+    - navigation.top
+    - navigation.path
 plugins:
   - git-revision-date-localized
   - rss
+  - blogging:
+      dirs:
+        - ceph
+        - openshift
+        - linux
+        - networking
+        - openstack
+        - operator-sdk
 # hide:
 #   - toc
 markdown_extensions:

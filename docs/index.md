@@ -1,6 +1,8 @@
-Welcome to my blog. Use the menu on the left to browse around.
+---
+title: Big Data, Machine Learning, and Data Science
+---
 
-## Latest posts
+## Highlighted posts
 
 * [SCCs and mutating webhooks - a lesson learned](openshift/openshift-scc-with-mutating-webhooks) 2023-02-13
 * [Useful network commands](networking/useful-commands) ** updated 2023-01-17
@@ -11,3 +13,7 @@ Welcome to my blog. Use the menu on the left to browse around.
 * [Packet tracing with OVN](networking/packet-tracing-with-ovn.md) 2022-02-16
 * [Patch service.loadBalancer.ingress manually](openshift/patch-service-loadbalancer-ingress-ip) 2022-02-14
 * [Accept Source Routing](networking/accept-source-routing) 2022-01-21
+
+## Latest posts
+
+{{ blog_content }}

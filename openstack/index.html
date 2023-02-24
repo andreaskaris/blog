@@ -10,21 +10,21 @@
       
       
       
-        <link rel="canonical" href="https://andreaskaris.github.io/blog/openshift/patch-service-loadbalancer-ingress-ip/">
+        <link rel="canonical" href="https://andreaskaris.github.io/blog/openstack/">
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
     
     
       
-        <title>Patch status.loadBalancer.ingress IP manually - Andreas Karis Blog</title>
+        <title>Index - Andreas Karis Blog</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2d9f7617.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.2d9f7617.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.e6a45f82.min.css">
         
           
           
@@ -43,7 +43,7 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -66,11 +66,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#how-to-patch-statusloadbalanceringress-ips-manually-to-a-service-in-a-baremetal-deployment" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -81,7 +76,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Andreas Karis Blog" class="md-header__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
+    <a href=".." title="Andreas Karis Blog" class="md-header__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
@@ -100,7 +95,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Patch status.loadBalancer.ingress IP manually
+              Index
             
           </span>
         </div>
@@ -130,7 +125,7 @@
 
 
   <li class="md-tabs__item">
-    <a href="../.." class="md-tabs__link">
+    <a href=".." class="md-tabs__link">
       Home
     </a>
   </li>
@@ -145,7 +140,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../ceph/" class="md-tabs__link">
+      <a href="../ceph/" class="md-tabs__link">
         Ceph
       </a>
     </li>
@@ -161,7 +156,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../linux/" class="md-tabs__link">
+      <a href="../linux/" class="md-tabs__link">
         Linux
       </a>
     </li>
@@ -177,8 +172,24 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../networking/" class="md-tabs__link">
+      <a href="../networking/" class="md-tabs__link">
         Networking
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../openshift/" class="md-tabs__link">
+        OpenShift and Kubernetes
       </a>
     </li>
   
@@ -195,23 +206,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../" class="md-tabs__link md-tabs__link--active">
-        OpenShift and Kubernetes
-      </a>
-    </li>
-  
-
-      
-        
-  
-  
-
-
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="../../openstack/" class="md-tabs__link">
+      <a href="./" class="md-tabs__link md-tabs__link--active">
         OpenStack
       </a>
     </li>
@@ -227,7 +222,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../coding/" class="md-tabs__link">
+      <a href="../coding/" class="md-tabs__link">
         Coding
       </a>
     </li>
@@ -255,7 +250,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
+    <a href=".." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
@@ -274,7 +269,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         Home
       </a>
     </li>
@@ -308,7 +303,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../ceph/">Ceph</a>
+          <a href="../ceph/">Ceph</a>
           
             <label for="__nav_2">
               <span class="md-nav__icon md-icon"></span>
@@ -331,7 +326,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../ceph/ceph-manual-test/" class="md-nav__link">
+      <a href="../ceph/ceph-manual-test/" class="md-nav__link">
         Ceph manual test with qemu
       </a>
     </li>
@@ -392,7 +387,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../linux/">Linux</a>
+          <a href="../linux/">Linux</a>
           
             <label for="__nav_3">
               <span class="md-nav__icon md-icon"></span>
@@ -415,7 +410,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/cgroups/" class="md-nav__link">
+      <a href="../linux/cgroups/" class="md-nav__link">
         cgroups
       </a>
     </li>
@@ -429,7 +424,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/containers/" class="md-nav__link">
+      <a href="../linux/containers/" class="md-nav__link">
         Containers in Linux
       </a>
     </li>
@@ -443,7 +438,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/hugepages/" class="md-nav__link">
+      <a href="../linux/hugepages/" class="md-nav__link">
         Hugepages
       </a>
     </li>
@@ -457,7 +452,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/ipxe-boot-environment/" class="md-nav__link">
+      <a href="../linux/ipxe-boot-environment/" class="md-nav__link">
         iPXE boot environment on Fedora
       </a>
     </li>
@@ -471,7 +466,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/java-idrac-issues/" class="md-nav__link">
+      <a href="../linux/java-idrac-issues/" class="md-nav__link">
         Java Idrac Issues
       </a>
     </li>
@@ -485,7 +480,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/meson/" class="md-nav__link">
+      <a href="../linux/meson/" class="md-nav__link">
         meson
       </a>
     </li>
@@ -499,7 +494,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/namespaces/" class="md-nav__link">
+      <a href="../linux/namespaces/" class="md-nav__link">
         namespaces
       </a>
     </li>
@@ -513,7 +508,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/old_java_version_with_xorgs_in_container/" class="md-nav__link">
+      <a href="../linux/old_java_version_with_xorgs_in_container/" class="md-nav__link">
         Old Java inside a container with xorgs
       </a>
     </li>
@@ -527,7 +522,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/get-process-cgroup-info-and-limits/" class="md-nav__link">
+      <a href="../linux/get-process-cgroup-info-and-limits/" class="md-nav__link">
         Retrieving process cgroup resource usage and limit info
       </a>
     </li>
@@ -541,7 +536,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/libvirt-uefi-without-secureboot/" class="md-nav__link">
+      <a href="../linux/libvirt-uefi-without-secureboot/" class="md-nav__link">
         RHEL Booting a virtual machine with UEFI but without secure boot
       </a>
     </li>
@@ -555,7 +550,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/setting-journalctl-limits/" class="md-nav__link">
+      <a href="../linux/setting-journalctl-limits/" class="md-nav__link">
         Setting journalctl limits
       </a>
     </li>
@@ -628,7 +623,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../networking/">Networking</a>
+          <a href="../networking/">Networking</a>
           
             <label for="__nav_4">
               <span class="md-nav__icon md-icon"></span>
@@ -651,7 +646,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../networking/accept-source-routing/" class="md-nav__link">
+      <a href="../networking/accept-source-routing/" class="md-nav__link">
         Accept Source Routing
       </a>
     </li>
@@ -665,7 +660,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../networking/arp_and_the_neighbor_table/" class="md-nav__link">
+      <a href="../networking/arp_and_the_neighbor_table/" class="md-nav__link">
         ARP and the Neighbor table
       </a>
     </li>
@@ -679,7 +674,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../networking/bpf-and-tcpdump/" class="md-nav__link">
+      <a href="../networking/bpf-and-tcpdump/" class="md-nav__link">
         BPF and tcpdump
       </a>
     </li>
@@ -693,7 +688,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../networking/bonding_in_linux/" class="md-nav__link">
+      <a href="../networking/bonding_in_linux/" class="md-nav__link">
         Bonding in Linux
       </a>
     </li>
@@ -707,7 +702,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../networking/juniper_x520/" class="md-nav__link">
+      <a href="../networking/juniper_x520/" class="md-nav__link">
         Configure Juniper switch
       </a>
     </li>
@@ -721,7 +716,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../networking/haproxy-and-h2c/" class="md-nav__link">
+      <a href="../networking/haproxy-and-h2c/" class="md-nav__link">
         haproxy and HTTP/2
       </a>
     </li>
@@ -735,7 +730,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../networking/install-openvswitch-on-rocky/" class="md-nav__link">
+      <a href="../networking/install-openvswitch-on-rocky/" class="md-nav__link">
         Install Open vSwitch on Rocky Linux 8
       </a>
     </li>
@@ -749,7 +744,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../networking/geneve_tunneling/" class="md-nav__link">
+      <a href="../networking/geneve_tunneling/" class="md-nav__link">
         Geneve tunneling
       </a>
     </li>
@@ -763,7 +758,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../networking/netlink/" class="md-nav__link">
+      <a href="../networking/netlink/" class="md-nav__link">
         Netlink
       </a>
     </li>
@@ -777,7 +772,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../networking/ovn_standalone_on_fedora/" class="md-nav__link">
+      <a href="../networking/ovn_standalone_on_fedora/" class="md-nav__link">
         OVN standalone on Fedora
       </a>
     </li>
@@ -791,7 +786,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../networking/ovs_recirculation/" class="md-nav__link">
+      <a href="../networking/ovs_recirculation/" class="md-nav__link">
         OVS packet recirculation
       </a>
     </li>
@@ -805,7 +800,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../networking/ovs-vxlan-tunnels-and-dscp/" class="md-nav__link">
+      <a href="../networking/ovs-vxlan-tunnels-and-dscp/" class="md-nav__link">
         OVS VXLAN tunnels and DSCP
       </a>
     </li>
@@ -819,7 +814,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../networking/ovs_with_gdb/" class="md-nav__link">
+      <a href="../networking/ovs_with_gdb/" class="md-nav__link">
         OVS with GDB
       </a>
     </li>
@@ -833,7 +828,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../networking/packet-tracing-with-ovn/" class="md-nav__link">
+      <a href="../networking/packet-tracing-with-ovn/" class="md-nav__link">
         Packet tracing with OVN
       </a>
     </li>
@@ -847,7 +842,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../networking/sctp/" class="md-nav__link">
+      <a href="../networking/sctp/" class="md-nav__link">
         SCTP
       </a>
     </li>
@@ -861,7 +856,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../networking/useful-commands/" class="md-nav__link">
+      <a href="../networking/useful-commands/" class="md-nav__link">
         Useful commands
       </a>
     </li>
@@ -875,8 +870,584 @@
   
   
     <li class="md-nav__item">
-      <a href="../../networking/wireguard/" class="md-nav__link">
+      <a href="../networking/wireguard/" class="md-nav__link">
         Wireguard
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../openshift/">OpenShift and Kubernetes</a>
+          
+            <label for="__nav_5">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="OpenShift and Kubernetes" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          OpenShift and Kubernetes
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/alertmanager/" class="md-nav__link">
+        AlertManager
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/analyzing-cni/" class="md-nav__link">
+        Analyzing CNI calls
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/ocp-custom-release-image/" class="md-nav__link">
+        Building custom release images for OpenShift
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/cpu-manager-with-custom-machine-config-pool/" class="md-nav__link">
+        CPU manager with custom MachineConfigPool
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/crio-conmon-runc/" class="md-nav__link">
+        Crio vs conmon vs runc
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/etcd_perf/" class="md-nav__link">
+        Etcd Performance tests
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/get-vs-list-api-calls/" class="md-nav__link">
+        Get vs List API Calls
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/openshift_httpbin_tshark_sidecar/" class="md-nav__link">
+        Httpbin tshark sidecar container
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/kubernetes_cluster/" class="md-nav__link">
+        Hints for installing kubernetes on Fedora
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/HPA/" class="md-nav__link">
+        Horizontal Pod Autoscaler
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/how_rhcos_updates_work/" class="md-nav__link">
+        How RHCOS updates work
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/ocp4-infra-nodes-with-machineset-without-worker-label/" class="md-nav__link">
+        Infra nodes with MachineSets without worker label
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/ingresscontroller_router_sharding_ocp_on_osp/" class="md-nav__link">
+        Ingress Controller Sharding OCP on OSP
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/ingress-controller-sharding-on-separate-vip/" class="md-nav__link">
+        Ingress Controller Sharding on separate VIP
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/openshift_mirror_registry/" class="md-nav__link">
+        Installing a cluster with a mirror registry
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/istio-1.6-on-ocp.4.x/" class="md-nav__link">
+        Istio 1.6 on OpenShift 4.x
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/kata/" class="md-nav__link">
+        kata containers and the kata operatora
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/ovn-kind-hybrid-overlay/" class="md-nav__link">
+        Kind with OVN Kubernetes Hybrid Overlay
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/kind-with-private-registry/" class="md-nav__link">
+        Kind with private registry
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/list_docker_registry_containers/" class="md-nav__link">
+        List container images in registry
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/mounting-container-image/" class="md-nav__link">
+        Mount a container image
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="install_openshift_on_openstack/" class="md-nav__link">
+        OpenShift on OpenStack
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/patch-service-loadbalancer-ingress-ip/" class="md-nav__link">
+        Patch status.loadBalancer.ingress IP manually
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/private-registry/" class="md-nav__link">
+        Private container registry
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/proxy-ocp-4.5/" class="md-nav__link">
+        Proxy OCP 4.5
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/scc/" class="md-nav__link">
+        Security Context Constraints (SCC)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/openshift-scc-with-mutating-webhooks/" class="md-nav__link">
+        SCCs and mutating webhooks - a lesson learned
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/fix-selinux-labels-coreos/" class="md-nav__link">
+        SElinux labels fix
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../networking/sctp/" class="md-nav__link">
+        SCTP
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/openshift_troubleshooting_etcd_state/" class="md-nav__link">
+        Troubleshooting etcd state
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/useful-ocp-sdn-commands/" class="md-nav__link">
+        Useful commands for OpenShift SDN
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift/troubleshooting_openshift_on_openstack_worker_creation/" class="md-nav__link">
+        Troubleshooting OpenShift on OpenStack worker creation
       </a>
     </li>
   
@@ -902,620 +1473,7 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
-      
-      
-      
-        
-          
-            
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-      
-      
-        
-        
-        <div class="md-nav__link md-nav__link--index ">
-          <a href="../">OpenShift and Kubernetes</a>
-          
-            <label for="__nav_5">
-              <span class="md-nav__icon md-icon"></span>
-            </label>
-          
-        </div>
-      
-      <nav class="md-nav" aria-label="OpenShift and Kubernetes" data-md-level="1">
-        <label class="md-nav__title" for="__nav_5">
-          <span class="md-nav__icon md-icon"></span>
-          OpenShift and Kubernetes
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../alertmanager/" class="md-nav__link">
-        AlertManager
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../analyzing-cni/" class="md-nav__link">
-        Analyzing CNI calls
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ocp-custom-release-image/" class="md-nav__link">
-        Building custom release images for OpenShift
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../cpu-manager-with-custom-machine-config-pool/" class="md-nav__link">
-        CPU manager with custom MachineConfigPool
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../crio-conmon-runc/" class="md-nav__link">
-        Crio vs conmon vs runc
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../etcd_perf/" class="md-nav__link">
-        Etcd Performance tests
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../get-vs-list-api-calls/" class="md-nav__link">
-        Get vs List API Calls
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../openshift_httpbin_tshark_sidecar/" class="md-nav__link">
-        Httpbin tshark sidecar container
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../kubernetes_cluster/" class="md-nav__link">
-        Hints for installing kubernetes on Fedora
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../HPA/" class="md-nav__link">
-        Horizontal Pod Autoscaler
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../how_rhcos_updates_work/" class="md-nav__link">
-        How RHCOS updates work
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ocp4-infra-nodes-with-machineset-without-worker-label/" class="md-nav__link">
-        Infra nodes with MachineSets without worker label
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ingresscontroller_router_sharding_ocp_on_osp/" class="md-nav__link">
-        Ingress Controller Sharding OCP on OSP
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ingress-controller-sharding-on-separate-vip/" class="md-nav__link">
-        Ingress Controller Sharding on separate VIP
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../openshift_mirror_registry/" class="md-nav__link">
-        Installing a cluster with a mirror registry
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../istio-1.6-on-ocp.4.x/" class="md-nav__link">
-        Istio 1.6 on OpenShift 4.x
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../kata/" class="md-nav__link">
-        kata containers and the kata operatora
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ovn-kind-hybrid-overlay/" class="md-nav__link">
-        Kind with OVN Kubernetes Hybrid Overlay
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../kind-with-private-registry/" class="md-nav__link">
-        Kind with private registry
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../list_docker_registry_containers/" class="md-nav__link">
-        List container images in registry
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../mounting-container-image/" class="md-nav__link">
-        Mount a container image
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../openstack/install_openshift_on_openstack/" class="md-nav__link">
-        OpenShift on OpenStack
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-    
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Patch status.loadBalancer.ingress IP manually
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        Patch status.loadBalancer.ingress IP manually
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#how-to-patch-statusloadbalanceringress-ips-manually-to-a-service-in-a-baremetal-deployment" class="md-nav__link">
-    How to patch status.loadBalancer.ingress IPs manually to a service in a baremetal deployment?
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../private-registry/" class="md-nav__link">
-        Private container registry
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../proxy-ocp-4.5/" class="md-nav__link">
-        Proxy OCP 4.5
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../scc/" class="md-nav__link">
-        Security Context Constraints (SCC)
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../openshift-scc-with-mutating-webhooks/" class="md-nav__link">
-        SCCs and mutating webhooks - a lesson learned
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../fix-selinux-labels-coreos/" class="md-nav__link">
-        SElinux labels fix
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../networking/sctp/" class="md-nav__link">
-        SCTP
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../openshift_troubleshooting_etcd_state/" class="md-nav__link">
-        Troubleshooting etcd state
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../useful-ocp-commands/" class="md-nav__link">
-        Useful commands for OpenShift
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../useful-ocp-sdn-commands/" class="md-nav__link">
-        Useful commands for OpenShift SDN
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../troubleshooting_openshift_on_openstack_worker_creation/" class="md-nav__link">
-        Troubleshooting OpenShift on OpenStack worker creation
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" checked>
       
       
       
@@ -1532,8 +1490,8 @@
       
         
         
-        <div class="md-nav__link md-nav__link--index ">
-          <a href="../../openstack/">OpenStack</a>
+        <div class="md-nav__link md-nav__link--index md-nav__link--active">
+          <a href="./">OpenStack</a>
           
             <label for="__nav_6">
               <span class="md-nav__icon md-icon"></span>
@@ -1556,7 +1514,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openstack/reattach_to_running_deployment/" class="md-nav__link">
+      <a href="reattach_to_running_deployment/" class="md-nav__link">
         Reattach to running deployment
       </a>
     </li>
@@ -1570,7 +1528,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openstack/using_clouds_yaml/" class="md-nav__link">
+      <a href="using_clouds_yaml/" class="md-nav__link">
         Using clouds.yaml
       </a>
     </li>
@@ -1615,7 +1573,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../coding/">Coding</a>
+          <a href="../coding/">Coding</a>
           
             <label for="__nav_7">
               <span class="md-nav__icon md-icon"></span>
@@ -1638,7 +1596,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../coding/operator-sdk-reconciliation/" class="md-nav__link">
+      <a href="../coding/operator-sdk-reconciliation/" class="md-nav__link">
         Controller Reconciliation
       </a>
     </li>
@@ -1652,7 +1610,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../coding/vimrc/" class="md-nav__link">
+      <a href="../coding/vimrc/" class="md-nav__link">
         My vimrc
       </a>
     </li>
@@ -1666,7 +1624,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../coding/golang-ip-conversion/" class="md-nav__link">
+      <a href="../coding/golang-ip-conversion/" class="md-nav__link">
         Golang IP address conversion
       </a>
     </li>
@@ -1687,37 +1645,6 @@
               </div>
             
             
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#how-to-patch-statusloadbalanceringress-ips-manually-to-a-service-in-a-baremetal-deployment" class="md-nav__link">
-    How to patch status.loadBalancer.ingress IPs manually to a service in a baremetal deployment?
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
           
           <div class="md-content" data-md-component="content">
             <article class="md-content__inner md-typeset">
@@ -1725,89 +1652,248 @@
                 
 
 
-  <h1>Patch status.loadBalancer.ingress IP manually</h1>
+  <h1>Index</h1>
 
-<h2 id="how-to-patch-statusloadbalanceringress-ips-manually-to-a-service-in-a-baremetal-deployment">How to patch status.loadBalancer.ingress IPs manually to a service in a baremetal deployment?</h2>
-<p>For testing purposes, you might want to modify the status.loadBalancer.ingress of a service directly.</p>
-<p>Here's how you can do this. First, create a service:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>cat <span class="s">&lt;&lt;&#39;EOF&#39; &gt; myservice.yaml</span>
-<span class="s">apiVersion: v1</span>
-<span class="s">kind: Service</span>
-<span class="s">metadata:</span>
-<span class="s">  name: myservice</span>
-<span class="s">spec:</span>
-<span class="s">  ports:</span>
-<span class="s">  - name: http</span>
-<span class="s">    port: 8888</span>
-<span class="s">    protocol: TCP</span>
-<span class="s">    targetPort: 80</span>
-<span class="s">  type: LoadBalancer</span>
-<span class="s">  selector:</span>
-<span class="s">    app: nginx-app</span>
-<span class="s">EOF</span>
-oc apply -f myservice.yaml
-</code></pre></div>
-</td></tr></table></p>
-<p>Then, open a proxy session:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>oc proxy
-</code></pre></div>
-</td></tr></table></p>
-<p>Then, open another CLI session and patch the service's status field:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>curl -XPATCH  -H <span class="s2">&quot;Accept: application/json&quot;</span> -H <span class="s2">&quot;Content-Type: application/json-patch+json&quot;</span>  --data <span class="s1">&#39;[{&quot;op&quot;: &quot;add&quot;, &quot;path&quot;: &quot;/status/loadBalancer/ingress&quot;, &quot;value&quot;:[{&quot;ip&quot;: &quot;172.18.0.13&quot;}]}]&#39;</span> http://localhost:8001/api/v1/namespaces/default/services/myservice/status
-</code></pre></div>
-</td></tr></table></p>
-<p>Now, verify:
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">[</span>root@ovnkubernetes ~<span class="o">]</span><span class="c1"># oc get svc  myservice -o yaml | tail -n 10</span>
-    protocol: TCP
-    targetPort: <span class="m">80</span>
-  selector:
-    app: nginx-app
-  sessionAffinity: None
-  type: LoadBalancer
-status:
-  loadBalancer:
-    ingress:
-    - ip: <span class="m">172</span>.18.0.13
-<span class="o">[</span>root@ovnkubernetes ~<span class="o">]</span><span class="c1"># oc get svc</span>
-NAME             TYPE           CLUSTER-IP      EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>          AGE
-myservice   LoadBalancer   <span class="m">10</span>.96.105.206   <span class="m">172</span>.18.0.13   <span class="m">8888</span>:32165/TCP   12s
-</code></pre></div>
-</td></tr></table></p>
+<p>
+
+
+<style>
+    .md-typeset .blog-post:first-of-type h3 {
+        margin-top: 0;
+    }
+
+    .md-typeset .blog-post-title {
+        margin-bottom: 0;
+    }
+
+    .md-typeset .blog-post-extra {
+        color: var(--md-default-fg-color--light);
+    }
+
+    .md-typeset .blog-center {
+        text-align: center;
+    }
+
+    .md-typeset .blog-pagination {
+        display: inline-block;
+        margin-top: 20px;
+    }
+
+    .md-typeset .blog-pagination a {
+        color: var(--md-typeset-color);
+        float: left;
+        padding: .25em 1em;
+        text-decoration: none;
+        border-radius: 1em;
+        margin-left: .25em;
+        margin-right: .25em;
+        transition: all .15s ease-in-out;
+    }
+
+    .md-typeset .blog-pagination a.active {
+        background-color: var(--md-typeset-a-color);
+        color: white;
+        font-weight: bold;
+    }
+
+    .md-typeset .blog-pagination a:hover:not(.active) {
+        background-color: #dddddda1;
+    }
+
+    .md-typeset .blog-hidden {
+        display: none;
+    }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <style>
+    .md-typeset .blogging-tags-grid {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 5px;
+    }
+
+    .md-typeset .blogging-tag {
+        color: var(--md-typeset-color);
+        background-color: var(--md-typeset-code-color);
+    }
+
+    .md-typeset .blogging-tag code {
+        border-radius: 5px;
+    }
+</style>
+
+    
+
+
+
+
+
+
+
+
+<div class="pages">
+    
+        
+        <div class="page" id="page1">
+
+            
+                
+                
+                
+                
+
+                
+                
+
+                
+                
+                    
+                
+                
+                <div class="blog-post">
+    <h3 class="blog-post-title">
+        <a class="link" href="https://andreaskaris.github.io/blog/openstack/">Index</a>
+    </h3>
+    
+    <p class="blog-post-description">
+        
+    </p>
+    <div class="blog-post-extra">
+        Published at: 2/24/23, 12:54 PM
+    </div>
+    <hr />
+</div>
+
+                
+            
+                
+                
+                
+                
+
+                
+                
+
+                
+                
+                    
+                
+                
+                <div class="blog-post">
+    <h3 class="blog-post-title">
+        <a class="link" href="https://andreaskaris.github.io/blog/openstack/install_openshift_on_openstack/">OpenShift on OpenStack</a>
+    </h3>
+    
+    <p class="blog-post-description">
+        
+    </p>
+    <div class="blog-post-extra">
+        Published at: 12/9/20, 4:20 PM
+    </div>
+    <hr />
+</div>
+
+                
+            
+                
+                
+                
+                
+
+                
+                
+
+                
+                
+                    
+                
+                
+                <div class="blog-post">
+    <h3 class="blog-post-title">
+        <a class="link" href="https://andreaskaris.github.io/blog/openstack/reattach_to_running_deployment/">Reattach to running deployment</a>
+    </h3>
+    
+    <p class="blog-post-description">
+        
+    </p>
+    <div class="blog-post-extra">
+        Published at: 9/13/20, 5:39 PM
+    </div>
+    <hr />
+</div>
+
+                
+            
+                
+                
+                
+                
+
+                
+                
+
+                
+                
+                    
+                
+                
+                <div class="blog-post">
+    <h3 class="blog-post-title">
+        <a class="link" href="https://andreaskaris.github.io/blog/openstack/using_clouds_yaml/">Using clouds.yaml</a>
+    </h3>
+    
+    <p class="blog-post-description">
+        
+    </p>
+    <div class="blog-post-extra">
+        Published at: 9/13/20, 5:39 PM
+    </div>
+    <hr />
+</div>
+
+                
+            
+        </div>
+    
+</div>
+
+<div class="blog-center blog-hidden">
+    <div class="blog-pagination " id="blog-pagination">
+        
+            
+                
+            
+            <a class="page-number" href="">1</a>
+        
+    </div>
+    
+        <div>Total <b>4</b> posts.</div>
+    
+</div></p>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">February 16, 2022</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">February 24, 2023</span>
       
     
   </small>
@@ -1830,7 +1916,7 @@ myservice   LoadBalancer   <span class="m">10</span>.96.105.206   <span class="m
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../../openstack/install_openshift_on_openstack/" class="md-footer__link md-footer__link--prev" aria-label="Previous: OpenShift on OpenStack" rel="prev">
+        <a href="../openshift/troubleshooting_openshift_on_openstack_worker_creation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Troubleshooting OpenShift on OpenStack worker creation" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -1839,20 +1925,20 @@ myservice   LoadBalancer   <span class="m">10</span>.96.105.206   <span class="m
               <span class="md-footer__direction">
                 Previous
               </span>
-              OpenShift on OpenStack
+              Troubleshooting OpenShift on OpenStack worker creation
             </div>
           </div>
         </a>
       
       
         
-        <a href="../private-registry/" class="md-footer__link md-footer__link--next" aria-label="Next: Private container registry" rel="next">
+        <a href="reattach_to_running_deployment/" class="md-footer__link md-footer__link--next" aria-label="Next: Reattach to running deployment" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Private container registry
+              Reattach to running deployment
             </div>
           </div>
           <div class="md-footer__button md-icon">
@@ -1882,11 +1968,68 @@ myservice   LoadBalancer   <span class="m">10</span>.96.105.206   <span class="m
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.467223ff.min.js"></script>
+      <script src="../assets/javascripts/bundle.467223ff.min.js"></script>
       
     
   </body>
-</html>
+</html><script>var currentPage = 0
+const lastComponent = window.location.href.split("/").slice(-1).pop()
+
+if (lastComponent && lastComponent.slice(0, 7) == "#blog-p") {
+  const page = parseInt(lastComponent.slice(7))
+  if (page) {
+    currentPage = page - 1
+  }
+}
+
+function scrollToTop() {
+  setTimeout(function () {
+    window.scrollTo(0, 0);
+  }, 100);
+}
+
+var pagination = document.getElementById("blog-pagination");
+if (pagination) {
+  var links = pagination.getElementsByClassName("page-number");
+  if (links.length) {
+    for (var i = 0; i < links.length; i++) {
+      // Toggle pagination highlight
+      links[i].addEventListener("click", function () {
+        var current = pagination.getElementsByClassName("active");
+        if (current.length) {
+          current[0].className = current[0].className.replace(
+            " active", ""
+          );
+        }
+        this.className += " active";
+
+        // Togglg visibility of pages
+        const destPage = parseInt(this.textContent)
+        var pages = document.getElementsByClassName("page")
+        if (destPage && pages.length) {
+          for (var j = 0; j < pages.length; j++) {
+            const pageId = parseInt(pages[j].id.replace("page", ""))
+            if (pageId != destPage) {
+              // This is not the destination page
+              if (!pages[j].className.includes("blog-hidden")) {
+                pages[j].className += " blog-hidden"
+              }
+            } else {
+              // This is the destination page
+              pages[j].className = pages[j].className.replace(" blog-hidden", "")
+            }
+          }
+          scrollToTop();
+        }
+      });
+    }
+    links[currentPage].className += " active"
+    if (currentPage > 0) {
+      links[currentPage].click();
+    }
+  }
+}
+</script>

@@ -14,7 +14,7 @@ The kubelet supports the following filesystem partitions:
 Kubelet auto-discovers these filesystems and ignores other filesystems. Kubelet does not support
 other configurations.
 ~~~
-> [https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-policy](https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#eviction-policy)
+> [https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction](https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction)
 
 Whenever both `/var/lib/kubelet` and `/var/lib/containers` reside on the same file system, metrics for nodefs and imagefs
 will be the same.

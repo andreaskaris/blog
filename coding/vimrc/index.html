@@ -19,7 +19,7 @@
         <link rel="next" href="../golang-ip-conversion/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.14">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.3">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.c4a75a56.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -982,6 +982,8 @@
         
           
         
+          
+        
       
       
         
@@ -1152,6 +1154,20 @@
     <li class="md-nav__item">
       <a href="../../openshift/how_rhcos_updates_work/" class="md-nav__link">
         How RHCOS updates work
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/kubelet-filesystems/" class="md-nav__link">
+        How kubelet monitors filesystems
       </a>
     </li>
   
@@ -1694,131 +1710,105 @@
 
 
 <h1 id="my-vimrc">My vimrc</h1>
-<p>Below my configuration for vim which I use for my daily go development:
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">  1</span>
-<span class="normal">  2</span>
-<span class="normal">  3</span>
-<span class="normal">  4</span>
-<span class="normal">  5</span>
-<span class="normal">  6</span>
-<span class="normal">  7</span>
-<span class="normal">  8</span>
-<span class="normal">  9</span>
-<span class="normal"> 10</span>
-<span class="normal"> 11</span>
-<span class="normal"> 12</span>
-<span class="normal"> 13</span>
-<span class="normal"> 14</span>
-<span class="normal"> 15</span>
-<span class="normal"> 16</span>
-<span class="normal"> 17</span>
-<span class="normal"> 18</span>
-<span class="normal"> 19</span>
-<span class="normal"> 20</span>
-<span class="normal"> 21</span>
-<span class="normal"> 22</span>
-<span class="normal"> 23</span>
-<span class="normal"> 24</span>
-<span class="normal"> 25</span>
-<span class="normal"> 26</span>
-<span class="normal"> 27</span>
-<span class="normal"> 28</span>
-<span class="normal"> 29</span>
-<span class="normal"> 30</span>
-<span class="normal"> 31</span>
-<span class="normal"> 32</span>
-<span class="normal"> 33</span>
-<span class="normal"> 34</span>
-<span class="normal"> 35</span>
-<span class="normal"> 36</span>
-<span class="normal"> 37</span>
-<span class="normal"> 38</span>
-<span class="normal"> 39</span>
-<span class="normal"> 40</span>
-<span class="normal"> 41</span>
-<span class="normal"> 42</span>
-<span class="normal"> 43</span>
-<span class="normal"> 44</span>
-<span class="normal"> 45</span>
-<span class="normal"> 46</span>
-<span class="normal"> 47</span>
-<span class="normal"> 48</span>
-<span class="normal"> 49</span>
-<span class="normal"> 50</span>
-<span class="normal"> 51</span>
-<span class="normal"> 52</span>
-<span class="normal"> 53</span>
-<span class="normal"> 54</span>
-<span class="normal"> 55</span>
-<span class="normal"> 56</span>
-<span class="normal"> 57</span>
-<span class="normal"> 58</span>
-<span class="normal"> 59</span>
-<span class="normal"> 60</span>
-<span class="normal"> 61</span>
-<span class="normal"> 62</span>
-<span class="normal"> 63</span>
-<span class="normal"> 64</span>
-<span class="normal"> 65</span>
-<span class="normal"> 66</span>
-<span class="normal"> 67</span>
-<span class="normal"> 68</span>
-<span class="normal"> 69</span>
-<span class="normal"> 70</span>
-<span class="normal"> 71</span>
-<span class="normal"> 72</span>
-<span class="normal"> 73</span>
-<span class="normal"> 74</span>
-<span class="normal"> 75</span>
-<span class="normal"> 76</span>
-<span class="normal"> 77</span>
-<span class="normal"> 78</span>
-<span class="normal"> 79</span>
-<span class="normal"> 80</span>
-<span class="normal"> 81</span>
-<span class="normal"> 82</span>
-<span class="normal"> 83</span>
-<span class="normal"> 84</span>
-<span class="normal"> 85</span>
-<span class="normal"> 86</span>
-<span class="normal"> 87</span>
-<span class="normal"> 88</span>
-<span class="normal"> 89</span>
-<span class="normal"> 90</span>
-<span class="normal"> 91</span>
-<span class="normal"> 92</span>
-<span class="normal"> 93</span>
-<span class="normal"> 94</span>
-<span class="normal"> 95</span>
-<span class="normal"> 96</span>
-<span class="normal"> 97</span>
-<span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">autocmd</span><span class="w"> </span><span class="n">BufNewFile</span><span class="p">,</span><span class="n">BufRead</span><span class="w"> </span><span class="o">*</span><span class="p">.</span><span class="k">go</span><span class="w"> </span><span class="n">setf</span><span class="w"> </span><span class="k">go</span>
+<p>Below my configuration for vim which I use for go and python development:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="s1">&#39;EOF&#39;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">~/</span><span class="p">.</span><span class="n">vimrc</span>
 <span class="k">call</span><span class="w"> </span><span class="n">plug#begin</span><span class="p">()</span>
-<span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;vim-airline/vim-airline&#39;</span>
-<span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;govim/govim&#39;</span><span class="p">,</span><span class="w"> </span><span class="err">{</span><span class="w"> </span><span class="s1">&#39;for&#39;</span><span class="err">:</span><span class="w"> </span><span class="s1">&#39;go&#39;</span><span class="w"> </span><span class="err">}</span>
-<span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;preservim/nerdtree&#39;</span>
-<span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;jistr/vim-nerdtree-tabs&#39;</span>
-<span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;tpope/vim-fugitive&#39;</span>
-<span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;jiangmiao/auto-pairs&#39;</span>
-<span class="k">if</span><span class="w"> </span><span class="n">has</span><span class="p">(</span><span class="s1">&#39;nvim&#39;</span><span class="p">)</span>
-<span class="w">  </span><span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;Shougo/deoplete.nvim&#39;</span><span class="p">,</span><span class="w"> </span><span class="err">{</span><span class="w"> </span><span class="s1">&#39;do&#39;</span><span class="err">:</span><span class="w"> </span><span class="s1">&#39;:UpdateRemotePlugins&#39;</span><span class="w"> </span><span class="err">}</span>
-<span class="k">else</span>
-<span class="w">  </span><span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;Shougo/deoplete.nvim&#39;</span>
-<span class="w">  </span><span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;roxma/nvim-yarp&#39;</span>
-<span class="w">  </span><span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;roxma/vim-hug-neovim-rpc&#39;</span>
-<span class="n">endif</span>
-<span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;jnurmine/Zenburn&#39;</span>
+<span class="w">  </span><span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;vim-airline/vim-airline&#39;</span>
+<span class="w">  </span><span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;govim/govim&#39;</span><span class="p">,</span><span class="w"> </span><span class="err">{</span><span class="w"> </span><span class="s1">&#39;for&#39;</span><span class="err">:</span><span class="w"> </span><span class="s1">&#39;go&#39;</span><span class="w"> </span><span class="err">}</span>
+<span class="w">  </span><span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;preservim/nerdtree&#39;</span>
+<span class="w">  </span><span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;jistr/vim-nerdtree-tabs&#39;</span>
+<span class="w">  </span><span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;tpope/vim-fugitive&#39;</span>
+<span class="w">  </span><span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;jiangmiao/auto-pairs&#39;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="n">has</span><span class="p">(</span><span class="s1">&#39;nvim&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;Shougo/deoplete.nvim&#39;</span><span class="p">,</span><span class="w"> </span><span class="err">{</span><span class="w"> </span><span class="s1">&#39;do&#39;</span><span class="err">:</span><span class="w"> </span><span class="s1">&#39;:UpdateRemotePlugins&#39;</span><span class="w"> </span><span class="err">}</span>
+<span class="w">  </span><span class="k">else</span>
+<span class="w">    </span><span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;Shougo/deoplete.nvim&#39;</span>
+<span class="w">    </span><span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;roxma/nvim-yarp&#39;</span>
+<span class="w">    </span><span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;roxma/vim-hug-neovim-rpc&#39;</span>
+<span class="w">  </span><span class="n">endif</span>
+<span class="w">  </span><span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;jnurmine/Zenburn&#39;</span>
+<span class="w">  </span><span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;vim-syntastic/syntastic&#39;</span>
+<span class="w">  </span><span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;nvie/vim-flake8&#39;</span>
+<span class="w">  </span><span class="n">Plug</span><span class="w"> </span><span class="s1">&#39;davidhalter/jedi-vim&#39;</span>
 <span class="k">call</span><span class="w"> </span><span class="n">plug#end</span><span class="p">()</span>
-
 
 <span class="k">function</span><span class="err">!</span><span class="w"> </span><span class="n">Toggles</span><span class="p">()</span>
 <span class="w">  </span><span class="err">:</span><span class="n">nnoremap</span><span class="w"> </span><span class="o">&lt;</span><span class="n">C</span><span class="o">-</span><span class="n">g</span><span class="o">&gt;</span><span class="w"> </span><span class="err">:</span><span class="n">NERDTreeTabsToggle</span><span class="o">&lt;</span><span class="n">CR</span><span class="o">&gt;</span>
 <span class="w">  </span><span class="ss">&quot; switch to tab right / left</span>
 <span class="ss">  :nnoremap &lt;C-l&gt; :tabn&lt;CR&gt;</span>
 <span class="ss">  :nnoremap &lt;C-h&gt; :tabp&lt;CR&gt;</span>
+<span class="ss">  :nnoremap &lt;C-t&gt; :w!&lt;CR&gt;:!aspell check %&lt;CR&gt;:e! %&lt;CR&gt;</span>
 <span class="ss">endfunction</span>
 
 <span class="ss">function! GenericSetup()</span>
@@ -1835,9 +1825,13 @@
 <span class="s1">  &quot; set invlist</span>
 <span class="s1">  set number</span>
 <span class="s1">  set encoding=utf-8</span>
+
+<span class="s1">  filetype plugin on</span>
 <span class="s1">  &quot; set autochdir</span>
 <span class="s1">  &quot; color scheme</span>
-<span class="s1">  colorscheme zenburn</span>
+<span class="s1">  &quot; colorscheme zenburn</span>
+<span class="s1">  colorscheme morning</span>
+
 <span class="s1">  set colorcolumn=120</span>
 <span class="s1">endfunction</span>
 
@@ -1855,7 +1849,56 @@
 <span class="s1">  let g:airline_section_c = &#39;</span><span class="o">%</span><span class="n">F</span><span class="err">&#39;</span>
 <span class="n">endfunction</span>
 
+<span class="k">call</span><span class="w"> </span><span class="n">GenericSetup</span><span class="p">()</span>
+<span class="k">call</span><span class="w"> </span><span class="n">Toggles</span><span class="p">()</span>
+<span class="k">call</span><span class="w"> </span><span class="n">AirlineSetup</span><span class="p">()</span>
+<span class="k">call</span><span class="w"> </span><span class="n">DeopleteSetup</span><span class="p">()</span>
+<span class="n">EOF</span>
+</code></pre></div></td></tr></table></div></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="s1">&#39;EOF&#39;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">~/</span><span class="p">.</span><span class="n">vim</span><span class="o">/</span><span class="n">ftplugin</span><span class="o">/</span><span class="k">go</span><span class="p">.</span><span class="n">vim</span>
 <span class="k">function</span><span class="err">!</span><span class="w"> </span><span class="n">GoVimSetup</span><span class="p">()</span>
+<span class="w">  </span><span class="n">autocmd</span><span class="w"> </span><span class="n">BufNewFile</span><span class="p">,</span><span class="n">BufRead</span><span class="w"> </span><span class="o">*</span><span class="p">.</span><span class="k">go</span><span class="w"> </span><span class="n">setf</span><span class="w"> </span><span class="k">go</span>
 <span class="w">  </span><span class="k">set</span><span class="w"> </span><span class="n">nocompatible</span>
 <span class="w">  </span><span class="k">set</span><span class="w"> </span><span class="n">nobackup</span>
 <span class="w">  </span><span class="k">set</span><span class="w"> </span><span class="n">nowritebackup</span>
@@ -1881,6 +1924,8 @@
 <span class="w">  </span><span class="err">:</span><span class="n">nnoremap</span><span class="w"> </span><span class="o">&lt;</span><span class="n">C</span><span class="o">-</span><span class="n">k</span><span class="o">&gt;</span><span class="w"> </span><span class="err">:</span><span class="n">GOVIMReferences</span><span class="o">&lt;</span><span class="n">CR</span><span class="o">&gt;</span>
 <span class="w">  </span><span class="err">:</span><span class="n">inoremap</span><span class="w"> </span><span class="o">&lt;</span><span class="n">C</span><span class="o">-</span><span class="n">f</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">C</span><span class="o">-</span><span class="n">o</span><span class="o">&gt;</span><span class="err">:</span><span class="n">GOVIMFillStruct</span><span class="o">&lt;</span><span class="n">CR</span><span class="o">&gt;</span>
 <span class="w">  </span><span class="err">:</span><span class="n">inoremap</span><span class="w"> </span><span class="o">&lt;</span><span class="n">C</span><span class="o">-</span><span class="n">j</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">C</span><span class="o">-</span><span class="n">o</span><span class="o">&gt;</span><span class="err">:</span><span class="n">GOVIMExperimentalSignatureHelp</span><span class="o">&lt;</span><span class="n">CR</span><span class="o">&gt;</span>
+
+<span class="w">  </span><span class="k">set</span><span class="w"> </span><span class="n">colorcolumn</span><span class="o">=</span><span class="mi">120</span>
 <span class="w">  </span><span class="ss">&quot; let $GOVIM_GOPLS_FLAGS=&quot;</span><span class="o">-</span><span class="n">remote</span><span class="o">=</span><span class="n">auto</span><span class="p">;</span><span class="w"> </span><span class="o">-</span><span class="n">remote</span><span class="p">.</span><span class="n">listen</span><span class="p">.</span><span class="n">timeout</span><span class="o">=</span><span class="mi">12</span><span class="n">h</span><span class="ss">&quot;</span>
 
 <span class="ss">  &quot;</span><span class="w"> </span><span class="nl">mappings</span><span class="p">:</span>
@@ -1891,19 +1936,114 @@
 <span class="w">  </span><span class="err">&quot;</span><span class="w"> </span><span class="err">\</span><span class="nl">r</span><span class="p">:</span><span class="w"> </span><span class="k">references</span>
 <span class="n">endfunction</span>
 
-<span class="k">call</span><span class="w"> </span><span class="n">GenericSetup</span><span class="p">()</span>
-<span class="k">call</span><span class="w"> </span><span class="n">Toggles</span><span class="p">()</span>
 <span class="k">call</span><span class="w"> </span><span class="n">GoVimSetup</span><span class="p">()</span>
-<span class="k">call</span><span class="w"> </span><span class="n">DeopleteSetup</span><span class="p">()</span>
-<span class="k">call</span><span class="w"> </span><span class="n">AirlineSetup</span><span class="p">()</span>
-</code></pre></div></td></tr></table></div></p>
+<span class="n">EOF</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="p">&#39;</span><span class="n">EOF</span><span class="p">&#39;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">~/</span><span class="p">.</span><span class="n">vim</span><span class="o">/</span><span class="n">ftplugin</span><span class="o">/</span><span class="n">python</span><span class="p">.</span><span class="n">vim</span>
+<span class="k">function</span><span class="o">!</span><span class="w"> </span><span class="n">SetupPython</span><span class="p">()</span>
+<span class="w">  </span><span class="s">&quot; Enable syntax highlighting</span>
+<span class="w">  </span><span class="n">syntax</span><span class="w"> </span><span class="n">on</span>
+
+<span class="w">  </span><span class="s">&quot; Set tab width to 4 spaces</span>
+<span class="w">  </span><span class="n">set</span><span class="w"> </span><span class="n">tabstop</span><span class="o">=</span><span class="mh">4</span>
+<span class="w">  </span><span class="n">set</span><span class="w"> </span><span class="n">softtabstop</span><span class="o">=</span><span class="mh">4</span>
+<span class="w">  </span><span class="n">set</span><span class="w"> </span><span class="n">shiftwidth</span><span class="o">=</span><span class="mh">4</span>
+<span class="w">  </span><span class="n">set</span><span class="w"> </span><span class="n">expandtab</span>
+
+<span class="w">  </span><span class="s">&quot; Enable line numbers</span>
+<span class="w">  </span><span class="n">set</span><span class="w"> </span><span class="n">number</span>
+
+<span class="w">  </span><span class="s">&quot; Enable filetype detection</span>
+<span class="w">  </span><span class="n">filetype</span><span class="w"> </span><span class="n">plugin</span><span class="w"> </span><span class="n">on</span>
+
+<span class="w">  </span><span class="s">&quot; Enable automatic indentation</span>
+<span class="w">  </span><span class="n">set</span><span class="w"> </span><span class="n">autoindent</span>
+
+<span class="w">  </span><span class="s">&quot; Enable file type-specific indentation</span>
+<span class="w">  </span><span class="n">set</span><span class="w"> </span><span class="n">smartindent</span>
+
+<span class="w">  </span><span class="s">&quot; Enable Syntastic for code linting</span>
+<span class="w">  </span><span class="n">set</span><span class="w"> </span><span class="n">statusline</span><span class="o">+=%</span><span class="p">#</span><span class="n">warningmsg</span><span class="p">#</span>
+<span class="w">  </span><span class="n">set</span><span class="w"> </span><span class="n">statusline</span><span class="o">+=%</span><span class="p">{</span><span class="n">SyntasticStatuslineFlag</span><span class="p">()}</span>
+<span class="w">  </span><span class="n">set</span><span class="w"> </span><span class="n">statusline</span><span class="o">+=%*</span>
+<span class="w">  </span><span class="n">let</span><span class="w"> </span><span class="nl">g:</span><span class="n">syntastic_always_populate_loc_list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span>
+<span class="w">  </span><span class="n">let</span><span class="w"> </span><span class="nl">g:</span><span class="n">syntastic_auto_loc_list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span>
+<span class="w">  </span><span class="n">let</span><span class="w"> </span><span class="nl">g:</span><span class="n">syntastic_check_on_open</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span>
+<span class="w">  </span><span class="n">let</span><span class="w"> </span><span class="nl">g:</span><span class="n">syntastic_check_on_wq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0</span>
+
+<span class="w">  </span><span class="s">&quot; Enable Jedi for code completion</span>
+<span class="w">  </span><span class="n">let</span><span class="w"> </span><span class="nl">g:</span><span class="n">jedi</span><span class="p">#</span><span class="n">auto_initialization</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span>
+<span class="w">  </span><span class="n">let</span><span class="w"> </span><span class="nl">g:</span><span class="n">jedi</span><span class="p">#</span><span class="n">popup_select_first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span>
+<span class="w">  </span><span class="n">let</span><span class="w"> </span><span class="nl">g:</span><span class="n">jedi</span><span class="p">#</span><span class="n">popup_on_dot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span>
+
+<span class="w">  </span><span class="s">&quot; Set the Flake8 plugin as the Syntastic Python checker</span>
+<span class="w">  </span><span class="n">let</span><span class="w"> </span><span class="nl">g:</span><span class="n">syntastic_python_checkers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[&#39;</span><span class="n">flake8</span><span class="p">&#39;]</span>
+
+<span class="w">  </span><span class="n">set</span><span class="w"> </span><span class="n">colorcolumn</span><span class="o">=</span><span class="mh">80</span>
+
+<span class="w">  </span><span class="n">let</span><span class="w"> </span><span class="nl">g:</span><span class="n">jedi</span><span class="p">#</span><span class="n">goto_assignments_command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&lt;C-k&gt;&quot;</span>
+<span class="w">  </span><span class="n">let</span><span class="w"> </span><span class="nl">g:</span><span class="n">jedi</span><span class="p">#</span><span class="n">goto_command</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;gd&quot;</span>
+<span class="w">  </span><span class="n">noremap</span><span class="w"> </span><span class="o">&lt;</span><span class="n">C</span><span class="o">-</span><span class="n">t</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">C</span><span class="o">-</span><span class="n">o</span><span class="o">&gt;</span>
+<span class="k">endfunction</span>
+
+<span class="n">call</span><span class="w"> </span><span class="n">SetupPython</span><span class="p">()</span>
+<span class="n">EOF</span>
+</code></pre></div></td></tr></table></div>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">February 24, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 22, 2023</span>
       
     
   </small>
@@ -1920,10 +2060,10 @@
           
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
-          </a>
+          </button>
         
       </main>
       
@@ -1953,7 +2093,7 @@
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
+      <script src="../../assets/javascripts/bundle.efa0ade1.min.js"></script>
       
     
   </body>

@@ -28,10 +28,8 @@ Here is how we can query the kubelet's metrics for nodefs and imagefs. I derived
 [https://gist.github.com/superseb/a4fa9640d801c54452132db8af51f2e4](https://gist.github.com/superseb/a4fa9640d801c54452132db8af51f2e4):
 
 ~~~
-TOKEN=$(kubectl get secrets -n openshift-cluster-version -o jsonpath="{.items[?(@.metadata.annotat \
-         ions['kubernetes\.io/service-account\.name']=='default')].data.token}" | base64 --decode)
-curl -k -H "Authorization: Bearer ${TOKEN}" https://<node address>:10250/stats/summary 2>/dev/null | \
-         jq '.node.fs,.node.runtime.imageFs'
+TOKEN=$(kubectl get secrets -n openshift-cluster-version -o jsonpath="{.items[?(@.metadata.annotations['kubernetes\.io/service-account\.name']=='default')].data.token}" | base64 --decode)
+curl -k -H "Authorization: Bearer ${TOKEN}" https://<node address>:10250/stats/summary 2>/dev/null | jq '.node.fs,.node.runtime.imageFs'
 ~~~
 > NOTE: In case of a firewall blocking port 10250, it's also possible to connect to the node itself, copy/paste the
 TOKEN into the terminal and run the curl against 127.0.0.1:10250.
@@ -39,11 +37,8 @@ TOKEN into the terminal and run the curl against 127.0.0.1:10250.
 On a system where `/var/lib/containers` is mounted on its own partition:
 
 ~~~
-$ TOKEN=$(kubectl get secrets -n openshift-cluster-version -o jsonpath="{.items[?(@.metadata.annotat \
-           ions['kubernetes\.io/service-account\.name']=='default')].data.token}" | base64 --decode)
-$ curl -k -H "Authorization: Bearer ${TOKEN}" \
-           https://worker01.redhat-ocp1.e5gc.bos.redhat.lab:10250/stats/summary 2>/dev/null | \
-           jq '.node.fs,.node.runtime.imageFs'
+$ TOKEN=$(kubectl get secrets -n openshift-cluster-version -o jsonpath="{.items[?(@.metadata.annotations['kubernetes\.io/service-account\.name']=='default')].data.token}" | base64 --decode)
+$ curl -k -H "Authorization: Bearer ${TOKEN}" https://worker01.redhat-ocp1.e5gc.bos.redhat.lab:10250/stats/summary 2>/dev/null | jq '.node.fs,.node.runtime.imageFs'
 {
   "time": "2023-03-21T15:20:43Z",
   "availableBytes": 28379086848,
@@ -68,8 +63,7 @@ On a system where `/var/lib/containers` is not mounted on a separate partition. 
 exactly the same:
 
 ~~~
-$ curl -k -H "Authorization: Bearer ${TOKEN}" https://192.168.18.22:10250/stats/summary 2>/dev/null | \
-          jq '.node.fs,.node.runtime.imageFs'
+$ curl -k -H "Authorization: Bearer ${TOKEN}" https://192.168.18.22:10250/stats/summary 2>/dev/null | jq '.node.fs,.node.runtime.imageFs'
 {
   "time": "2023-03-21T15:22:53Z",
   "availableBytes": 423603036160,

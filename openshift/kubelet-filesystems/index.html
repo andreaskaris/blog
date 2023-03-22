@@ -1741,12 +1741,8 @@ metrics for both filesystems.</p>
 <p>Here is how we can query the kubelet's metrics for nodefs and imagefs. I derived this example from
 <a href="https://gist.github.com/superseb/a4fa9640d801c54452132db8af51f2e4">https://gist.github.com/superseb/a4fa9640d801c54452132db8af51f2e4</a>:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code>TOKEN=$(kubectl<span class="w"> </span>get<span class="w"> </span>secrets<span class="w"> </span>-n<span class="w"> </span>openshift-cluster-version<span class="w"> </span>-o<span class="w"> </span>jsonpath=&quot;{.items[?(@.metadata.annotat<span class="w"> </span>\
-<span class="w">         </span>ions[&#39;kubernetes\.io/service-account\.name&#39;]==&#39;default&#39;)].data.token}&quot;<span class="w"> </span>|<span class="w"> </span>base64<span class="w"> </span>--decode)
-curl<span class="w"> </span>-k<span class="w"> </span>-H<span class="w"> </span>&quot;Authorization:<span class="w"> </span>Bearer<span class="w"> </span><span class="cp">${</span><span class="n">TOKEN</span><span class="cp">}</span>&quot;<span class="w"> </span>https://<span class="nt">&lt;node</span> <span class="err">address</span><span class="nt">&gt;</span>:10250/stats/summary<span class="w"> </span>2&gt;/dev/null<span class="w"> </span>|<span class="w"> </span>\
-<span class="w">         </span>jq<span class="w"> </span>&#39;.node.fs,.node.runtime.imageFs&#39;
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code>TOKEN=$(kubectl<span class="w"> </span>get<span class="w"> </span>secrets<span class="w"> </span>-n<span class="w"> </span>openshift-cluster-version<span class="w"> </span>-o<span class="w"> </span>jsonpath=&quot;{.items[?(@.metadata.annotations[&#39;kubernetes\.io/service-account\.name&#39;]==&#39;default&#39;)].data.token}&quot;<span class="w"> </span>|<span class="w"> </span>base64<span class="w"> </span>--decode)
+curl<span class="w"> </span>-k<span class="w"> </span>-H<span class="w"> </span>&quot;Authorization:<span class="w"> </span>Bearer<span class="w"> </span><span class="cp">${</span><span class="n">TOKEN</span><span class="cp">}</span>&quot;<span class="w"> </span>https://<span class="nt">&lt;node</span> <span class="err">address</span><span class="nt">&gt;</span>:10250/stats/summary<span class="w"> </span>2&gt;/dev/null<span class="w"> </span>|<span class="w"> </span>jq<span class="w"> </span>&#39;.node.fs,.node.runtime.imageFs&#39;
 </code></pre></div></td></tr></table></div>
 <blockquote>
 <p>NOTE: In case of a firewall blocking port 10250, it's also possible to connect to the node itself, copy/paste the
@@ -1772,14 +1768,8 @@ TOKEN into the terminal and run the curl against 127.0.0.1:10250.</p>
 <span class="normal">17</span>
 <span class="normal">18</span>
 <span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span></pre></div></td><td class="code"><div><pre><span></span><code>$<span class="w"> </span><span class="nv">TOKEN</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>secrets<span class="w"> </span>-n<span class="w"> </span>openshift-cluster-version<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s2">&quot;{.items[?(@.metadata.annotat \</span>
-<span class="s2">           ions[&#39;kubernetes\.io/service-account\.name&#39;]==&#39;default&#39;)].data.token}&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>--decode<span class="k">)</span>
-$<span class="w"> </span>curl<span class="w"> </span>-k<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="si">${</span><span class="nv">TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">           </span>https://worker01.redhat-ocp1.e5gc.bos.redhat.lab:10250/stats/summary<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
-<span class="w">           </span>jq<span class="w"> </span><span class="s1">&#39;.node.fs,.node.runtime.imageFs&#39;</span>
+<span class="normal">20</span></pre></div></td><td class="code"><div><pre><span></span><code>$<span class="w"> </span><span class="nv">TOKEN</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>secrets<span class="w"> </span>-n<span class="w"> </span>openshift-cluster-version<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s2">&quot;{.items[?(@.metadata.annotations[&#39;kubernetes\.io/service-account\.name&#39;]==&#39;default&#39;)].data.token}&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>--decode<span class="k">)</span>
+$<span class="w"> </span>curl<span class="w"> </span>-k<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="si">${</span><span class="nv">TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>https://worker01.redhat-ocp1.e5gc.bos.redhat.lab:10250/stats/summary<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.node.fs,.node.runtime.imageFs&#39;</span>
 <span class="o">{</span>
 <span class="w">  </span><span class="s2">&quot;time&quot;</span>:<span class="w"> </span><span class="s2">&quot;2023-03-21T15:20:43Z&quot;</span>,
 <span class="w">  </span><span class="s2">&quot;availableBytes&quot;</span>:<span class="w"> </span><span class="m">28379086848</span>,
@@ -1819,9 +1809,7 @@ exactly the same:</p>
 <span class="normal">16</span>
 <span class="normal">17</span>
 <span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span></pre></div></td><td class="code"><div><pre><span></span><code>$<span class="w"> </span>curl<span class="w"> </span>-k<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="si">${</span><span class="nv">TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>https://192.168.18.22:10250/stats/summary<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
-<span class="w">          </span>jq<span class="w"> </span><span class="s1">&#39;.node.fs,.node.runtime.imageFs&#39;</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code>$<span class="w"> </span>curl<span class="w"> </span>-k<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="si">${</span><span class="nv">TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>https://192.168.18.22:10250/stats/summary<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.node.fs,.node.runtime.imageFs&#39;</span>
 <span class="o">{</span>
 <span class="w">  </span><span class="s2">&quot;time&quot;</span>:<span class="w"> </span><span class="s2">&quot;2023-03-21T15:22:53Z&quot;</span>,
 <span class="w">  </span><span class="s2">&quot;availableBytes&quot;</span>:<span class="w"> </span><span class="m">423603036160</span>,

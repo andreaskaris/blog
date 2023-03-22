@@ -1,31 +1,34 @@
 # My vimrc
 
-Below my configuration for vim which I use for my daily go development:
+Below my configuration for vim which I use for go and python development:
 ~~~
-autocmd BufNewFile,BufRead *.go setf go
+cat <<'EOF' > ~/.vimrc
 call plug#begin()
-Plug 'vim-airline/vim-airline'
-Plug 'govim/govim', { 'for': 'go' }
-Plug 'preservim/nerdtree'
-Plug 'jistr/vim-nerdtree-tabs'
-Plug 'tpope/vim-fugitive'
-Plug 'jiangmiao/auto-pairs'
-if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-else
-  Plug 'Shougo/deoplete.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-endif
-Plug 'jnurmine/Zenburn'
+  Plug 'vim-airline/vim-airline'
+  Plug 'govim/govim', { 'for': 'go' }
+  Plug 'preservim/nerdtree'
+  Plug 'jistr/vim-nerdtree-tabs'
+  Plug 'tpope/vim-fugitive'
+  Plug 'jiangmiao/auto-pairs'
+  if has('nvim')
+    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+  else
+    Plug 'Shougo/deoplete.nvim'
+    Plug 'roxma/nvim-yarp'
+    Plug 'roxma/vim-hug-neovim-rpc'
+  endif
+  Plug 'jnurmine/Zenburn'
+  Plug 'vim-syntastic/syntastic'
+  Plug 'nvie/vim-flake8'
+  Plug 'davidhalter/jedi-vim'
 call plug#end()
-
 
 function! Toggles()
   :nnoremap <C-g> :NERDTreeTabsToggle<CR>
   " switch to tab right / left
   :nnoremap <C-l> :tabn<CR>
   :nnoremap <C-h> :tabp<CR>
+  :nnoremap <C-t> :w!<CR>:!aspell check %<CR>:e! %<CR>
 endfunction
 
 function! GenericSetup()
@@ -42,9 +45,13 @@ function! GenericSetup()
   " set invlist
   set number
   set encoding=utf-8
+
+  filetype plugin on
   " set autochdir
   " color scheme
-  colorscheme zenburn
+  " colorscheme zenburn
+  colorscheme morning
+
   set colorcolumn=120
 endfunction
 
@@ -62,7 +69,17 @@ function! AirlineSetup()
   let g:airline_section_c = '%F'
 endfunction
 
+call GenericSetup()
+call Toggles()
+call AirlineSetup()
+call DeopleteSetup()
+EOF
+~~~
+
+~~~
+cat <<'EOF' > ~/.vim/ftplugin/go.vim
 function! GoVimSetup()
+  autocmd BufNewFile,BufRead *.go setf go
   set nocompatible
   set nobackup
   set nowritebackup
@@ -88,6 +105,8 @@ function! GoVimSetup()
   :nnoremap <C-k> :GOVIMReferences<CR>
   :inoremap <C-f> <C-o>:GOVIMFillStruct<CR>
   :inoremap <C-j> <C-o>:GOVIMExperimentalSignatureHelp<CR>
+
+  set colorcolumn=120
   " let $GOVIM_GOPLS_FLAGS="-remote=auto; -remote.listen.timeout=12h"
 
   " mappings:
@@ -98,9 +117,58 @@ function! GoVimSetup()
   " \r: references
 endfunction
 
-call GenericSetup()
-call Toggles()
 call GoVimSetup()
-call DeopleteSetup()
-call AirlineSetup()
+EOF
+~~~
+
+~~~
+cat <<'EOF' > ~/.vim/ftplugin/python.vim
+function! SetupPython()
+  " Enable syntax highlighting
+  syntax on
+  
+  " Set tab width to 4 spaces
+  set tabstop=4
+  set softtabstop=4
+  set shiftwidth=4
+  set expandtab
+  
+  " Enable line numbers
+  set number
+  
+  " Enable filetype detection
+  filetype plugin on
+  
+  " Enable automatic indentation
+  set autoindent
+  
+  " Enable file type-specific indentation
+  set smartindent
+  
+  " Enable Syntastic for code linting
+  set statusline+=%#warningmsg#
+  set statusline+=%{SyntasticStatuslineFlag()}
+  set statusline+=%*
+  let g:syntastic_always_populate_loc_list = 1
+  let g:syntastic_auto_loc_list = 1
+  let g:syntastic_check_on_open = 1
+  let g:syntastic_check_on_wq = 0
+  
+  " Enable Jedi for code completion
+  let g:jedi#auto_initialization = 1
+  let g:jedi#popup_select_first = 1
+  let g:jedi#popup_on_dot = 1
+  
+  " Set the Flake8 plugin as the Syntastic Python checker
+  let g:syntastic_python_checkers = ['flake8']
+
+  set colorcolumn=80
+
+  let g:jedi#goto_assignments_command = "<C-k>"
+  let g:jedi#goto_command  = "gd"
+  noremap <C-t> <C-o>
+endfunction
+
+call SetupPython()
+EOF
 ~~~

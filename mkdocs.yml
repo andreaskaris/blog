@@ -75,6 +75,7 @@ nav:
   - Retrieving process cgroup resource usage and limit info: linux/get-process-cgroup-info-and-limits.md
   - RHEL Booting a virtual machine with UEFI but without secure boot: linux/libvirt-uefi-without-secureboot.md
   - Setting journalctl limits: linux/setting-journalctl-limits.md
+  - Using cgroups for CFS bandwidth control: linux/cgroups_cpu_quota.md
 - Networking:
   - networking/index.md
   - Accept Source Routing: networking/accept-source-routing.md

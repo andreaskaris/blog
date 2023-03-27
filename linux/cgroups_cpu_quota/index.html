@@ -1,0 +1,2456 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Andreas Karis' blog about anything Kubernetes, OpenShift, Linux and Networking">
+      
+      
+      
+        <link rel="canonical" href="https://andreaskaris.github.io/blog/linux/cgroups_cpu_quota/">
+      
+      
+        <link rel="prev" href="../setting-journalctl-limits/">
+      
+      
+        <link rel="next" href="../../networking/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.3">
+    
+    
+      
+        <title>Using cgroups for CFS bandwidth control - Andreas Karis Blog</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.c4a75a56.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  <!-- RSS Feed -->
+  <link rel="alternate" type="application/rss+xml" title="RSS feed of created content" href="https://andreaskaris.github.io/blog/feed_rss_created.xml">
+  <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="https://andreaskaris.github.io/blog/feed_rss_updated.xml">
+
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Andreas Karis Blog" class="md-header__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Andreas Karis Blog
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Using cgroups for CFS bandwidth control
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../.." class="md-tabs__link">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../ceph/" class="md-tabs__link">
+        Ceph
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../" class="md-tabs__link md-tabs__link--active">
+        Linux
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../networking/" class="md-tabs__link">
+        Networking
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../openshift/" class="md-tabs__link">
+        OpenShift and Kubernetes
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../openstack/" class="md-tabs__link">
+        OpenStack
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../coding/" class="md-tabs__link">
+        Coding
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+  
+    
+    <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner">
+          
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Andreas Karis Blog
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+      
+      
+        
+          
+            
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../ceph/">Ceph</a>
+          
+            <label for="__nav_2">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Ceph
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ceph/ceph-manual-test/" class="md-nav__link">
+        Ceph manual test with qemu
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../">Linux</a>
+          
+            <label for="__nav_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Linux
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cgroups/" class="md-nav__link">
+        cgroups
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../containers/" class="md-nav__link">
+        Containers in Linux
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hugepages/" class="md-nav__link">
+        Hugepages
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ipxe-boot-environment/" class="md-nav__link">
+        iPXE boot environment on Fedora
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../java-idrac-issues/" class="md-nav__link">
+        Java Idrac Issues
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meson/" class="md-nav__link">
+        meson
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../namespaces/" class="md-nav__link">
+        namespaces
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../old_java_version_with_xorgs_in_container/" class="md-nav__link">
+        Old Java inside a container with xorgs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../get-process-cgroup-info-and-limits/" class="md-nav__link">
+        Retrieving process cgroup resource usage and limit info
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../libvirt-uefi-without-secureboot/" class="md-nav__link">
+        RHEL Booting a virtual machine with UEFI but without secure boot
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setting-journalctl-limits/" class="md-nav__link">
+        Setting journalctl limits
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Using cgroups for CFS bandwidth control
+      </a>
+      
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../networking/">Networking</a>
+          
+            <label for="__nav_4">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Networking
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/accept-source-routing/" class="md-nav__link">
+        Accept Source Routing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/arp_and_the_neighbor_table/" class="md-nav__link">
+        ARP and the Neighbor table
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/bpf-and-tcpdump/" class="md-nav__link">
+        BPF and tcpdump
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/bonding_in_linux/" class="md-nav__link">
+        Bonding in Linux
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/juniper_x520/" class="md-nav__link">
+        Configure Juniper switch
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/haproxy-and-h2c/" class="md-nav__link">
+        haproxy and HTTP/2
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/install-openvswitch-on-rocky/" class="md-nav__link">
+        Install Open vSwitch on Rocky Linux 8
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/geneve_tunneling/" class="md-nav__link">
+        Geneve tunneling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/netlink/" class="md-nav__link">
+        Netlink
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/ovn_standalone_on_fedora/" class="md-nav__link">
+        OVN standalone on Fedora
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/ovs_recirculation/" class="md-nav__link">
+        OVS packet recirculation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/ovs-vxlan-tunnels-and-dscp/" class="md-nav__link">
+        OVS VXLAN tunnels and DSCP
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/ovs_with_gdb/" class="md-nav__link">
+        OVS with GDB
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/packet-tracing-with-ovn/" class="md-nav__link">
+        Packet tracing with OVN
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/sctp/" class="md-nav__link">
+        SCTP
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/useful-commands/" class="md-nav__link">
+        Useful commands
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/wireguard/" class="md-nav__link">
+        Wireguard
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../openshift/">OpenShift and Kubernetes</a>
+          
+            <label for="__nav_5">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          OpenShift and Kubernetes
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/alertmanager/" class="md-nav__link">
+        AlertManager
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/analyzing-cni/" class="md-nav__link">
+        Analyzing CNI calls
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/ocp-custom-release-image/" class="md-nav__link">
+        Building custom release images for OpenShift
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/cpu-manager-with-custom-machine-config-pool/" class="md-nav__link">
+        CPU manager with custom MachineConfigPool
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/crio-conmon-runc/" class="md-nav__link">
+        Crio vs conmon vs runc
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/etcd_perf/" class="md-nav__link">
+        Etcd Performance tests
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/get-vs-list-api-calls/" class="md-nav__link">
+        Get vs List API Calls
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/openshift_httpbin_tshark_sidecar/" class="md-nav__link">
+        Httpbin tshark sidecar container
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/kubernetes_cluster/" class="md-nav__link">
+        Hints for installing kubernetes on Fedora
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/HPA/" class="md-nav__link">
+        Horizontal Pod Autoscaler
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/how_rhcos_updates_work/" class="md-nav__link">
+        How RHCOS updates work
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/kubelet-filesystems/" class="md-nav__link">
+        How kubelet monitors filesystems
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/ocp4-infra-nodes-with-machineset-without-worker-label/" class="md-nav__link">
+        Infra nodes with MachineSets without worker label
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/ingresscontroller_router_sharding_ocp_on_osp/" class="md-nav__link">
+        Ingress Controller Sharding OCP on OSP
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/ingress-controller-sharding-on-separate-vip/" class="md-nav__link">
+        Ingress Controller Sharding on separate VIP
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/openshift_mirror_registry/" class="md-nav__link">
+        Installing a cluster with a mirror registry
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/istio-1.6-on-ocp.4.x/" class="md-nav__link">
+        Istio 1.6 on OpenShift 4.x
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/kata/" class="md-nav__link">
+        kata containers and the kata operatora
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/ovn-kind-hybrid-overlay/" class="md-nav__link">
+        Kind with OVN Kubernetes Hybrid Overlay
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/kind-with-private-registry/" class="md-nav__link">
+        Kind with private registry
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/list_docker_registry_containers/" class="md-nav__link">
+        List container images in registry
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/mounting-container-image/" class="md-nav__link">
+        Mount a container image
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openstack/install_openshift_on_openstack/" class="md-nav__link">
+        OpenShift on OpenStack
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/patch-service-loadbalancer-ingress-ip/" class="md-nav__link">
+        Patch status.loadBalancer.ingress IP manually
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/private-registry/" class="md-nav__link">
+        Private container registry
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/proxy-ocp-4.5/" class="md-nav__link">
+        Proxy OCP 4.5
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/scc/" class="md-nav__link">
+        Security Context Constraints (SCC)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/openshift-scc-with-mutating-webhooks/" class="md-nav__link">
+        SCCs and mutating webhooks - a lesson learned
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/fix-selinux-labels-coreos/" class="md-nav__link">
+        SElinux labels fix
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/sctp/" class="md-nav__link">
+        SCTP
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/openshift_troubleshooting_etcd_state/" class="md-nav__link">
+        Troubleshooting etcd state
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        Useful commands for OpenShift
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/useful-ocp-sdn-commands/" class="md-nav__link">
+        Useful commands for OpenShift SDN
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/troubleshooting_openshift_on_openstack_worker_creation/" class="md-nav__link">
+        Troubleshooting OpenShift on OpenStack worker creation
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../openstack/">OpenStack</a>
+          
+            <label for="__nav_6">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          OpenStack
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openstack/reattach_to_running_deployment/" class="md-nav__link">
+        Reattach to running deployment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openstack/using_clouds_yaml/" class="md-nav__link">
+        Using clouds.yaml
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../coding/">Coding</a>
+          
+            <label for="__nav_7">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          Coding
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../coding/operator-sdk-reconciliation/" class="md-nav__link">
+        Controller Reconciliation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../coding/vimrc/" class="md-nav__link">
+        My vimrc
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../coding/golang-ip-conversion/" class="md-nav__link">
+        Golang IP address conversion
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+        </div>
+      </div>
+    </div>
+  
+  
+    
+    <!--
+    <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner">
+          
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+</nav>
+        </div>
+      </div>
+    </div>
+    -->
+  
+
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="using-cgroups-for-cfs-bandwidth-control-cpu-quotas">Using cgroups for CFS bandwidth control (CPU quotas)</h1>
+<p>CFS bandwidth control is a feature that allows you to limit the amount of CPU time that a control group (cgroup) can use.
+You can specify the amount of CPU time that a group is allowed to use by setting a quota and a period.
+During each period (which is measured in microseconds), a task group can use up to the quota amount of CPU time.
+When all the quota has been used up, the threads in the cgroup will be throttled until the next period. </p>
+<p>For more details, have a look at <a href="https://www.kernel.org/doc/html/latest/scheduler/sched-bwc.html">https://www.kernel.org/doc/html/latest/scheduler/sched-bwc.html</a>.</p>
+<p>In this article, we will set up a <code class="highlight">test</code> cgroup manually both on RHEL 8 (cgroupsv1) and on RHEL 9 (cgroupsv2). We will 
+limit the control group to a subset of CPUs and we will use bandwidth control to limit the total CPU time that our cgroup
+is allowed to run per period. We will then attach a process to the <code class="highlight">test</code> cgroup which will generate load, both
+single-threaded and multi-threaded.</p>
+<h2 id="limiting-cpu-sets-and-setting-cpu-quota-with-cgroups">Limiting CPU sets and setting CPU quota with cgroups</h2>
+<p>Let's start by configuring CPU sets and CPU quota for a manually created control group. We will not rely on systemd
+or any other tools. Instead, we will directly manipulate cgroups within the mounted file system.
+We will look at cgroupsv1 (the default in RHEL 8) and cgroupsv2 (the default in RHEL 9) in isolation for each task.</p>
+<h3 id="determine-the-cgroup-version">Determine the cgroup version</h3>
+<p>You can use the commenct <code class="highlight">mount | grep cgroup</code> to determine the cgroup version in use.</p>
+<h4 id="rhel-8-cgroupsv1">RHEL 8 - cgroupsv1</h4>
+<p>In RHEL 8, the output of the <code class="highlight">mount</code> command used to display the currently mounted cgroups will reveal multiple mount points:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span></pre></div></td><td class="code"><div><pre><span></span><code>tmpfs on /sys/fs/cgroup type tmpfs (ro,nosuid,nodev,noexec,seclabel,mode=755)
+cgroup on /sys/fs/cgroup/systemd type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,xattr,release_agent=/usr/lib/systemd/systemd-cgroups-agent,name=systemd)
+cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,perf_event)
+cgroup on /sys/fs/cgroup/net_cls,net_prio type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,net_cls,net_prio)
+cgroup on /sys/fs/cgroup/hugetlb type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,hugetlb)
+cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpuset)
+cgroup on /sys/fs/cgroup/rdma type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,rdma)
+cgroup on /sys/fs/cgroup/pids type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,pids)
+cgroup on /sys/fs/cgroup/blkio type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,blkio)
+cgroup on /sys/fs/cgroup/cpu,cpuacct type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpu,cpuacct)
+cgroup on /sys/fs/cgroup/freezer type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,freezer)
+cgroup on /sys/fs/cgroup/devices type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,devices)
+cgroup on /sys/fs/cgroup/memory type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,memory)
+</code></pre></div></td></tr></table></div>
+<h4 id="rhel-9-cgroupsv2">RHEL 9 - cgroupsv2</h4>
+<p>In RHEL 9, the output of mounting cgroups will show a single mount point for cgroup2.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel9 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">mount</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">cgroup</span>
+<span class="n">cgroup2</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">fs</span><span class="o">/</span><span class="n">cgroup</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="n">cgroup2</span><span class="w"> </span><span class="p">(</span><span class="n">rw</span><span class="p">,</span><span class="n">nosuid</span><span class="p">,</span><span class="n">nodev</span><span class="p">,</span><span class="n">noexec</span><span class="p">,</span><span class="n">relatime</span><span class="p">,</span><span class="n">seclabel</span><span class="p">,</span><span class="n">nsdelegate</span><span class="p">,</span><span class="n">memory_recursiveprot</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<h3 id="enable-control-cgroup-controllers">Enable / Control cgroup controllers</h3>
+<p>Enable the cpuset and cpu cgroup controller. This is only needed in RHEL 9. In RHEL 8, the respective cgroups hierarchies
+are already enabled via the <code class="highlight">cpu,cpuacct</code> and <code class="highlight">cpuset</code> mounts.</p>
+<h4 id="rhel-9-cgroupsv2_1">RHEL 9 - cgroupsv2</h4>
+<p>Enable the cpuset cgroup controller for the immediate childgroups of <code class="highlight">/sys/fs/cgroup</code>:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel9 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cd</span><span class="w"> </span><span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">fs</span><span class="o">/</span><span class="n">cgroup</span>
+<span class="o">[</span><span class="n">root@rhel9 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">cgroup</span><span class="p">.</span><span class="n">subtree_control</span>
+<span class="n">cpu</span><span class="w"> </span><span class="n">io</span><span class="w"> </span><span class="n">memory</span><span class="w"> </span><span class="n">pids</span>
+<span class="o">[</span><span class="n">root@rhel9 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="ss">&quot;+cpuset&quot;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">cgroup</span><span class="p">.</span><span class="n">subtree_control</span>
+<span class="o">[</span><span class="n">root@rhel9 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">cgroup</span><span class="p">.</span><span class="n">subtree_control</span>
+<span class="n">cpuset</span><span class="w"> </span><span class="n">cpu</span><span class="w"> </span><span class="n">io</span><span class="w"> </span><span class="n">memory</span><span class="w"> </span><span class="n">pids</span>
+</code></pre></div></td></tr></table></div>
+<h3 id="create-a-child-cgroup-and-assign-a-process-to-it">Create a child cgroup and assign a process to it</h3>
+<p>Create a child group called <code class="highlight">test</code> and attach the current bash session to it. List processes under the current cgroup both
+with cat and with <code class="highlight">systemd-cgls</code>.</p>
+<h4 id="rhel-8-cgroupsv1_1">RHEL 8 - cgroupsv1</h4>
+<p>Both the cpuset cgroup subsystem, as well as the cpu,cpuacct subsystem are already mounted by default in RHEL 8. We
+will use those mountpoints to configure a cgroup for CPU as well as one for CPU set.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">rhel87</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># cd /sys/fs/cgroup</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">rhel87</span><span class="w"> </span><span class="n">cgroup</span><span class="p">]</span><span class="c1"># readlink -f cpu</span>
+<span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">fs</span><span class="o">/</span><span class="n">cgroup</span><span class="o">/</span><span class="n">cpu</span><span class="p">,</span><span class="n">cpuacct</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">rhel87</span><span class="w"> </span><span class="n">cgroup</span><span class="p">]</span><span class="c1"># mkdir cpu/test</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">rhel87</span><span class="w"> </span><span class="n">cgroup</span><span class="p">]</span><span class="c1"># mkdir cpuset/test</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">rhel87</span><span class="w"> </span><span class="n">cgroup</span><span class="p">]</span><span class="c1"># ls cpu/test/</span>
+<span class="n">cgroup</span><span class="o">.</span><span class="n">clone_children</span><span class="w">  </span><span class="n">cpuacct</span><span class="o">.</span><span class="n">usage_all</span><span class="w">          </span><span class="n">cpuacct</span><span class="o">.</span><span class="n">usage_sys</span><span class="w">   </span><span class="n">cpu</span><span class="o">.</span><span class="n">rt_period_us</span><span class="w">   </span><span class="n">notify_on_release</span>
+<span class="n">cgroup</span><span class="o">.</span><span class="n">procs</span><span class="w">           </span><span class="n">cpuacct</span><span class="o">.</span><span class="n">usage_percpu</span><span class="w">       </span><span class="n">cpuacct</span><span class="o">.</span><span class="n">usage_user</span><span class="w">  </span><span class="n">cpu</span><span class="o">.</span><span class="n">rt_runtime_us</span><span class="w">  </span><span class="n">tasks</span>
+<span class="n">cpuacct</span><span class="o">.</span><span class="n">stat</span><span class="w">           </span><span class="n">cpuacct</span><span class="o">.</span><span class="n">usage_percpu_sys</span><span class="w">   </span><span class="n">cpu</span><span class="o">.</span><span class="n">cfs_period_us</span><span class="w">   </span><span class="n">cpu</span><span class="o">.</span><span class="n">shares</span>
+<span class="n">cpuacct</span><span class="o">.</span><span class="n">usage</span><span class="w">          </span><span class="n">cpuacct</span><span class="o">.</span><span class="n">usage_percpu_user</span><span class="w">  </span><span class="n">cpu</span><span class="o">.</span><span class="n">cfs_quota_us</span><span class="w">    </span><span class="n">cpu</span><span class="o">.</span><span class="n">stat</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">rhel87</span><span class="w"> </span><span class="n">cgroup</span><span class="p">]</span><span class="c1"># ls cpuset/test</span>
+<span class="n">cgroup</span><span class="o">.</span><span class="n">clone_children</span><span class="w">  </span><span class="n">cpuset</span><span class="o">.</span><span class="n">effective_mems</span><span class="w">   </span><span class="n">cpuset</span><span class="o">.</span><span class="n">memory_spread_page</span><span class="w">        </span><span class="n">notify_on_release</span>
+<span class="n">cgroup</span><span class="o">.</span><span class="n">procs</span><span class="w">           </span><span class="n">cpuset</span><span class="o">.</span><span class="n">mem_exclusive</span><span class="w">    </span><span class="n">cpuset</span><span class="o">.</span><span class="n">memory_spread_slab</span><span class="w">        </span><span class="n">tasks</span>
+<span class="n">cpuset</span><span class="o">.</span><span class="n">cpu_exclusive</span><span class="w">   </span><span class="n">cpuset</span><span class="o">.</span><span class="n">mem_hardwall</span><span class="w">     </span><span class="n">cpuset</span><span class="o">.</span><span class="n">mems</span>
+<span class="n">cpuset</span><span class="o">.</span><span class="n">cpus</span><span class="w">            </span><span class="n">cpuset</span><span class="o">.</span><span class="n">memory_migrate</span><span class="w">   </span><span class="n">cpuset</span><span class="o">.</span><span class="n">sched_load_balance</span>
+<span class="n">cpuset</span><span class="o">.</span><span class="n">effective_cpus</span><span class="w">  </span><span class="n">cpuset</span><span class="o">.</span><span class="n">memory_pressure</span><span class="w">  </span><span class="n">cpuset</span><span class="o">.</span><span class="n">sched_relax_domain_level</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">rhel87</span><span class="w"> </span><span class="n">cgroup</span><span class="p">]</span><span class="c1"># cat cpuset/cpuset.mems &gt; cpuset/test/cpuset.mems</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">rhel87</span><span class="w"> </span><span class="n">cgroup</span><span class="p">]</span><span class="c1"># cat cpuset/cpuset.cpus &gt; cpuset/test/cpuset.cpus</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">rhel87</span><span class="w"> </span><span class="n">cgroup</span><span class="p">]</span><span class="c1"># echo $$ &gt; cpuset/test/cgroup.procs </span>
+</code></pre></div></td></tr></table></div>
+<blockquote>
+<p>NOTE: Both cpuset.mems and cpuset.cpus must be set before assigning a process to <code class="highlight">cgroup.procs</code>. For further details,
+see <a href="https://access.redhat.com/solutions/232153">https://access.redhat.com/solutions/232153</a>.</p>
+</blockquote>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">cpu</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">cgroup</span><span class="p">.</span><span class="n">procs</span><span class="w"> </span>
+<span class="mi">5682</span>
+<span class="mi">5741</span>
+<span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">cpuset</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">cgroup</span><span class="p">.</span><span class="n">procs</span><span class="w"> </span>
+<span class="mi">5682</span>
+<span class="mi">5742</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">systemd</span><span class="o">-</span><span class="n">cgls</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">cat</span>
+<span class="n">Working</span><span class="w"> </span><span class="n">directory</span><span class="w"> </span><span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">fs</span><span class="o">/</span><span class="nl">cgroup</span><span class="p">:</span>
+<span class="err">├─</span><span class="n">cpu</span><span class="p">,</span><span class="n">cpuacct</span>
+<span class="err">│</span><span class="w"> </span><span class="err">├─</span><span class="k">user</span><span class="p">.</span><span class="n">slice</span>
+<span class="err">│</span><span class="w"> </span><span class="err">│</span><span class="w"> </span><span class="err">├─</span><span class="mi">5667</span><span class="w"> </span><span class="nl">sshd</span><span class="p">:</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="o">[</span><span class="n">priv</span><span class="o">]</span>
+<span class="err">│</span><span class="w"> </span><span class="err">│</span><span class="w"> </span><span class="err">├─</span><span class="mi">5672</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">systemd</span><span class="w"> </span><span class="o">--</span><span class="k">user</span>
+<span class="err">│</span><span class="w"> </span><span class="err">│</span><span class="w"> </span><span class="err">├─</span><span class="mi">5675</span><span class="w"> </span><span class="p">(</span><span class="n">sd</span><span class="o">-</span><span class="n">pam</span><span class="p">)</span>
+<span class="err">│</span><span class="w"> </span><span class="err">│</span><span class="w"> </span><span class="err">└─</span><span class="mi">5681</span><span class="w"> </span><span class="nl">sshd</span><span class="p">:</span><span class="w"> </span><span class="n">root</span><span class="nv">@pts</span><span class="o">/</span><span class="mi">0</span>
+<span class="err">│</span><span class="w"> </span><span class="err">├─</span><span class="n">init</span><span class="p">.</span><span class="k">scope</span>
+<span class="err">│</span><span class="w"> </span><span class="err">│</span><span class="w"> </span><span class="err">└─</span><span class="mi">1</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">systemd</span><span class="w"> </span><span class="o">--</span><span class="n">switched</span><span class="o">-</span><span class="n">root</span><span class="w"> </span><span class="o">--</span><span class="k">system</span><span class="w"> </span><span class="o">--</span><span class="n">deserialize</span><span class="w"> </span><span class="mi">17</span>
+<span class="err">│</span><span class="w"> </span><span class="err">├─</span><span class="k">system</span><span class="p">.</span><span class="n">slice</span>
+<span class="p">(...)</span>
+<span class="err">│</span><span class="w"> </span><span class="err">└─</span><span class="n">test</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├─</span><span class="mi">5682</span><span class="w"> </span><span class="o">-</span><span class="n">bash</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├─</span><span class="mi">5758</span><span class="w"> </span><span class="n">systemd</span><span class="o">-</span><span class="n">cgls</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└─</span><span class="mi">5759</span><span class="w"> </span><span class="n">cat</span>
+<span class="p">(...)</span>
+<span class="err">├─</span><span class="n">cpuset</span>
+<span class="p">(...)</span>
+<span class="err">│</span><span class="w"> </span><span class="err">└─</span><span class="n">test</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├─</span><span class="mi">5682</span><span class="w"> </span><span class="o">-</span><span class="n">bash</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├─</span><span class="mi">5758</span><span class="w"> </span><span class="n">systemd</span><span class="o">-</span><span class="n">cgls</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└─</span><span class="mi">5759</span><span class="w"> </span><span class="n">cat</span>
+<span class="p">(...)</span>
+</code></pre></div></td></tr></table></div>
+<h4 id="rhel-9-cgroupsv2_2">RHEL 9 - cgroupsv2</h4>
+<p>In RHEL 9, we only have to create our cgroup and then attach the process to it.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel9 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">mkdir</span><span class="w"> </span><span class="n">test</span>
+<span class="o">[</span><span class="n">root@rhel9 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">ls</span><span class="w"> </span><span class="n">test</span>
+<span class="n">cgroup</span><span class="p">.</span><span class="n">controllers</span><span class="w">      </span><span class="n">cgroup</span><span class="p">.</span><span class="n">type</span><span class="w">            </span><span class="n">cpuset</span><span class="p">.</span><span class="n">cpus</span><span class="p">.</span><span class="k">partition</span><span class="w">  </span><span class="n">memory</span><span class="p">.</span><span class="n">events</span><span class="p">.</span><span class="k">local</span><span class="w">  </span><span class="n">memory</span><span class="p">.</span><span class="n">swap</span><span class="p">.</span><span class="n">events</span>
+<span class="n">cgroup</span><span class="p">.</span><span class="n">events</span><span class="w">           </span><span class="n">cpu</span><span class="p">.</span><span class="n">idle</span><span class="w">               </span><span class="n">cpuset</span><span class="p">.</span><span class="n">mems</span><span class="w">            </span><span class="n">memory</span><span class="p">.</span><span class="n">high</span><span class="w">          </span><span class="n">memory</span><span class="p">.</span><span class="n">swap</span><span class="p">.</span><span class="n">high</span>
+<span class="n">cgroup</span><span class="p">.</span><span class="n">freeze</span><span class="w">           </span><span class="n">cpu</span><span class="p">.</span><span class="nf">max</span><span class="w">                </span><span class="n">cpuset</span><span class="p">.</span><span class="n">mems</span><span class="p">.</span><span class="n">effective</span><span class="w">  </span><span class="n">memory</span><span class="p">.</span><span class="n">low</span><span class="w">           </span><span class="n">memory</span><span class="p">.</span><span class="n">swap</span><span class="p">.</span><span class="nf">max</span>
+<span class="n">cgroup</span><span class="p">.</span><span class="k">kill</span><span class="w">             </span><span class="n">cpu</span><span class="p">.</span><span class="nf">max</span><span class="p">.</span><span class="n">burst</span><span class="w">          </span><span class="n">io</span><span class="p">.</span><span class="n">bfq</span><span class="p">.</span><span class="n">weight</span><span class="w">          </span><span class="n">memory</span><span class="p">.</span><span class="nf">max</span><span class="w">           </span><span class="n">pids</span><span class="p">.</span><span class="k">current</span>
+<span class="n">cgroup</span><span class="p">.</span><span class="nf">max</span><span class="p">.</span><span class="k">depth</span><span class="w">        </span><span class="n">cpu</span><span class="p">.</span><span class="n">pressure</span><span class="w">           </span><span class="n">io</span><span class="p">.</span><span class="n">latency</span><span class="w">             </span><span class="n">memory</span><span class="p">.</span><span class="nf">min</span><span class="w">           </span><span class="n">pids</span><span class="p">.</span><span class="n">events</span>
+<span class="n">cgroup</span><span class="p">.</span><span class="nf">max</span><span class="p">.</span><span class="n">descendants</span><span class="w">  </span><span class="n">cpu</span><span class="p">.</span><span class="n">stat</span><span class="w">               </span><span class="n">io</span><span class="p">.</span><span class="nf">max</span><span class="w">                 </span><span class="n">memory</span><span class="p">.</span><span class="n">numa_stat</span><span class="w">     </span><span class="n">pids</span><span class="p">.</span><span class="nf">max</span>
+<span class="n">cgroup</span><span class="p">.</span><span class="n">procs</span><span class="w">            </span><span class="n">cpu</span><span class="p">.</span><span class="n">weight</span><span class="w">             </span><span class="n">io</span><span class="p">.</span><span class="n">pressure</span><span class="w">            </span><span class="n">memory</span><span class="p">.</span><span class="n">oom</span><span class="p">.</span><span class="k">group</span>
+<span class="n">cgroup</span><span class="p">.</span><span class="n">stat</span><span class="w">             </span><span class="n">cpu</span><span class="p">.</span><span class="n">weight</span><span class="p">.</span><span class="n">nice</span><span class="w">        </span><span class="n">io</span><span class="p">.</span><span class="n">stat</span><span class="w">                </span><span class="n">memory</span><span class="p">.</span><span class="n">pressure</span>
+<span class="n">cgroup</span><span class="p">.</span><span class="n">subtree_control</span><span class="w">  </span><span class="n">cpuset</span><span class="p">.</span><span class="n">cpus</span><span class="w">            </span><span class="n">memory</span><span class="p">.</span><span class="k">current</span><span class="w">         </span><span class="n">memory</span><span class="p">.</span><span class="n">stat</span>
+<span class="n">cgroup</span><span class="p">.</span><span class="n">threads</span><span class="w">          </span><span class="n">cpuset</span><span class="p">.</span><span class="n">cpus</span><span class="p">.</span><span class="n">effective</span><span class="w">  </span><span class="n">memory</span><span class="p">.</span><span class="n">events</span><span class="w">          </span><span class="n">memory</span><span class="p">.</span><span class="n">swap</span><span class="p">.</span><span class="k">current</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel9 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">test</span><span class="o">/</span><span class="n">cgroup</span><span class="p">.</span><span class="n">procs</span><span class="w"> </span>
+<span class="o">[</span><span class="n">root@rhel9 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="err">$$</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">test</span><span class="o">/</span><span class="n">cgroup</span><span class="p">.</span><span class="n">procs</span>
+<span class="o">[</span><span class="n">root@rhel9 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">test</span><span class="o">/</span><span class="n">cgroup</span><span class="p">.</span><span class="n">procs</span><span class="w"> </span>
+<span class="mi">1433</span>
+<span class="mi">1484</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel9 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w">  </span><span class="n">systemd</span><span class="o">-</span><span class="n">cgls</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">tail</span>
+<span class="err">│</span><span class="w"> </span><span class="err">│</span><span class="w"> </span><span class="err">└─</span><span class="n">getty</span><span class="nv">@tty1</span><span class="p">.</span><span class="n">service</span><span class="w"> </span><span class="p">(</span><span class="n">#3136</span><span class="p">)</span>
+<span class="err">│</span><span class="w"> </span><span class="err">│</span><span class="w">   </span><span class="err">→</span><span class="w"> </span><span class="n">trusted</span><span class="p">.</span><span class="nl">invocation_id</span><span class="p">:</span><span class="w"> </span><span class="mi">08</span><span class="n">fe123af73c43a6a0cac73661212aa8</span>
+<span class="err">│</span><span class="w"> </span><span class="err">│</span><span class="w">   </span><span class="err">└─</span><span class="mi">736</span><span class="w"> </span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">agetty</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="o">-</span><span class="n">p</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="err">\</span><span class="n">u</span><span class="w"> </span><span class="o">--</span><span class="n">noclear</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">linux</span>
+<span class="err">│</span><span class="w"> </span><span class="err">└─</span><span class="n">systemd</span><span class="o">-</span><span class="n">logind</span><span class="p">.</span><span class="n">service</span><span class="w"> </span><span class="p">(</span><span class="n">#2725</span><span class="p">)</span>
+<span class="err">│</span><span class="w">   </span><span class="err">→</span><span class="w"> </span><span class="n">trusted</span><span class="p">.</span><span class="nl">invocation_id</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="n">aa43cd55b448ab9d9ba2d5660ad802</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└─</span><span class="mi">698</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">systemd</span><span class="o">-</span><span class="n">logind</span>
+<span class="err">└─</span><span class="n">test</span><span class="w"> </span><span class="p">(</span><span class="n">#4549</span><span class="p">)</span>
+<span class="w">  </span><span class="err">├─</span><span class="mi">1433</span><span class="w"> </span><span class="o">-</span><span class="n">bash</span>
+<span class="w">  </span><span class="err">├─</span><span class="mi">1486</span><span class="w"> </span><span class="n">systemd</span><span class="o">-</span><span class="n">cgls</span>
+<span class="w">  </span><span class="err">└─</span><span class="mi">1487</span><span class="w"> </span><span class="n">tail</span>
+</code></pre></div></td></tr></table></div>
+<h3 id="pin-the-cgroup-to-specific-cpus">Pin the cgroup to specific CPUs</h3>
+<p>We can restrict the cgroup to run on CPUs 2 and 3 only. We can then generate load with 2 processes to verify that the
+cgroup is really restricted to these CPUs. Finally, use <code class="highlight">taskset</code> to check the CPU set and use <code class="highlight">mpstat</code> to check CPU usage.
+Also read the cgroup's CPU stats.</p>
+<h4 id="rhel-8-cgroupsv1_2">RHEL 8 - cgroupsv1</h4>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="ss">&quot;2-3&quot;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">cpuset</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">cpuset</span><span class="p">.</span><span class="n">cpus</span>
+<span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="n">bash</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="ss">&quot;while true; do let i++; done&quot;</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">done</span>
+<span class="o">[</span><span class="n">1</span><span class="o">]</span><span class="w"> </span><span class="mi">5764</span>
+<span class="o">[</span><span class="n">2</span><span class="o">]</span><span class="w"> </span><span class="mi">5765</span>
+</code></pre></div></td></tr></table></div>
+<p>In a different terminal:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel87 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">taskset</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="o">-</span><span class="n">p</span><span class="w"> </span><span class="mi">5764</span>
+<span class="n">pid</span><span class="w"> </span><span class="mi">5764</span><span class="err">&#39;</span><span class="n">s</span><span class="w"> </span><span class="k">current</span><span class="w"> </span><span class="n">affinity</span><span class="w"> </span><span class="nl">list</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span>
+<span class="o">[</span><span class="n">root@rhel87 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">mpstat</span><span class="w">  </span><span class="o">-</span><span class="n">P</span><span class="w"> </span><span class="ow">ALL</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span>
+<span class="n">Linux</span><span class="w"> </span><span class="mf">4.18.0</span><span class="o">-</span><span class="mf">425.13.1</span><span class="p">.</span><span class="n">el8_7</span><span class="p">.</span><span class="n">x86_64</span><span class="w"> </span><span class="p">(</span><span class="n">rhel87</span><span class="p">)</span><span class="w">     </span><span class="mi">03</span><span class="o">/</span><span class="mi">24</span><span class="o">/</span><span class="mi">2023</span><span class="w">  </span><span class="n">_x86_64_</span><span class="w">    </span><span class="p">(</span><span class="mi">4</span><span class="w"> </span><span class="n">CPU</span><span class="p">)</span>
+
+<span class="mi">06</span><span class="err">:</span><span class="mi">53</span><span class="err">:</span><span class="mi">40</span><span class="w"> </span><span class="n">AM</span><span class="w">  </span><span class="n">CPU</span><span class="w">    </span><span class="o">%</span><span class="n">usr</span><span class="w">   </span><span class="o">%</span><span class="n">nice</span><span class="w">    </span><span class="o">%</span><span class="n">sys</span><span class="w"> </span><span class="o">%</span><span class="n">iowait</span><span class="w">    </span><span class="o">%</span><span class="n">irq</span><span class="w">   </span><span class="o">%</span><span class="n">soft</span><span class="w">  </span><span class="o">%</span><span class="n">steal</span><span class="w">  </span><span class="o">%</span><span class="n">guest</span><span class="w">  </span><span class="o">%</span><span class="n">gnice</span><span class="w">   </span><span class="o">%</span><span class="n">idle</span>
+<span class="mi">06</span><span class="err">:</span><span class="mi">53</span><span class="err">:</span><span class="mi">41</span><span class="w"> </span><span class="n">AM</span><span class="w">  </span><span class="ow">all</span><span class="w">   </span><span class="mf">50.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">50.00</span>
+<span class="mi">06</span><span class="err">:</span><span class="mi">53</span><span class="err">:</span><span class="mi">41</span><span class="w"> </span><span class="n">AM</span><span class="w">    </span><span class="mi">0</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">  </span><span class="mf">100.00</span>
+<span class="mi">06</span><span class="err">:</span><span class="mi">53</span><span class="err">:</span><span class="mi">41</span><span class="w"> </span><span class="n">AM</span><span class="w">    </span><span class="mi">1</span><span class="w">    </span><span class="mf">0.99</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">99.01</span>
+<span class="mi">06</span><span class="err">:</span><span class="mi">53</span><span class="err">:</span><span class="mi">41</span><span class="w"> </span><span class="n">AM</span><span class="w">    </span><span class="mi">2</span><span class="w">  </span><span class="mf">100.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span>
+<span class="mi">06</span><span class="err">:</span><span class="mi">53</span><span class="err">:</span><span class="mi">41</span><span class="w"> </span><span class="n">AM</span><span class="w">    </span><span class="mi">3</span><span class="w">  </span><span class="mf">100.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span>
+
+<span class="nl">Average</span><span class="p">:</span><span class="w">     </span><span class="n">CPU</span><span class="w">    </span><span class="o">%</span><span class="n">usr</span><span class="w">   </span><span class="o">%</span><span class="n">nice</span><span class="w">    </span><span class="o">%</span><span class="n">sys</span><span class="w"> </span><span class="o">%</span><span class="n">iowait</span><span class="w">    </span><span class="o">%</span><span class="n">irq</span><span class="w">   </span><span class="o">%</span><span class="n">soft</span><span class="w">  </span><span class="o">%</span><span class="n">steal</span><span class="w">  </span><span class="o">%</span><span class="n">guest</span><span class="w">  </span><span class="o">%</span><span class="n">gnice</span><span class="w">   </span><span class="o">%</span><span class="n">idle</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">     </span><span class="ow">all</span><span class="w">   </span><span class="mf">50.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">50.00</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">0</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">  </span><span class="mf">100.00</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">1</span><span class="w">    </span><span class="mf">0.99</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">99.01</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">2</span><span class="w">  </span><span class="mf">100.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">3</span><span class="w">  </span><span class="mf">100.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span>
+</code></pre></div></td></tr></table></div>
+<h4 id="rhel-9-cgroupsv2_3">RHEL 9 - cgroupsv2</h4>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel9 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="ss">&quot;2-3&quot;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">test</span><span class="o">/</span><span class="n">cpuset</span><span class="p">.</span><span class="n">cpus</span>
+<span class="o">[</span><span class="n">root@rhel9 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel9 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="n">bash</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="ss">&quot;while true; do let i++; done&quot;</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">done</span>
+<span class="o">[</span><span class="n">1</span><span class="o">]</span><span class="w"> </span><span class="mi">1489</span>
+<span class="o">[</span><span class="n">2</span><span class="o">]</span><span class="w"> </span><span class="mi">1490</span>
+</code></pre></div></td></tr></table></div>
+<p>In a different terminal:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel9 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">taskset</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="o">-</span><span class="n">p</span><span class="w"> </span><span class="mi">1489</span>
+<span class="n">pid</span><span class="w"> </span><span class="mi">1489</span><span class="err">&#39;</span><span class="n">s</span><span class="w"> </span><span class="k">current</span><span class="w"> </span><span class="n">affinity</span><span class="w"> </span><span class="nl">list</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span>
+<span class="o">[</span><span class="n">root@rhel9 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">mpstat</span><span class="w">  </span><span class="o">-</span><span class="n">P</span><span class="w"> </span><span class="ow">ALL</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">Linux</span><span class="w"> </span><span class="mf">5.14.0</span><span class="o">-</span><span class="mf">162.18.1</span><span class="p">.</span><span class="n">el9_1</span><span class="p">.</span><span class="n">x86_64</span><span class="w"> </span><span class="p">(</span><span class="n">rhel9</span><span class="p">)</span><span class="w">  </span><span class="mi">03</span><span class="o">/</span><span class="mi">23</span><span class="o">/</span><span class="mi">23</span><span class="w">    </span><span class="n">_x86_64_</span><span class="w">    </span><span class="p">(</span><span class="mi">4</span><span class="w"> </span><span class="n">CPU</span><span class="p">)</span>
+
+<span class="mi">12</span><span class="err">:</span><span class="mi">40</span><span class="err">:</span><span class="mi">36</span><span class="w">     </span><span class="n">CPU</span><span class="w">    </span><span class="o">%</span><span class="n">usr</span><span class="w">   </span><span class="o">%</span><span class="n">nice</span><span class="w">    </span><span class="o">%</span><span class="n">sys</span><span class="w"> </span><span class="o">%</span><span class="n">iowait</span><span class="w">    </span><span class="o">%</span><span class="n">irq</span><span class="w">   </span><span class="o">%</span><span class="n">soft</span><span class="w">  </span><span class="o">%</span><span class="n">steal</span><span class="w">  </span><span class="o">%</span><span class="n">guest</span><span class="w">  </span><span class="o">%</span><span class="n">gnice</span><span class="w">   </span><span class="o">%</span><span class="n">idle</span>
+<span class="mi">12</span><span class="err">:</span><span class="mi">40</span><span class="err">:</span><span class="mi">37</span><span class="w">     </span><span class="ow">all</span><span class="w">   </span><span class="mf">41.15</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">8.73</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.25</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">49.88</span>
+<span class="mi">12</span><span class="err">:</span><span class="mi">40</span><span class="err">:</span><span class="mi">37</span><span class="w">       </span><span class="mi">0</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">  </span><span class="mf">100.00</span>
+<span class="mi">12</span><span class="err">:</span><span class="mi">40</span><span class="err">:</span><span class="mi">37</span><span class="w">       </span><span class="mi">1</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">  </span><span class="mf">100.00</span>
+<span class="mi">12</span><span class="err">:</span><span class="mi">40</span><span class="err">:</span><span class="mi">37</span><span class="w">       </span><span class="mi">2</span><span class="w">   </span><span class="mf">83.17</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">15.84</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.99</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span>
+<span class="mi">12</span><span class="err">:</span><span class="mi">40</span><span class="err">:</span><span class="mi">37</span><span class="w">       </span><span class="mi">3</span><span class="w">   </span><span class="mf">81.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">19.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span>
+
+<span class="nl">Average</span><span class="p">:</span><span class="w">     </span><span class="n">CPU</span><span class="w">    </span><span class="o">%</span><span class="n">usr</span><span class="w">   </span><span class="o">%</span><span class="n">nice</span><span class="w">    </span><span class="o">%</span><span class="n">sys</span><span class="w"> </span><span class="o">%</span><span class="n">iowait</span><span class="w">    </span><span class="o">%</span><span class="n">irq</span><span class="w">   </span><span class="o">%</span><span class="n">soft</span><span class="w">  </span><span class="o">%</span><span class="n">steal</span><span class="w">  </span><span class="o">%</span><span class="n">guest</span><span class="w">  </span><span class="o">%</span><span class="n">gnice</span><span class="w">   </span><span class="o">%</span><span class="n">idle</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">     </span><span class="ow">all</span><span class="w">   </span><span class="mf">41.15</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">8.73</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.25</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">49.88</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">0</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">  </span><span class="mf">100.00</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">1</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">  </span><span class="mf">100.00</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">2</span><span class="w">   </span><span class="mf">83.17</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">15.84</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.99</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">3</span><span class="w">   </span><span class="mf">81.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">19.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span>
+</code></pre></div></td></tr></table></div>
+<h3 id="control-cpu-quotas">Control CPU quotas</h3>
+<p>By default, CFS bandwidth control will monitor CPU bandwidth over a <code class="highlight">period</code> of 100000 microseconds (0.1 seconds). The
+permitted <code class="highlight">quota</code> is unlimited (<code class="highlight">-1</code> for cgroupsv1, <code class="highlight">max</code> for cgroupsv2).</p>
+<p>We will instruct CFS to use a period of 1 second (the maximum)
+and to allow our cgroup to run for a maximum quota of 0.1 seconds. Hence, in total, we should see 10% of CPU utilization
+spread over the available cores. You will have to add up <code class="highlight"><span class="nf">%usr</span></code> and <code class="highlight"><span class="nf">%sys</span></code>, given that the kernel must spend some time in
+kernel space switching between our 2 processes.
+Our quota can also exceed an allocation of 100%. For example by allocating <code class="highlight">quota = 2x period</code>, 2 full cores worth of
+CPU time will be given to the cgroup.</p>
+<h4 id="rhel-8-cgroupsv1_3">RHEL 8 - cgroupsv1</h4>
+<p>For RHEL 8, the quota is set with file <code class="highlight">cpu.cfs_quota_us</code>. The period is set with file <code class="highlight">cpu.cfs_period_us</code>.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">cpu</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">cpu</span><span class="p">.</span><span class="n">cfs_period_us</span><span class="w"> </span>
+<span class="mi">100000</span>
+<span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">cpu</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">cpu</span><span class="p">.</span><span class="n">cfs_quota_us</span><span class="w"> </span>
+<span class="o">-</span><span class="mi">1</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">cpu</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">cpu</span><span class="p">.</span><span class="n">cfs_period_us</span>
+<span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="mi">100000</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">cpu</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">cpu</span><span class="p">.</span><span class="n">cfs_quota_us</span><span class="w"> </span>
+<span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">mpstat</span><span class="w">  </span><span class="o">-</span><span class="n">P</span><span class="w"> </span><span class="ow">ALL</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">tail</span><span class="w"> </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="mi">7</span>
+
+<span class="nl">Average</span><span class="p">:</span><span class="w">     </span><span class="n">CPU</span><span class="w">    </span><span class="o">%</span><span class="n">usr</span><span class="w">   </span><span class="o">%</span><span class="n">nice</span><span class="w">    </span><span class="o">%</span><span class="n">sys</span><span class="w"> </span><span class="o">%</span><span class="n">iowait</span><span class="w">    </span><span class="o">%</span><span class="n">irq</span><span class="w">   </span><span class="o">%</span><span class="n">soft</span><span class="w">  </span><span class="o">%</span><span class="n">steal</span><span class="w">  </span><span class="o">%</span><span class="n">guest</span><span class="w">  </span><span class="o">%</span><span class="n">gnice</span><span class="w">   </span><span class="o">%</span><span class="n">idle</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">     </span><span class="ow">all</span><span class="w">    </span><span class="mf">2.63</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.08</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.10</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">97.20</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">0</span><span class="w">    </span><span class="mf">0.10</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.10</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.10</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">99.70</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">1</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.10</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">99.90</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">2</span><span class="w">    </span><span class="mf">5.31</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.10</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.20</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">94.39</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">3</span><span class="w">    </span><span class="mf">5.09</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.10</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">94.81</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="mi">2000000</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">cpu</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">cpu</span><span class="p">.</span><span class="n">cfs_quota_us</span>
+<span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">mpstat</span><span class="w">  </span><span class="o">-</span><span class="n">P</span><span class="w"> </span><span class="ow">ALL</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">tail</span><span class="w"> </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="mi">7</span>
+
+<span class="nl">Average</span><span class="p">:</span><span class="w">     </span><span class="n">CPU</span><span class="w">    </span><span class="o">%</span><span class="n">usr</span><span class="w">   </span><span class="o">%</span><span class="n">nice</span><span class="w">    </span><span class="o">%</span><span class="n">sys</span><span class="w"> </span><span class="o">%</span><span class="n">iowait</span><span class="w">    </span><span class="o">%</span><span class="n">irq</span><span class="w">   </span><span class="o">%</span><span class="n">soft</span><span class="w">  </span><span class="o">%</span><span class="n">steal</span><span class="w">  </span><span class="o">%</span><span class="n">guest</span><span class="w">  </span><span class="o">%</span><span class="n">gnice</span><span class="w">   </span><span class="o">%</span><span class="n">idle</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">     </span><span class="ow">all</span><span class="w">   </span><span class="mf">49.86</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.03</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.18</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.03</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">49.91</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">0</span><span class="w">    </span><span class="mf">0.10</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.10</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">99.80</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">1</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">  </span><span class="mf">100.00</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">2</span><span class="w">   </span><span class="mf">99.70</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.30</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">3</span><span class="w">   </span><span class="mf">99.50</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.40</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.10</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span>
+</code></pre></div></td></tr></table></div>
+<h4 id="rhel-9-cgroupsv2_4">RHEL 9 - cgroupsv2</h4>
+<p>For RHEL 9, the quota and the period are set with file <code class="highlight">cpu.max</code> which holds <code class="highlight">cfs_quota_us</code> on the left-hand side and
+<code class="highlight">cfs_period_us</code> on the right-hand side.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel9 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="ss">&quot;100000 1000000&quot;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">test</span><span class="o">/</span><span class="n">cpu</span><span class="p">.</span><span class="nf">max</span>
+<span class="o">[</span><span class="n">root@rhel9 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">test</span><span class="o">/</span><span class="n">cpu</span><span class="p">.</span><span class="nf">max</span>
+<span class="mi">100000</span><span class="w"> </span><span class="mi">1000000</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel9 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">mpstat</span><span class="w">  </span><span class="o">-</span><span class="n">P</span><span class="w"> </span><span class="ow">ALL</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">tail</span><span class="w"> </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="mi">7</span>
+
+<span class="nl">Average</span><span class="p">:</span><span class="w">     </span><span class="n">CPU</span><span class="w">    </span><span class="o">%</span><span class="n">usr</span><span class="w">   </span><span class="o">%</span><span class="n">nice</span><span class="w">    </span><span class="o">%</span><span class="n">sys</span><span class="w"> </span><span class="o">%</span><span class="n">iowait</span><span class="w">    </span><span class="o">%</span><span class="n">irq</span><span class="w">   </span><span class="o">%</span><span class="n">soft</span><span class="w">  </span><span class="o">%</span><span class="n">steal</span><span class="w">  </span><span class="o">%</span><span class="n">guest</span><span class="w">  </span><span class="o">%</span><span class="n">gnice</span><span class="w">   </span><span class="o">%</span><span class="n">idle</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">     </span><span class="ow">all</span><span class="w">    </span><span class="mf">2.08</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.48</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.03</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">97.42</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">0</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">  </span><span class="mf">100.00</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">1</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.10</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">99.90</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">2</span><span class="w">    </span><span class="mf">4.21</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.90</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">94.89</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">3</span><span class="w">    </span><span class="mf">4.10</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.90</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.10</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">94.90</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel9 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="ss">&quot;2000000 1000000&quot;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">test</span><span class="o">/</span><span class="n">cpu</span><span class="p">.</span><span class="nf">max</span>
+<span class="o">[</span><span class="n">root@rhel9 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">test</span><span class="o">/</span><span class="n">cpu</span><span class="p">.</span><span class="nf">max</span>
+<span class="mi">2000000</span><span class="w"> </span><span class="mi">1000000</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel9 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">mpstat</span><span class="w">  </span><span class="o">-</span><span class="n">P</span><span class="w"> </span><span class="ow">ALL</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">tail</span><span class="w"> </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="mi">7</span>
+
+<span class="nl">Average</span><span class="p">:</span><span class="w">     </span><span class="n">CPU</span><span class="w">    </span><span class="o">%</span><span class="n">usr</span><span class="w">   </span><span class="o">%</span><span class="n">nice</span><span class="w">    </span><span class="o">%</span><span class="n">sys</span><span class="w"> </span><span class="o">%</span><span class="n">iowait</span><span class="w">    </span><span class="o">%</span><span class="n">irq</span><span class="w">   </span><span class="o">%</span><span class="n">soft</span><span class="w">  </span><span class="o">%</span><span class="n">steal</span><span class="w">  </span><span class="o">%</span><span class="n">guest</span><span class="w">  </span><span class="o">%</span><span class="n">gnice</span><span class="w">   </span><span class="o">%</span><span class="n">idle</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">     </span><span class="ow">all</span><span class="w">   </span><span class="mf">41.25</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">8.25</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.25</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.25</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">50.00</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">0</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">  </span><span class="mf">100.00</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">1</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">  </span><span class="mf">100.00</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">2</span><span class="w">   </span><span class="mf">82.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">17.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">1.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">3</span><span class="w">   </span><span class="mf">83.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">16.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">1.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span>
+</code></pre></div></td></tr></table></div>
+<h3 id="inspect-cgroup-cpu-stats">Inspect cgroup CPU stats</h3>
+<p>The cgroup CPU stats allow us to determine - among other things - how many periods elapsed, how many of these periods
+were throttled, and the total time for which entities of the cgroup have been throttled.</p>
+<h4 id="rhel-8-cgroupsv1_4">RHEL 8 - cgroupsv1</h4>
+<p>cgroupsv1 has a limited set of statistics:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">cpu</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">cpu</span><span class="p">.</span><span class="n">stat</span>
+<span class="n">nr_periods</span><span class="w"> </span><span class="mi">166</span>
+<span class="n">nr_throttled</span><span class="w"> </span><span class="mi">108</span>
+<span class="n">throttled_time</span><span class="w"> </span><span class="mi">186818842869</span>
+</code></pre></div></td></tr></table></div>
+<h4 id="rhel-9-cgroupsv2_5">RHEL 9 - cgroupsv2</h4>
+<p>cgroupsv2 offers us more counters than cgroupsv1:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel9 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">test</span><span class="o">/</span><span class="n">cpu</span><span class="p">.</span><span class="n">stat</span><span class="w"> </span>
+<span class="n">usage_usec</span><span class="w"> </span><span class="mi">1702534895</span>
+<span class="n">user_usec</span><span class="w"> </span><span class="mi">1411862526</span>
+<span class="n">system_usec</span><span class="w"> </span><span class="mi">290672369</span>
+<span class="n">nr_periods</span><span class="w"> </span><span class="mi">379</span>
+<span class="n">nr_throttled</span><span class="w"> </span><span class="mi">338</span>
+<span class="n">throttled_usec</span><span class="w"> </span><span class="mi">570835096</span>
+<span class="n">nr_bursts</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">burst_usec</span><span class="w"> </span><span class="mi">831683</span>
+</code></pre></div></td></tr></table></div>
+<h3 id="removing-the-cgroup">Removing the cgroup</h3>
+<p>In order to remove the cgroup, first remove all attached processes. You can do so by attaching the process to the root
+<code class="highlight">/sys/fs/cgroup</code>. Then, delete the cgroup's directory.</p>
+<h4 id="rhel-8-cgroupsv1_5">RHEL 8 - cgroupsv1</h4>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="err">$$</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">cpu</span><span class="o">/</span><span class="n">cgroup</span><span class="p">.</span><span class="n">procs</span>
+<span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="err">$$</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">cpuset</span><span class="o">/</span><span class="n">cgroup</span><span class="p">.</span><span class="n">procs</span>
+<span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">rmdir</span><span class="w"> </span><span class="n">cpu</span><span class="o">/</span><span class="n">test</span>
+<span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">rmdir</span><span class="w"> </span><span class="n">cpuset</span><span class="o">/</span><span class="n">test</span>
+<span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span>
+</code></pre></div></td></tr></table></div>
+<h4 id="rhel-9-cgroupsv2_6">RHEL 9 - cgroupsv2</h4>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel9 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">test</span><span class="o">/</span><span class="n">cgroup</span><span class="p">.</span><span class="n">procs</span>
+<span class="mi">1433</span>
+<span class="mi">2047</span>
+<span class="o">[</span><span class="n">root@rhel9 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="mi">1433</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">cgroup</span><span class="p">.</span><span class="n">procs</span><span class="w"> </span>
+<span class="o">[</span><span class="n">root@rhel9 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">test</span><span class="o">/</span><span class="n">cgroup</span><span class="p">.</span><span class="n">procs</span>
+<span class="o">[</span><span class="n">root@rhel9 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">rmdir</span><span class="w"> </span><span class="n">test</span>
+<span class="o">[</span><span class="n">root@rhel9 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span>
+</code></pre></div></td></tr></table></div>
+<h3 id="repeating-the-tests-with-a-single-process-on-a-single-cpu">Repeating the tests with a single process on a single CPU</h3>
+<p>For the sake of clarity and simplicity, we will repeat the sequence of steps for a single thread pinned to a single
+CPU. We will create the cgroup, pin it to CPU 3, limit its quota to 0.1ms with a period of 1 second for a CPU share of
+10%. We then attach the current bash session to the cgroup and run a CPU consuming process in the foreground.</p>
+<p>In a different terminal, we then check CPU utilization with <code class="highlight">mpstat</code> and CPU statistics with <code class="highlight">cat /sys/fs/cgroup/test/cpu.stat</code>.</p>
+<h4 id="rhel-8-cgroupsv1_6">RHEL 8 - cgroupsv1</h4>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">mkdir</span><span class="w"> </span><span class="n">cpuset</span><span class="o">/</span><span class="n">test</span><span class="p">;</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">cpuset</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">cpuset</span><span class="p">.</span><span class="n">cpus</span><span class="p">;</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="n">cpuset</span><span class="o">/</span><span class="n">cpuset</span><span class="p">.</span><span class="n">mems</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">cpuset</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">cpuset</span><span class="p">.</span><span class="n">mems</span><span class="p">;</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="err">$$</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">cpuset</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">cgroup</span><span class="p">.</span><span class="n">procs</span><span class="p">;</span><span class="w"> </span><span class="n">mkdir</span><span class="w"> </span><span class="n">cpu</span><span class="o">/</span><span class="n">test</span><span class="p">;</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="mi">1000000</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">cpu</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">cpu</span><span class="p">.</span><span class="n">cfs_period_us</span><span class="p">;</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="mi">100000</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">cpu</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">cpu</span><span class="p">.</span><span class="n">cfs_quota_us</span><span class="p">;</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="err">$$</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">cpu</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">cgroup</span><span class="p">.</span><span class="n">procs</span><span class="p">;</span><span class="w">  </span><span class="n">bash</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="ss">&quot;while true; do let i++; done&quot;</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">mpstat</span><span class="w">  </span><span class="o">-</span><span class="n">P</span><span class="w"> </span><span class="ow">ALL</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">tail</span><span class="w"> </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="mi">7</span>
+
+<span class="nl">Average</span><span class="p">:</span><span class="w">     </span><span class="n">CPU</span><span class="w">    </span><span class="o">%</span><span class="n">usr</span><span class="w">   </span><span class="o">%</span><span class="n">nice</span><span class="w">    </span><span class="o">%</span><span class="n">sys</span><span class="w"> </span><span class="o">%</span><span class="n">iowait</span><span class="w">    </span><span class="o">%</span><span class="n">irq</span><span class="w">   </span><span class="o">%</span><span class="n">soft</span><span class="w">  </span><span class="o">%</span><span class="n">steal</span><span class="w">  </span><span class="o">%</span><span class="n">guest</span><span class="w">  </span><span class="o">%</span><span class="n">gnice</span><span class="w">   </span><span class="o">%</span><span class="n">idle</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">     </span><span class="ow">all</span><span class="w">    </span><span class="mf">2.50</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.25</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">97.25</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">0</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">  </span><span class="mf">100.00</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">1</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">1.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">99.00</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">2</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">  </span><span class="mf">100.00</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">3</span><span class="w">   </span><span class="mf">10.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">90.00</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel87 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="err">{</span><span class="mf">1..4</span><span class="err">}</span><span class="p">;</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="nc">date</span><span class="p">;</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">fs</span><span class="o">/</span><span class="n">cgroup</span><span class="o">/</span><span class="n">cpu</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">cpu</span><span class="p">.</span><span class="n">stat</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="n">sleep</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">done</span>
+<span class="n">Fri</span><span class="w"> </span><span class="n">Mar</span><span class="w"> </span><span class="mi">24</span><span class="w"> </span><span class="mi">07</span><span class="err">:</span><span class="mi">18</span><span class="err">:</span><span class="mi">57</span><span class="w"> </span><span class="n">EDT</span><span class="w"> </span><span class="mi">2023</span>
+<span class="n">nr_periods</span><span class="w"> </span><span class="mi">348</span>
+<span class="n">nr_throttled</span><span class="w"> </span><span class="mi">348</span>
+<span class="n">throttled_time</span><span class="w"> </span><span class="mi">312188691325</span>
+<span class="n">Fri</span><span class="w"> </span><span class="n">Mar</span><span class="w"> </span><span class="mi">24</span><span class="w"> </span><span class="mi">07</span><span class="err">:</span><span class="mi">18</span><span class="err">:</span><span class="mi">58</span><span class="w"> </span><span class="n">EDT</span><span class="w"> </span><span class="mi">2023</span>
+<span class="n">nr_periods</span><span class="w"> </span><span class="mi">349</span>
+<span class="n">nr_throttled</span><span class="w"> </span><span class="mi">349</span>
+<span class="n">throttled_time</span><span class="w"> </span><span class="mi">313088840213</span>
+<span class="n">Fri</span><span class="w"> </span><span class="n">Mar</span><span class="w"> </span><span class="mi">24</span><span class="w"> </span><span class="mi">07</span><span class="err">:</span><span class="mi">18</span><span class="err">:</span><span class="mi">59</span><span class="w"> </span><span class="n">EDT</span><span class="w"> </span><span class="mi">2023</span>
+<span class="n">nr_periods</span><span class="w"> </span><span class="mi">350</span>
+<span class="n">nr_throttled</span><span class="w"> </span><span class="mi">350</span>
+<span class="n">throttled_time</span><span class="w"> </span><span class="mi">313986999920</span>
+<span class="n">Fri</span><span class="w"> </span><span class="n">Mar</span><span class="w"> </span><span class="mi">24</span><span class="w"> </span><span class="mi">07</span><span class="err">:</span><span class="mi">19</span><span class="err">:</span><span class="mi">00</span><span class="w"> </span><span class="n">EDT</span><span class="w"> </span><span class="mi">2023</span>
+<span class="n">nr_periods</span><span class="w"> </span><span class="mi">351</span>
+<span class="n">nr_throttled</span><span class="w"> </span><span class="mi">351</span>
+<span class="n">throttled_time</span><span class="w"> </span><span class="mi">314887131053</span>
+</code></pre></div></td></tr></table></div>
+<h4 id="rhel-9-cgroupsv2_7">RHEL 9 - cgroupsv2</h4>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel9 cgroup</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">mkdir</span><span class="w"> </span><span class="n">test</span><span class="p">;</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">test</span><span class="o">/</span><span class="n">cpuset</span><span class="p">.</span><span class="n">cpus</span><span class="p">;</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="ss">&quot;100000 1000000&quot;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">test</span><span class="o">/</span><span class="n">cpu</span><span class="p">.</span><span class="nf">max</span><span class="p">;</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="err">$$</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">test</span><span class="o">/</span><span class="n">cgroup</span><span class="p">.</span><span class="n">procs</span><span class="p">;</span><span class="w">  </span><span class="n">bash</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="ss">&quot;while true; do let i++; done&quot;</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel9 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">mpstat</span><span class="w">  </span><span class="o">-</span><span class="n">P</span><span class="w"> </span><span class="ow">ALL</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">tail</span><span class="w"> </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="mi">7</span>
+
+<span class="nl">Average</span><span class="p">:</span><span class="w">     </span><span class="n">CPU</span><span class="w">    </span><span class="o">%</span><span class="n">usr</span><span class="w">   </span><span class="o">%</span><span class="n">nice</span><span class="w">    </span><span class="o">%</span><span class="n">sys</span><span class="w"> </span><span class="o">%</span><span class="n">iowait</span><span class="w">    </span><span class="o">%</span><span class="n">irq</span><span class="w">   </span><span class="o">%</span><span class="n">soft</span><span class="w">  </span><span class="o">%</span><span class="n">steal</span><span class="w">  </span><span class="o">%</span><span class="n">guest</span><span class="w">  </span><span class="o">%</span><span class="n">gnice</span><span class="w">   </span><span class="o">%</span><span class="n">idle</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">     </span><span class="ow">all</span><span class="w">    </span><span class="mf">2.50</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">97.50</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">0</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">  </span><span class="mf">100.00</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">1</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">  </span><span class="mf">100.00</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">2</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">  </span><span class="mf">100.00</span>
+<span class="nl">Average</span><span class="p">:</span><span class="w">       </span><span class="mi">3</span><span class="w">   </span><span class="mf">10.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">    </span><span class="mf">0.00</span><span class="w">   </span><span class="mf">90.00</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@rhel9 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="err">{</span><span class="mf">1..4</span><span class="err">}</span><span class="p">;</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="nc">date</span><span class="p">;</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">fs</span><span class="o">/</span><span class="n">cgroup</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">cpu</span><span class="p">.</span><span class="n">stat</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="n">sleep</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">done</span>
+<span class="n">Thu</span><span class="w"> </span><span class="n">Mar</span><span class="w"> </span><span class="mi">23</span><span class="w"> </span><span class="mi">13</span><span class="err">:</span><span class="mi">10</span><span class="err">:</span><span class="mi">57</span><span class="w"> </span><span class="n">EDT</span><span class="w"> </span><span class="mi">2023</span>
+<span class="n">usage_usec</span><span class="w"> </span><span class="mi">6201028</span>
+<span class="n">user_usec</span><span class="w"> </span><span class="mi">6198154</span>
+<span class="n">system_usec</span><span class="w"> </span><span class="mi">2873</span>
+<span class="n">nr_periods</span><span class="w"> </span><span class="mi">61</span>
+<span class="n">nr_throttled</span><span class="w"> </span><span class="mi">61</span>
+<span class="n">throttled_usec</span><span class="w"> </span><span class="mi">54732627</span>
+<span class="n">nr_bursts</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">burst_usec</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">Thu</span><span class="w"> </span><span class="n">Mar</span><span class="w"> </span><span class="mi">23</span><span class="w"> </span><span class="mi">13</span><span class="err">:</span><span class="mi">10</span><span class="err">:</span><span class="mi">58</span><span class="w"> </span><span class="n">EDT</span><span class="w"> </span><span class="mi">2023</span>
+<span class="n">usage_usec</span><span class="w"> </span><span class="mi">6300822</span>
+<span class="n">user_usec</span><span class="w"> </span><span class="mi">6297949</span>
+<span class="n">system_usec</span><span class="w"> </span><span class="mi">2873</span>
+<span class="n">nr_periods</span><span class="w"> </span><span class="mi">62</span>
+<span class="n">nr_throttled</span><span class="w"> </span><span class="mi">62</span>
+<span class="n">throttled_usec</span><span class="w"> </span><span class="mi">55631975</span>
+<span class="n">nr_bursts</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">burst_usec</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">Thu</span><span class="w"> </span><span class="n">Mar</span><span class="w"> </span><span class="mi">23</span><span class="w"> </span><span class="mi">13</span><span class="err">:</span><span class="mi">10</span><span class="err">:</span><span class="mi">59</span><span class="w"> </span><span class="n">EDT</span><span class="w"> </span><span class="mi">2023</span>
+<span class="n">usage_usec</span><span class="w"> </span><span class="mi">6400595</span>
+<span class="n">user_usec</span><span class="w"> </span><span class="mi">6397722</span>
+<span class="n">system_usec</span><span class="w"> </span><span class="mi">2873</span>
+<span class="n">nr_periods</span><span class="w"> </span><span class="mi">63</span>
+<span class="n">nr_throttled</span><span class="w"> </span><span class="mi">63</span>
+<span class="n">throttled_usec</span><span class="w"> </span><span class="mi">56531360</span>
+<span class="n">nr_bursts</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">burst_usec</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">Thu</span><span class="w"> </span><span class="n">Mar</span><span class="w"> </span><span class="mi">23</span><span class="w"> </span><span class="mi">13</span><span class="err">:</span><span class="mi">11</span><span class="err">:</span><span class="mi">00</span><span class="w"> </span><span class="n">EDT</span><span class="w"> </span><span class="mi">2023</span>
+<span class="n">usage_usec</span><span class="w"> </span><span class="mi">6500389</span><span class="w">        </span><span class="err">#</span><span class="w"> </span><span class="o">&lt;---</span><span class="w"> </span><span class="n">how</span><span class="w"> </span><span class="n">many</span><span class="w"> </span><span class="n">usecs</span><span class="w"> </span><span class="n">was</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">cgroup</span><span class="w"> </span><span class="n">active</span>
+<span class="n">user_usec</span><span class="w"> </span><span class="mi">6497515</span>
+<span class="n">system_usec</span><span class="w"> </span><span class="mi">2873</span>
+<span class="n">nr_periods</span><span class="w"> </span><span class="mi">64</span><span class="w">             </span><span class="err">#</span><span class="w"> </span><span class="o">&lt;---</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="n">periods</span><span class="w"> </span><span class="n">elapsed</span>
+<span class="n">nr_throttled</span><span class="w"> </span><span class="mi">64</span><span class="w">           </span><span class="err">#</span><span class="w"> </span><span class="o">&lt;---</span><span class="w"> </span><span class="n">how</span><span class="w"> </span><span class="n">many</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">elapsed</span><span class="w"> </span><span class="n">periods</span><span class="w"> </span><span class="n">was</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">cgroup</span><span class="w"> </span><span class="n">throttled</span><span class="w"> </span><span class="k">for</span>
+<span class="n">throttled_usec</span><span class="w"> </span><span class="mi">57430724</span><span class="w">   </span><span class="err">#</span><span class="w"> </span><span class="o">&lt;---</span><span class="w"> </span><span class="n">how</span><span class="w"> </span><span class="n">many</span><span class="w"> </span><span class="n">usecs</span><span class="w"> </span><span class="n">was</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">cgroup</span><span class="w"> </span><span class="n">throttled</span><span class="w"> </span><span class="k">for</span>
+<span class="n">nr_bursts</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">burst_usec</span><span class="w"> </span><span class="mi">0</span>
+</code></pre></div></td></tr></table></div>
+<p>We can see that the cgroup was throttled for roughly 10% of the time, as expected:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>usage_usec / (usage_usec+throttled_usec) = 6500389÷(57430724+6500389) = 0.10167802
+</code></pre></div></td></tr></table></div>
+<h2 id="using-perf-to-analyze-throttling">Using perf to analyze throttling</h2>
+<p>Unfortunately, due to time constraints, I won't be covering how to use perf to analyze throttling in this post.
+However, I will talk about this in a follow-up post, where I'll dive deeper into this topic and explore how perf can be
+used to identify and resolve throttling issues.</p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li><a href="https://lore.kernel.org/lkml/20220328132047.GD8939@worktop.programming.kicks-ass.net/T/?utm_source=pocket_saves#ma3e659f06e5b51df7e33107b66d57c843d3b6105">https://lore.kernel.org/lkml/20220328132047.GD8939@worktop.programming.kicks-ass.net/T/?utm_source=pocket_saves#ma3e659f06e5b51df7e33107b66d57c843d3b6105</a></li>
+<li><a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_monitoring_and_updating_the_kernel/assembly_using-cgroupfs-to-manually-manage-cgroups_managing-monitoring-and-updating-the-kernel">https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_monitoring_and_updating_the_kernel/assembly_using-cgroupfs-to-manually-manage-cgroups_managing-monitoring-and-updating-the-kernel</a></li>
+<li><a href="https://www.kernel.org/doc/Documentation/scheduler/sched-bwc.txt">https://www.kernel.org/doc/Documentation/scheduler/sched-bwc.txt</a></li>
+<li><a href="https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt">https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt</a></li>
+</ul>
+
+  <hr>
+<div class="md-source-file">
+  <small>
+    
+      Last update:
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 27, 2023</span>
+      
+    
+  </small>
+</div>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.efa0ade1.min.js"></script>
+      
+    
+  </body>
+</html>

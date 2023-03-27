@@ -183,10 +183,12 @@ cgroup.threads          cpuset.cpus.effective  memory.events          memory.swa
 ### Pin the cgroup to specific CPUs
 
 We can restrict the cgroup to run on CPUs 2 and 3 only. We can then generate load with 2 processes to verify that the
-cgroup is really restricted to these CPUs. Finally, use `taskset` to check the CPU set and use `mpstat` to check CPU usage.
-Also read the cgroup's CPU stats.
+cgroup is really restricted to these CPUs. Finally, in a different CLI session, use `taskset` to check the CPU set and
+use `mpstat` to check CPU usage. Also read the cgroup's CPU stats.
 
 #### RHEL 8 - cgroupsv1
+
+In a first terminal:
 
 ~~~
 [root@rhel87 cgroup]# echo "2-3" > cpuset/test/cpuset.cpus
@@ -223,6 +225,8 @@ Average:       3  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 ~~~
 
 #### RHEL 9 - cgroupsv2
+
+In a first terminal:
 
 ~~~
 [root@rhel9 cgroup]# echo "2-3" > test/cpuset.cpus
@@ -422,9 +426,13 @@ In a different terminal, we then check CPU utilization with `mpstat` and CPU sta
 
 #### RHEL 8 - cgroupsv1
 
+In terminal 1:
+
 ~~~
 [root@rhel87 cgroup]# mkdir cpuset/test; echo 3 > cpuset/test/cpuset.cpus; cat cpuset/cpuset.mems > cpuset/test/cpuset.mems; echo $$ > cpuset/test/cgroup.procs; mkdir cpu/test; echo 1000000 > cpu/test/cpu.cfs_period_us; echo 100000 > cpu/test/cpu.cfs_quota_us; echo $$ > cpu/test/cgroup.procs;  bash -c "while true; do let i++; done"
 ~~~
+
+In terminal 2:
 
 ~~~
 [root@rhel87 cgroup]# mpstat  -P ALL 1 1 | tail -n 7
@@ -459,9 +467,13 @@ throttled_time 314887131053
 
 #### RHEL 9 - cgroupsv2
 
+In terminal 1:
+
 ~~~
 [root@rhel9 cgroup]# mkdir test; echo 3 > test/cpuset.cpus; echo "100000 1000000" > test/cpu.max; echo $$ > test/cgroup.procs;  bash -c "while true; do let i++; done"
 ~~~
+
+In terminal 2:
 
 ~~~
 [root@rhel9 ~]# mpstat  -P ALL 1 1 | tail -n 7

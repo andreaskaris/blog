@@ -3,10 +3,10 @@
 ### Introduction
 
 By default, OpenShift's Prometheus stack will pull pod CPU and memory usage from kubelet's `/metrics/cadvisor` endpoint, ignoring the kubelet provided timestamps.
-Prometheus can be configured to export another `ServiceMonitor` which will read from kubelet's `/metrics/resource` endpoint, in addition to the default metrics that it is colleting.
+Prometheus can be configured to export another `ServiceMonitor` which will read from kubelet's `/metrics/resource` endpoint, in addition to the default metrics that it is collecting.
 This configuration knob / feature is called `DedicatedServiceMonitors`. In addition to exposing these new metrics via Prometheus, the feature will also reconfigure the Prometheus Adapter which will use and expose
-the new values instead of the default ones. Therefore, anything using the PodMetrics API will use the metrics exposed by `/metrics/resource` instead of the default cadvisor metrics. As an example, `oc adm top pod`
-or the HorizontalPodAutoscaler will use this.
+the new values instead of the default ones. Therefore, anything using the `PodMetrics` API will use the metrics exposed by `/metrics/resource` instead of the default cAdvisor metrics. As an example, `oc adm top pod`
+or the Horizontal Pod Autoscaler (HPA) will use this.
 
 The feature can be enabled by modifying and/or creating the `openshift-monitoring/cluster-monitoring-config` ConfigMap:
 
@@ -29,7 +29,11 @@ data:
 Here is the documentation for this option:
 
 ~~~
-When enabled is set to true, the Cluster Monitoring Operator (CMO) deploys a dedicated Service Monitor that exposes the kubelet /metrics/resource endpoint. This Service Monitor sets honorTimestamps: true and only keeps metrics that are relevant for the pod resource queries of Prometheus Adapter. Additionally, Prometheus Adapter is configured to use these dedicated metrics. Overall, this feature improves the consistency of Prometheus Adapter-based CPU usage measurements used by, for example, the oc adm top pod command or the Horizontal Pod Autoscaler.
+When enabled is set to true, the Cluster Monitoring Operator (CMO) deploys a dedicated Service Monitor that exposes
+the kubelet /metrics/resource endpoint. This Service Monitor sets honorTimestamps: true and only keeps metrics that are
+relevant for the pod resource queries of Prometheus Adapter. Additionally, Prometheus Adapter is configured to use these
+dedicated metrics. Overall, this feature improves the consistency of Prometheus Adapter-based CPU usage measurements
+used by, for example, the oc adm top pod command or the Horizontal Pod Autoscaler.
 ~~~
 > [https://docs.openshift.com/container-platform/4.12/monitoring/config-map-reference-for-the-cluster-monitoring-operator.html#dedicatedservicemonitors](https://docs.openshift.com/container-platform/4.12/monitoring/config-map-reference-for-the-cluster-monitoring-operator.html#dedicatedservicemonitors)
 
@@ -55,7 +59,7 @@ More info about `ServiceMonitors` can be found here: [https://github.com/prometh
 Let's begin with a quick look at the default settings. You can use this section to come back to if you want to compare
 the `DedicatedServiceMonitors` feature to the defaults.
 
-Prometheus normally only exposes pod CPU and memory usage via Kubelet's `/metrics/cadvisor` endpoint:
+Prometheus normally only exposes pod CPU and memory usage via kubelet's `/metrics/cadvisor` endpoint:
 
 ~~~
 - job_name: serviceMonitor/openshift-monitoring/kubelet/1
@@ -149,7 +153,7 @@ sh-4.4$ cat /etc/adapter/config.yaml
   "window": "5m"
 ~~~
 
-Therefore, anything (such as PodMetrics and the HPA) querying the Prometheus Adapter will actually read `container_cpu_usage_seconds_total`
+Therefore, anything (such as `PodMetrics` and the HPA) querying the Prometheus Adapter will actually read `container_cpu_usage_seconds_total`
 and `container_memory_working_set_bytes` metrics from Prometheus via the adapter.
 
 ### Enabling DedicatedServiceMonitors in Red Hat OpenShift Monitoring
@@ -172,10 +176,9 @@ data:
 (...)
 ~~~
 
-After enabling `DedicatedServiceMonitors`, the Prometheus Adapters will restart and Prometheus will be reconfigured. Metrics from Kubelet's `/metrics/resource` endpoint will be exposed via the Prometheus Adapter instead of the default cadvisor metrics.
+After enabling `DedicatedServiceMonitors`, the Prometheus Adapters will restart and Prometheus will be reconfigured. Metrics from kubelet's `/metrics/resource` endpoint will be exposed via the Prometheus Adapter instead of the default cAdvisor metrics.
 
-
-### New data source: Kubelet `/metrics/resource` CPU and memory usage
+### New data source: kubelet `/metrics/resource` CPU and memory usage
 
 As an example and for reference, here is some raw data from the `/metrics/resource` endpoint of kubelet. This is the data that shall be exposed by Prometheus Adapter:
 
@@ -368,7 +371,7 @@ $  oc exec -c prometheus -n openshift-monitoring prometheus-k8s-0 -- curl --data
 }
 ~~~
 
-Compare that to the default `ServiceMonitor` that's querying cadvisor:
+Compare that to the default `ServiceMonitor` that's querying cAdvisor:
 
 ~~~
 $  oc exec -c prometheus -n openshift-monitoring prometheus-k8s-0 -- curl --data-urlencode "query=container_cpu_usage_seconds_total{namespace=\"openshift-cluster-version\"}[10m]" http://localhost:9090/api/v1/query 2>/dev/null  | jq '.'

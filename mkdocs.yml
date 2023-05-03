@@ -102,6 +102,7 @@ nav:
   - Building custom release images for OpenShift: openshift/ocp-custom-release-image.md
   - CPU manager with custom MachineConfigPool: openshift/cpu-manager-with-custom-machine-config-pool.md
   - Crio vs conmon vs runc: openshift/crio-conmon-runc.md  
+  - DedicatedServiceMonitors in OpenShift Monitoring: openshift/dedicated-service-monitors.md
   - Etcd Performance tests: openshift/etcd_perf.md
   - Get vs List API Calls:  openshift/get-vs-list-api-calls.md
   - Httpbin tshark sidecar container: openshift/openshift_httpbin_tshark_sidecar.md

@@ -96,6 +96,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://andreaskaris.github.io/blog/linux/org-gnome-shell-overrides/</loc>
+         <lastmod>2023-05-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://andreaskaris.github.io/blog/linux/setting-journalctl-limits/</loc>
          <lastmod>2023-05-03</lastmod>
          <changefreq>daily</changefreq>

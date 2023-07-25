@@ -21,7 +21,13 @@ call plug#begin()
   Plug 'vim-syntastic/syntastic'
   Plug 'nvie/vim-flake8'
   Plug 'davidhalter/jedi-vim'
+  Plug 'ycm-core/YouCompleteMe'
 call plug#end()
+" For YouCompleteMe, see https://github.com/ycm-core/YouCompleteMe/issues/1751
+" https://github.com/ycm-core/YouCompleteMe/tree/master#linux-64-bit
+" PlugInstall
+" cd ~/.vim/plugged/YouCompleteMe
+" python3 install.py --clangd-completer
 
 function! Toggles()
   :nnoremap <C-g> :NERDTreeTabsToggle<CR>
@@ -69,9 +75,14 @@ function! AirlineSetup()
   let g:airline_section_c = '%F'
 endfunction
 
+function! ConfigureYCM()
+  let g:ycm_filetype_whitelist = { 'c': 1, 'cpp': 1 }
+endfunction
+
 call GenericSetup()
 call Toggles()
 call AirlineSetup()
+call ConfigureYCM()
 call DeopleteSetup()
 EOF
 ~~~
@@ -146,14 +157,20 @@ function! SetupPython()
   set smartindent
   
   " Enable Syntastic for code linting
-  set statusline+=%#warningmsg#
-  set statusline+=%{SyntasticStatuslineFlag()}
-  set statusline+=%*
-  let g:syntastic_always_populate_loc_list = 1
-  let g:syntastic_auto_loc_list = 1
-  let g:syntastic_check_on_open = 1
-  let g:syntastic_check_on_wq = 0
-  
+  " set statusline+=%#warningmsg#
+  " set statusline+=%{SyntasticStatuslineFlag()}
+  " set statusline+=%*
+  " let g:syntastic_always_populate_loc_list = 1
+  " let g:syntastic_auto_loc_list = 1
+  " let g:syntastic_check_on_open = 1
+  " let g:syntastic_check_on_wq = 0
+ 
+  " Enable Ale for code linting
+  let g:airline#extensions#ale#enabled = 1
+  let g:ale_completion_enabled = 1
+  let b:ale_fixers = ['add_blank_lines_for_python_control_statements', 'eslint', 'autoflake', 'autoimport', 'autopep8', 'black', 'isort', 'pycln', 'pyflyby', 'remove_trailing_lines', 'trim_whitespace']
+
+
   " Enable Jedi for code completion
   let g:jedi#auto_initialization = 1
   let g:jedi#popup_select_first = 1
@@ -170,5 +187,32 @@ function! SetupPython()
 endfunction
 
 call SetupPython()
+EOF
+~~~
+
+~~~
+cat <<'EOF' > ~/.vim/ftplugin/c.vim
+function! SetupC()
+  " Enable syntax highlighting
+  syntax on
+  
+  " Enable line numbers
+  set number
+  
+  " Enable filetype detection
+  filetype plugin on
+  
+  " Enable automatic indentation
+  set autoindent
+  
+  " Enable file type-specific indentation
+  set smartindent
+  
+  set colorcolumn=80
+
+  :nnoremap gd :YcmCompleter GoTo<return>
+endfunction
+
+call SetupC()
 EOF
 ~~~

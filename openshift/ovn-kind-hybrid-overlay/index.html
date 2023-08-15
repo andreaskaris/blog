@@ -19,7 +19,7 @@
         <link rel="next" href="../kind-with-private-registry/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.3">
+      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.1.21">
     
     
       
@@ -27,10 +27,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.c4a75a56.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.eebd395e.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ecc896b0.min.css">
       
       
 
@@ -109,6 +109,8 @@
         </div>
       </div>
     </div>
+    
+      
     
     
     
@@ -1020,6 +1022,8 @@
         
           
         
+          
+        
       
       
         
@@ -1434,6 +1438,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../rpm-ostree-failed-to-find-image/" class="md-nav__link">
+        rpm-ostreed failed to find image
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../scc/" class="md-nav__link">
         Security Context Constraints (SCC)
       </a>
@@ -1834,7 +1852,7 @@ ovn-worker2         Ready    &lt;none&gt;   14m   v1.18.2
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
-<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code># kubectl  get nodes -o wide
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="gh">#</span> kubectl  get nodes -o wide
 NAME                STATUS   ROLES    AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE           KERNEL-VERSION                 CONTAINER-RUNTIME
 ovn-control-plane   Ready    master   15m   v1.18.2   172.18.0.4    &lt;none&gt;        Ubuntu 20.04 LTS   4.18.0-193.13.2.el8_2.x86_64   containerd://1.3.3-14-g449e9269
 ovn-worker          Ready    &lt;none&gt;   15m   v1.18.2   172.18.0.3    &lt;none&gt;        Ubuntu 20.04 LTS   4.18.0-193.13.2.el8_2.x86_64   containerd://1.3.3-14-g449e9269
@@ -1884,22 +1902,22 @@ It's important to route traffic for the node's pod subnet via the node's interna
 <span class="normal">13</span>
 <span class="normal">14</span>
 <span class="normal">15</span>
-<span class="normal">16</span></pre></div></td><td class="code"><div><pre><span></span><code>cat &lt;&lt;&#39;EOF&#39; | tee vxlan.sh
-#!/bin/bash
+<span class="normal">16</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nx">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="err">&#39;</span><span class="nx">EOF</span><span class="err">&#39;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">tee</span><span class="w"> </span><span class="nx">vxlan</span><span class="p">.</span><span class="nx">sh</span>
+<span class="err">#</span><span class="p">!</span><span class="o">/</span><span class="nx">bin</span><span class="o">/</span><span class="nx">bash</span>
 
-echo &quot;VIP&quot;
-ip add a 9.0.0.1 dev lo
+<span class="nx">echo</span><span class="w"> </span><span class="s">&quot;VIP&quot;</span>
+<span class="nx">ip</span><span class="w"> </span><span class="nx">add</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="m m-Double">9.0.0.1</span><span class="w"> </span><span class="nx">dev</span><span class="w"> </span><span class="nx">lo</span>
 
-echo &quot;ovn-workers&quot;
-# https://joejulian.name/post/how-to-configure-linux-vxlans-with-multiple-unicast-endpoints/
-ip link add vxlan0 type vxlan dev eth0 id 4097 dstport 4789       
-bridge fdb append to 00:00:00:00:00:00 dst 172.18.0.3 dev vxlan0
-bridge fdb append to 00:00:00:00:00:00 dst 172.18.0.2 dev vxlan0
-ip link set dev vxlan0 up
-ip route add 10.244.0.0/16 dev vxlan0
-EOF
-chmod +x vxlan.sh
-./vxlan.sh
+<span class="nx">echo</span><span class="w"> </span><span class="s">&quot;ovn-workers&quot;</span>
+<span class="err">#</span><span class="w"> </span><span class="nx">https</span><span class="p">:</span><span class="c1">//joejulian.name/post/how-to-configure-linux-vxlans-with-multiple-unicast-endpoints/</span>
+<span class="nx">ip</span><span class="w"> </span><span class="nx">link</span><span class="w"> </span><span class="nx">add</span><span class="w"> </span><span class="nx">vxlan0</span><span class="w"> </span><span class="k">type</span><span class="w"> </span><span class="nx">vxlan</span><span class="w"> </span><span class="nx">dev</span><span class="w"> </span><span class="nx">eth0</span><span class="w"> </span><span class="nx">id</span><span class="w"> </span><span class="mi">4097</span><span class="w"> </span><span class="nx">dstport</span><span class="w"> </span><span class="mi">4789</span><span class="w">       </span>
+<span class="nx">bridge</span><span class="w"> </span><span class="nx">fdb</span><span class="w"> </span><span class="nx">append</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="w"> </span><span class="nx">dst</span><span class="w"> </span><span class="m m-Double">172.18.0.3</span><span class="w"> </span><span class="nx">dev</span><span class="w"> </span><span class="nx">vxlan0</span>
+<span class="nx">bridge</span><span class="w"> </span><span class="nx">fdb</span><span class="w"> </span><span class="nx">append</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="w"> </span><span class="nx">dst</span><span class="w"> </span><span class="m m-Double">172.18.0.2</span><span class="w"> </span><span class="nx">dev</span><span class="w"> </span><span class="nx">vxlan0</span>
+<span class="nx">ip</span><span class="w"> </span><span class="nx">link</span><span class="w"> </span><span class="nx">set</span><span class="w"> </span><span class="nx">dev</span><span class="w"> </span><span class="nx">vxlan0</span><span class="w"> </span><span class="nx">up</span>
+<span class="nx">ip</span><span class="w"> </span><span class="nx">route</span><span class="w"> </span><span class="nx">add</span><span class="w"> </span><span class="m m-Double">10.244.0.0</span><span class="o">/</span><span class="mi">16</span><span class="w"> </span><span class="nx">dev</span><span class="w"> </span><span class="nx">vxlan0</span>
+<span class="nx">EOF</span>
+<span class="nx">chmod</span><span class="w"> </span><span class="o">+</span><span class="nx">x</span><span class="w"> </span><span class="nx">vxlan</span><span class="p">.</span><span class="nx">sh</span>
+<span class="p">.</span><span class="o">/</span><span class="nx">vxlan</span><span class="p">.</span><span class="nx">sh</span>
 </code></pre></div></td></tr></table></div></p>
 <p>Alternatively, something like this should also work and would actually be easier to understand and more elegant:
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
@@ -1915,20 +1933,20 @@ chmod +x vxlan.sh
 <span class="normal">11</span>
 <span class="normal">12</span>
 <span class="normal">13</span>
-<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code>cat &lt;&lt;&#39;EOF&#39; | tee vxlan.sh
-#!/bin/bash
-dnf install centos-release-nfv-openvswitch
-yum install openvswitch2.13.x86_64 -y
-systemctl enable --now openvswitch
-ovs-vsctl add-port br-vxlan vxlan2 -- set interface vxlan2 type=vxlan options:remote_ip=172.18.0.2 options:key=4097
-ovs-vsctl add-port br-vxlan vxlan3 -- set interface vxlan3 type=vxlan options:remote_ip=172.18.0.3 options:key=4097
-ovs-vsctl add-port br-vxlan vxlan4 -- set interface vxlan4 type=vxlan options:remote_ip=172.18.0.4 options:key=4097
-ip a a dev br-vxlan 9.0.0.1/32
-ip link set dev br-vxlan up
-ip route add 10.244.0.0/16 dev br-vxlan
-EOF
-chmod +x vxlan.sh
-./vxlan.sh
+<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nx">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="err">&#39;</span><span class="nx">EOF</span><span class="err">&#39;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">tee</span><span class="w"> </span><span class="nx">vxlan</span><span class="p">.</span><span class="nx">sh</span>
+<span class="err">#</span><span class="p">!</span><span class="o">/</span><span class="nx">bin</span><span class="o">/</span><span class="nx">bash</span>
+<span class="nx">dnf</span><span class="w"> </span><span class="nx">install</span><span class="w"> </span><span class="nx">centos</span><span class="o">-</span><span class="nx">release</span><span class="o">-</span><span class="nx">nfv</span><span class="o">-</span><span class="nx">openvswitch</span>
+<span class="nx">yum</span><span class="w"> </span><span class="nx">install</span><span class="w"> </span><span class="nx">openvswitch2</span><span class="m m-Double">.13</span><span class="p">.</span><span class="nx">x86_64</span><span class="w"> </span><span class="o">-</span><span class="nx">y</span>
+<span class="nx">systemctl</span><span class="w"> </span><span class="nx">enable</span><span class="w"> </span><span class="o">--</span><span class="nx">now</span><span class="w"> </span><span class="nx">openvswitch</span>
+<span class="nx">ovs</span><span class="o">-</span><span class="nx">vsctl</span><span class="w"> </span><span class="nx">add</span><span class="o">-</span><span class="nx">port</span><span class="w"> </span><span class="nx">br</span><span class="o">-</span><span class="nx">vxlan</span><span class="w"> </span><span class="nx">vxlan2</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="nx">set</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="nx">vxlan2</span><span class="w"> </span><span class="k">type</span><span class="p">=</span><span class="nx">vxlan</span><span class="w"> </span><span class="nx">options</span><span class="p">:</span><span class="nx">remote_ip</span><span class="p">=</span><span class="m m-Double">172.18.0.2</span><span class="w"> </span><span class="nx">options</span><span class="p">:</span><span class="nx">key</span><span class="p">=</span><span class="mi">4097</span>
+<span class="nx">ovs</span><span class="o">-</span><span class="nx">vsctl</span><span class="w"> </span><span class="nx">add</span><span class="o">-</span><span class="nx">port</span><span class="w"> </span><span class="nx">br</span><span class="o">-</span><span class="nx">vxlan</span><span class="w"> </span><span class="nx">vxlan3</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="nx">set</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="nx">vxlan3</span><span class="w"> </span><span class="k">type</span><span class="p">=</span><span class="nx">vxlan</span><span class="w"> </span><span class="nx">options</span><span class="p">:</span><span class="nx">remote_ip</span><span class="p">=</span><span class="m m-Double">172.18.0.3</span><span class="w"> </span><span class="nx">options</span><span class="p">:</span><span class="nx">key</span><span class="p">=</span><span class="mi">4097</span>
+<span class="nx">ovs</span><span class="o">-</span><span class="nx">vsctl</span><span class="w"> </span><span class="nx">add</span><span class="o">-</span><span class="nx">port</span><span class="w"> </span><span class="nx">br</span><span class="o">-</span><span class="nx">vxlan</span><span class="w"> </span><span class="nx">vxlan4</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="nx">set</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="nx">vxlan4</span><span class="w"> </span><span class="k">type</span><span class="p">=</span><span class="nx">vxlan</span><span class="w"> </span><span class="nx">options</span><span class="p">:</span><span class="nx">remote_ip</span><span class="p">=</span><span class="m m-Double">172.18.0.4</span><span class="w"> </span><span class="nx">options</span><span class="p">:</span><span class="nx">key</span><span class="p">=</span><span class="mi">4097</span>
+<span class="nx">ip</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">dev</span><span class="w"> </span><span class="nx">br</span><span class="o">-</span><span class="nx">vxlan</span><span class="w"> </span><span class="m m-Double">9.0.0.1</span><span class="o">/</span><span class="mi">32</span>
+<span class="nx">ip</span><span class="w"> </span><span class="nx">link</span><span class="w"> </span><span class="nx">set</span><span class="w"> </span><span class="nx">dev</span><span class="w"> </span><span class="nx">br</span><span class="o">-</span><span class="nx">vxlan</span><span class="w"> </span><span class="nx">up</span>
+<span class="nx">ip</span><span class="w"> </span><span class="nx">route</span><span class="w"> </span><span class="nx">add</span><span class="w"> </span><span class="m m-Double">10.244.0.0</span><span class="o">/</span><span class="mi">16</span><span class="w"> </span><span class="nx">dev</span><span class="w"> </span><span class="nx">br</span><span class="o">-</span><span class="nx">vxlan</span>
+<span class="nx">EOF</span>
+<span class="nx">chmod</span><span class="w"> </span><span class="o">+</span><span class="nx">x</span><span class="w"> </span><span class="nx">vxlan</span><span class="p">.</span><span class="nx">sh</span>
+<span class="p">.</span><span class="o">/</span><span class="nx">vxlan</span><span class="p">.</span><span class="nx">sh</span>
 </code></pre></div></td></tr></table></div></p>
 <p>Now create a namespace with annotations like:
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
@@ -2146,10 +2164,10 @@ metadata:
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.efa0ade1.min.js"></script>
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
       
     
   </body>

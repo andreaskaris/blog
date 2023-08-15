@@ -19,7 +19,7 @@
         <link rel="next" href="../haproxy-and-h2c/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.3">
+      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.1.21">
     
     
       
@@ -27,10 +27,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.c4a75a56.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.eebd395e.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ecc896b0.min.css">
       
       
 
@@ -109,6 +109,8 @@
         </div>
       </div>
     </div>
+    
+      
     
     
     
@@ -1028,6 +1030,8 @@
         
           
         
+          
+        
       
       
         
@@ -1422,6 +1426,20 @@
     <li class="md-nav__item">
       <a href="../../openshift/proxy-ocp-4.5/" class="md-nav__link">
         Proxy OCP 4.5
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/rpm-ostree-failed-to-find-image/" class="md-nav__link">
+        rpm-ostreed failed to find image
       </a>
     </li>
   
@@ -1903,36 +1921,36 @@ Aug  9 05:40:40  -sw02 mib2d[2112]: SNMP_TRAP_LINK_UP: ifIndex 521, ifAdminStatu
 <span class="normal">27</span>
 <span class="normal">28</span>
 <span class="normal">29</span>
-<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code>{<span class="nv">master</span>:<span class="mi">0</span>}
-<span class="nv">root</span>@<span class="o">-</span><span class="nv">sw02</span><span class="o">&gt;</span><span class="w"> </span><span class="k">show</span><span class="w"> </span><span class="nv">vlans</span><span class="w"> </span><span class="nv">brief</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code>{master:0}
+root@-sw02&gt; show vlans brief
 
-<span class="nv">Routing</span><span class="w"> </span><span class="nv">instance</span><span class="w">        </span><span class="nv">VLAN</span><span class="w"> </span><span class="nv">name</span><span class="w">             </span><span class="nv">Tag</span><span class="w">          </span><span class="nv">Interfaces</span>
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">default</span><span class="w">               </span><span class="mi">1</span>
+Routing instance        VLAN name             Tag          Interfaces
+default-switch          default               1
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">native_vlan515</span><span class="w">        </span><span class="mi">515</span>
+default-switch          native_vlan515        515
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan250</span><span class="w">               </span><span class="mi">250</span>
+default-switch          vlan250               250
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan251</span><span class="w">               </span><span class="mi">251</span>
+default-switch          vlan251               251
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan252</span><span class="w">               </span><span class="mi">252</span>
+default-switch          vlan252               252
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan253</span><span class="w">               </span><span class="mi">253</span>
+default-switch          vlan253               253
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan254</span><span class="w">               </span><span class="mi">254</span>
+default-switch          vlan254               254
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan255</span><span class="w">               </span><span class="mi">255</span>
+default-switch          vlan255               255
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan256</span><span class="w">               </span><span class="mi">256</span>
+default-switch          vlan256               256
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan257</span><span class="w">               </span><span class="mi">257</span>
+default-switch          vlan257               257
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan258</span><span class="w">               </span><span class="mi">258</span>
+default-switch          vlan258               258
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan259</span><span class="w">               </span><span class="mi">259</span>
-<span class="w">                                                           </span><span class="nv">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span>.<span class="mi">0</span><span class="o">*</span>
+default-switch          vlan259               259
+                                                           xe-0/0/0.0*
 
-{<span class="nv">master</span>:<span class="mi">0</span>}
+{master:0}
 </code></pre></div></td></tr></table></div></p>
 <h3 id="trunks">Trunks</h3>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
@@ -2078,37 +2096,37 @@ Aug  9 05:40:40  -sw02 mib2d[2112]: SNMP_TRAP_LINK_UP: ifIndex 521, ifAdminStatu
 <span class="normal">28</span>
 <span class="normal">29</span>
 <span class="normal">30</span>
-<span class="normal">31</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nv">root</span>@<span class="o">-</span><span class="nv">sw02</span><span class="o">&gt;</span><span class="w"> </span><span class="k">show</span><span class="w"> </span><span class="nv">vlans</span><span class="w"> </span><span class="nv">brief</span>
+<span class="normal">31</span></pre></div></td><td class="code"><div><pre><span></span><code>root@-sw02&gt; show vlans brief
 
-<span class="nv">Routing</span><span class="w"> </span><span class="nv">instance</span><span class="w">        </span><span class="nv">VLAN</span><span class="w"> </span><span class="nv">name</span><span class="w">             </span><span class="nv">Tag</span><span class="w">          </span><span class="nv">Interfaces</span>
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">default</span><span class="w">               </span><span class="mi">1</span>
+Routing instance        VLAN name             Tag          Interfaces
+default-switch          default               1
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">native_vlan515</span><span class="w">        </span><span class="mi">515</span>
+default-switch          native_vlan515        515
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan250</span><span class="w">               </span><span class="mi">250</span>
+default-switch          vlan250               250
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan251</span><span class="w">               </span><span class="mi">251</span>
-<span class="w">                                                           </span><span class="nv">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span>.<span class="mi">0</span>
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan252</span><span class="w">               </span><span class="mi">252</span>
+default-switch          vlan251               251
+                                                           xe-0/0/2.0
+default-switch          vlan252               252
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan253</span><span class="w">               </span><span class="mi">253</span>
+default-switch          vlan253               253
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan254</span><span class="w">               </span><span class="mi">254</span>
+default-switch          vlan254               254
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan255</span><span class="w">               </span><span class="mi">255</span>
+default-switch          vlan255               255
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan256</span><span class="w">               </span><span class="mi">256</span>
+default-switch          vlan256               256
 
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan257</span><span class="w">               </span><span class="mi">257</span>
-<span class="w">                                                           </span><span class="nv">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span>.<span class="mi">0</span>
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan258</span><span class="w">               </span><span class="mi">258</span>
-<span class="w">                                                           </span><span class="nv">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span>.<span class="mi">0</span>
-<span class="nv">default</span><span class="o">-</span><span class="nv">switch</span><span class="w">          </span><span class="nv">vlan259</span><span class="w">               </span><span class="mi">259</span>
-<span class="w">                                                           </span><span class="nv">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span>.<span class="mi">0</span><span class="o">*</span>
-<span class="w">                                                           </span><span class="nv">xe</span><span class="o">-</span><span class="mi">0</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">2</span>.<span class="mi">0</span>
+default-switch          vlan257               257
+                                                           xe-0/0/2.0
+default-switch          vlan258               258
+                                                           xe-0/0/2.0
+default-switch          vlan259               259
+                                                           xe-0/0/0.0*
+                                                           xe-0/0/2.0
 
-{<span class="nv">master</span>:<span class="mi">0</span>}
-<span class="nv">root</span>@<span class="o">-</span><span class="nv">sw02</span><span class="o">&gt;</span>
+{master:0}
+root@-sw02&gt;
 </code></pre></div></td></tr></table></div></p>
 
   <hr>
@@ -2163,10 +2181,10 @@ Aug  9 05:40:40  -sw02 mib2d[2112]: SNMP_TRAP_LINK_UP: ifIndex 521, ifAdminStatu
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.efa0ade1.min.js"></script>
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
       
     
   </body>

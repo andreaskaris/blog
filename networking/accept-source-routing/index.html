@@ -19,7 +19,7 @@
         <link rel="next" href="../arp_and_the_neighbor_table/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.3">
+      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.1.21">
     
     
       
@@ -27,10 +27,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.c4a75a56.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.eebd395e.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ecc896b0.min.css">
       
       
 
@@ -109,6 +109,8 @@
         </div>
       </div>
     </div>
+    
+      
     
     
     
@@ -1028,6 +1030,8 @@
         
           
         
+          
+        
       
       
         
@@ -1434,6 +1438,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../../openshift/rpm-ostree-failed-to-find-image/" class="md-nav__link">
+        rpm-ostreed failed to find image
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../openshift/scc/" class="md-nav__link">
         Security Context Constraints (SCC)
       </a>
@@ -1771,7 +1789,7 @@
 <span class="normal"> 8</span>
 <span class="normal"> 9</span>
 <span class="normal">10</span>
-<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code># sysctl -a | grep source_route | grep ipv4
+<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="gh">#</span> sysctl -a | grep source_route | grep ipv4
 net.ipv4.conf.all.accept_source_route = 0
 net.ipv4.conf.br-ext.accept_source_route = 1
 net.ipv4.conf.br-vxlan.accept_source_route = 1
@@ -2038,11 +2056,11 @@ dropwatch&gt; stop
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
-<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nv">log_martians</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">BOOLEAN</span>
-<span class="w">    </span><span class="nv">Log</span><span class="w"> </span><span class="nv">packets</span><span class="w"> </span><span class="nv">with</span><span class="w"> </span><span class="nv">impossible</span><span class="w"> </span><span class="nv">addresses</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">kernel</span><span class="w"> </span><span class="nv">log</span>.
-<span class="w">    </span><span class="nv">log_martians</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">interface</span><span class="w"> </span><span class="nv">will</span><span class="w"> </span><span class="nv">be</span><span class="w"> </span><span class="nv">enabled</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nv">at</span><span class="w"> </span><span class="nv">least</span><span class="w"> </span><span class="nv">one</span><span class="w"> </span><span class="nv">of</span>
-<span class="w">    </span><span class="nv">conf</span><span class="o">/</span>{<span class="nv">all</span>,<span class="nv">interface</span>}<span class="o">/</span><span class="nv">log_martians</span><span class="w"> </span><span class="nv">is</span><span class="w"> </span><span class="nv">set</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">TRUE</span>,
-<span class="w">    </span><span class="nv">it</span><span class="w"> </span><span class="nv">will</span><span class="w"> </span><span class="nv">be</span><span class="w"> </span><span class="nv">disabled</span><span class="w"> </span><span class="nv">otherwise</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nx">log_martians</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">BOOLEAN</span>
+<span class="w">    </span><span class="nx">Log</span><span class="w"> </span><span class="nx">packets</span><span class="w"> </span><span class="nx">with</span><span class="w"> </span><span class="nx">impossible</span><span class="w"> </span><span class="nx">addresses</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">kernel</span><span class="w"> </span><span class="nx">log</span><span class="p">.</span>
+<span class="w">    </span><span class="nx">log_martians</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="nx">will</span><span class="w"> </span><span class="nx">be</span><span class="w"> </span><span class="nx">enabled</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">at</span><span class="w"> </span><span class="nx">least</span><span class="w"> </span><span class="nx">one</span><span class="w"> </span><span class="nx">of</span>
+<span class="w">    </span><span class="nx">conf</span><span class="o">/</span><span class="p">{</span><span class="nx">all</span><span class="p">,</span><span class="kd">interface</span><span class="p">}</span><span class="o">/</span><span class="nx">log_martians</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="nx">set</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">TRUE</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">it</span><span class="w"> </span><span class="nx">will</span><span class="w"> </span><span class="nx">be</span><span class="w"> </span><span class="nx">disabled</span><span class="w"> </span><span class="nx">otherwise</span>
 </code></pre></div></td></tr></table></div></p>
 <p>And upon source route drop, one will be able to see messages containing string <code class="highlight"><span class="n">IPv4</span><span class="o">:</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="n">option</span></code> in the logs:
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
@@ -2272,7 +2290,7 @@ dropwatch&gt;
 <span class="normal"> 8</span>
 <span class="normal"> 9</span>
 <span class="normal">10</span>
-<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code># sysctl -a | grep source_route | grep ipv6
+<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="gh">#</span> sysctl -a | grep source_route | grep ipv6
 net.ipv6.conf.all.accept_source_route = 0
 net.ipv6.conf.br-ext.accept_source_route = 0
 net.ipv6.conf.br-vxlan.accept_source_route = 0
@@ -2292,13 +2310,13 @@ net.ipv6.conf.vxlan_sys_4789.accept_source_route = 0
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
-<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nv">accept_source_route</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">INTEGER</span>
-<span class="w">    </span><span class="nv">Accept</span><span class="w"> </span><span class="nv">source</span><span class="w"> </span><span class="nv">routing</span><span class="w"> </span><span class="ss">(</span><span class="nv">routing</span><span class="w"> </span><span class="nv">extension</span><span class="w"> </span><span class="nv">header</span><span class="ss">)</span>.
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nx">accept_source_route</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">INTEGER</span>
+<span class="w">    </span><span class="nx">Accept</span><span class="w"> </span><span class="nx">source</span><span class="w"> </span><span class="nx">routing</span><span class="w"> </span><span class="p">(</span><span class="nx">routing</span><span class="w"> </span><span class="nx">extension</span><span class="w"> </span><span class="nx">header</span><span class="p">).</span>
 
-<span class="w">    </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span>:<span class="w"> </span><span class="nv">Accept</span><span class="w"> </span><span class="nv">only</span><span class="w"> </span><span class="nv">routing</span><span class="w"> </span><span class="nv">header</span><span class="w"> </span><span class="nv">type</span><span class="w"> </span><span class="mi">2</span>.
-<span class="w">    </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span>:<span class="w"> </span><span class="k">Do</span><span class="w"> </span><span class="nv">not</span><span class="w"> </span><span class="nv">accept</span><span class="w"> </span><span class="nv">routing</span><span class="w"> </span><span class="nv">header</span>.
+<span class="w">    </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span><span class="w"> </span><span class="nx">Accept</span><span class="w"> </span><span class="nx">only</span><span class="w"> </span><span class="nx">routing</span><span class="w"> </span><span class="nx">header</span><span class="w"> </span><span class="k">type</span><span class="w"> </span><span class="mi">2</span><span class="p">.</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span><span class="w"> </span><span class="nx">Do</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="nx">accept</span><span class="w"> </span><span class="nx">routing</span><span class="w"> </span><span class="nx">header</span><span class="p">.</span>
 
-<span class="w">    </span><span class="nv">Default</span>:<span class="w"> </span><span class="mi">0</span>
+<span class="w">    </span><span class="nx">Default</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
 </code></pre></div></td></tr></table></div>
 It looks like this was merged 14 years ago, so we should be good ;-) <a href="https://github.com/torvalds/linux/commit/bb4dbf9e61d0801927e7df2569bb3dd8287ea301">https://github.com/torvalds/linux/commit/bb4dbf9e61d0801927e7df2569bb3dd8287ea301</a>
 The following article on LWN might be of interest, too: <a href="https://lwn.net/Articles/232781/">https://lwn.net/Articles/232781/</a></p>
@@ -2358,10 +2376,10 @@ The following article on LWN might be of interest, too: <a href="https://lwn.net
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.efa0ade1.min.js"></script>
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
       
     
   </body>

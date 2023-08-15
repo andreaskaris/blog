@@ -19,7 +19,7 @@
         <link rel="next" href="../ipxe-boot-environment/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.3">
+      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.1.21">
     
     
       
@@ -27,10 +27,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.c4a75a56.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.eebd395e.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ecc896b0.min.css">
       
       
 
@@ -109,6 +109,8 @@
         </div>
       </div>
     </div>
+    
+      
     
     
     
@@ -1028,6 +1030,8 @@
         
           
         
+          
+        
       
       
         
@@ -1422,6 +1426,20 @@
     <li class="md-nav__item">
       <a href="../../openshift/proxy-ocp-4.5/" class="md-nav__link">
         Proxy OCP 4.5
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/rpm-ostree-failed-to-find-image/" class="md-nav__link">
+        rpm-ostreed failed to find image
       </a>
     </li>
   
@@ -1909,43 +1927,43 @@
 <span class="normal">34</span>
 <span class="normal">35</span>
 <span class="normal">36</span>
-<span class="normal">37</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@dell-r430-30 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="n">mmap</span><span class="w"> </span>
-<span class="n">Memory</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="mh">0x2aaac0000000</span>
-<span class="n">This</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="n">reserve</span><span class="w"> </span><span class="n">pages</span><span class="p">.</span><span class="w"> </span><span class="k">Execute</span><span class="w"> </span>
-<span class="n">grep</span><span class="w"> </span><span class="o">-</span><span class="n">R</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="w"> </span><span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">kernel</span><span class="o">/</span><span class="n">mm</span><span class="o">/</span><span class="n">hugepages</span><span class="o">/</span><span class="n">hugepages</span><span class="o">-</span><span class="mi">1048576</span><span class="n">kB</span><span class="o">/</span>
-<span class="n">find</span><span class="w"> </span><span class="o">/</span><span class="n">sys</span><span class="w"> </span><span class="o">-</span><span class="n">name</span><span class="w"> </span><span class="n">meminfo</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">xargs</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="n">huge</span>
-<span class="k">to</span><span class="w"> </span><span class="n">verify</span><span class="w"> </span><span class="n">this</span><span class="p">.</span>
+<span class="normal">37</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="nx">root</span><span class="err">@</span><span class="nx">dell</span><span class="o">-</span><span class="nx">r430</span><span class="o">-</span><span class="mi">30</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="err">#</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="nx">mmap</span><span class="w"> </span>
+<span class="nx">Memory</span><span class="w"> </span><span class="nx">address</span><span class="w"> </span><span class="mh">0x2aaac0000000</span>
+<span class="nx">This</span><span class="w"> </span><span class="nx">will</span><span class="w"> </span><span class="nx">only</span><span class="w"> </span><span class="nx">reserve</span><span class="w"> </span><span class="nx">pages</span><span class="p">.</span><span class="w"> </span><span class="nx">Execute</span><span class="w"> </span>
+<span class="nx">grep</span><span class="w"> </span><span class="o">-</span><span class="nx">R</span><span class="w"> </span><span class="err">&#39;&#39;</span><span class="w"> </span><span class="o">/</span><span class="nx">sys</span><span class="o">/</span><span class="nx">kernel</span><span class="o">/</span><span class="nx">mm</span><span class="o">/</span><span class="nx">hugepages</span><span class="o">/</span><span class="nx">hugepages</span><span class="o">-</span><span class="mi">1048576</span><span class="nx">kB</span><span class="o">/</span>
+<span class="nx">find</span><span class="w"> </span><span class="o">/</span><span class="nx">sys</span><span class="w"> </span><span class="o">-</span><span class="nx">name</span><span class="w"> </span><span class="nx">meminfo</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">xargs</span><span class="w"> </span><span class="nx">grep</span><span class="w"> </span><span class="o">-</span><span class="nx">i</span><span class="w"> </span><span class="nx">huge</span>
+<span class="nx">to</span><span class="w"> </span><span class="nx">verify</span><span class="w"> </span><span class="nx">this</span><span class="p">.</span>
 
-<span class="k">When</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">done</span><span class="p">,</span><span class="w"> </span><span class="n">please</span><span class="w"> </span><span class="n">hit</span><span class="w"> </span><span class="k">return</span>
-<span class="n">Now</span><span class="p">,</span><span class="w"> </span><span class="n">actually</span><span class="w"> </span><span class="n">writing</span><span class="w"> </span><span class="ow">all</span><span class="w"> </span><span class="mi">0</span><span class="n">s</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">first</span><span class="w"> </span><span class="n">hugepage</span>
-<span class="o">^</span><span class="n">C</span>
-<span class="o">[</span><span class="n">root@dell-r430-30 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="o">^</span><span class="n">C</span>
-<span class="o">[</span><span class="n">root@dell-r430-30 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="o">^</span><span class="n">C</span>
-<span class="o">[</span><span class="n">root@dell-r430-30 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">gcc</span><span class="w"> </span><span class="n">mmap</span><span class="p">.</span><span class="n">c</span><span class="w">  </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">mmap</span>
-<span class="o">[</span><span class="n">root@dell-r430-30 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="n">mmap</span><span class="w"> </span>
-<span class="n">Memory</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="mh">0x2aaac0000000</span>
-<span class="n">This</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="n">reserve</span><span class="w"> </span><span class="n">pages</span><span class="p">.</span><span class="w"> </span><span class="k">Execute</span><span class="w"> </span>
-<span class="n">grep</span><span class="w"> </span><span class="o">-</span><span class="n">R</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="w"> </span><span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">kernel</span><span class="o">/</span><span class="n">mm</span><span class="o">/</span><span class="n">hugepages</span><span class="o">/</span><span class="n">hugepages</span><span class="o">-</span><span class="mi">1048576</span><span class="n">kB</span><span class="o">/</span>
-<span class="n">find</span><span class="w"> </span><span class="o">/</span><span class="n">sys</span><span class="w"> </span><span class="o">-</span><span class="n">name</span><span class="w"> </span><span class="n">meminfo</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">xargs</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="n">huge</span>
-<span class="k">to</span><span class="w"> </span><span class="n">verify</span><span class="w"> </span><span class="n">this</span><span class="p">.</span>
+<span class="nx">When</span><span class="w"> </span><span class="nx">you</span><span class="w"> </span><span class="nx">are</span><span class="w"> </span><span class="nx">done</span><span class="p">,</span><span class="w"> </span><span class="nx">please</span><span class="w"> </span><span class="nx">hit</span><span class="w"> </span><span class="k">return</span>
+<span class="nx">Now</span><span class="p">,</span><span class="w"> </span><span class="nx">actually</span><span class="w"> </span><span class="nx">writing</span><span class="w"> </span><span class="nx">all</span><span class="w"> </span><span class="mi">0</span><span class="nx">s</span><span class="w"> </span><span class="nx">into</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">first</span><span class="w"> </span><span class="nx">hugepage</span>
+<span class="o">^</span><span class="nx">C</span>
+<span class="p">[</span><span class="nx">root</span><span class="err">@</span><span class="nx">dell</span><span class="o">-</span><span class="nx">r430</span><span class="o">-</span><span class="mi">30</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="err">#</span><span class="w"> </span><span class="o">^</span><span class="nx">C</span>
+<span class="p">[</span><span class="nx">root</span><span class="err">@</span><span class="nx">dell</span><span class="o">-</span><span class="nx">r430</span><span class="o">-</span><span class="mi">30</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="err">#</span><span class="w"> </span><span class="o">^</span><span class="nx">C</span>
+<span class="p">[</span><span class="nx">root</span><span class="err">@</span><span class="nx">dell</span><span class="o">-</span><span class="nx">r430</span><span class="o">-</span><span class="mi">30</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="err">#</span><span class="w"> </span><span class="nx">gcc</span><span class="w"> </span><span class="nx">mmap</span><span class="p">.</span><span class="nx">c</span><span class="w">  </span><span class="o">-</span><span class="nx">o</span><span class="w"> </span><span class="nx">mmap</span>
+<span class="p">[</span><span class="nx">root</span><span class="err">@</span><span class="nx">dell</span><span class="o">-</span><span class="nx">r430</span><span class="o">-</span><span class="mi">30</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="err">#</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="nx">mmap</span><span class="w"> </span>
+<span class="nx">Memory</span><span class="w"> </span><span class="nx">address</span><span class="w"> </span><span class="mh">0x2aaac0000000</span>
+<span class="nx">This</span><span class="w"> </span><span class="nx">will</span><span class="w"> </span><span class="nx">only</span><span class="w"> </span><span class="nx">reserve</span><span class="w"> </span><span class="nx">pages</span><span class="p">.</span><span class="w"> </span><span class="nx">Execute</span><span class="w"> </span>
+<span class="nx">grep</span><span class="w"> </span><span class="o">-</span><span class="nx">R</span><span class="w"> </span><span class="err">&#39;&#39;</span><span class="w"> </span><span class="o">/</span><span class="nx">sys</span><span class="o">/</span><span class="nx">kernel</span><span class="o">/</span><span class="nx">mm</span><span class="o">/</span><span class="nx">hugepages</span><span class="o">/</span><span class="nx">hugepages</span><span class="o">-</span><span class="mi">1048576</span><span class="nx">kB</span><span class="o">/</span>
+<span class="nx">find</span><span class="w"> </span><span class="o">/</span><span class="nx">sys</span><span class="w"> </span><span class="o">-</span><span class="nx">name</span><span class="w"> </span><span class="nx">meminfo</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">xargs</span><span class="w"> </span><span class="nx">grep</span><span class="w"> </span><span class="o">-</span><span class="nx">i</span><span class="w"> </span><span class="nx">huge</span>
+<span class="nx">to</span><span class="w"> </span><span class="nx">verify</span><span class="w"> </span><span class="nx">this</span><span class="p">.</span>
 
-<span class="k">When</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">done</span><span class="p">,</span><span class="w"> </span><span class="n">please</span><span class="w"> </span><span class="n">hit</span><span class="w"> </span><span class="k">return</span>
+<span class="nx">When</span><span class="w"> </span><span class="nx">you</span><span class="w"> </span><span class="nx">are</span><span class="w"> </span><span class="nx">done</span><span class="p">,</span><span class="w"> </span><span class="nx">please</span><span class="w"> </span><span class="nx">hit</span><span class="w"> </span><span class="k">return</span>
 
-<span class="n">Now</span><span class="p">,</span><span class="w"> </span><span class="n">actually</span><span class="w"> </span><span class="n">writing</span><span class="w"> </span><span class="ow">all</span><span class="w"> </span><span class="mi">0</span><span class="n">s</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">first</span><span class="w"> </span><span class="n">hugepage</span>
-<span class="n">Now</span><span class="p">,</span><span class="w"> </span><span class="n">verify</span><span class="w"> </span><span class="n">again</span>
-<span class="n">grep</span><span class="w"> </span><span class="o">-</span><span class="n">R</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="w"> </span><span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">kernel</span><span class="o">/</span><span class="n">mm</span><span class="o">/</span><span class="n">hugepages</span><span class="o">/</span><span class="n">hugepages</span><span class="o">-</span><span class="mi">1048576</span><span class="n">kB</span><span class="o">/</span>
-<span class="n">find</span><span class="w"> </span><span class="o">/</span><span class="n">sys</span><span class="w"> </span><span class="o">-</span><span class="n">name</span><span class="w"> </span><span class="n">meminfo</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">xargs</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="n">huge</span>
-<span class="k">to</span><span class="w"> </span><span class="n">verify</span><span class="w"> </span><span class="n">this</span><span class="p">.</span>
+<span class="nx">Now</span><span class="p">,</span><span class="w"> </span><span class="nx">actually</span><span class="w"> </span><span class="nx">writing</span><span class="w"> </span><span class="nx">all</span><span class="w"> </span><span class="mi">0</span><span class="nx">s</span><span class="w"> </span><span class="nx">into</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">first</span><span class="w"> </span><span class="nx">hugepage</span>
+<span class="nx">Now</span><span class="p">,</span><span class="w"> </span><span class="nx">verify</span><span class="w"> </span><span class="nx">again</span>
+<span class="nx">grep</span><span class="w"> </span><span class="o">-</span><span class="nx">R</span><span class="w"> </span><span class="err">&#39;&#39;</span><span class="w"> </span><span class="o">/</span><span class="nx">sys</span><span class="o">/</span><span class="nx">kernel</span><span class="o">/</span><span class="nx">mm</span><span class="o">/</span><span class="nx">hugepages</span><span class="o">/</span><span class="nx">hugepages</span><span class="o">-</span><span class="mi">1048576</span><span class="nx">kB</span><span class="o">/</span>
+<span class="nx">find</span><span class="w"> </span><span class="o">/</span><span class="nx">sys</span><span class="w"> </span><span class="o">-</span><span class="nx">name</span><span class="w"> </span><span class="nx">meminfo</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">xargs</span><span class="w"> </span><span class="nx">grep</span><span class="w"> </span><span class="o">-</span><span class="nx">i</span><span class="w"> </span><span class="nx">huge</span>
+<span class="nx">to</span><span class="w"> </span><span class="nx">verify</span><span class="w"> </span><span class="nx">this</span><span class="p">.</span>
 
-<span class="k">When</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">done</span><span class="p">,</span><span class="w"> </span><span class="n">please</span><span class="w"> </span><span class="n">hit</span><span class="w"> </span><span class="k">return</span>
+<span class="nx">When</span><span class="w"> </span><span class="nx">you</span><span class="w"> </span><span class="nx">are</span><span class="w"> </span><span class="nx">done</span><span class="p">,</span><span class="w"> </span><span class="nx">please</span><span class="w"> </span><span class="nx">hit</span><span class="w"> </span><span class="k">return</span>
 
-<span class="n">Now</span><span class="p">,</span><span class="w"> </span><span class="n">actually</span><span class="w"> </span><span class="n">writing</span><span class="w"> </span><span class="n">one</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">second</span><span class="w"> </span><span class="n">hugepage</span>
-<span class="n">Now</span><span class="p">,</span><span class="w"> </span><span class="n">verify</span><span class="w"> </span><span class="n">again</span>
-<span class="n">grep</span><span class="w"> </span><span class="o">-</span><span class="n">R</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="w"> </span><span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">kernel</span><span class="o">/</span><span class="n">mm</span><span class="o">/</span><span class="n">hugepages</span><span class="o">/</span><span class="n">hugepages</span><span class="o">-</span><span class="mi">1048576</span><span class="n">kB</span><span class="o">/</span>
-<span class="n">find</span><span class="w"> </span><span class="o">/</span><span class="n">sys</span><span class="w"> </span><span class="o">-</span><span class="n">name</span><span class="w"> </span><span class="n">meminfo</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">xargs</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="n">huge</span>
-<span class="k">to</span><span class="w"> </span><span class="n">verify</span><span class="w"> </span><span class="n">this</span><span class="p">.</span>
+<span class="nx">Now</span><span class="p">,</span><span class="w"> </span><span class="nx">actually</span><span class="w"> </span><span class="nx">writing</span><span class="w"> </span><span class="nx">one</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="nx">into</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">second</span><span class="w"> </span><span class="nx">hugepage</span>
+<span class="nx">Now</span><span class="p">,</span><span class="w"> </span><span class="nx">verify</span><span class="w"> </span><span class="nx">again</span>
+<span class="nx">grep</span><span class="w"> </span><span class="o">-</span><span class="nx">R</span><span class="w"> </span><span class="err">&#39;&#39;</span><span class="w"> </span><span class="o">/</span><span class="nx">sys</span><span class="o">/</span><span class="nx">kernel</span><span class="o">/</span><span class="nx">mm</span><span class="o">/</span><span class="nx">hugepages</span><span class="o">/</span><span class="nx">hugepages</span><span class="o">-</span><span class="mi">1048576</span><span class="nx">kB</span><span class="o">/</span>
+<span class="nx">find</span><span class="w"> </span><span class="o">/</span><span class="nx">sys</span><span class="w"> </span><span class="o">-</span><span class="nx">name</span><span class="w"> </span><span class="nx">meminfo</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">xargs</span><span class="w"> </span><span class="nx">grep</span><span class="w"> </span><span class="o">-</span><span class="nx">i</span><span class="w"> </span><span class="nx">huge</span>
+<span class="nx">to</span><span class="w"> </span><span class="nx">verify</span><span class="w"> </span><span class="nx">this</span><span class="p">.</span>
 
-<span class="k">When</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">done</span><span class="p">,</span><span class="w"> </span><span class="n">please</span><span class="w"> </span><span class="n">hit</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">end</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">program</span>
+<span class="nx">When</span><span class="w"> </span><span class="nx">you</span><span class="w"> </span><span class="nx">are</span><span class="w"> </span><span class="nx">done</span><span class="p">,</span><span class="w"> </span><span class="nx">please</span><span class="w"> </span><span class="nx">hit</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">end</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">program</span>
 </code></pre></div></td></tr></table></div></p>
 <p>Verify reserved hugepages and actually allocated hugepages. 
 Also note that writing 1GB to the hugepage actually takes quite some time:
@@ -2071,13 +2089,13 @@ Also note that writing 1GB to the hugepage actually takes quite some time:
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
-<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nv">man</span><span class="w"> </span><span class="nv">mmap</span>
-<span class="ss">(</span>...<span class="ss">)</span>
-<span class="w">       </span><span class="nv">MAP_POPULATE</span><span class="w"> </span><span class="ss">(</span><span class="nv">since</span><span class="w"> </span><span class="nv">Linux</span><span class="w"> </span><span class="mi">2</span>.<span class="mi">5</span>.<span class="mi">46</span><span class="ss">)</span>
-<span class="w">              </span><span class="nv">Populate</span><span class="w"> </span><span class="ss">(</span><span class="nv">prefault</span><span class="ss">)</span><span class="w"> </span><span class="nv">page</span><span class="w"> </span><span class="nv">tables</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="nv">mapping</span>.<span class="w">  </span><span class="k">For</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="nv">file</span><span class="w"> </span><span class="nv">mapping</span>,<span class="w"> </span><span class="nv">this</span><span class="w">  </span><span class="nv">causes</span><span class="w">  </span><span class="nv">read</span><span class="o">-</span><span class="nv">ahead</span><span class="w">  </span><span class="nv">on</span><span class="w">  </span><span class="nv">the</span>
-<span class="w">              </span><span class="nv">file</span>.<span class="w">   </span><span class="nv">Later</span><span class="w">  </span><span class="nv">accesses</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">mapping</span><span class="w"> </span><span class="nv">will</span><span class="w"> </span><span class="nv">not</span><span class="w"> </span><span class="nv">be</span><span class="w"> </span><span class="nv">blocked</span><span class="w"> </span><span class="nv">by</span><span class="w"> </span><span class="nv">page</span><span class="w"> </span><span class="nv">faults</span>.<span class="w">  </span><span class="nv">MAP_POPULATE</span><span class="w"> </span><span class="nv">is</span><span class="w"> </span><span class="nv">supported</span>
-<span class="w">              </span><span class="k">for</span><span class="w"> </span><span class="nv">private</span><span class="w"> </span><span class="nv">mappings</span><span class="w"> </span><span class="nv">only</span><span class="w"> </span><span class="nv">since</span><span class="w"> </span><span class="nv">Linux</span><span class="w"> </span><span class="mi">2</span>.<span class="mi">6</span>.<span class="mi">23</span>.
-<span class="ss">(</span>...<span class="ss">)</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code>man mmap
+(...)
+       MAP_POPULATE (since Linux 2.5.46)
+              Populate (prefault) page tables for a mapping.  For a file mapping, this  causes  read-ahead  on  the
+              file.   Later  accesses to the mapping will not be blocked by page faults.  MAP_POPULATE is supported
+              for private mappings only since Linux 2.6.23.
+(...)
 </code></pre></div></td></tr></table></div></p>
 <p>The application is <code class="highlight">mmap2.c</code>:
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
@@ -2153,15 +2171,15 @@ Also note that writing 1GB to the hugepage actually takes quite some time:
 <span class="normal">6</span>
 <span class="normal">7</span>
 <span class="normal">8</span>
-<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@dell-r430-30 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">gcc</span><span class="w"> </span><span class="n">mmap2</span><span class="p">.</span><span class="n">c</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">mmap2</span>
-<span class="o">[</span><span class="n">root@dell-r430-30 ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="n">mmap2</span><span class="w"> </span>
-<span class="n">Memory</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="mh">0x2aaac0000000</span>
-<span class="n">This</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="n">reserve</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">populate</span><span class="w"> </span><span class="n">pages</span><span class="p">.</span><span class="w"> </span><span class="k">Execute</span><span class="w"> </span>
-<span class="n">grep</span><span class="w"> </span><span class="o">-</span><span class="n">R</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="w"> </span><span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">kernel</span><span class="o">/</span><span class="n">mm</span><span class="o">/</span><span class="n">hugepages</span><span class="o">/</span><span class="n">hugepages</span><span class="o">-</span><span class="mi">1048576</span><span class="n">kB</span><span class="o">/</span>
-<span class="n">find</span><span class="w"> </span><span class="o">/</span><span class="n">sys</span><span class="w"> </span><span class="o">-</span><span class="n">name</span><span class="w"> </span><span class="n">meminfo</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">xargs</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="n">huge</span>
-<span class="k">to</span><span class="w"> </span><span class="n">verify</span><span class="w"> </span><span class="n">this</span><span class="p">.</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="nx">root</span><span class="err">@</span><span class="nx">dell</span><span class="o">-</span><span class="nx">r430</span><span class="o">-</span><span class="mi">30</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="err">#</span><span class="w"> </span><span class="nx">gcc</span><span class="w"> </span><span class="nx">mmap2</span><span class="p">.</span><span class="nx">c</span><span class="w"> </span><span class="o">-</span><span class="nx">o</span><span class="w"> </span><span class="nx">mmap2</span>
+<span class="p">[</span><span class="nx">root</span><span class="err">@</span><span class="nx">dell</span><span class="o">-</span><span class="nx">r430</span><span class="o">-</span><span class="mi">30</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="err">#</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="nx">mmap2</span><span class="w"> </span>
+<span class="nx">Memory</span><span class="w"> </span><span class="nx">address</span><span class="w"> </span><span class="mh">0x2aaac0000000</span>
+<span class="nx">This</span><span class="w"> </span><span class="nx">will</span><span class="w"> </span><span class="nx">only</span><span class="w"> </span><span class="nx">reserve</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="nx">populate</span><span class="w"> </span><span class="nx">pages</span><span class="p">.</span><span class="w"> </span><span class="nx">Execute</span><span class="w"> </span>
+<span class="nx">grep</span><span class="w"> </span><span class="o">-</span><span class="nx">R</span><span class="w"> </span><span class="err">&#39;&#39;</span><span class="w"> </span><span class="o">/</span><span class="nx">sys</span><span class="o">/</span><span class="nx">kernel</span><span class="o">/</span><span class="nx">mm</span><span class="o">/</span><span class="nx">hugepages</span><span class="o">/</span><span class="nx">hugepages</span><span class="o">-</span><span class="mi">1048576</span><span class="nx">kB</span><span class="o">/</span>
+<span class="nx">find</span><span class="w"> </span><span class="o">/</span><span class="nx">sys</span><span class="w"> </span><span class="o">-</span><span class="nx">name</span><span class="w"> </span><span class="nx">meminfo</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">xargs</span><span class="w"> </span><span class="nx">grep</span><span class="w"> </span><span class="o">-</span><span class="nx">i</span><span class="w"> </span><span class="nx">huge</span>
+<span class="nx">to</span><span class="w"> </span><span class="nx">verify</span><span class="w"> </span><span class="nx">this</span><span class="p">.</span>
 
-<span class="k">When</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">done</span><span class="p">,</span><span class="w"> </span><span class="n">please</span><span class="w"> </span><span class="n">hit</span><span class="w"> </span><span class="k">return</span>
+<span class="nx">When</span><span class="w"> </span><span class="nx">you</span><span class="w"> </span><span class="nx">are</span><span class="w"> </span><span class="nx">done</span><span class="p">,</span><span class="w"> </span><span class="nx">please</span><span class="w"> </span><span class="nx">hit</span><span class="w"> </span><span class="k">return</span>
 </code></pre></div></td></tr></table></div></p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
@@ -2380,196 +2398,196 @@ Also note that writing 1GB to the hugepage actually takes quite some time:
 <span class="normal">189</span>
 <span class="normal">190</span>
 <span class="normal">191</span>
-<span class="normal">192</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">/*</span>
-<span class="w"> </span><span class="o">*</span>
-<span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">This</span><span class="w"> </span><span class="n">heavily</span><span class="w"> </span><span class="n">borrows</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">examples</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span>
-<span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="s2">&quot;The Linux Programming Interface&quot;</span>
-<span class="w"> </span><span class="o">*</span>
-<span class="w"> </span><span class="o">*/</span>
+<span class="normal">192</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="cm">/*</span>
+<span class="cm"> *</span>
+<span class="cm"> * This heavily borrows from examples in </span>
+<span class="cm"> * &quot;The Linux Programming Interface&quot;</span>
+<span class="cm"> *</span>
+<span class="cm"> */</span>
 
-<span class="c1">#include &lt;stdio.h&gt;</span>
-<span class="c1">#include &lt;stdlib.h&gt;</span>
-<span class="c1">#include &lt;string.h&gt;</span>
-<span class="c1">#include &lt;stdbool.h&gt;</span>
-<span class="c1">#include &lt;sys/un.h&gt;</span>
-<span class="c1">#include &lt;sys/socket.h&gt;</span>
-<span class="c1">#include &lt;sys/ioctl.h&gt;</span>
-<span class="c1">#include &lt;signal.h&gt;</span>
-<span class="c1">#include &lt;sys/types.h&gt;</span>
-<span class="c1">#include &lt;sys/stat.h&gt;</span>
-<span class="c1">#include &lt;fcntl.h&gt;</span>
-<span class="c1">#include &lt;sys/mman.h&gt;</span>
+<span class="err">#</span><span class="nx">include</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">stdio</span><span class="p">.</span><span class="nx">h</span><span class="p">&gt;</span>
+<span class="err">#</span><span class="nx">include</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">stdlib</span><span class="p">.</span><span class="nx">h</span><span class="p">&gt;</span>
+<span class="err">#</span><span class="nx">include</span><span class="w"> </span><span class="p">&lt;</span><span class="kt">string</span><span class="p">.</span><span class="nx">h</span><span class="p">&gt;</span>
+<span class="err">#</span><span class="nx">include</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">stdbool</span><span class="p">.</span><span class="nx">h</span><span class="p">&gt;</span>
+<span class="err">#</span><span class="nx">include</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">sys</span><span class="o">/</span><span class="nx">un</span><span class="p">.</span><span class="nx">h</span><span class="p">&gt;</span>
+<span class="err">#</span><span class="nx">include</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">sys</span><span class="o">/</span><span class="nx">socket</span><span class="p">.</span><span class="nx">h</span><span class="p">&gt;</span>
+<span class="err">#</span><span class="nx">include</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">sys</span><span class="o">/</span><span class="nx">ioctl</span><span class="p">.</span><span class="nx">h</span><span class="p">&gt;</span>
+<span class="err">#</span><span class="nx">include</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">signal</span><span class="p">.</span><span class="nx">h</span><span class="p">&gt;</span>
+<span class="err">#</span><span class="nx">include</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">sys</span><span class="o">/</span><span class="nx">types</span><span class="p">.</span><span class="nx">h</span><span class="p">&gt;</span>
+<span class="err">#</span><span class="nx">include</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">sys</span><span class="o">/</span><span class="nx">stat</span><span class="p">.</span><span class="nx">h</span><span class="p">&gt;</span>
+<span class="err">#</span><span class="nx">include</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">fcntl</span><span class="p">.</span><span class="nx">h</span><span class="p">&gt;</span>
+<span class="err">#</span><span class="nx">include</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">sys</span><span class="o">/</span><span class="nx">mman</span><span class="p">.</span><span class="nx">h</span><span class="p">&gt;</span>
 
-<span class="c1">#define SOCKNAME &quot;/tmp/unix.socket&quot;</span>
-<span class="c1">#define HUGEPAGE_FILE_NAME &quot;/dev/hugepages/server&quot;</span>
-<span class="c1">#define NUM_PAGES 2</span>
-<span class="c1">#define PAGE_SIZE (unsigned long) 1024 * 1024 * 1024</span>
+<span class="err">#</span><span class="nx">define</span><span class="w"> </span><span class="nx">SOCKNAME</span><span class="w"> </span><span class="s">&quot;/tmp/unix.socket&quot;</span>
+<span class="err">#</span><span class="nx">define</span><span class="w"> </span><span class="nx">HUGEPAGE_FILE_NAME</span><span class="w"> </span><span class="s">&quot;/dev/hugepages/server&quot;</span>
+<span class="err">#</span><span class="nx">define</span><span class="w"> </span><span class="nx">NUM_PAGES</span><span class="w"> </span><span class="mi">2</span>
+<span class="err">#</span><span class="nx">define</span><span class="w"> </span><span class="nx">PAGE_SIZE</span><span class="w"> </span><span class="p">(</span><span class="nx">unsigned</span><span class="w"> </span><span class="nx">long</span><span class="p">)</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1024</span>
 
-<span class="nb nb-Type">int</span><span class="w"> </span><span class="n">bind_socket</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">sfd</span><span class="p">;</span>
-<span class="w">    </span><span class="n">struct</span><span class="w"> </span><span class="n">sockaddr_un</span><span class="w"> </span><span class="n">addr</span><span class="p">;</span>
-<span class="w">    </span><span class="n">sfd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">socket</span><span class="p">(</span><span class="n">AF_UNIX</span><span class="p">,</span><span class="w"> </span><span class="n">SOCK_STREAM</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sfd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="nx">int</span><span class="w"> </span><span class="nx">bind_socket</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">int</span><span class="w"> </span><span class="nx">sfd</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">struct</span><span class="w"> </span><span class="nx">sockaddr_un</span><span class="w"> </span><span class="kd">addr</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">sfd</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">socket</span><span class="p">(</span><span class="nx">AF_UNIX</span><span class="p">,</span><span class="w"> </span><span class="nx">SOCK_STREAM</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">sfd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-<span class="w">    </span><span class="o">/*</span><span class="w"> </span><span class="n">Create</span><span class="w"> </span><span class="n">socket</span><span class="w"> </span><span class="o">*/</span>
-<span class="w">    </span><span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">addr</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">sizeof</span><span class="p">(</span><span class="n">struct</span><span class="w"> </span><span class="n">sockaddr_un</span><span class="p">));</span>
-<span class="w">    </span><span class="o">/*</span><span class="w"> </span><span class="n">Clear</span><span class="w"> </span><span class="n">structure</span><span class="w"> </span><span class="o">*/</span>
-<span class="w">    </span><span class="n">addr</span><span class="o">.</span><span class="n">sun_family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AF_UNIX</span><span class="p">;</span>
-<span class="w">    </span><span class="o">/*</span><span class="w"> </span><span class="n">UNIX</span><span class="w"> </span><span class="n">domain</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="o">*/</span>
-<span class="w">    </span><span class="n">strncpy</span><span class="p">(</span><span class="n">addr</span><span class="o">.</span><span class="n">sun_path</span><span class="p">,</span><span class="w"> </span><span class="n">SOCKNAME</span><span class="p">,</span><span class="w"> </span><span class="n">sizeof</span><span class="p">(</span><span class="n">addr</span><span class="o">.</span><span class="n">sun_path</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">bind</span><span class="p">(</span><span class="n">sfd</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">struct</span><span class="w"> </span><span class="n">sockaddr</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">addr</span><span class="p">,</span><span class="w"> </span><span class="n">sizeof</span><span class="p">(</span><span class="n">struct</span><span class="w"> </span><span class="n">sockaddr_un</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">    </span><span class="cm">/* Create socket */</span>
+<span class="w">    </span><span class="nx">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="kd">addr</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nx">sizeof</span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">sockaddr_un</span><span class="p">));</span>
+<span class="w">    </span><span class="cm">/* Clear structure */</span>
+<span class="w">    </span><span class="kd">addr</span><span class="p">.</span><span class="nx">sun_family</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">AF_UNIX</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* UNIX domain address */</span>
+<span class="w">    </span><span class="nx">strncpy</span><span class="p">(</span><span class="kd">addr</span><span class="p">.</span><span class="nx">sun_path</span><span class="p">,</span><span class="w"> </span><span class="nx">SOCKNAME</span><span class="p">,</span><span class="w"> </span><span class="nx">sizeof</span><span class="p">(</span><span class="kd">addr</span><span class="p">.</span><span class="nx">sun_path</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">bind</span><span class="p">(</span><span class="nx">sfd</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">sockaddr</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="kd">addr</span><span class="p">,</span><span class="w"> </span><span class="nx">sizeof</span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">sockaddr_un</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">sfd</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">sfd</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="nb nb-Type">int</span><span class="w"> </span><span class="n">connect_socket</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">sfd</span><span class="p">;</span>
-<span class="w">    </span><span class="n">struct</span><span class="w"> </span><span class="n">sockaddr_un</span><span class="w"> </span><span class="n">addr</span><span class="p">;</span>
-<span class="w">    </span><span class="n">sfd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">socket</span><span class="p">(</span><span class="n">AF_UNIX</span><span class="p">,</span><span class="w"> </span><span class="n">SOCK_STREAM</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sfd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="nx">int</span><span class="w"> </span><span class="nx">connect_socket</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">int</span><span class="w"> </span><span class="nx">sfd</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">struct</span><span class="w"> </span><span class="nx">sockaddr_un</span><span class="w"> </span><span class="kd">addr</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">sfd</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">socket</span><span class="p">(</span><span class="nx">AF_UNIX</span><span class="p">,</span><span class="w"> </span><span class="nx">SOCK_STREAM</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">sfd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-<span class="w">    </span><span class="o">/*</span><span class="w"> </span><span class="n">Create</span><span class="w"> </span><span class="n">socket</span><span class="w"> </span><span class="o">*/</span>
-<span class="w">    </span><span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">addr</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">sizeof</span><span class="p">(</span><span class="n">struct</span><span class="w"> </span><span class="n">sockaddr_un</span><span class="p">));</span>
-<span class="w">    </span><span class="o">/*</span><span class="w"> </span><span class="n">Clear</span><span class="w"> </span><span class="n">structure</span><span class="w"> </span><span class="o">*/</span>
-<span class="w">    </span><span class="n">addr</span><span class="o">.</span><span class="n">sun_family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AF_UNIX</span><span class="p">;</span>
-<span class="w">    </span><span class="o">/*</span><span class="w"> </span><span class="n">UNIX</span><span class="w"> </span><span class="n">domain</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="o">*/</span>
-<span class="w">    </span><span class="n">strncpy</span><span class="p">(</span><span class="n">addr</span><span class="o">.</span><span class="n">sun_path</span><span class="p">,</span><span class="w"> </span><span class="n">SOCKNAME</span><span class="p">,</span><span class="w"> </span><span class="n">sizeof</span><span class="p">(</span><span class="n">addr</span><span class="o">.</span><span class="n">sun_path</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">connect</span><span class="p">(</span><span class="n">sfd</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">struct</span><span class="w"> </span><span class="n">sockaddr</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">addr</span><span class="p">,</span><span class="w"> </span><span class="n">sizeof</span><span class="p">(</span><span class="n">struct</span><span class="w"> </span><span class="n">sockaddr_un</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">    </span><span class="cm">/* Create socket */</span>
+<span class="w">    </span><span class="nx">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="kd">addr</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nx">sizeof</span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">sockaddr_un</span><span class="p">));</span>
+<span class="w">    </span><span class="cm">/* Clear structure */</span>
+<span class="w">    </span><span class="kd">addr</span><span class="p">.</span><span class="nx">sun_family</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">AF_UNIX</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* UNIX domain address */</span>
+<span class="w">    </span><span class="nx">strncpy</span><span class="p">(</span><span class="kd">addr</span><span class="p">.</span><span class="nx">sun_path</span><span class="p">,</span><span class="w"> </span><span class="nx">SOCKNAME</span><span class="p">,</span><span class="w"> </span><span class="nx">sizeof</span><span class="p">(</span><span class="kd">addr</span><span class="p">.</span><span class="nx">sun_path</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">connect</span><span class="p">(</span><span class="nx">sfd</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">sockaddr</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="kd">addr</span><span class="p">,</span><span class="w"> </span><span class="nx">sizeof</span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">sockaddr_un</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">sfd</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">sfd</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="nb nb-Type">int</span><span class="w"> </span><span class="n">share_memory_location</span><span class="p">(</span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="nb">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">address</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">listen</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="nx">int</span><span class="w"> </span><span class="nx">share_memory_location</span><span class="p">(</span><span class="nx">int</span><span class="w"> </span><span class="nx">fd</span><span class="p">,</span><span class="w"> </span><span class="nx">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">address</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">listen</span><span class="p">(</span><span class="nx">fd</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-<span class="w">    </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">cfd</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">int</span><span class="w"> </span><span class="nx">cfd</span><span class="p">;</span>
 
-<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">sigint_received</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="n">cfd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">accept</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">NULL</span><span class="p">);</span>
-<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s2">&quot;Client connected</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">);</span>
-<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">cfd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">    </span><span class="c1">// while(!sigint_received) {</span>
+<span class="w">        </span><span class="nx">cfd</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">accept</span><span class="p">(</span><span class="nx">fd</span><span class="p">,</span><span class="w"> </span><span class="nx">NULL</span><span class="p">,</span><span class="w"> </span><span class="nx">NULL</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">printf</span><span class="p">(</span><span class="s">&quot;Client connected\n&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="nx">cfd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s2">&quot;Sending &#39;</span><span class="si">%s</span><span class="s2">&#39; to client</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">address</span><span class="p">);</span>
-<span class="w">        </span><span class="n">dprintf</span><span class="p">(</span><span class="n">cfd</span><span class="p">,</span><span class="w"> </span><span class="n">address</span><span class="p">);</span>
-<span class="w">        </span><span class="n">close</span><span class="p">(</span><span class="n">cfd</span><span class="p">);</span>
-<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="p">}</span>
+<span class="w">        </span><span class="nx">printf</span><span class="p">(</span><span class="s">&quot;Sending &#39;%s&#39; to client\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">address</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">dprintf</span><span class="p">(</span><span class="nx">cfd</span><span class="p">,</span><span class="w"> </span><span class="nx">address</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">close</span><span class="p">(</span><span class="nx">cfd</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// }</span>
 
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="nb nb-Type">int</span><span class="w"> </span><span class="n">close_socket</span><span class="p">(</span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">fd</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
-<span class="w">    </span><span class="n">unlink</span><span class="p">(</span><span class="n">SOCKNAME</span><span class="p">);</span>
+<span class="nx">int</span><span class="w"> </span><span class="nx">close_socket</span><span class="p">(</span><span class="nx">int</span><span class="w"> </span><span class="nx">fd</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">close</span><span class="p">(</span><span class="nx">fd</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">unlink</span><span class="p">(</span><span class="nx">SOCKNAME</span><span class="p">);</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="nb nb-Type">int</span><span class="w"> </span><span class="n">read_memory_location</span><span class="p">(</span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">memory_location</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">buf_size</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">bytes_read</span><span class="p">;</span>
-<span class="w">    </span><span class="n">bytes_read</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">read</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">memory_location</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span>
+<span class="nx">int</span><span class="w"> </span><span class="nx">read_memory_location</span><span class="p">(</span><span class="nx">int</span><span class="w"> </span><span class="nx">fd</span><span class="p">,</span><span class="w"> </span><span class="nx">void</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">memory_location</span><span class="p">,</span><span class="w"> </span><span class="nx">int</span><span class="w"> </span><span class="nx">buf_size</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">int</span><span class="w"> </span><span class="nx">bytes_read</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">bytes_read</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">read</span><span class="p">(</span><span class="nx">fd</span><span class="p">,</span><span class="w"> </span><span class="nx">memory_location</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span>
 
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="nb nb-Type">int</span><span class="w"> </span><span class="n">create_shared_hugepage</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">open</span><span class="p">(</span><span class="n">HUGEPAGE_FILE_NAME</span><span class="p">,</span><span class="w"> </span><span class="n">O_CREAT</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">O_RDWR</span><span class="p">,</span><span class="w"> </span><span class="mi">0755</span><span class="p">);</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">fd</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="nx">int</span><span class="w"> </span><span class="nx">create_shared_hugepage</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">int</span><span class="w"> </span><span class="nx">fd</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">open</span><span class="p">(</span><span class="nx">HUGEPAGE_FILE_NAME</span><span class="p">,</span><span class="w"> </span><span class="nx">O_CREAT</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">O_RDWR</span><span class="p">,</span><span class="w"> </span><span class="mi">0755</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">fd</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
 
-<span class="w">        </span><span class="nb">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mmap</span><span class="p">(</span>
-<span class="w">                </span><span class="p">(</span><span class="nb nb-Type">void</span><span class="w"> </span><span class="o">*</span><span class="p">)(</span><span class="mh">0x0</span><span class="n">UL</span><span class="p">),</span>
-<span class="w">                </span><span class="n">NUM_PAGES</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">PAGE_SIZE</span><span class="p">,</span>
-<span class="w">                </span><span class="n">PROT_READ</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">PROT_WRITE</span><span class="p">,</span>
-<span class="w">                </span><span class="n">MAP_SHARED</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">MAP_POPULATE</span><span class="p">,</span>
-<span class="w">                </span><span class="n">fd</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">buf</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">mmap</span><span class="p">(</span>
+<span class="w">                </span><span class="p">(</span><span class="nx">void</span><span class="w"> </span><span class="o">*</span><span class="p">)(</span><span class="mh">0x0</span><span class="nx">UL</span><span class="p">),</span>
+<span class="w">                </span><span class="nx">NUM_PAGES</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">PAGE_SIZE</span><span class="p">,</span>
+<span class="w">                </span><span class="nx">PROT_READ</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">PROT_WRITE</span><span class="p">,</span>
+<span class="w">                </span><span class="nx">MAP_SHARED</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">MAP_POPULATE</span><span class="p">,</span>
+<span class="w">                </span><span class="nx">fd</span><span class="p">,</span>
 <span class="w">                </span><span class="mi">0</span>
 <span class="w">        </span><span class="p">);</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">buf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">MAP_FAILED</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">buf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">MAP_FAILED</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
 <span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;y&#39;</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="sc">&#39;y&#39;</span><span class="p">;</span>
 
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">fd</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">fd</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="nb nb-Type">int</span><span class="w"> </span><span class="n">read_from_shared_hugepage</span><span class="p">(</span><span class="nb">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">page_location</span><span class="p">,</span><span class="w"> </span><span class="nb nb-Type">void</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">return_buf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">open</span><span class="p">(</span><span class="n">page_location</span><span class="p">,</span><span class="w"> </span><span class="n">O_RDWR</span><span class="p">,</span><span class="w"> </span><span class="mi">0755</span><span class="p">);</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">fd</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="nx">int</span><span class="w"> </span><span class="nx">read_from_shared_hugepage</span><span class="p">(</span><span class="nx">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">page_location</span><span class="p">,</span><span class="w"> </span><span class="nx">void</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">return_buf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">int</span><span class="w"> </span><span class="nx">fd</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">open</span><span class="p">(</span><span class="nx">page_location</span><span class="p">,</span><span class="w"> </span><span class="nx">O_RDWR</span><span class="p">,</span><span class="w"> </span><span class="mi">0755</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">fd</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
 
-<span class="w">        </span><span class="nb">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mmap</span><span class="p">(</span>
-<span class="w">                </span><span class="p">(</span><span class="nb nb-Type">void</span><span class="w"> </span><span class="o">*</span><span class="p">)(</span><span class="mh">0x0</span><span class="n">UL</span><span class="p">),</span>
-<span class="w">                </span><span class="n">NUM_PAGES</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">PAGE_SIZE</span><span class="p">,</span>
-<span class="w">                </span><span class="n">PROT_READ</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">PROT_WRITE</span><span class="p">,</span>
-<span class="w">                </span><span class="n">MAP_SHARED</span><span class="p">,</span>
-<span class="w">                </span><span class="n">fd</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">buf</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">mmap</span><span class="p">(</span>
+<span class="w">                </span><span class="p">(</span><span class="nx">void</span><span class="w"> </span><span class="o">*</span><span class="p">)(</span><span class="mh">0x0</span><span class="nx">UL</span><span class="p">),</span>
+<span class="w">                </span><span class="nx">NUM_PAGES</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">PAGE_SIZE</span><span class="p">,</span>
+<span class="w">                </span><span class="nx">PROT_READ</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">PROT_WRITE</span><span class="p">,</span>
+<span class="w">                </span><span class="nx">MAP_SHARED</span><span class="p">,</span>
+<span class="w">                </span><span class="nx">fd</span><span class="p">,</span>
 <span class="w">                </span><span class="mi">0</span>
 <span class="w">        </span><span class="p">);</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">buf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">MAP_FAILED</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">buf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">MAP_FAILED</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
 <span class="w">        </span><span class="p">}</span>
 
-<span class="w">    </span><span class="p">((</span><span class="nb">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">return_buf</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="w">    </span><span class="p">((</span><span class="nx">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="nx">return_buf</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
 
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">fd</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">fd</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="nb nb-Type">int</span><span class="w"> </span><span class="n">delete_shared_hugepage</span><span class="p">(</span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">fd</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
-<span class="w">    </span><span class="n">unlink</span><span class="p">(</span><span class="n">HUGEPAGE_FILE_NAME</span><span class="p">);</span>
+<span class="nx">int</span><span class="w"> </span><span class="nx">delete_shared_hugepage</span><span class="p">(</span><span class="nx">int</span><span class="w"> </span><span class="nx">fd</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">close</span><span class="p">(</span><span class="nx">fd</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">unlink</span><span class="p">(</span><span class="nx">HUGEPAGE_FILE_NAME</span><span class="p">);</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="nb nb-Type">int</span><span class="w"> </span><span class="n">main</span><span class="p">(</span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">argc</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="nb">char</span><span class="w"> </span><span class="o">**</span><span class="w"> </span><span class="n">argv</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s2">&quot;Please provide either server or client as an argument</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">);</span>
-<span class="w">        </span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="nx">int</span><span class="w"> </span><span class="nx">main</span><span class="p">(</span><span class="nx">int</span><span class="w"> </span><span class="nx">argc</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="nx">char</span><span class="w"> </span><span class="o">**</span><span class="w"> </span><span class="nx">argv</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="nx">argc</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">printf</span><span class="p">(</span><span class="s">&quot;Please provide either server or client as an argument\n&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nb nb-Type">bool</span><span class="w"> </span><span class="n">server_mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">false</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="nx">server_mode</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
 
-<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="s2">&quot;server&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s2">&quot;Server mode ...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">);</span>
-<span class="w">        </span><span class="n">server_mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">true</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="nx">strcmp</span><span class="p">(</span><span class="nx">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="s">&quot;server&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">printf</span><span class="p">(</span><span class="s">&quot;Server mode ...\n&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">server_mode</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s2">&quot;Client mode ...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">printf</span><span class="p">(</span><span class="s">&quot;Client mode ...\n&quot;</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">fd</span><span class="p">;</span>
-<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">server_mode</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nb">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">memory_location</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HUGEPAGE_FILE_NAME</span><span class="p">;</span>
-<span class="w">        </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">hp_fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">create_shared_hugepage</span><span class="p">();</span>
-<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">hp_fd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="n">perror</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t allocate hugepage&quot;</span><span class="p">);</span>
-<span class="w">            </span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">int</span><span class="w"> </span><span class="nx">fd</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="nx">server_mode</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">memory_location</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">HUGEPAGE_FILE_NAME</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">int</span><span class="w"> </span><span class="nx">hp_fd</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">create_shared_hugepage</span><span class="p">();</span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="nx">hp_fd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">perror</span><span class="p">(</span><span class="s">&quot;Couldn&#39;t allocate hugepage&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="nx">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 
-<span class="w">        </span><span class="n">fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bind_socket</span><span class="p">();</span>
-<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">fd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s2">&quot;Error binding socket (does </span><span class="si">%s</span><span class="s2"> exist? Delete it!)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">SOCKNAME</span><span class="p">);</span>
-<span class="w">            </span><span class="n">perror</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span>
-<span class="w">            </span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">fd</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">bind_socket</span><span class="p">();</span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="nx">fd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">printf</span><span class="p">(</span><span class="s">&quot;Error binding socket (does %s exist? Delete it!)\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">SOCKNAME</span><span class="p">);</span>
+<span class="w">            </span><span class="nx">perror</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="nx">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
-<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">share_memory_location</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">memory_location</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="n">perror</span><span class="p">(</span><span class="s2">&quot;Error sharing memory location&quot;</span><span class="p">);</span>
-<span class="w">            </span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="nx">share_memory_location</span><span class="p">(</span><span class="nx">fd</span><span class="p">,</span><span class="w"> </span><span class="nx">memory_location</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">perror</span><span class="p">(</span><span class="s">&quot;Error sharing memory location&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="nx">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
-<span class="w">        </span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
-<span class="w">        </span><span class="n">delete_shared_hugepage</span><span class="p">(</span><span class="n">hp_fd</span><span class="p">);</span>
-<span class="w">        </span><span class="n">close_socket</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">delete_shared_hugepage</span><span class="p">(</span><span class="nx">hp_fd</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">close_socket</span><span class="p">(</span><span class="nx">fd</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nb">char</span><span class="w"> </span><span class="n">mem_loc</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span>
-<span class="w">        </span><span class="n">fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">connect_socket</span><span class="p">();</span>
-<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">read_memory_location</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">mem_loc</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="n">perror</span><span class="p">(</span><span class="s2">&quot;Error reading memory location&quot;</span><span class="p">);</span>
-<span class="w">            </span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">char</span><span class="w"> </span><span class="nx">mem_loc</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span>
+<span class="w">        </span><span class="nx">fd</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">connect_socket</span><span class="p">();</span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="nx">read_memory_location</span><span class="p">(</span><span class="nx">fd</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">mem_loc</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">perror</span><span class="p">(</span><span class="s">&quot;Error reading memory location&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="nx">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
-<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s2">&quot;Memory location is &#39;</span><span class="si">%s</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mem_loc</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">printf</span><span class="p">(</span><span class="s">&quot;Memory location is &#39;%s&#39;\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">mem_loc</span><span class="p">);</span>
 
-<span class="w">        </span><span class="nb">char</span><span class="w"> </span><span class="n">hp_content</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span>
-<span class="w">        </span><span class="n">read_from_shared_hugepage</span><span class="p">(</span><span class="n">mem_loc</span><span class="p">,</span><span class="w"> </span><span class="n">hp_content</span><span class="p">);</span>
-<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s2">&quot;Content of first byte at page &#39;</span><span class="si">%s</span><span class="s2">&#39; is &#39;</span><span class="si">%s</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">        </span><span class="n">mem_loc</span><span class="p">,</span>
-<span class="w">        </span><span class="n">hp_content</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="w">        </span><span class="nx">char</span><span class="w"> </span><span class="nx">hp_content</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span>
+<span class="w">        </span><span class="nx">read_from_shared_hugepage</span><span class="p">(</span><span class="nx">mem_loc</span><span class="p">,</span><span class="w"> </span><span class="nx">hp_content</span><span class="p">);</span>
+<span class="w">            </span><span class="nx">printf</span><span class="p">(</span><span class="s">&quot;Content of first byte at page &#39;%s&#39; is &#39;%s&#39;\n&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="nx">mem_loc</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">hp_content</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></td></tr></table></div></p>
@@ -2629,10 +2647,10 @@ Also note that writing 1GB to the hugepage actually takes quite some time:
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.efa0ade1.min.js"></script>
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
       
     
   </body>

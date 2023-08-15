@@ -19,7 +19,7 @@
         <link rel="next" href="../packet-tracing-with-ovn/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.3">
+      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.1.21">
     
     
       
@@ -27,10 +27,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.c4a75a56.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.eebd395e.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ecc896b0.min.css">
       
       
 
@@ -109,6 +109,8 @@
         </div>
       </div>
     </div>
+    
+      
     
     
     
@@ -1028,6 +1030,8 @@
         
           
         
+          
+        
       
       
         
@@ -1422,6 +1426,20 @@
     <li class="md-nav__item">
       <a href="../../openshift/proxy-ocp-4.5/" class="md-nav__link">
         Proxy OCP 4.5
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/rpm-ostree-failed-to-find-image/" class="md-nav__link">
+        rpm-ostreed failed to find image
       </a>
     </li>
   
@@ -1843,22 +1861,22 @@ Hence I'm directly downloading it:
 <span class="normal">13</span>
 <span class="normal">14</span>
 <span class="normal">15</span>
-<span class="normal">16</span></pre></div></td><td class="code"><div><pre><span></span><code>(gdb) ovs_dump_bridge
-(struct bridge *) 0x5563a14fd2b0: name = br-link0, type = netdev
-(struct bridge *) 0x5563a14fd8c0: name = br-int, type = netdev
-(gdb) ovs_dump_bridge ports
-(struct bridge *) 0x5563a14fd2b0: name = br-link0, type = netdev
-    (struct port *) 0x5563a1552800: name = br-link0, brige = (struct bridge *) 0x5563a14fd2b0
-        (struct iface *) 0x5563a157b090: name = 0x5563a1502070 &quot;br-link0&quot;, ofp_port = 65534, netdev = (struct netdev *) 0x5563a157a7d0
-    (struct port *) 0x5563a157d480: name = dpdk0, brige = (struct bridge *) 0x5563a14fd2b0
-        (struct iface *) 0x5563a157d720: name = 0x5563a157bc40 &quot;dpdk0&quot;, ofp_port = 1, netdev = (struct netdev *) 0x7f223fc6b6c0
-    (struct port *) 0x5563a15809b0: name = phy-br-link0, brige = (struct bridge *) 0x5563a14fd2b0
-        (struct iface *) 0x5563a15806a0: name = 0x5563a1580720 &quot;phy-br-link0&quot;, ofp_port = 2, netdev = (struct netdev *) 0x5563a1582d20
-(struct bridge *) 0x5563a14fd8c0: name = br-int, type = netdev
-    (struct port *) 0x5563a1583220: name = int-br-link0, brige = (struct bridge *) 0x5563a14fd8c0
-        (struct iface *) 0x5563a15839c0: name = 0x5563a1580790 &quot;int-br-link0&quot;, ofp_port = 1, netdev = (struct netdev *) 0x5563a1583620
-    (struct port *) 0x5563a1584560: name = br-int, brige = (struct bridge *) 0x5563a14fd8c0
-        (struct iface *) 0x5563a1584e70: name = 0x5563a1584ef0 &quot;br-int&quot;, ofp_port = 65534, netdev = (struct netdev *) 0x5563a1584150
+<span class="normal">16</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">(</span><span class="nx">gdb</span><span class="p">)</span><span class="w"> </span><span class="nx">ovs_dump_bridge</span>
+<span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">bridge</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x5563a14fd2b0</span><span class="p">:</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">br</span><span class="o">-</span><span class="nx">link0</span><span class="p">,</span><span class="w"> </span><span class="k">type</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">netdev</span>
+<span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">bridge</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x5563a14fd8c0</span><span class="p">:</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">br</span><span class="o">-</span><span class="nx">int</span><span class="p">,</span><span class="w"> </span><span class="k">type</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">netdev</span>
+<span class="p">(</span><span class="nx">gdb</span><span class="p">)</span><span class="w"> </span><span class="nx">ovs_dump_bridge</span><span class="w"> </span><span class="nx">ports</span>
+<span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">bridge</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x5563a14fd2b0</span><span class="p">:</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">br</span><span class="o">-</span><span class="nx">link0</span><span class="p">,</span><span class="w"> </span><span class="k">type</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">netdev</span>
+<span class="w">    </span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">port</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x5563a1552800</span><span class="p">:</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">br</span><span class="o">-</span><span class="nx">link0</span><span class="p">,</span><span class="w"> </span><span class="nx">brige</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">bridge</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x5563a14fd2b0</span>
+<span class="w">        </span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">iface</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x5563a157b090</span><span class="p">:</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mh">0x5563a1502070</span><span class="w"> </span><span class="s">&quot;br-link0&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">ofp_port</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">65534</span><span class="p">,</span><span class="w"> </span><span class="nx">netdev</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">netdev</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x5563a157a7d0</span>
+<span class="w">    </span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">port</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x5563a157d480</span><span class="p">:</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">dpdk0</span><span class="p">,</span><span class="w"> </span><span class="nx">brige</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">bridge</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x5563a14fd2b0</span>
+<span class="w">        </span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">iface</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x5563a157d720</span><span class="p">:</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mh">0x5563a157bc40</span><span class="w"> </span><span class="s">&quot;dpdk0&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">ofp_port</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nx">netdev</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">netdev</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x7f223fc6b6c0</span>
+<span class="w">    </span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">port</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x5563a15809b0</span><span class="p">:</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">phy</span><span class="o">-</span><span class="nx">br</span><span class="o">-</span><span class="nx">link0</span><span class="p">,</span><span class="w"> </span><span class="nx">brige</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">bridge</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x5563a14fd2b0</span>
+<span class="w">        </span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">iface</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x5563a15806a0</span><span class="p">:</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mh">0x5563a1580720</span><span class="w"> </span><span class="s">&quot;phy-br-link0&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">ofp_port</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nx">netdev</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">netdev</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x5563a1582d20</span>
+<span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">bridge</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x5563a14fd8c0</span><span class="p">:</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">br</span><span class="o">-</span><span class="nx">int</span><span class="p">,</span><span class="w"> </span><span class="k">type</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">netdev</span>
+<span class="w">    </span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">port</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x5563a1583220</span><span class="p">:</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">int</span><span class="o">-</span><span class="nx">br</span><span class="o">-</span><span class="nx">link0</span><span class="p">,</span><span class="w"> </span><span class="nx">brige</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">bridge</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x5563a14fd8c0</span>
+<span class="w">        </span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">iface</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x5563a15839c0</span><span class="p">:</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mh">0x5563a1580790</span><span class="w"> </span><span class="s">&quot;int-br-link0&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">ofp_port</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nx">netdev</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">netdev</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x5563a1583620</span>
+<span class="w">    </span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">port</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x5563a1584560</span><span class="p">:</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">br</span><span class="o">-</span><span class="nx">int</span><span class="p">,</span><span class="w"> </span><span class="nx">brige</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">bridge</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x5563a14fd8c0</span>
+<span class="w">        </span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">iface</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x5563a1584e70</span><span class="p">:</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mh">0x5563a1584ef0</span><span class="w"> </span><span class="s">&quot;br-int&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">ofp_port</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">65534</span><span class="p">,</span><span class="w"> </span><span class="nx">netdev</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="nx">struct</span><span class="w"> </span><span class="nx">netdev</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="mh">0x5563a1584150</span>
 </code></pre></div></td></tr></table></div>
 
   <hr>
@@ -1913,10 +1931,10 @@ Hence I'm directly downloading it:
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.efa0ade1.min.js"></script>
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
       
     
   </body>

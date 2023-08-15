@@ -19,7 +19,7 @@
         <link rel="next" href="../fix-selinux-labels-coreos/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.3">
+      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.1.21">
     
     
       
@@ -27,10 +27,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.c4a75a56.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.eebd395e.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ecc896b0.min.css">
       
       
 
@@ -109,6 +109,8 @@
         </div>
       </div>
     </div>
+    
+      
     
     
     
@@ -1020,6 +1022,8 @@
         
           
         
+          
+        
       
       
         
@@ -1414,6 +1418,20 @@
     <li class="md-nav__item">
       <a href="../proxy-ocp-4.5/" class="md-nav__link">
         Proxy OCP 4.5
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rpm-ostree-failed-to-find-image/" class="md-nav__link">
+        rpm-ostreed failed to find image
       </a>
     </li>
   
@@ -2196,15 +2214,15 @@ any pod upon creation. If the pod has an annotation <code class="highlight">webh
 <span class="normal">13</span></pre></div></td><td class="code"><div><pre><span></span><code>(...)
   spec:
     containers:
-    - image: quay.io/akaris/fedora-test:uid
+    <span class="k">-</span> image: quay.io/akaris/fedora-test:uid
       imagePullPolicy: IfNotPresent
       name: fedora-test-with-capabilities
       securityContext:
         capabilities:
           add:
-          - &quot;SETFCAP&quot;
-          - &quot;CAP_NET_RAW&quot;
-          - &quot;CAP_NET_ADMIN&quot;
+          <span class="k">-</span> &quot;SETFCAP&quot;
+          <span class="k">-</span> &quot;CAP_NET_RAW&quot;
+          <span class="k">-</span> &quot;CAP_NET_ADMIN&quot;
 (...)
 </code></pre></div></td></tr></table></div></p>
 <h3 id="putting-scc-prioritization-scc-runasuser-strategies-and-mutating-webhooks-together">Putting SCC prioritization, SCC runAsUser strategies and mutating webhooks together</h3>
@@ -2337,8 +2355,8 @@ against the <code class="highlight">restricted</code> SCC due to its higher prio
 very beginning.</p>
 <p>Our hypothesis is backed by <a href="https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#reinvocation-policy">the Kubernetes documentation</a>:
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nv">To</span><span class="w"> </span><span class="nv">allow</span><span class="w"> </span><span class="nv">mutating</span><span class="w"> </span><span class="nv">admission</span><span class="w"> </span><span class="nv">plugins</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">observe</span><span class="w"> </span><span class="nv">changes</span><span class="w"> </span><span class="nv">made</span><span class="w"> </span><span class="nv">by</span><span class="w"> </span><span class="nv">other</span><span class="w"> </span><span class="nv">plugins</span>,<span class="w"> </span><span class="nv">built</span><span class="o">-</span><span class="nv">in</span><span class="w"> </span><span class="nv">mutating</span><span class="w"> </span><span class="nv">admission</span><span class="w"> </span><span class="nv">plugins</span><span class="w"> </span><span class="nv">are</span>
-<span class="nv">re</span><span class="o">-</span><span class="nv">run</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="nv">mutating</span><span class="w"> </span><span class="nv">webhook</span><span class="w"> </span><span class="nv">modifies</span><span class="w"> </span><span class="nv">an</span><span class="w"> </span><span class="nv">object</span><span class="w"> </span><span class="ss">(</span>...<span class="ss">)</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nx">To</span><span class="w"> </span><span class="nx">allow</span><span class="w"> </span><span class="nx">mutating</span><span class="w"> </span><span class="nx">admission</span><span class="w"> </span><span class="nx">plugins</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="k">observe</span><span class="w"> </span><span class="nx">changes</span><span class="w"> </span><span class="nx">made</span><span class="w"> </span><span class="nx">by</span><span class="w"> </span><span class="nx">other</span><span class="w"> </span><span class="nx">plugins</span><span class="p">,</span><span class="w"> </span><span class="nx">built</span><span class="o">-</span><span class="k">in</span><span class="w"> </span><span class="nx">mutating</span><span class="w"> </span><span class="nx">admission</span><span class="w"> </span><span class="nx">plugins</span><span class="w"> </span><span class="nx">are</span>
+<span class="nx">re</span><span class="o">-</span><span class="nx">run</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">mutating</span><span class="w"> </span><span class="nx">webhook</span><span class="w"> </span><span class="nx">modifies</span><span class="w"> </span><span class="nx">an</span><span class="w"> </span><span class="nx">object</span><span class="w"> </span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div></p>
 <p>The following diagram is a simplified view of the aforementioned process:</p>
 <p><img alt="mutating-admission-control-reinvocation" src="https://user-images.githubusercontent.com/3291433/220171917-34083458-b36f-4b08-b1e7-827df540fd0f.png" /></p>
@@ -2469,7 +2487,7 @@ $<span class="w"> </span>sudo<span class="w"> </span>-i
 <p>The above command will start <code class="highlight">dlv</code> in headless mode. It will listen on <code class="highlight"><span class="cp">${</span><span class="n">NODEIP</span><span class="cp">}</span>:12345</code>. In the next step, we will
 connect to the <code class="highlight">dlv</code> headless server with <code class="highlight"><span class="nv">dlv</span><span class="w"> </span><span class="k">connect</span></code>.</p>
 <h4 id="identifying-interesting-code-sections">Identifying interesting code sections</h4>
-<p>For the SCC <code class="highlight">RUNASUSER</code> strategies, we are interested in code from the <code class="highlight">apiserver-library</code>.</p>
+<p>For the SCC <code class="highlight">RUNASUSER</code> strategies, we are interested in code from the <code class="highlight"><span class="nx">apiserver</span><span class="o">-</span><span class="kn">library</span></code>.</p>
 <p>For example, the <code class="highlight">runAsAny</code> strategy is defined here:</p>
 <ul>
 <li><a href="https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/user/runasany.go#L22">https://github.com/openshift/apiserver-library-go/blob/release-4.10/pkg/securitycontextconstraints/user/runasany.go#L22</a></li>
@@ -2992,10 +3010,10 @@ during a previous run of the SCC mutating admission plugin.</p>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.efa0ade1.min.js"></script>
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
       
     
   </body>

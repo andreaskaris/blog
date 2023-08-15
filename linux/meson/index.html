@@ -19,7 +19,7 @@
         <link rel="next" href="../namespaces/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.3">
+      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.1.21">
     
     
       
@@ -27,10 +27,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.c4a75a56.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.eebd395e.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ecc896b0.min.css">
       
       
 
@@ -109,6 +109,8 @@
         </div>
       </div>
     </div>
+    
+      
     
     
     
@@ -1028,6 +1030,8 @@
         
           
         
+          
+        
       
       
         
@@ -1434,6 +1438,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../../openshift/rpm-ostree-failed-to-find-image/" class="md-nav__link">
+        rpm-ostreed failed to find image
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../openshift/scc/" class="md-nav__link">
         Security Context Constraints (SCC)
       </a>
@@ -1774,20 +1792,20 @@
 <span class="normal">11</span>
 <span class="normal">12</span>
 <span class="normal">13</span>
-<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nv">Overview</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nx">Overview</span>
 
-<span class="nv">Meson</span><span class="w"> </span><span class="nv">is</span><span class="w"> </span><span class="nv">an</span><span class="w"> </span><span class="nv">open</span><span class="w"> </span><span class="nv">source</span><span class="w"> </span><span class="nv">build</span><span class="w"> </span><span class="nv">system</span><span class="w"> </span><span class="nv">meant</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">be</span><span class="w"> </span><span class="nv">both</span><span class="w"> </span><span class="nv">extremely</span><span class="w"> </span><span class="nv">fast</span>,<span class="w"> </span><span class="nv">and</span>,<span class="w"> </span><span class="nv">even</span><span class="w"> </span><span class="nv">more</span><span class="w"> </span><span class="nv">importantly</span>,<span class="w"> </span><span class="nv">as</span><span class="w"> </span><span class="nv">user</span><span class="w"> </span><span class="nv">friendly</span><span class="w"> </span><span class="nv">as</span><span class="w"> </span><span class="nv">possible</span>.
+<span class="nx">Meson</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="nx">an</span><span class="w"> </span><span class="nx">open</span><span class="w"> </span><span class="nx">source</span><span class="w"> </span><span class="nx">build</span><span class="w"> </span><span class="nx">system</span><span class="w"> </span><span class="nx">meant</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">be</span><span class="w"> </span><span class="nx">both</span><span class="w"> </span><span class="nx">extremely</span><span class="w"> </span><span class="nx">fast</span><span class="p">,</span><span class="w"> </span><span class="k">and</span><span class="p">,</span><span class="w"> </span><span class="nx">even</span><span class="w"> </span><span class="nx">more</span><span class="w"> </span><span class="nx">importantly</span><span class="p">,</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nx">user</span><span class="w"> </span><span class="nx">friendly</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nx">possible</span><span class="p">.</span>
 
-<span class="nv">The</span><span class="w"> </span><span class="nv">main</span><span class="w"> </span><span class="nv">design</span><span class="w"> </span><span class="nv">point</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="nv">Meson</span><span class="w"> </span><span class="nv">is</span><span class="w"> </span><span class="nv">that</span><span class="w"> </span><span class="nv">every</span><span class="w"> </span><span class="nv">moment</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="nv">developer</span><span class="w"> </span><span class="nv">spends</span><span class="w"> </span><span class="nv">writing</span><span class="w"> </span><span class="nv">or</span><span class="w"> </span><span class="nv">debugging</span><span class="w"> </span><span class="nv">build</span><span class="w"> </span><span class="nv">definitions</span><span class="w"> </span><span class="nv">is</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="nv">second</span><span class="w"> </span><span class="nv">wasted</span>.<span class="w"> </span><span class="nv">So</span><span class="w"> </span><span class="nv">is</span><span class="w"> </span><span class="nv">every</span><span class="w"> </span><span class="nv">second</span><span class="w"> </span><span class="nv">spent</span><span class="w"> </span><span class="nv">waiting</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">build</span><span class="w"> </span><span class="nv">system</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">actually</span><span class="w"> </span><span class="nv">start</span><span class="w"> </span><span class="nv">compiling</span><span class="w"> </span><span class="nv">code</span>.
-<span class="nv">Features</span>
+<span class="nx">The</span><span class="w"> </span><span class="nx">main</span><span class="w"> </span><span class="nx">design</span><span class="w"> </span><span class="nx">point</span><span class="w"> </span><span class="nx">of</span><span class="w"> </span><span class="nx">Meson</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="nx">that</span><span class="w"> </span><span class="nx">every</span><span class="w"> </span><span class="nx">moment</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">developer</span><span class="w"> </span><span class="nx">spends</span><span class="w"> </span><span class="nx">writing</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="nx">debugging</span><span class="w"> </span><span class="nx">build</span><span class="w"> </span><span class="nx">definitions</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">second</span><span class="w"> </span><span class="nx">wasted</span><span class="p">.</span><span class="w"> </span><span class="nx">So</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="nx">every</span><span class="w"> </span><span class="nx">second</span><span class="w"> </span><span class="nx">spent</span><span class="w"> </span><span class="nx">waiting</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">build</span><span class="w"> </span><span class="nx">system</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">actually</span><span class="w"> </span><span class="nx">start</span><span class="w"> </span><span class="nx">compiling</span><span class="w"> </span><span class="nx">code</span><span class="p">.</span>
+<span class="nx">Features</span>
 
-<span class="w">    </span><span class="nv">multiplatform</span><span class="w"> </span><span class="nv">support</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">Linux</span>,<span class="w"> </span><span class="nv">macOS</span>,<span class="w"> </span><span class="nv">Windows</span>,<span class="w"> </span><span class="nv">GCC</span>,<span class="w"> </span><span class="nv">Clang</span>,<span class="w"> </span><span class="nv">Visual</span><span class="w"> </span><span class="nv">Studio</span><span class="w"> </span><span class="nv">and</span><span class="w"> </span><span class="nv">others</span>
-<span class="w">    </span><span class="nv">supported</span><span class="w"> </span><span class="nv">languages</span><span class="w"> </span><span class="k">include</span><span class="w"> </span><span class="nv">C</span>,<span class="w"> </span><span class="nv">C</span><span class="o">++</span>,<span class="w"> </span><span class="nv">D</span>,<span class="w"> </span><span class="nv">Fortran</span>,<span class="w"> </span><span class="nv">Java</span>,<span class="w"> </span><span class="nv">Rust</span>
-<span class="w">    </span><span class="nv">build</span><span class="w"> </span><span class="nv">definitions</span><span class="w"> </span><span class="nv">in</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="nv">very</span><span class="w"> </span><span class="nv">readable</span><span class="w"> </span><span class="nv">and</span><span class="w"> </span><span class="nv">user</span><span class="w"> </span><span class="nv">friendly</span><span class="w"> </span><span class="nv">non</span><span class="o">-</span><span class="nv">Turing</span><span class="w"> </span><span class="nv">complete</span><span class="w"> </span><span class="nv">DSL</span>
-<span class="w">    </span><span class="nv">cross</span><span class="w"> </span><span class="nv">compilation</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">many</span><span class="w"> </span><span class="nv">operating</span><span class="w"> </span><span class="nv">systems</span><span class="w"> </span><span class="nv">as</span><span class="w"> </span><span class="nv">well</span><span class="w"> </span><span class="nv">as</span><span class="w"> </span><span class="nv">bare</span><span class="w"> </span><span class="nv">metal</span>
-<span class="w">    </span><span class="nv">optimized</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">extremely</span><span class="w"> </span><span class="nv">fast</span><span class="w"> </span><span class="nv">full</span><span class="w"> </span><span class="nv">and</span><span class="w"> </span><span class="nv">incremental</span><span class="w"> </span><span class="nv">builds</span><span class="w"> </span><span class="nv">without</span><span class="w"> </span><span class="nv">sacrificing</span><span class="w"> </span><span class="nv">correctness</span>
-<span class="w">    </span><span class="nv">built</span><span class="o">-</span><span class="nv">in</span><span class="w"> </span><span class="nv">multiplatform</span><span class="w"> </span><span class="nv">dependency</span><span class="w"> </span><span class="nv">provider</span><span class="w"> </span><span class="nv">that</span><span class="w"> </span><span class="nv">works</span><span class="w"> </span><span class="nv">together</span><span class="w"> </span><span class="nv">with</span><span class="w"> </span><span class="nv">distro</span><span class="w"> </span><span class="nv">packages</span>
-<span class="w">    </span><span class="nv">fun</span><span class="o">!</span>
+<span class="w">    </span><span class="nx">multiplatform</span><span class="w"> </span><span class="nx">support</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">Linux</span><span class="p">,</span><span class="w"> </span><span class="nx">macOS</span><span class="p">,</span><span class="w"> </span><span class="nx">Windows</span><span class="p">,</span><span class="w"> </span><span class="nx">GCC</span><span class="p">,</span><span class="w"> </span><span class="nx">Clang</span><span class="p">,</span><span class="w"> </span><span class="nx">Visual</span><span class="w"> </span><span class="nx">Studio</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="nx">others</span>
+<span class="w">    </span><span class="nx">supported</span><span class="w"> </span><span class="nx">languages</span><span class="w"> </span><span class="nx">include</span><span class="w"> </span><span class="nx">C</span><span class="p">,</span><span class="w"> </span><span class="nx">C</span><span class="o">++</span><span class="p">,</span><span class="w"> </span><span class="nx">D</span><span class="p">,</span><span class="w"> </span><span class="nx">Fortran</span><span class="p">,</span><span class="w"> </span><span class="nx">Java</span><span class="p">,</span><span class="w"> </span><span class="nx">Rust</span>
+<span class="w">    </span><span class="nx">build</span><span class="w"> </span><span class="nx">definitions</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">very</span><span class="w"> </span><span class="nx">readable</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="nx">user</span><span class="w"> </span><span class="nx">friendly</span><span class="w"> </span><span class="nx">non</span><span class="o">-</span><span class="nx">Turing</span><span class="w"> </span><span class="nx">complete</span><span class="w"> </span><span class="nx">DSL</span>
+<span class="w">    </span><span class="nx">cross</span><span class="w"> </span><span class="nx">compilation</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">many</span><span class="w"> </span><span class="nx">operating</span><span class="w"> </span><span class="nx">systems</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nx">well</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nx">bare</span><span class="w"> </span><span class="nx">metal</span>
+<span class="w">    </span><span class="nx">optimized</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">extremely</span><span class="w"> </span><span class="nx">fast</span><span class="w"> </span><span class="nx">full</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="nx">incremental</span><span class="w"> </span><span class="nx">builds</span><span class="w"> </span><span class="nx">without</span><span class="w"> </span><span class="nx">sacrificing</span><span class="w"> </span><span class="nx">correctness</span>
+<span class="w">    </span><span class="nx">built</span><span class="o">-</span><span class="k">in</span><span class="w"> </span><span class="nx">multiplatform</span><span class="w"> </span><span class="nx">dependency</span><span class="w"> </span><span class="nx">provider</span><span class="w"> </span><span class="nx">that</span><span class="w"> </span><span class="nx">works</span><span class="w"> </span><span class="nx">together</span><span class="w"> </span><span class="nx">with</span><span class="w"> </span><span class="nx">distro</span><span class="w"> </span><span class="nx">packages</span>
+<span class="w">    </span><span class="nx">fun</span><span class="p">!</span>
 </code></pre></div></td></tr></table></div></p>
 <h2 id="who-is-using-meson">Who is using meson?</h2>
 <p><a href="https://mesonbuild.com/Users.html">https://mesonbuild.com/Users.html</a></p>
@@ -1849,10 +1867,10 @@
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.efa0ade1.min.js"></script>
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
       
     
   </body>

@@ -19,7 +19,7 @@
         <link rel="next" href="../kata/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.3">
+      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.1.21">
     
     
       
@@ -27,10 +27,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.c4a75a56.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.eebd395e.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ecc896b0.min.css">
       
       
 
@@ -109,6 +109,8 @@
         </div>
       </div>
     </div>
+    
+      
     
     
     
@@ -1020,6 +1022,8 @@
         
           
         
+          
+        
       
       
         
@@ -1434,6 +1438,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../rpm-ostree-failed-to-find-image/" class="md-nav__link">
+        rpm-ostreed failed to find image
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../scc/" class="md-nav__link">
         Security Context Constraints (SCC)
       </a>
@@ -1789,16 +1807,16 @@
 <span class="normal"> 7</span>
 <span class="normal"> 8</span>
 <span class="normal"> 9</span>
-<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">akaris@linux upi</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="k">new</span><span class="o">-</span><span class="n">project</span><span class="w"> </span><span class="n">istio</span><span class="o">-</span><span class="k">system</span>
-<span class="n">Now</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="n">project</span><span class="w"> </span><span class="ss">&quot;istio-system&quot;</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">server</span><span class="w"> </span><span class="ss">&quot;https://api.akaris-upi.focused-solutions.support:6443&quot;</span><span class="p">.</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="nx">akaris</span><span class="err">@</span><span class="nx">linux</span><span class="w"> </span><span class="nx">upi</span><span class="p">]</span><span class="err">$</span><span class="w"> </span><span class="nx">oc</span><span class="w"> </span><span class="nx">new</span><span class="o">-</span><span class="nx">project</span><span class="w"> </span><span class="nx">istio</span><span class="o">-</span><span class="nx">system</span>
+<span class="nx">Now</span><span class="w"> </span><span class="nx">using</span><span class="w"> </span><span class="nx">project</span><span class="w"> </span><span class="s">&quot;istio-system&quot;</span><span class="w"> </span><span class="nx">on</span><span class="w"> </span><span class="nx">server</span><span class="w"> </span><span class="s">&quot;https://api.akaris-upi.focused-solutions.support:6443&quot;</span><span class="p">.</span>
 
-<span class="n">You</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="k">add</span><span class="w"> </span><span class="n">applications</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">project</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="s1">&#39;new-app&#39;</span><span class="w"> </span><span class="n">command</span><span class="p">.</span><span class="w"> </span><span class="k">For</span><span class="w"> </span><span class="n">example</span><span class="p">,</span><span class="w"> </span><span class="k">try</span><span class="err">:</span>
+<span class="nx">You</span><span class="w"> </span><span class="nx">can</span><span class="w"> </span><span class="nx">add</span><span class="w"> </span><span class="nx">applications</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">this</span><span class="w"> </span><span class="nx">project</span><span class="w"> </span><span class="nx">with</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="err">&#39;</span><span class="nx">new</span><span class="o">-</span><span class="nx">app</span><span class="err">&#39;</span><span class="w"> </span><span class="nx">command</span><span class="p">.</span><span class="w"> </span><span class="nx">For</span><span class="w"> </span><span class="nx">example</span><span class="p">,</span><span class="w"> </span><span class="nx">try</span><span class="p">:</span>
 
-<span class="w">    </span><span class="n">oc</span><span class="w"> </span><span class="k">new</span><span class="o">-</span><span class="n">app</span><span class="w"> </span><span class="n">django</span><span class="o">-</span><span class="n">psql</span><span class="o">-</span><span class="n">example</span>
+<span class="w">    </span><span class="nx">oc</span><span class="w"> </span><span class="nx">new</span><span class="o">-</span><span class="nx">app</span><span class="w"> </span><span class="nx">django</span><span class="o">-</span><span class="nx">psql</span><span class="o">-</span><span class="nx">example</span>
 
-<span class="k">to</span><span class="w"> </span><span class="n">build</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">example</span><span class="w"> </span><span class="n">application</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">Python</span><span class="p">.</span><span class="w"> </span><span class="ow">Or</span><span class="w"> </span><span class="k">use</span><span class="w"> </span><span class="n">kubectl</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">deploy</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">simple</span><span class="w"> </span><span class="n">Kubernetes</span><span class="w"> </span><span class="nl">application</span><span class="p">:</span>
+<span class="nx">to</span><span class="w"> </span><span class="nx">build</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">new</span><span class="w"> </span><span class="nx">example</span><span class="w"> </span><span class="nx">application</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nx">Python</span><span class="p">.</span><span class="w"> </span><span class="nx">Or</span><span class="w"> </span><span class="nx">use</span><span class="w"> </span><span class="nx">kubectl</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">deploy</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">simple</span><span class="w"> </span><span class="nx">Kubernetes</span><span class="w"> </span><span class="nx">application</span><span class="p">:</span>
 
-<span class="w">    </span><span class="n">kubectl</span><span class="w"> </span><span class="k">create</span><span class="w"> </span><span class="n">deployment</span><span class="w"> </span><span class="n">hello</span><span class="o">-</span><span class="n">node</span><span class="w"> </span><span class="c1">--image=gcr.io/hello-minikube-zero-install/hello-node</span>
+<span class="w">    </span><span class="nx">kubectl</span><span class="w"> </span><span class="nx">create</span><span class="w"> </span><span class="nx">deployment</span><span class="w"> </span><span class="nx">hello</span><span class="o">-</span><span class="nx">node</span><span class="w"> </span><span class="o">--</span><span class="nx">image</span><span class="p">=</span><span class="nx">gcr</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">hello</span><span class="o">-</span><span class="nx">minikube</span><span class="o">-</span><span class="nx">zero</span><span class="o">-</span><span class="nx">install</span><span class="o">/</span><span class="nx">hello</span><span class="o">-</span><span class="nx">node</span>
 </code></pre></div></td></tr></table></div>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">akaris</span><span class="err">@</span><span class="n">linux</span><span class="w"> </span><span class="n">upi</span><span class="p">]</span><span class="o">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="n">adm</span><span class="w"> </span><span class="n">policy</span><span class="w"> </span><span class="n">add</span><span class="o">-</span><span class="n">scc</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">group</span><span class="w"> </span><span class="n">anyuid</span><span class="w"> </span><span class="n">system</span><span class="p">:</span><span class="n">serviceaccounts</span><span class="p">:</span><span class="n">istio</span><span class="o">-</span><span class="n">system</span>
@@ -2073,16 +2091,16 @@
 <span class="normal"> 7</span>
 <span class="normal"> 8</span>
 <span class="normal"> 9</span>
-<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">akaris@linux upi</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="k">new</span><span class="o">-</span><span class="n">project</span><span class="w"> </span><span class="n">bookinfo</span>
-<span class="n">Now</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="n">project</span><span class="w"> </span><span class="ss">&quot;bookinfo&quot;</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">server</span><span class="w"> </span><span class="ss">&quot;https://api.akaris-upi.focused-solutions.support:6443&quot;</span><span class="p">.</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="nx">akaris</span><span class="err">@</span><span class="nx">linux</span><span class="w"> </span><span class="nx">upi</span><span class="p">]</span><span class="err">$</span><span class="w"> </span><span class="nx">oc</span><span class="w"> </span><span class="nx">new</span><span class="o">-</span><span class="nx">project</span><span class="w"> </span><span class="nx">bookinfo</span>
+<span class="nx">Now</span><span class="w"> </span><span class="nx">using</span><span class="w"> </span><span class="nx">project</span><span class="w"> </span><span class="s">&quot;bookinfo&quot;</span><span class="w"> </span><span class="nx">on</span><span class="w"> </span><span class="nx">server</span><span class="w"> </span><span class="s">&quot;https://api.akaris-upi.focused-solutions.support:6443&quot;</span><span class="p">.</span>
 
-<span class="n">You</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="k">add</span><span class="w"> </span><span class="n">applications</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">project</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="s1">&#39;new-app&#39;</span><span class="w"> </span><span class="n">command</span><span class="p">.</span><span class="w"> </span><span class="k">For</span><span class="w"> </span><span class="n">example</span><span class="p">,</span><span class="w"> </span><span class="k">try</span><span class="err">:</span>
+<span class="nx">You</span><span class="w"> </span><span class="nx">can</span><span class="w"> </span><span class="nx">add</span><span class="w"> </span><span class="nx">applications</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">this</span><span class="w"> </span><span class="nx">project</span><span class="w"> </span><span class="nx">with</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="err">&#39;</span><span class="nx">new</span><span class="o">-</span><span class="nx">app</span><span class="err">&#39;</span><span class="w"> </span><span class="nx">command</span><span class="p">.</span><span class="w"> </span><span class="nx">For</span><span class="w"> </span><span class="nx">example</span><span class="p">,</span><span class="w"> </span><span class="nx">try</span><span class="p">:</span>
 
-<span class="w">    </span><span class="n">oc</span><span class="w"> </span><span class="k">new</span><span class="o">-</span><span class="n">app</span><span class="w"> </span><span class="n">django</span><span class="o">-</span><span class="n">psql</span><span class="o">-</span><span class="n">example</span>
+<span class="w">    </span><span class="nx">oc</span><span class="w"> </span><span class="nx">new</span><span class="o">-</span><span class="nx">app</span><span class="w"> </span><span class="nx">django</span><span class="o">-</span><span class="nx">psql</span><span class="o">-</span><span class="nx">example</span>
 
-<span class="k">to</span><span class="w"> </span><span class="n">build</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">example</span><span class="w"> </span><span class="n">application</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">Python</span><span class="p">.</span><span class="w"> </span><span class="ow">Or</span><span class="w"> </span><span class="k">use</span><span class="w"> </span><span class="n">kubectl</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">deploy</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">simple</span><span class="w"> </span><span class="n">Kubernetes</span><span class="w"> </span><span class="nl">application</span><span class="p">:</span>
+<span class="nx">to</span><span class="w"> </span><span class="nx">build</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">new</span><span class="w"> </span><span class="nx">example</span><span class="w"> </span><span class="nx">application</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nx">Python</span><span class="p">.</span><span class="w"> </span><span class="nx">Or</span><span class="w"> </span><span class="nx">use</span><span class="w"> </span><span class="nx">kubectl</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">deploy</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">simple</span><span class="w"> </span><span class="nx">Kubernetes</span><span class="w"> </span><span class="nx">application</span><span class="p">:</span>
 
-<span class="w">    </span><span class="n">kubectl</span><span class="w"> </span><span class="k">create</span><span class="w"> </span><span class="n">deployment</span><span class="w"> </span><span class="n">hello</span><span class="o">-</span><span class="n">node</span><span class="w"> </span><span class="c1">--image=gcr.io/hello-minikube-zero-install/hello-node</span>
+<span class="w">    </span><span class="nx">kubectl</span><span class="w"> </span><span class="nx">create</span><span class="w"> </span><span class="nx">deployment</span><span class="w"> </span><span class="nx">hello</span><span class="o">-</span><span class="nx">node</span><span class="w"> </span><span class="o">--</span><span class="nx">image</span><span class="p">=</span><span class="nx">gcr</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">hello</span><span class="o">-</span><span class="nx">minikube</span><span class="o">-</span><span class="nx">zero</span><span class="o">-</span><span class="nx">install</span><span class="o">/</span><span class="nx">hello</span><span class="o">-</span><span class="nx">node</span>
 </code></pre></div></td></tr></table></div></p>
 <p>Adjust SCCs according to <a href="https://istio.io/latest/docs/setup/platform-setup/openshift/#privileged-security-context-constraints-for-application-sidecars">https://istio.io/latest/docs/setup/platform-setup/openshift/#privileged-security-context-constraints-for-application-sidecars</a>:
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
@@ -2108,14 +2126,14 @@ execute the following commands. Replace &lt;target-namespace&gt; with the approp
 <span class="normal">5</span>
 <span class="normal">6</span>
 <span class="normal">7</span>
-<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">akaris@linux upi</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">scc</span><span class="w"> </span><span class="n">anyuid</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">yaml</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">serv</span><span class="w"> </span><span class="o">-</span><span class="n">C3</span>
-<span class="w">  </span><span class="nl">type</span><span class="p">:</span><span class="w"> </span><span class="n">RunAsAny</span>
-<span class="nl">groups</span><span class="p">:</span>
-<span class="o">-</span><span class="w"> </span><span class="k">system</span><span class="err">:</span><span class="n">cluster</span><span class="o">-</span><span class="n">admins</span>
-<span class="o">-</span><span class="w"> </span><span class="k">system</span><span class="err">:</span><span class="nl">serviceaccounts</span><span class="p">:</span><span class="n">istio</span><span class="o">-</span><span class="k">system</span>
-<span class="nl">kind</span><span class="p">:</span><span class="w"> </span><span class="n">SecurityContextConstraints</span>
-<span class="nl">metadata</span><span class="p">:</span>
-<span class="w">  </span><span class="nl">annotations</span><span class="p">:</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="nx">akaris</span><span class="err">@</span><span class="nx">linux</span><span class="w"> </span><span class="nx">upi</span><span class="p">]</span><span class="err">$</span><span class="w"> </span><span class="nx">oc</span><span class="w"> </span><span class="nx">get</span><span class="w"> </span><span class="nx">scc</span><span class="w"> </span><span class="nx">anyuid</span><span class="w"> </span><span class="o">-</span><span class="nx">o</span><span class="w"> </span><span class="nx">yaml</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">grep</span><span class="w"> </span><span class="nx">serv</span><span class="w"> </span><span class="o">-</span><span class="nx">C3</span>
+<span class="w">  </span><span class="k">type</span><span class="p">:</span><span class="w"> </span><span class="nx">RunAsAny</span>
+<span class="nx">groups</span><span class="p">:</span>
+<span class="o">-</span><span class="w"> </span><span class="nx">system</span><span class="p">:</span><span class="nx">cluster</span><span class="o">-</span><span class="nx">admins</span>
+<span class="o">-</span><span class="w"> </span><span class="nx">system</span><span class="p">:</span><span class="nx">serviceaccounts</span><span class="p">:</span><span class="nx">istio</span><span class="o">-</span><span class="nx">system</span>
+<span class="nx">kind</span><span class="p">:</span><span class="w"> </span><span class="nx">SecurityContextConstraints</span>
+<span class="nx">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nx">annotations</span><span class="p">:</span>
 </code></pre></div></td></tr></table></div></p>
 <p>Now, create the application:
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>oc apply -f https://raw.githubusercontent.com/istio/istio/release-1.6/samples/bookinfo/platform/kube/bookinfo.yaml
@@ -2218,10 +2236,10 @@ execute the following commands. Replace &lt;target-namespace&gt; with the approp
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.efa0ade1.min.js"></script>
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
       
     
   </body>

@@ -19,7 +19,7 @@
         <link rel="next" href="../vimrc/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.3">
+      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.1.21">
     
     
       
@@ -27,10 +27,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.c4a75a56.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.eebd395e.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ecc896b0.min.css">
       
       
 
@@ -109,6 +109,8 @@
         </div>
       </div>
     </div>
+    
+      
     
     
     
@@ -1018,6 +1020,8 @@
         
           
         
+          
+        
       
       
         
@@ -1412,6 +1416,20 @@
     <li class="md-nav__item">
       <a href="../../openshift/proxy-ocp-4.5/" class="md-nav__link">
         Proxy OCP 4.5
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/rpm-ostree-failed-to-find-image/" class="md-nav__link">
+        rpm-ostreed failed to find image
       </a>
     </li>
   
@@ -1943,9 +1961,9 @@ Deleting Kubernetes objects) or external Events (GitHub Webhooks, polling extern
 <span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// Request contains the information necessary to reconcile a Kubernetes object.  This includes the</span>
 <span class="c1">// information to uniquely identify the object - its Name and Namespace.  It does NOT contain information about</span>
 <span class="c1">// any specific Event or the object contents itself.</span>
-<span class="nb">type</span><span class="w"> </span><span class="n">Request</span><span class="w"> </span><span class="nb">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="k">type</span><span class="w"> </span><span class="nx">Request</span><span class="w"> </span><span class="nx">struct</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// NamespacedName is the name and namespace of the object to reconcile.</span>
-<span class="w">    </span><span class="n">types</span><span class="p">.</span><span class="n">NamespacedName</span>
+<span class="w">    </span><span class="nx">types</span><span class="p">.</span><span class="nx">NamespacedName</span>
 <span class="p">}</span>
 </code></pre></div></td></tr></table></div></p>
 <blockquote>
@@ -1979,10 +1997,10 @@ Deleting Kubernetes objects) or external Events (GitHub Webhooks, polling extern
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// ExampleReconciler reconciles a Example object</span>
-<span class="nb">type</span><span class="w"> </span><span class="n">ExampleReconciler</span><span class="w"> </span><span class="nb">struct</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="n">client</span><span class="p">.</span><span class="n">Client</span>
-<span class="w">        </span><span class="n">Log</span><span class="w">    </span><span class="n">logr</span><span class="p">.</span><span class="n">Logger</span>
-<span class="w">        </span><span class="n">Scheme</span><span class="w"> </span><span class="o">*</span><span class="n">runtime</span><span class="p">.</span><span class="n">Scheme</span>
+<span class="k">type</span><span class="w"> </span><span class="nx">ExampleReconciler</span><span class="w"> </span><span class="nx">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">client</span><span class="p">.</span><span class="nx">Client</span>
+<span class="w">        </span><span class="nx">Log</span><span class="w">    </span><span class="nx">logr</span><span class="p">.</span><span class="nx">Logger</span>
+<span class="w">        </span><span class="nx">Scheme</span><span class="w"> </span><span class="o">*</span><span class="nx">runtime</span><span class="p">.</span><span class="nx">Scheme</span>
 <span class="p">}</span>
 </code></pre></div></td></tr></table></div></p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
@@ -1994,16 +2012,16 @@ Deleting Kubernetes objects) or external Events (GitHub Webhooks, polling extern
 <span class="normal"> 7</span>
 <span class="normal"> 8</span>
 <span class="normal"> 9</span>
-<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code>type Client interface {
-    Reader
-    Writer
-    StatusClient
+<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">type</span><span class="w"> </span><span class="nx">Client</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">Reader</span>
+<span class="w">    </span><span class="nx">Writer</span>
+<span class="w">    </span><span class="nx">StatusClient</span>
 
-    // Scheme returns the scheme this client is using.
-    Scheme() *runtime.Scheme
-    // RESTMapper returns the rest this client is using.
-    RESTMapper() meta.RESTMapper
-}
+<span class="w">    </span><span class="c1">// Scheme returns the scheme this client is using.</span>
+<span class="w">    </span><span class="nx">Scheme</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="nx">runtime</span><span class="p">.</span><span class="nx">Scheme</span>
+<span class="w">    </span><span class="c1">// RESTMapper returns the rest this client is using.</span>
+<span class="w">    </span><span class="nx">RESTMapper</span><span class="p">()</span><span class="w"> </span><span class="nx">meta</span><span class="p">.</span><span class="nx">RESTMapper</span>
+<span class="p">}</span>
 </code></pre></div></td></tr></table></div>
 <blockquote>
 <p><a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#Client">https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#Client</a></p>
@@ -2019,17 +2037,17 @@ Deleting Kubernetes objects) or external Events (GitHub Webhooks, polling extern
 <span class="normal"> 8</span>
 <span class="normal"> 9</span>
 <span class="normal">10</span>
-<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nv">type</span><span class="w"> </span><span class="nv">Reader</span><span class="w"> </span><span class="nv">interface</span><span class="w"> </span>{
-<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="nv">Get</span><span class="w"> </span><span class="nv">retrieves</span><span class="w"> </span><span class="nv">an</span><span class="w"> </span><span class="nv">obj</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">given</span><span class="w"> </span><span class="nv">object</span><span class="w"> </span><span class="nv">key</span><span class="w"> </span><span class="nv">from</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">Kubernetes</span><span class="w"> </span><span class="nv">Cluster</span>.
-<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="nv">obj</span><span class="w"> </span><span class="nv">must</span><span class="w"> </span><span class="nv">be</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="nv">struct</span><span class="w"> </span><span class="nv">pointer</span><span class="w"> </span><span class="nv">so</span><span class="w"> </span><span class="nv">that</span><span class="w"> </span><span class="nv">obj</span><span class="w"> </span><span class="nv">can</span><span class="w"> </span><span class="nv">be</span><span class="w"> </span><span class="nv">updated</span><span class="w"> </span><span class="nv">with</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">response</span>
-<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="nv">returned</span><span class="w"> </span><span class="nv">by</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">Server</span>.
-<span class="w">    </span><span class="nv">Get</span><span class="ss">(</span><span class="nv">ctx</span><span class="w"> </span><span class="nv">context</span>.<span class="nv">Context</span>,<span class="w"> </span><span class="nv">key</span><span class="w"> </span><span class="nv">ObjectKey</span>,<span class="w"> </span><span class="nv">obj</span><span class="w"> </span><span class="nv">Object</span><span class="ss">)</span><span class="w"> </span><span class="nv">error</span>
+<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">type</span><span class="w"> </span><span class="nx">Reader</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Get retrieves an obj for the given object key from the Kubernetes Cluster.</span>
+<span class="w">    </span><span class="c1">// obj must be a struct pointer so that obj can be updated with the response</span>
+<span class="w">    </span><span class="c1">// returned by the Server.</span>
+<span class="w">    </span><span class="nx">Get</span><span class="p">(</span><span class="nx">ctx</span><span class="w"> </span><span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span><span class="w"> </span><span class="nx">key</span><span class="w"> </span><span class="nx">ObjectKey</span><span class="p">,</span><span class="w"> </span><span class="nx">obj</span><span class="w"> </span><span class="nx">Object</span><span class="p">)</span><span class="w"> </span><span class="nx">error</span>
 
-<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="nv">List</span><span class="w"> </span><span class="nv">retrieves</span><span class="w"> </span><span class="nv">list</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="nv">objects</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="nv">given</span><span class="w"> </span><span class="nv">namespace</span><span class="w"> </span><span class="nv">and</span><span class="w"> </span><span class="nv">list</span><span class="w"> </span><span class="nv">options</span>.<span class="w"> </span><span class="nv">On</span><span class="w"> </span><span class="nv">a</span>
-<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="nv">successful</span><span class="w"> </span><span class="nv">call</span>,<span class="w"> </span><span class="nv">Items</span><span class="w"> </span><span class="nv">field</span><span class="w"> </span><span class="nv">in</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">list</span><span class="w"> </span><span class="nv">will</span><span class="w"> </span><span class="nv">be</span><span class="w"> </span><span class="nv">populated</span><span class="w"> </span><span class="nv">with</span><span class="w"> </span><span class="nv">the</span>
-<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="nb">result</span><span class="w"> </span><span class="nv">returned</span><span class="w"> </span><span class="nv">from</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">server</span>.
-<span class="w">    </span><span class="nv">List</span><span class="ss">(</span><span class="nv">ctx</span><span class="w"> </span><span class="nv">context</span>.<span class="nv">Context</span>,<span class="w"> </span><span class="nv">list</span><span class="w"> </span><span class="nv">ObjectList</span>,<span class="w"> </span><span class="nv">opts</span><span class="w"> </span>...<span class="nv">ListOption</span><span class="ss">)</span><span class="w"> </span><span class="nv">error</span>
-}
+<span class="w">    </span><span class="c1">// List retrieves list of objects for a given namespace and list options. On a</span>
+<span class="w">    </span><span class="c1">// successful call, Items field in the list will be populated with the</span>
+<span class="w">    </span><span class="c1">// result returned from the server.</span>
+<span class="w">    </span><span class="nx">List</span><span class="p">(</span><span class="nx">ctx</span><span class="w"> </span><span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span><span class="w"> </span><span class="nx">list</span><span class="w"> </span><span class="nx">ObjectList</span><span class="p">,</span><span class="w"> </span><span class="nx">opts</span><span class="w"> </span><span class="o">...</span><span class="nx">ListOption</span><span class="p">)</span><span class="w"> </span><span class="nx">error</span>
+<span class="p">}</span>
 </code></pre></div></td></tr></table></div></p>
 <blockquote>
 <p><a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#Reader">https://godoc.org/sigs.k8s.io/controller-runtime/pkg/client#Reader</a></p>
@@ -2058,7 +2076,7 @@ Deleting Kubernetes objects) or external Events (GitHub Webhooks, polling extern
 <blockquote>
 <p><a href="https://github.com/kubernetes-sigs/controller-runtime/blob/43331a6c8f823b497660b368deb4311ae2030206/pkg/client/client.go#L204">https://github.com/kubernetes-sigs/controller-runtime/blob/43331a6c8f823b497660b368deb4311ae2030206/pkg/client/client.go#L204</a></p>
 </blockquote>
-<p><code class="highlight">typeClient</code> then reads as follows:
+<p><code class="highlight"><span class="nx">typeClient</span></code> then reads as follows:
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -2104,13 +2122,13 @@ Deleting Kubernetes objects) or external Events (GitHub Webhooks, polling extern
 <span class="normal">7</span>
 <span class="normal">8</span>
 <span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// resourceMeta caches state for a Kubernetes type.</span>
-<span class="nb">type</span><span class="w"> </span><span class="n">resourceMeta</span><span class="w"> </span><span class="nb">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="k">type</span><span class="w"> </span><span class="nx">resourceMeta</span><span class="w"> </span><span class="nx">struct</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// client is the rest client used to talk to the apiserver</span>
-<span class="w">    </span><span class="n">rest</span><span class="p">.</span><span class="n">Interface</span>
+<span class="w">    </span><span class="nx">rest</span><span class="p">.</span><span class="nx">Interface</span>
 <span class="w">    </span><span class="c1">// gvk is the GroupVersionKind of the resourceMeta</span>
-<span class="w">    </span><span class="n">gvk</span><span class="w"> </span><span class="n">schema</span><span class="p">.</span><span class="n">GroupVersionKind</span>
+<span class="w">    </span><span class="nx">gvk</span><span class="w"> </span><span class="nx">schema</span><span class="p">.</span><span class="nx">GroupVersionKind</span>
 <span class="w">    </span><span class="c1">// mapping is the rest mapping</span>
-<span class="w">    </span><span class="n">mapping</span><span class="w"> </span><span class="o">*</span><span class="n">meta</span><span class="p">.</span><span class="n">RESTMapping</span>
+<span class="w">    </span><span class="nx">mapping</span><span class="w"> </span><span class="o">*</span><span class="nx">meta</span><span class="p">.</span><span class="nx">RESTMapping</span>
 <span class="p">}</span>
 </code></pre></div></td></tr></table></div></p>
 <blockquote>
@@ -2268,7 +2286,7 @@ Deleting Kubernetes objects) or external Events (GitHub Webhooks, polling extern
 <span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="mf">2020</span><span class="o">-</span><span class="mf">11</span><span class="o">-</span><span class="mf">30</span><span class="n">T15</span><span class="p">:</span><span class="mf">08</span><span class="p">:</span><span class="mf">36.354</span><span class="o">-</span><span class="mf">0500</span><span class="w">    </span><span class="n">INFO</span><span class="w">    </span><span class="kr">cont</span><span class="n">rollers</span><span class="mf">.</span><span class="n">Example</span><span class="w"> </span><span class="n">Reconciler</span><span class="w"> </span><span class="n">triggered</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">req</span><span class="p">:</span><span class="w">  </span><span class="err">{</span><span class="s">&quot;example&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;test2/example-sample2&quot;</span><span class="err">}</span>
 <span class="mf">2020</span><span class="o">-</span><span class="mf">11</span><span class="o">-</span><span class="mf">30</span><span class="n">T15</span><span class="p">:</span><span class="mf">08</span><span class="p">:</span><span class="mf">36.354</span><span class="o">-</span><span class="mf">0500</span><span class="w">    </span><span class="n">DEBUG</span><span class="w">   </span><span class="kr">cont</span><span class="n">roller</span><span class="w">  </span><span class="n">Successfully</span><span class="w"> </span><span class="n">Reconciled</span><span class="w"> </span><span class="err">{</span><span class="s">&quot;reconcilerGroup&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;example.example.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;reconcilerKind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Example&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;controller&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;example&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;example-sample2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;namespace&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;test2&quot;</span><span class="err">}</span>
 </code></pre></div></td></tr></table></div>
-<p>Whenever something happens to an object of type <code class="highlight">&amp;examplev1alpha1.Example{}</code>, this controller's <code class="highlight">Reconcile</code> will be triggered. The only information that it will be passed is a <code class="highlight">controllerruntime.Request</code> which is an alias to <code class="highlight">reconcile.Request</code> and inherits from <code class="highlight">types.NamespacedName</code>: <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/reconcile#Request">https://godoc.org/sigs.k8s.io/controller-runtime/pkg/reconcile#Request</a> and <a href="https://github.com/kubernetes-sigs/controller-runtime/blob/43331a6c8f823b497660b368deb4311ae2030206/alias.go#L39">https://github.com/kubernetes-sigs/controller-runtime/blob/43331a6c8f823b497660b368deb4311ae2030206/alias.go#L39</a> and <a href="https://github.com/kubernetes/apimachinery/blob/master/pkg/types/namespacedname.go#L37">https://github.com/kubernetes/apimachinery/blob/master/pkg/types/namespacedname.go#L37</a></p>
+<p>Whenever something happens to an object of type <code class="highlight">&amp;examplev1alpha1.Example{}</code>, this controller's <code class="highlight">Reconcile</code> will be triggered. The only information that it will be passed is a <code class="highlight">controllerruntime.Request</code> which is an alias to <code class="highlight">reconcile.Request</code> and inherits from <code class="highlight"><span class="nx">types</span><span class="p">.</span><span class="nx">NamespacedName</span></code>: <a href="https://godoc.org/sigs.k8s.io/controller-runtime/pkg/reconcile#Request">https://godoc.org/sigs.k8s.io/controller-runtime/pkg/reconcile#Request</a> and <a href="https://github.com/kubernetes-sigs/controller-runtime/blob/43331a6c8f823b497660b368deb4311ae2030206/alias.go#L39">https://github.com/kubernetes-sigs/controller-runtime/blob/43331a6c8f823b497660b368deb4311ae2030206/alias.go#L39</a> and <a href="https://github.com/kubernetes/apimachinery/blob/master/pkg/types/namespacedname.go#L37">https://github.com/kubernetes/apimachinery/blob/master/pkg/types/namespacedname.go#L37</a></p>
 <h4 id="triggering-the-reconciler">Triggering the reconciler</h4>
 <p>The <code class="highlight">SetupWithManager</code> method determines when the reconciler is triggered:
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
@@ -2874,10 +2892,10 @@ make install
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.efa0ade1.min.js"></script>
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
       
     
   </body>

@@ -246,7 +246,7 @@ In both availability zones, we will simulate virtual hosts and connect them to e
 
 ### Configuring the dataplane inside availability zone 0
 
-We will now simulate 2 hosts, each of which resides inside its own subnet on its own host. The hosts will be able to communicate via OVN router `r1`:
+We will now simulate 2 hosts, each of which resides inside its own subnet on its own machine. The simulated hosts will be able to communicate via OVN router `r1`:
 
 ![ovn-interconnection04](https://github.com/andreaskaris/blog/assets/3291433/7f700f88-d60b-4d40-a81e-3a694a5325bd)
 
@@ -331,7 +331,7 @@ traceroute to 10.0.1.1 (10.0.1.1), 30 hops max, 60 byte packets
 
 ### Configuring the dataplane inside availability zone 1
 
-We will now simulate 2 hosts, each of which resides inside its own subnet and namespace on ovn3. The hosts will be able to communicate via OVN router `r2`:
+We will now simulate 2 hosts, each of which resides inside its own subnet and namespace on ovn3. The simulated hosts will be able to communicate via OVN router `r2`:
 
 ![ovn-interconnection05](https://github.com/andreaskaris/blog/assets/3291433/65c91806-c881-4588-af0b-0eb32d5921af)
 

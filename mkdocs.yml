@@ -84,7 +84,7 @@ nav:
   - BPF and tcpdump: networking/bpf-and-tcpdump.md
   - Bonding in Linux: networking/bonding_in_linux.md  
   - Configure Juniper switch: networking/juniper_x520.md
-  - Hands-on with OVN Interconnection: openshift/ovn-interconnection.md
+  - Hands-on with OVN Interconnection: networking/ovn-interconnection.md
   - haproxy and HTTP/2: networking/haproxy-and-h2c.md
   - Install Open vSwitch on Rocky Linux 8: networking/install-openvswitch-on-rocky.md
   - Geneve tunneling: networking/geneve_tunneling.md

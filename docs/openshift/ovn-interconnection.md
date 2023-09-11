@@ -1,5 +1,7 @@
 # Hands-on with OVN Interconnection (OVN IC)
 
+[OVN Interconnection](https://docs.ovn.org/en/latest/tutorials/ovn-interconnection.html) (OVN IC) allows administrators to interconnect multiple independent OVN deployments via so-called transit switches. In this blog post, let's have a look at how we can configure 2 standalone OVN deployments and use OVN IC to route traffic between these environments.
+
 ## Introduction to the test environment
 
 We will use a setup consisting of 3 machines, named ovn1 (192.168.122.26), ovn2 (192.168.122.177) and ovn3 (192.168.122.54). Each machine’s primary interface is called `if0`, and OVN geneve tunnels are established via these interfaces. The machines run Red Hat Enterprise Linux 9.2.

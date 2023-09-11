@@ -124,7 +124,7 @@ Chassis "5f72f95b-80a3-4a77-8aab-58875dfd2a67"
 ### Setting up OVN hosts for OVN IC
 
 > **Note:** We could also set up OVN IC after fully configuring all OVN elements such as hosts, switches and routers in both az0 and az1. However, to make things clearer, we already set up all required OVN IC control plane elements during the setup phase.
-> 
+
 In order to connect the 2 independent availability zones 0 and 1, we must now add OVN Interconnection to both OVN control plane nodes, thus ovn1 and ovn3. ovn1 will host the OVN IC database and both ovn1’s and ovn3’s OVN IC daemon will connect to this database.
 
 ![ovn-interconnection03](https://github.com/andreaskaris/blog/assets/3291433/28f5a64c-b40d-4ab2-823a-82579bccc465)

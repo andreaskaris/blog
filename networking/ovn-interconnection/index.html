@@ -1917,8 +1917,8 @@ systemctl enable --now ovn-controller
 <h3 id="setting-up-ovn-hosts-for-ovn-ic">Setting up OVN hosts for OVN IC</h3>
 <blockquote>
 <p><strong>Note:</strong> We could also set up OVN IC after fully configuring all OVN elements such as hosts, switches and routers in both az0 and az1. However, to make things clearer, we already set up all required OVN IC control plane elements during the setup phase.</p>
-<p>In order to connect the 2 independent availability zones 0 and 1, we must now add OVN Interconnection to both OVN control plane nodes, thus ovn1 and ovn3. ovn1 will host the OVN IC database and both ovn1’s and ovn3’s OVN IC daemon will connect to this database.</p>
 </blockquote>
+<p>In order to connect the 2 independent availability zones 0 and 1, we must now add OVN Interconnection to both OVN control plane nodes, thus ovn1 and ovn3. ovn1 will host the OVN IC database and both ovn1’s and ovn3’s OVN IC daemon will connect to this database.</p>
 <p><img alt="ovn-interconnection03" src="https://github.com/andreaskaris/blog/assets/3291433/28f5a64c-b40d-4ab2-823a-82579bccc465" /></p>
 <p>Only on ovn1, enable and run the standalone OVN IC database daemon which will start the IC NBDB and IC SBDB:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>

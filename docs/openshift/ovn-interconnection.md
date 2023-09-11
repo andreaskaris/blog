@@ -1,4 +1,4 @@
-# A system’s admin look at OVN Interconnection (OVN IC)
+# Hands-on with OVN Interconnection (OVN IC)
 
 ## Introduction to the test environment
 

@@ -4,6 +4,8 @@
 
 We will use a setup consisting of 3 machines, named ovn1 (192.168.122.26), ovn2 (192.168.122.177) and ovn3 (192.168.122.54). Each machine’s primary interface is called `if0`, and OVN geneve tunnels are established via these interfaces. The machines run Red Hat Enterprise Linux 9.2.
 
+![ovn-interconnection01](https://github.com/andreaskaris/blog/assets/3291433/29a9df6e-3edc-45cd-86fd-c5725ba52865)
+
 All machines can reach each other via their hostname, by a mapping in /etc/hosts:
 
 ```
@@ -18,6 +20,8 @@ All machines can reach each other via their hostname, by a mapping in /etc/hosts
 ## Setting up OVN control plane components
 
 We are first going to configure the control plane components. In order to do so, we will configure 2 OVN interconnection availability zones. The first zone consists of ovn1 and ovn2, where ovn1 hosts the OVN control plane and both ovn1 and ovn2 run ovn-controller. The second zone consists of ovn3 which runs a second OVN control plane and ovn-controller.
+
+![ovn-interconnection02](https://github.com/andreaskaris/blog/assets/3291433/1d732562-4845-4b7c-bb17-ea6beda92116)
 
 ### Setting up OVN common setup
 
@@ -118,7 +122,10 @@ Chassis "5f72f95b-80a3-4a77-8aab-58875dfd2a67"
 ### Setting up OVN hosts for OVN IC
 
 > **Note:** We could also set up OVN IC after fully configuring all OVN elements such as hosts, switches and routers in both az0 and az1. However, to make things clearer, we already set up all required OVN IC control plane elements during the setup phase.
+> 
 In order to connect the 2 independent availability zones 0 and 1, we must now add OVN Interconnection to both OVN control plane nodes, thus ovn1 and ovn3. Ovn1 will host the OVN IC database and both ovn1’s and ovn3’s OVN IC daemon will connect to this database.
+
+![ovn-interconnection03](https://github.com/andreaskaris/blog/assets/3291433/28f5a64c-b40d-4ab2-823a-82579bccc465)
 
 Only on ovn1, enable and run the standalone OVN IC database daemon which will start the IC NBDB and IC SBDB:
 
@@ -236,7 +243,10 @@ Chassis "0672211f-aaec-42dc-bfa0-06ab3df285de"
 In both availability zones, we will simulate virtual hosts and connect them to each other via OVN virtual networks.
 
 ### Configuring the dataplane inside availability zone 0
+
 We will now simulate 2 hosts, each of which resides inside its own subnet on its own host. The hosts will be able to communicate via OVN router `r1`:
+
+![ovn-interconnection04](https://github.com/andreaskaris/blog/assets/3291433/7f700f88-d60b-4d40-a81e-3a694a5325bd)
 
 On ovn1, configure veth01:
 
@@ -321,6 +331,8 @@ traceroute to 10.0.1.1 (10.0.1.1), 30 hops max, 60 byte packets
 
 We will now simulate 2 hosts, each of which resides inside its own subnet and namespace on ovn3. The hosts will be able to communicate via OVN router `r2`:
 
+![ovn-interconnection05](https://github.com/andreaskaris/blog/assets/3291433/65c91806-c881-4588-af0b-0eb32d5921af)
+
 On ovn3, configure veth03 inside ns0:
 
 ```
@@ -403,6 +415,8 @@ traceroute to 10.0.3.1 (10.0.3.1), 30 hops max, 60 byte packets
 ### Configuring the dataplane with OVN Interconnection
 
 We will now interconnect the 2 availability zones’ dataplanes with OVN Interconnection.
+
+![ovn-interconnection06](https://github.com/andreaskaris/blog/assets/3291433/dbbd32ce-9f65-4dc4-b343-fe7f647e1d1d)
 
 On ovn1, create a transit switch inside the Interconnection database:
 

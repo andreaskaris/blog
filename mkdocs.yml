@@ -127,6 +127,7 @@ nav:
   - Private container registry: openshift/private-registry.md
   - Proxy OCP 4.5: openshift/proxy-ocp-4.5.md
   - rpm-ostreed failed to find image: openshift/rpm-ostree-failed-to-find-image.md
+  - Seccomp defaults in Red Hat OpenShift Container Platform: openshift/seccomp-defaults-ocp.md
   - Security Context Constraints (SCC): openshift/scc.md
   - "SCCs and mutating webhooks - a lesson learned": openshift/openshift-scc-with-mutating-webhooks.md
   - SElinux labels fix: openshift/fix-selinux-labels-coreos.md

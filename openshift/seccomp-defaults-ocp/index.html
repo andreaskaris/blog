@@ -10,20 +10,20 @@
       
       
       
-        <link rel="canonical" href="https://andreaskaris.github.io/blog/openshift/patch-service-loadbalancer-ingress-ip/">
+        <link rel="canonical" href="https://andreaskaris.github.io/blog/openshift/seccomp-defaults-ocp/">
       
       
-        <link rel="prev" href="../../openstack/install_openshift_on_openstack/">
+        <link rel="prev" href="../rpm-ostree-failed-to-find-image/">
       
       
-        <link rel="next" href="../private-registry/">
+        <link rel="next" href="../scc/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.1.21">
     
     
       
-        <title>Patch status.loadBalancer.ingress IP manually - Andreas Karis Blog</title>
+        <title>Seccomp defaults in Red Hat OpenShift Container Platform - Andreas Karis Blog</title>
       
     
     
@@ -103,7 +103,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Patch status.loadBalancer.ingress IP manually
+              Seccomp defaults in Red Hat OpenShift Container Platform
             
           </span>
         </div>
@@ -1404,19 +1404,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../patch-service-loadbalancer-ingress-ip/" class="md-nav__link">
         Patch status.loadBalancer.ingress IP manually
       </a>
-      
     </li>
   
 
@@ -1468,11 +1460,19 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../seccomp-defaults-ocp/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Seccomp defaults in Red Hat OpenShift Container Platform
       </a>
+      
     </li>
   
 
@@ -1807,85 +1807,121 @@
                   
 
 
-  <h1>Patch status.loadBalancer.ingress IP manually</h1>
+<h1 id="seccomp-defaults-in-red-hat-openshift-container-platform">Seccomp defaults in Red Hat OpenShift Container Platform</h1>
+<p>Seccomp can be used to restrict the syscalls that processes running inside a container are allowed to make to the
+kernel. A pod can
+<a href="https://kubernetes.io/docs/tutorials/security/seccomp/#create-a-pod-that-uses-the-container-runtime-default-seccomp-profile">explicitly request</a>
+to use a seccomp profile via field <code class="highlight"><span class="na">.spec.securityContext.seccompProfile</span></code>. The seccomp profile can be of types
+<code class="highlight">Localhost</code> (point to a local file containing a seccomp profile), <code class="highlight">RuntimeDefault</code> (use the container runtime engine's
+default seccomp profile) or <code class="highlight">Unconfined</code> (use no seccomp profile for the container).</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">apiVersion</span><span class="o">:</span><span class="w"> </span><span class="n">v1</span>
+<span class="n">kind</span><span class="o">:</span><span class="w"> </span><span class="n">Pod</span>
+<span class="n">metadata</span><span class="o">:</span>
+<span class="w">  </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">pod0</span>
+<span class="w">  </span><span class="n">labels</span><span class="o">:</span>
+<span class="w">    </span><span class="n">app</span><span class="o">:</span><span class="w"> </span><span class="n">pod0</span>
+<span class="n">spec</span><span class="o">:</span>
+<span class="w">  </span><span class="n">securityContext</span><span class="o">:</span>
+<span class="w">    </span><span class="n">seccompProfile</span><span class="o">:</span>
+<span class="w">      </span><span class="n">type</span><span class="o">:</span><span class="w"> </span><span class="n">RuntimeDefault</span>
+<span class="o">(...)</span>
+</code></pre></div></td></tr></table></div>
+<p>Historically, Kubernetes had no way to enforce default seccomp profiles and pods would run unconfined unless explicitly
+requested for each pod. In recent versions of upstream Kubernetes, administrators
+<a href="https://kubernetes.io/docs/tutorials/security/seccomp/#enable-the-use-of-runtimedefault-as-the-default-seccomp-profile-for-all-workloads">can specify that all pods' seccomp profile shall default to the runtime default</a>
+with the <code class="highlight">--seccomp-default</code> command line flag.</p>
+<h2 id="enforcement-of-runtimedefault-seccomp-rules-in-red-hat-openshift-container-platform">Enforcement of RuntimeDefault seccomp rules in Red Hat OpenShift Container Platform</h2>
+<p>Contrary to upstream Kubernetes, in Red Hat OpenShift Container Platform (OCP) 4.12 and beyond, the use of the runtime
+default seccomp profile is enforced through SCCs. For pods that do not explicitly request a seccomp profile but which
+are matched by an SCC which specifies the <code class="highlight"><span class="na">.seccompProfiles</span></code> field, the SCC controller will automatically set the pods'
+<code class="highlight"><span class="na">.spec.securityContext.seccompProfile</span></code> to the value which is requested by the SCC. One of the reasons behind the
+introduction of the new <code class="highlight">(...)-v2</code> SCCs in Red Hat OpenShift Container Platform was the automatic enforcement of the
+<code class="highlight">RuntimeDefault</code> seccomp profile for pods.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code>$<span class="w"> </span>oc<span class="w"> </span>get<span class="w"> </span>scc<span class="w"> </span>restricted<span class="w"> </span>-o<span class="w"> </span>custom-columns<span class="o">=</span>SECCOMP_PROFILE:.seccompProfiles
+SECCOMP_PROFILE
+&lt;none&gt;
+$<span class="w"> </span>oc<span class="w"> </span>get<span class="w"> </span>scc<span class="w"> </span>restricted-v2<span class="w"> </span>-o<span class="w"> </span>custom-columns<span class="o">=</span>SECCOMP_PROFILE:.seccompProfiles
+SECCOMP_PROFILE
+<span class="o">[</span>runtime/default<span class="o">]</span>
+</code></pre></div></td></tr></table></div>
+<p>In turn, for OCP this means that when you inspect a pod and neither <code class="highlight"><span class="na">.spec.securityContext.seccompProfile</span></code> nor
+<code class="highlight"><span class="na">.spec.containers.securityContext.seccompProfile</span></code> are set, the pod will run unconfined seccomp. For example, this can
+happen when a pod is matched by the <code class="highlight">privileged</code> SCC.</p>
+<h2 id="querying-the-effective-seccomp-profile">Querying the effective seccomp profile</h2>
+<p>Beyond <code class="highlight">oc get pod</code> or <code class="highlight">oc describe pod</code>, administrators have several different ways to query a container's effective
+seccomp. One way is to inspect the containers with <code class="highlight">crictl inspect</code>. When no seccomp profile is applied, field
+<code class="highlight"><span class="na">.info.runtimeSpec.linux.seccomp</span></code> will be empty.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code># crictl inspect $(crictl ps | awk &#39;/pod-unconfined$/ {print $1}&#39;) | jq &#39;.info.runtimeSpec.linux.seccomp&#39;
+null
+</code></pre></div></td></tr></table></div>
+<p>When a seccomp profile is applied, field <code class="highlight"><span class="na">.info.runtimeSpec.linux.seccomp</span></code> will contain the full seccomp profile
+definition:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="gh">#</span> crictl inspect $(crictl ps | awk &#39;/pod-runtime-default$/ {print $1}&#39;) | jq &#39;.info.runtimeSpec.linux.seccomp&#39; | head
+{
+  &quot;defaultAction&quot;: &quot;SCMP_ACT_ERRNO&quot;,
+  &quot;defaultErrnoRet&quot;: 38,
+  &quot;architectures&quot;: [
+    &quot;SCMP_ARCH_X86_64&quot;,
+    &quot;SCMP_ARCH_X86&quot;,
+    &quot;SCMP_ARCH_X32&quot;
+  ],
+  &quot;syscalls&quot;: [
+    {
+<span class="gh">#</span> crictl inspect $(crictl ps | awk &#39;/default-pod$/ {print $1}&#39;) | jq &#39;.info.runtimeSpec.linux.seccomp&#39; | wc -l
+637
+</code></pre></div></td></tr></table></div>
+<p>A low level way of determining if a process inside a container is restricted by seccomp is to look at the
+<code class="highlight">/proc/<span class="cp">${</span><span class="n">pid</span><span class="cp">}</span>/status</code> file. It contains a field <code class="highlight">Seccomp</code> which will show the processes' seccomp mode, which is either
+<code class="highlight"><span class="mf">0</span></code> (<code class="highlight">SECCOMP_MODE_DISABLED</code>), <code class="highlight"><span class="mf">1</span></code> (<code class="highlight">SECCOMP_MODE_STRICT</code>) or <code class="highlight"><span class="mf">2</span></code> (<code class="highlight">SECCOMP_MODE_FILTER</code>).</p>
+<p>Therefore, an unconfined container will yield the following:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code>$<span class="w"> </span>oc<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>pod-unconfined<span class="w"> </span>–<span class="w"> </span>grep<span class="w"> </span>Seccomp<span class="w"> </span>/proc/1/status
 
-<h2 id="how-to-patch-statusloadbalanceringress-ips-manually-to-a-service-in-a-baremetal-deployment">How to patch status.loadBalancer.ingress IPs manually to a service in a baremetal deployment?</h2>
-<p>For testing purposes, you might want to modify the status.loadBalancer.ingress of a service directly.</p>
-<p>Here's how you can do this. First, create a service:
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span></pre></div></td><td class="code"><div><pre><span></span><code>cat<span class="w"> </span><span class="s">&lt;&lt;&#39;EOF&#39; &gt; myservice.yaml</span>
-<span class="s">apiVersion: v1</span>
-<span class="s">kind: Service</span>
-<span class="s">metadata:</span>
-<span class="s">  name: myservice</span>
-<span class="s">spec:</span>
-<span class="s">  ports:</span>
-<span class="s">  - name: http</span>
-<span class="s">    port: 8888</span>
-<span class="s">    protocol: TCP</span>
-<span class="s">    targetPort: 80</span>
-<span class="s">  type: LoadBalancer</span>
-<span class="s">  selector:</span>
-<span class="s">    app: nginx-app</span>
-<span class="s">EOF</span>
-oc<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>myservice.yaml
-</code></pre></div></td></tr></table></div></p>
-<p>Then, open a proxy session:
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>oc<span class="w"> </span>proxy
-</code></pre></div></td></tr></table></div></p>
-<p>Then, open another CLI session and patch the service's status field:
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>curl<span class="w"> </span>-XPATCH<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json-patch+json&quot;</span><span class="w">  </span>--data<span class="w"> </span><span class="s1">&#39;[{&quot;op&quot;: &quot;add&quot;, &quot;path&quot;: &quot;/status/loadBalancer/ingress&quot;, &quot;value&quot;:[{&quot;ip&quot;: &quot;172.18.0.13&quot;}]}]&#39;</span><span class="w"> </span>http://localhost:8001/api/v1/namespaces/default/services/myservice/status
-</code></pre></div></td></tr></table></div></p>
-<p>Now, verify:
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span>root@ovnkubernetes<span class="w"> </span>~<span class="o">]</span><span class="c1"># oc get svc  myservice -o yaml | tail -n 10</span>
-<span class="w">    </span>protocol:<span class="w"> </span>TCP
-<span class="w">    </span>targetPort:<span class="w"> </span><span class="m">80</span>
-<span class="w">  </span>selector:
-<span class="w">    </span>app:<span class="w"> </span>nginx-app
-<span class="w">  </span>sessionAffinity:<span class="w"> </span>None
-<span class="w">  </span>type:<span class="w"> </span>LoadBalancer
-status:
-<span class="w">  </span>loadBalancer:
-<span class="w">    </span>ingress:
-<span class="w">    </span>-<span class="w"> </span>ip:<span class="w"> </span><span class="m">172</span>.18.0.13
-<span class="o">[</span>root@ovnkubernetes<span class="w"> </span>~<span class="o">]</span><span class="c1"># oc get svc</span>
-NAME<span class="w">             </span>TYPE<span class="w">           </span>CLUSTER-IP<span class="w">      </span>EXTERNAL-IP<span class="w">   </span>PORT<span class="o">(</span>S<span class="o">)</span><span class="w">          </span>AGE
-myservice<span class="w">   </span>LoadBalancer<span class="w">   </span><span class="m">10</span>.96.105.206<span class="w">   </span><span class="m">172</span>.18.0.13<span class="w">   </span><span class="m">8888</span>:32165/TCP<span class="w">   </span>12s
-</code></pre></div></td></tr></table></div></p>
+Seccomp:<span class="w"> </span><span class="m">0</span>
+</code></pre></div></td></tr></table></div>
+<p>Whereas a confined container will show <code class="highlight"><span class="mf">2</span></code> for process <code class="highlight"><span class="mf">1</span></code>'s seccomp status:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code>$<span class="w"> </span>oc<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>pod-runtime-default<span class="w"> </span>–<span class="w"> </span>grep<span class="w"> </span>Seccomp<span class="w"> </span>/proc/1/status
+
+Seccomp:<span class="w"> </span><span class="m">2</span>
+</code></pre></div></td></tr></table></div>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">February 16, 2022</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">September 25, 2023</span>
       
     
   </small>

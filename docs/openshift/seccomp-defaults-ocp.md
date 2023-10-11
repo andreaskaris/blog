@@ -85,7 +85,7 @@ A low level way of determining if a process inside a container is restricted by 
 Therefore, an unconfined container will yield the following:
 
 ```
-$ oc exec pod-unconfined – grep Seccomp /proc/1/status
+$ oc exec pod-unconfined -- grep Seccomp /proc/1/status
 
 Seccomp: 0
 ```
@@ -93,7 +93,7 @@ Seccomp: 0
 Whereas a confined container will show `2` for process `1`'s seccomp status:
 
 ```
-$ oc exec pod-runtime-default – grep Seccomp /proc/1/status
+$ oc exec pod-runtime-default -- grep Seccomp /proc/1/status
 
 Seccomp: 2
 ```

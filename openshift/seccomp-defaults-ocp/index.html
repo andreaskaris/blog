@@ -1904,14 +1904,14 @@ definition:</p>
 <p>Therefore, an unconfined container will yield the following:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code>$<span class="w"> </span>oc<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>pod-unconfined<span class="w"> </span>–<span class="w"> </span>grep<span class="w"> </span>Seccomp<span class="w"> </span>/proc/1/status
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code>$<span class="w"> </span>oc<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>pod-unconfined<span class="w"> </span>--<span class="w"> </span>grep<span class="w"> </span>Seccomp<span class="w"> </span>/proc/1/status
 
 Seccomp:<span class="w"> </span><span class="m">0</span>
 </code></pre></div></td></tr></table></div>
 <p>Whereas a confined container will show <code class="highlight"><span class="mf">2</span></code> for process <code class="highlight"><span class="mf">1</span></code>'s seccomp status:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code>$<span class="w"> </span>oc<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>pod-runtime-default<span class="w"> </span>–<span class="w"> </span>grep<span class="w"> </span>Seccomp<span class="w"> </span>/proc/1/status
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code>$<span class="w"> </span>oc<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>pod-runtime-default<span class="w"> </span>--<span class="w"> </span>grep<span class="w"> </span>Seccomp<span class="w"> </span>/proc/1/status
 
 Seccomp:<span class="w"> </span><span class="m">2</span>
 </code></pre></div></td></tr></table></div>
@@ -1921,7 +1921,7 @@ Seccomp:<span class="w"> </span><span class="m">2</span>
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">September 25, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">October 11, 2023</span>
       
     
   </small>

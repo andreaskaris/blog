@@ -1810,11 +1810,15 @@
   <h1>Setting journalctl limits</h1>
 
 <h2 id="changing-the-size-of-data-that-journald-retains">Changing the size of data that journald retains</h2>
-<p>The systemd journal by default retains 4GB of data. In order to increase or decrease that value, set <code class="highlight">SystemMaxUse</code> and if needed set <code class="highlight">SystemKeepFree</code> which will be the upper bound of storage that will be kept free on the drive.</p>
+<p>The systemd journal by default retains 4GB of data. In order to increase or decrease that value, set <code class="highlight">SystemMaxUse</code> and if needed set <code class="highlight">SystemKeepFree</code> which will be the upper bound of storage that will be kept free on the drive.You set these values in file <code class="highlight">/etc/systemd/journald.conf</code> under the <code class="highlight"><span class="o">[</span><span class="n">Journal</span><span class="o">]</span></code> section.</p>
 <p>For example, to increase the journal size to 40GB but to make sure that the system has 100GB of free disk space:
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code>SystemMaxUse=40G 
-SystemKeepFree=100G
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="err">#</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">journald</span><span class="p">.</span><span class="n">conf</span>
+<span class="o">[</span><span class="n">Journal</span><span class="o">]</span>
+<span class="n">SystemMaxUse</span><span class="o">=</span><span class="mi">40</span><span class="n">G</span><span class="w"> </span>
+<span class="n">SystemKeepFree</span><span class="o">=</span><span class="mi">100</span><span class="n">G</span>
 </code></pre></div></td></tr></table></div></p>
 <p>After changing the settings, restart the journal service:
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>systemctl restart systemd-journald.service
@@ -1936,7 +1940,7 @@ SystemKeepFree=100G
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">April 22, 2021</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">November 9, 2023</span>
       
     
   </small>

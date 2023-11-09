@@ -1,9 +1,11 @@
 ## Changing the size of data that journald retains
 
-The systemd journal by default retains 4GB of data. In order to increase or decrease that value, set `SystemMaxUse` and if needed set `SystemKeepFree` which will be the upper bound of storage that will be kept free on the drive.
+The systemd journal by default retains 4GB of data. In order to increase or decrease that value, set `SystemMaxUse` and if needed set `SystemKeepFree` which will be the upper bound of storage that will be kept free on the drive.You set these values in file `/etc/systemd/journald.conf` under the `[Journal]` section.
 
 For example, to increase the journal size to 40GB but to make sure that the system has 100GB of free disk space:
 ~~~
+# /etc/systemd/journald.conf
+[Journal]
 SystemMaxUse=40G 
 SystemKeepFree=100G
 ~~~

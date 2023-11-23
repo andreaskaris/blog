@@ -1923,9 +1923,11 @@ sudo rpm-ostree status
 <p>It's significantly easier to roll back. You will only need the following commands:
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code>sudo -i
-rpm-ostree reset
-systemctl reboot
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code>ssh<span class="w"> </span>core@<span class="cp">${</span><span class="n">HOST</span><span class="cp">}</span>
+sudo<span class="w"> </span>-i
+rpm-ostree<span class="w"> </span>reset
+systemctl<span class="w"> </span>reboot
 </code></pre></div></td></tr></table></div></p>
 
   <hr>

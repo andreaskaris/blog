@@ -94,6 +94,7 @@ sudo rpm-ostree status
 
 It's significantly easier to roll back. You will only need the following commands:
 ```
+ssh core@${HOST}
 sudo -i
 rpm-ostree reset
 systemctl reboot

@@ -118,6 +118,7 @@ nav:
   - Installing a cluster with a mirror registry: openshift/openshift_mirror_registry.md
   - Istio 1.6 on OpenShift 4.x: openshift/istio-1.6-on-ocp.4.x.md
   - kata containers and the kata operatora: openshift/kata.md  
+  - kernel-ml on OpenShift: openshift/kernel-ml-on-openshift.md
   - Kind with OVN Kubernetes Hybrid Overlay: openshift/ovn-kind-hybrid-overlay.md
   - Kind with private registry: openshift/kind-with-private-registry.md
   - List container images in registry: openshift/list_docker_registry_containers.md

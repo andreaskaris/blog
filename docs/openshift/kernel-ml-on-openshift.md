@@ -9,7 +9,7 @@ systems.
 ## Preparation steps
 
 You can download the kernel-ml packages (for example with yumdownloader). For OpenShift 4.12 with the RHEL 8.6 kernel,
-you will have to download `kernel-ml`, `kernel-ml-core`, `kernel-ml-modules` and `kernele-ml-modules-extra`. I didn't
+you will have to download `kernel-ml`, `kernel-ml-core`, `kernel-ml-modules` and `kernel-ml-modules-extra`. I didn't
 test this with OCP 4.13 and above (which are based on RHEL 9), but I expect the procedure to be similar.
 
 Let's tar the packages into a single tar archive:

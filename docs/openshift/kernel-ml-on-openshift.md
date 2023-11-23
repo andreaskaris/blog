@@ -1,8 +1,10 @@
 # kernel-ml on OpenShift
 
 In order to find out if a kernel bug was already fixed upstream, it may sometimes be necessary to test the upstream
-kernel on top of OpenShift. Oftentimes, RHEL users can use the kernel-ml package (http://elrepo.org/tiki/HomePage) for
-such testing.
+kernel on top of OpenShift. RHEL users can easily use the kernel-ml package (http://elrepo.org/tiki/HomePage) for
+such testing. Unfortunately, it is a bit more complex to achieve this on Red Hat CoreOS with rpm-ostree, but it is
+definitely possible. Keep in mind that this is for testing and tinkering only, and should not be done on production
+systems.
 
 ## Preparation steps
 

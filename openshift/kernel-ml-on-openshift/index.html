@@ -1825,8 +1825,10 @@
 
 <h1 id="kernel-ml-on-openshift">kernel-ml on OpenShift</h1>
 <p>In order to find out if a kernel bug was already fixed upstream, it may sometimes be necessary to test the upstream
-kernel on top of OpenShift. Oftentimes, RHEL users can use the kernel-ml package (http://elrepo.org/tiki/HomePage) for
-such testing.</p>
+kernel on top of OpenShift. RHEL users can easily use the kernel-ml package (http://elrepo.org/tiki/HomePage) for
+such testing. Unfortunately, it is a bit more complex to achieve this on Red Hat CoreOS with rpm-ostree, but it is
+definitely possible. Keep in mind that this is for testing and tinkering only, and should not be done on production
+systems.</p>
 <h2 id="preparation-steps">Preparation steps</h2>
 <p>You can download the kernel-ml packages (for example with yumdownloader). For OpenShift 4.12 with the RHEL 8.6 kernel,
 you will have to download <code class="highlight">kernel-ml</code>, <code class="highlight">kernel-ml-core</code>, <code class="highlight">kernel-ml-modules</code> and <code class="highlight">kernele-ml-modules-extra</code>. I didn't

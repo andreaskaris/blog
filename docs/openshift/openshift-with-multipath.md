@@ -32,6 +32,7 @@ The OpenShift documentation about
 holds an example for how to provision a PV with a single iSCSI path.
 
 A full example to create a PV, PVC and a pod using them would be:
+
 ```
 apiVersion: v1
 kind: PersistentVolume
@@ -82,19 +83,21 @@ spec:
 ```
 
 Apply the above, and verify that everything is up and running as expected:
+
 ```
-[akaris@workstation multipath]$ oc get pv
+[user@host ~]$ oc get pv
 oNAME       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                 STORAGECLASS   REASON   AGE
 iscsi-pv   20Gi       RWO            Retain           Bound    test/iscsi-pv-claim   manual                  23s
-c[akaris@workstation multipath]$ oc get pvc
+c[user@host ~]$ oc get pvc
 oNAME             STATUS   VOLUME     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
 iscsi-pv-claim   Bound    iscsi-pv   20Gi       RWO            manual         24s
-[akaris@workstation multipath]$ oc get pods
+[user@host ~]$ oc get pods
 NAME           READY   STATUS    RESTARTS   AGE
 iscsi-pv-pod   1/1     Running   0          25s
 ```
 
 You can also see that the host mounted the new iSCSI target to the pod:
+
 ```
 [root@openshift-sno ~]# iscsiadm -m session -P3 | grep Lun -A1
 		scsi11 Channel 00 Id 0 Lun: 0
@@ -115,6 +118,7 @@ Note that in order to configure true multipathing, you must make sure to configu
 Otherwise, both iSCSI targets will be added by the kernel, but you aren't going to see true multipathing via multipathd.
 
 Create the multipath.conf file:
+
 ```
 cat << 'EOF' > /tmp/multipath.conf
 defaults {
@@ -124,6 +128,7 @@ EOF
 ```
 
 And then deploy it to your nodes with a MachineConfig. The following example is for a Single Node OpenShift deployment and therefore targets the `master` role:
+
 ```
 cat << EOF | oc apply -f -
 apiVersion: machineconfiguration.openshift.io/v1
@@ -147,11 +152,13 @@ EOF
 ```
 
 After the node rebooted, you should be able to connect to it and list all multipaths on the node:
+
 ```
 multipath -l
 ```
 
 You can now create a multipath PersistentVolume, for example with:
+
 ```
 apiVersion: v1
 kind: PersistentVolume
@@ -203,19 +210,21 @@ spec:
 ```
  
 Apply the above, and verify that everything is up and running as expected:
+
 ```
-[akaris@workstation multipath]$ oc get pv
+[user@host ~]$ oc get pv
 oNAME       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                 STORAGECLASS   REASON   AGE
 iscsi-pv   20Gi       RWO            Retain           Bound    test/iscsi-pv-claim   manual                  22s
-[akaris@workstation multipath]$ oc get pvc
+[user@host ~]$ oc get pvc
 ocNAME             STATUS   VOLUME     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
 iscsi-pv-claim   Bound    iscsi-pv   20Gi       RWO            manual         22s
-[akaris@workstation multipath]$ oc get pods
+[user@host ~]$ oc get pods
 NAME           READY   STATUS    RESTARTS   AGE
 iscsi-pv-pod   1/1     Running   0          24s
  ```
  
 On the host, you can now query the multipath state:
+
 ```
 [root@openshift-sno ~]# multipath -l | tail -n 6
 mpathf (360014051ce1f6918cfe457e972b2f2ae) dm-4 LIO-ORG,vdb
@@ -234,11 +243,13 @@ In addition, you can verify that the host mounted the multipath into the contain
 ```
  
 On the target, simulate a path failure:
+
 ```
 [root@iscsi-target-host ~]# iptables -I INPUT --dst 192.168.100.124 --j REJECT
 ```
 
 The multipath daemon will detect the failure:
+
 ```
 [root@openshift-sno ~]# multipath -l | tail -n 6
 mpathf (360014051ce1f6918cfe457e972b2f2ae) dm-4 LIO-ORG,vdb
@@ -250,8 +261,9 @@ size=20G features='0' hwhandler='1 alua' wp=rw
 ```
 
 But your pod can still list the contents of the iSCSI disk:
+
 ```
-[akaris@workstation multipath]$ oc exec -it iscsi-pv-pod -- ls /iscsi
+[user@host ~]$ oc exec -it iscsi-pv-pod -- ls /iscsi
 a  b  c  d
 ```
 

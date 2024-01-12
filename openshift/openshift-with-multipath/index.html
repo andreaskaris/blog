@@ -1,0 +1,2926 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Andreas Karis' blog about anything Kubernetes, OpenShift, Linux and Networking">
+      
+      
+      
+        <link rel="canonical" href="https://andreaskaris.github.io/blog/openshift/openshift-with-multipath/">
+      
+      
+        <link rel="prev" href="../../openstack/install_openshift_on_openstack/">
+      
+      
+        <link rel="next" href="../patch-service-loadbalancer-ingress-ip/">
+      
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../feed_rss_created.xml">
+        <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../feed_rss_updated.xml">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.3">
+    
+    
+      
+        <title>OpenShift with iSCSI multipath - Andreas Karis Blog</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.50c56a3b.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  <!-- RSS Feed -->
+  <link rel="alternate" type="application/rss+xml" title="RSS feed of created content" href="https://andreaskaris.github.io/blog/feed_rss_created.xml">
+  <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="https://andreaskaris.github.io/blog/feed_rss_updated.xml">
+
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Andreas Karis Blog" class="md-header__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Andreas Karis Blog
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              OpenShift with iSCSI multipath
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../ceph/" class="md-tabs__link">
+          
+  
+    
+  
+  Ceph
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../linux/" class="md-tabs__link">
+          
+  
+    
+  
+  Linux
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../networking/" class="md-tabs__link">
+          
+  
+    
+  
+  Networking
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+    
+  
+  OpenShift and Kubernetes
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../openstack/" class="md-tabs__link">
+          
+  
+    
+  
+  OpenStack
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../coding/" class="md-tabs__link">
+          
+  
+    
+  
+  Coding
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+  
+    
+    <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner">
+          
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Andreas Karis Blog
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../ceph/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Ceph
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Ceph
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ceph/ceph-manual-test/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ceph manual test with qemu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../linux/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Linux
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Linux
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/cgroups/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    cgroups
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/containers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Containers in Linux
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/hugepages/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hugepages
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/ipxe-boot-environment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    iPXE boot environment on Fedora
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/java-idrac-issues/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Java Idrac Issues
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/meson/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    meson
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/namespaces/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    namespaces
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/old_java_version_with_xorgs_in_container/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Old Java inside a container with xorgs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/org-gnome-shell-overrides/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Workaround for org.gnome.shell.overrides not installed
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/get-process-cgroup-info-and-limits/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Retrieving process cgroup resource usage and limit info
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/libvirt-uefi-without-secureboot/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RHEL Booting a virtual machine with UEFI but without secure boot
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/setting-journalctl-limits/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Setting journalctl limits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/cgroups_cpu_quota/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Using cgroups for CFS bandwidth control
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../networking/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Networking
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Networking
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/accept-source-routing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Accept Source Routing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/arp_and_the_neighbor_table/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ARP and the Neighbor table
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/bpf-and-tcpdump/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    BPF and tcpdump
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/bonding_in_linux/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bonding in Linux
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/juniper_x520/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Configure Juniper switch
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/ovn-interconnection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hands-on with OVN Interconnection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/haproxy-and-h2c/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    haproxy and HTTP/2
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/install-openvswitch-on-rocky/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Install Open vSwitch on Rocky Linux 8
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/geneve_tunneling/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Geneve tunneling
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/netlink/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Netlink
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/ovn_standalone_on_fedora/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OVN standalone on Fedora
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/ovs_recirculation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OVS packet recirculation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/ovs-vxlan-tunnels-and-dscp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OVS VXLAN tunnels and DSCP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/ovs_with_gdb/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OVS with GDB
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/packet-tracing-with-ovn/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Packet tracing with OVN
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/sctp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SCTP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/useful-commands/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Useful commands
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/wireguard/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Wireguard
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    OpenShift and Kubernetes
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            OpenShift and Kubernetes
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../alertmanager/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AlertManager
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../analyzing-cni/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Analyzing CNI calls
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ocp-custom-release-image/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Building custom release images for OpenShift
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cpu-manager-with-custom-machine-config-pool/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CPU manager with custom MachineConfigPool
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../crio-conmon-runc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Crio vs conmon vs runc
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dedicated-service-monitors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DedicatedServiceMonitors in OpenShift Monitoring
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../etcd_perf/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Etcd Performance tests
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../get-vs-list-api-calls/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Get vs List API Calls
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift_httpbin_tshark_sidecar/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Httpbin tshark sidecar container
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kubernetes_cluster/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hints for installing kubernetes on Fedora
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../HPA/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Horizontal Pod Autoscaler
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how_rhcos_updates_work/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How RHCOS updates work
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kubelet-filesystems/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How kubelet monitors filesystems
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ocp4-infra-nodes-with-machineset-without-worker-label/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Infra nodes with MachineSets without worker label
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ingresscontroller_router_sharding_ocp_on_osp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ingress Controller Sharding OCP on OSP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ingress-controller-sharding-on-separate-vip/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ingress Controller Sharding on separate VIP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift_mirror_registry/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installing a cluster with a mirror registry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../istio-1.6-on-ocp.4.x/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Istio 1.6 on OpenShift 4.x
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kata/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    kata containers and the kata operatora
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kernel-ml-on-openshift/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    kernel-ml on OpenShift
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ovn-kind-hybrid-overlay/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Kind with OVN Kubernetes Hybrid Overlay
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kind-with-private-registry/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Kind with private registry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../list_docker_registry_containers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    List container images in registry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mounting-container-image/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mount a container image
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openstack/install_openshift_on_openstack/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OpenShift on OpenStack
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    OpenShift with iSCSI multipath
+  </span>
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../patch-service-loadbalancer-ingress-ip/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Patch status.loadBalancer.ingress IP manually
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../private-registry/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Private container registry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../proxy-ocp-4.5/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Proxy OCP 4.5
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rpm-ostree-failed-to-find-image/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    rpm-ostreed failed to find image
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../seccomp-defaults-ocp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Seccomp defaults in Red Hat OpenShift Container Platform
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Security Context Constraints (SCC)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift-scc-with-mutating-webhooks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SCCs and mutating webhooks - a lesson learned
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fix-selinux-labels-coreos/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SElinux labels fix
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/sctp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SCTP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift_troubleshooting_etcd_state/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Troubleshooting etcd state
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../useful-ocp-commands/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Useful commands for OpenShift
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../useful-ocp-sdn-commands/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Useful commands for OpenShift SDN
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting_openshift_on_openstack_worker_creation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Troubleshooting OpenShift on OpenStack worker creation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../openstack/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    OpenStack
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            OpenStack
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openstack/reattach_to_running_deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Reattach to running deployment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openstack/using_clouds_yaml/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Using clouds.yaml
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../coding/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Coding
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Coding
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../coding/operator-sdk-reconciliation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Controller Reconciliation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../coding/vimrc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    My vimrc
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../coding/golang-ip-conversion/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Golang IP address conversion
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+        </div>
+      </div>
+    </div>
+  
+  
+    
+    <!--
+    <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner">
+          
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+</nav>
+        </div>
+      </div>
+    </div>
+    -->
+  
+
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  <h1>OpenShift with iSCSI multipath</h1>
+
+<h2 id="kubernets-iscsi-volume-driver">Kubernets iSCSI volume driver</h2>
+<p>The iSCSI volume driver can work as both a single path iSCSI initiator or with multipath.
+For some information about the driver, see <a href="https://github.com/kubernetes/examples/tree/master/volumes/iscsi">https://github.com/kubernetes/examples/tree/master/volumes/iscsi</a>.
+The driver detects if the system is configured for multipath and will use it when available.
+See <a href="https://github.com/kubernetes/examples/blob/master/volumes/iscsi/iscsi.yaml">https://github.com/kubernetes/examples/blob/master/volumes/iscsi/iscsi.yaml</a>
+for an example pod resource.</p>
+<h2 id="configuring-an-iscsi-target-for-testing">Configuring an iSCSI target for testing</h2>
+<p>If you do not have an iSCSI target, you can create one for testing with RHEL. See
+<a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/managing_storage_devices/configuring-an-iscsi-target_managing-storage-devices">the documentation for creating an iSCSI target</a>.</p>
+<p>If you want to test that iSCSI is working without OpenShift, you can initiate an iSCSI connection from a test RHEL node.
+Have a look at
+<a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/managing_storage_devices/configuring-an-iscsi-initiator_managing-storage-devices">the documentation for creating an iSCSI initiator</a>.</p>
+<p>For multipath tests, simply add more secondary IP addresses (x.x.x.x/32) to your host. If you want to simulate a path
+failure, you can simply create an iptables rule that drops traffic to the VIPs:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>iptables -I INPUT --dst &lt;x.x.x.x&gt; --j REJECT
+</code></pre></div></td></tr></table></div></p>
+<h2 id="how-to-use-iscsi-with-openshift">How to use iSCSI with OpenShift</h2>
+<p>In Red Hat OpenShift Container Platform 4.14, the <code class="highlight">iscsid</code> service is already enabled by default, and the iSCSI
+initiator name is already configured for each node in <code class="highlight">/etc/iscsi/initiatorname.iscsi</code>. The initiator name can be
+changed with a MachineConfig if desired.</p>
+<p>The OpenShift documentation about
+<a href="https://docs.openshift.com/container-platform/4.14/storage/persistent_storage/persistent-storage-iscsi.html#persistent-storage-iscsi-provisioning_persistent-storage-iscsi">Persistent Storage using iSCSI</a>
+holds an example for how to provision a PV with a single iSCSI path.</p>
+<p>A full example to create a PV, PVC and a pod using them would be:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">apiVersion</span><span class="o">:</span><span class="w"> </span><span class="n">v1</span>
+<span class="n">kind</span><span class="o">:</span><span class="w"> </span><span class="n">PersistentVolume</span>
+<span class="n">metadata</span><span class="o">:</span>
+<span class="w">  </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span>
+<span class="n">spec</span><span class="o">:</span>
+<span class="w">  </span><span class="n">storageClassName</span><span class="o">:</span><span class="w"> </span><span class="n">manual</span>
+<span class="w">  </span><span class="n">capacity</span><span class="o">:</span>
+<span class="w">    </span><span class="n">storage</span><span class="o">:</span><span class="w"> </span><span class="mi">20</span><span class="n">Gi</span>
+<span class="w">  </span><span class="n">accessModes</span><span class="o">:</span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="n">ReadWriteOnce</span>
+<span class="w">  </span><span class="n">iscsi</span><span class="o">:</span>
+<span class="w">     </span><span class="n">targetPortal</span><span class="o">:</span><span class="w"> </span><span class="mf">192.168</span><span class="o">.</span><span class="mf">100.10</span><span class="o">:</span><span class="mi">3260</span>
+<span class="w">     </span><span class="n">iqn</span><span class="o">:</span><span class="w"> </span><span class="n">iqn</span><span class="o">.</span><span class="mi">2003</span><span class="o">-</span><span class="mi">01</span><span class="o">.</span><span class="na">org</span><span class="o">.</span><span class="na">linux</span><span class="o">-</span><span class="n">iscsi</span><span class="o">.</span><span class="na">iscsi</span><span class="o">-</span><span class="n">target</span><span class="o">-</span><span class="n">host</span><span class="o">.</span><span class="na">x8664</span><span class="o">:</span><span class="n">sn</span><span class="o">.</span><span class="na">aabbccddeeff</span>
+<span class="w">     </span><span class="n">lun</span><span class="o">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">     </span><span class="n">fsType</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;xfs&#39;</span>
+<span class="o">---</span>
+<span class="n">apiVersion</span><span class="o">:</span><span class="w"> </span><span class="n">v1</span>
+<span class="n">kind</span><span class="o">:</span><span class="w"> </span><span class="n">PersistentVolumeClaim</span>
+<span class="n">metadata</span><span class="o">:</span>
+<span class="w">  </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="o">-</span><span class="n">claim</span>
+<span class="n">spec</span><span class="o">:</span>
+<span class="w">  </span><span class="n">storageClassName</span><span class="o">:</span><span class="w"> </span><span class="n">manual</span>
+<span class="w">  </span><span class="n">accessModes</span><span class="o">:</span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="n">ReadWriteOnce</span>
+<span class="w">  </span><span class="n">resources</span><span class="o">:</span>
+<span class="w">    </span><span class="n">requests</span><span class="o">:</span>
+<span class="w">      </span><span class="n">storage</span><span class="o">:</span><span class="w"> </span><span class="mi">20</span><span class="n">Gi</span>
+<span class="o">---</span>
+<span class="n">apiVersion</span><span class="o">:</span><span class="w"> </span><span class="n">v1</span>
+<span class="n">kind</span><span class="o">:</span><span class="w"> </span><span class="n">Pod</span>
+<span class="n">metadata</span><span class="o">:</span>
+<span class="w">  </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="o">-</span><span class="n">pod</span>
+<span class="n">spec</span><span class="o">:</span>
+<span class="w">  </span><span class="n">containers</span><span class="o">:</span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="o">-</span><span class="n">container</span>
+<span class="w">      </span><span class="n">image</span><span class="o">:</span><span class="w"> </span><span class="n">fedora</span>
+<span class="w">      </span><span class="n">command</span><span class="o">:</span>
+<span class="w">        </span><span class="o">-</span><span class="w"> </span><span class="n">sleep</span>
+<span class="w">        </span><span class="o">-</span><span class="w"> </span><span class="n">infinity</span>
+<span class="w">      </span><span class="n">volumeMounts</span><span class="o">:</span>
+<span class="w">        </span><span class="o">-</span><span class="w"> </span><span class="n">mountPath</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;/iscsi&quot;</span>
+<span class="w">          </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="o">-</span><span class="n">storage</span>
+<span class="w">  </span><span class="n">volumes</span><span class="o">:</span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="o">-</span><span class="n">storage</span>
+<span class="w">      </span><span class="n">persistentVolumeClaim</span><span class="o">:</span>
+<span class="w">        </span><span class="n">claimName</span><span class="o">:</span><span class="w"> </span><span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="o">-</span><span class="n">claim</span>
+</code></pre></div></td></tr></table></div></p>
+<p>Apply the above, and verify that everything is up and running as expected:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">akaris@workstation multipath</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">pv</span>
+<span class="n">oNAME</span><span class="w">       </span><span class="n">CAPACITY</span><span class="w">   </span><span class="n">ACCESS</span><span class="w"> </span><span class="n">MODES</span><span class="w">   </span><span class="n">RECLAIM</span><span class="w"> </span><span class="n">POLICY</span><span class="w">   </span><span class="n">STATUS</span><span class="w">   </span><span class="n">CLAIM</span><span class="w">                 </span><span class="n">STORAGECLASS</span><span class="w">   </span><span class="n">REASON</span><span class="w">   </span><span class="n">AGE</span>
+<span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="w">   </span><span class="mi">20</span><span class="n">Gi</span><span class="w">       </span><span class="n">RWO</span><span class="w">            </span><span class="n">Retain</span><span class="w">           </span><span class="n">Bound</span><span class="w">    </span><span class="n">test</span><span class="o">/</span><span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="o">-</span><span class="n">claim</span><span class="w">   </span><span class="n">manual</span><span class="w">                  </span><span class="mi">23</span><span class="n">s</span>
+<span class="n">c</span><span class="o">[</span><span class="n">akaris@workstation multipath</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">pvc</span>
+<span class="n">oNAME</span><span class="w">             </span><span class="n">STATUS</span><span class="w">   </span><span class="n">VOLUME</span><span class="w">     </span><span class="n">CAPACITY</span><span class="w">   </span><span class="n">ACCESS</span><span class="w"> </span><span class="n">MODES</span><span class="w">   </span><span class="n">STORAGECLASS</span><span class="w">   </span><span class="n">AGE</span>
+<span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="o">-</span><span class="n">claim</span><span class="w">   </span><span class="n">Bound</span><span class="w">    </span><span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="w">   </span><span class="mi">20</span><span class="n">Gi</span><span class="w">       </span><span class="n">RWO</span><span class="w">            </span><span class="n">manual</span><span class="w">         </span><span class="mi">24</span><span class="n">s</span>
+<span class="o">[</span><span class="n">akaris@workstation multipath</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">pods</span>
+<span class="n">NAME</span><span class="w">           </span><span class="n">READY</span><span class="w">   </span><span class="n">STATUS</span><span class="w">    </span><span class="n">RESTARTS</span><span class="w">   </span><span class="n">AGE</span>
+<span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="o">-</span><span class="n">pod</span><span class="w">   </span><span class="mi">1</span><span class="o">/</span><span class="mi">1</span><span class="w">     </span><span class="n">Running</span><span class="w">   </span><span class="mi">0</span><span class="w">          </span><span class="mi">25</span><span class="n">s</span>
+</code></pre></div></td></tr></table></div></p>
+<p>You can also see that the host mounted the new iSCSI target to the pod:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">openshift</span><span class="o">-</span><span class="n">sno</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># iscsiadm -m session -P3 | grep Lun -A1</span>
+<span class="w">        </span><span class="n">scsi11</span><span class="w"> </span><span class="n">Channel</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="n">Id</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="n">Lun</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">            </span><span class="n">Attached</span><span class="w"> </span><span class="n">scsi</span><span class="w"> </span><span class="n">disk</span><span class="w"> </span><span class="n">sdb</span><span class="w">      </span><span class="n">State</span><span class="p">:</span><span class="w"> </span><span class="n">running</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">openshift</span><span class="o">-</span><span class="n">sno</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># mount | grep sdb</span>
+<span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">sdb</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">kubelet</span><span class="o">/</span><span class="n">plugins</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">iscsi</span><span class="o">/</span><span class="n">iface</span><span class="o">-</span><span class="n">default</span><span class="o">/</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">100.10</span><span class="p">:</span><span class="mi">3260</span><span class="o">-</span><span class="n">iqn</span><span class="o">.</span><span class="mi">2003</span><span class="o">-</span><span class="mf">01.</span><span class="n">org</span><span class="o">.</span><span class="n">linux</span><span class="o">-</span><span class="n">iscsi</span><span class="o">.</span><span class="n">iscsi</span><span class="o">-</span><span class="n">target</span><span class="o">-</span><span class="n">host</span><span class="o">.</span><span class="n">x8664</span><span class="p">:</span><span class="n">sn</span><span class="o">.</span><span class="n">aabbccddeeff</span><span class="o">-</span><span class="n">lun</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="n">xfs</span><span class="w"> </span><span class="p">(</span><span class="n">rw</span><span class="p">,</span><span class="n">relatime</span><span class="p">,</span><span class="n">seclabel</span><span class="p">,</span><span class="n">attr2</span><span class="p">,</span><span class="n">inode64</span><span class="p">,</span><span class="n">logbufs</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="n">logbsize</span><span class="o">=</span><span class="mi">32</span><span class="n">k</span><span class="p">,</span><span class="n">noquota</span><span class="p">)</span>
+<span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">sdb</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">kubelet</span><span class="o">/</span><span class="n">pods</span><span class="o">/</span><span class="mi">25</span><span class="n">a1c200</span><span class="o">-</span><span class="n">c53b</span><span class="o">-</span><span class="mi">4774</span><span class="o">-</span><span class="mi">8</span><span class="n">d42</span><span class="o">-</span><span class="mi">2</span><span class="n">c9442d941be</span><span class="o">/</span><span class="n">volumes</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">.</span><span class="n">io</span><span class="o">~</span><span class="n">iscsi</span><span class="o">/</span><span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="n">xfs</span><span class="w"> </span><span class="p">(</span><span class="n">rw</span><span class="p">,</span><span class="n">relatime</span><span class="p">,</span><span class="n">seclabel</span><span class="p">,</span><span class="n">attr2</span><span class="p">,</span><span class="n">inode64</span><span class="p">,</span><span class="n">logbufs</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="n">logbsize</span><span class="o">=</span><span class="mi">32</span><span class="n">k</span><span class="p">,</span><span class="n">noquota</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div></p>
+<h2 id="how-to-configure-multipath-with-openshift">How to configure multipath with OpenShift</h2>
+<p>In Red Hat OpenShift Container Platform 4.14, it is also possible to configure multipathing. The OpenShift documentation
+explains how to configure
+<a href="https://docs.openshift.com/container-platform/4.14/storage/persistent_storage/persistent-storage-iscsi.html#iscsi-multipath_persistent-storage-iscsi">multipathing</a>
+with multiple portals.
+Note that in order to configure true multipathing, you must make sure to configure the <code class="highlight">multipathd</code> daemon first, see
+<a href="https://access.redhat.com/solutions/5607891">https://access.redhat.com/solutions/5607891</a>.
+Otherwise, both iSCSI targets will be added by the kernel, but you aren't going to see true multipathing via multipathd.</p>
+<p>Create the multipath.conf file:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code>cat &lt;&lt; &#39;EOF&#39; &gt; /tmp/multipath.conf
+defaults {
+        user_friendly_names yes
+}
+EOF
+</code></pre></div></td></tr></table></div></p>
+<p>And then deploy it to your nodes with a MachineConfig. The following example is for a Single Node OpenShift deployment and therefore targets the <code class="highlight">master</code> role:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="nt">EOF</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nt">oc</span><span class="w"> </span><span class="nt">apply</span><span class="w"> </span><span class="nt">-f</span><span class="w"> </span><span class="nt">-</span>
+<span class="nt">apiVersion</span><span class="o">:</span><span class="w"> </span><span class="nt">machineconfiguration</span><span class="p">.</span><span class="nc">openshift</span><span class="p">.</span><span class="nc">io</span><span class="o">/</span><span class="nt">v1</span>
+<span class="nt">kind</span><span class="o">:</span><span class="w"> </span><span class="nt">MachineConfig</span>
+<span class="nt">metadata</span><span class="o">:</span>
+<span class="w">  </span><span class="nt">labels</span><span class="o">:</span>
+<span class="w">    </span><span class="nt">machineconfiguration</span><span class="p">.</span><span class="nc">openshift</span><span class="p">.</span><span class="nc">io</span><span class="o">/</span><span class="nt">role</span><span class="o">:</span><span class="w"> </span><span class="nt">master</span>
+<span class="w">  </span><span class="nt">name</span><span class="o">:</span><span class="w"> </span><span class="nt">99-master-multipath-conf</span>
+<span class="nt">spec</span><span class="o">:</span>
+<span class="w">  </span><span class="nt">config</span><span class="o">:</span>
+<span class="w">    </span><span class="nt">ignition</span><span class="o">:</span>
+<span class="w">      </span><span class="nt">version</span><span class="o">:</span><span class="w"> </span><span class="nt">2</span><span class="p">.</span><span class="nc">2</span><span class="p">.</span><span class="nc">0</span>
+<span class="w">    </span><span class="nt">storage</span><span class="o">:</span>
+<span class="w">      </span><span class="nt">files</span><span class="o">:</span>
+<span class="w">      </span><span class="nt">-</span><span class="w"> </span><span class="nt">contents</span><span class="o">:</span>
+<span class="w">          </span><span class="nt">source</span><span class="o">:</span><span class="w"> </span><span class="nt">data</span><span class="p">:</span><span class="nd">text</span><span class="o">/</span><span class="nt">plain</span><span class="o">;</span><span class="nt">charset</span><span class="o">=</span><span class="nt">utf-8</span><span class="o">;</span><span class="nt">base64</span><span class="o">,$(</span><span class="nt">cat</span><span class="w"> </span><span class="o">/</span><span class="nt">tmp</span><span class="o">/</span><span class="nt">multipath</span><span class="p">.</span><span class="nc">conf</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nt">base64</span><span class="w"> </span><span class="nt">-w0</span><span class="o">)</span>
+<span class="w">        </span><span class="nt">filesystem</span><span class="o">:</span><span class="w"> </span><span class="nt">root</span>
+<span class="w">        </span><span class="nt">mode</span><span class="o">:</span><span class="w"> </span><span class="nt">420</span>
+<span class="w">        </span><span class="nt">path</span><span class="o">:</span><span class="w"> </span><span class="o">/</span><span class="nt">etc</span><span class="o">/</span><span class="nt">multipath</span><span class="p">.</span><span class="nc">conf</span>
+<span class="nt">EOF</span>
+</code></pre></div></td></tr></table></div></p>
+<p>After the node rebooted, you should be able to connect to it and list all multipaths on the node:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>multipath -l
+</code></pre></div></td></tr></table></div></p>
+<p>You can now create a multipath PersistentVolume, for example with:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">apiVersion</span><span class="o">:</span><span class="w"> </span><span class="n">v1</span>
+<span class="n">kind</span><span class="o">:</span><span class="w"> </span><span class="n">PersistentVolume</span>
+<span class="n">metadata</span><span class="o">:</span>
+<span class="w">  </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span>
+<span class="n">spec</span><span class="o">:</span>
+<span class="w">  </span><span class="n">storageClassName</span><span class="o">:</span><span class="w"> </span><span class="n">manual</span>
+<span class="w">  </span><span class="n">capacity</span><span class="o">:</span>
+<span class="w">    </span><span class="n">storage</span><span class="o">:</span><span class="w"> </span><span class="mi">20</span><span class="n">Gi</span>
+<span class="w">  </span><span class="n">accessModes</span><span class="o">:</span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="n">ReadWriteOnce</span>
+<span class="w">  </span><span class="n">iscsi</span><span class="o">:</span>
+<span class="w">     </span><span class="n">targetPortal</span><span class="o">:</span><span class="w"> </span><span class="mf">192.168</span><span class="o">.</span><span class="mf">100.123</span><span class="o">:</span><span class="mi">3260</span>
+<span class="w">     </span><span class="n">portals</span><span class="o">:</span><span class="w"> </span><span class="o">[</span><span class="s1">&#39;192.168.100.124:3260&#39;</span><span class="o">]</span>
+<span class="w">     </span><span class="n">iqn</span><span class="o">:</span><span class="w"> </span><span class="n">iqn</span><span class="o">.</span><span class="mi">2003</span><span class="o">-</span><span class="mi">01</span><span class="o">.</span><span class="na">org</span><span class="o">.</span><span class="na">linux</span><span class="o">-</span><span class="n">iscsi</span><span class="o">.</span><span class="na">iscsi</span><span class="o">-</span><span class="n">target</span><span class="o">-</span><span class="n">host</span><span class="o">.</span><span class="na">x8664</span><span class="o">:</span><span class="n">sn</span><span class="o">.</span><span class="na">aabbccddeeff</span>
+<span class="w">     </span><span class="n">lun</span><span class="o">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">     </span><span class="n">fsType</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;xfs&#39;</span>
+<span class="o">---</span>
+<span class="n">apiVersion</span><span class="o">:</span><span class="w"> </span><span class="n">v1</span>
+<span class="n">kind</span><span class="o">:</span><span class="w"> </span><span class="n">PersistentVolumeClaim</span>
+<span class="n">metadata</span><span class="o">:</span>
+<span class="w">  </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="o">-</span><span class="n">claim</span>
+<span class="n">spec</span><span class="o">:</span>
+<span class="w">  </span><span class="n">storageClassName</span><span class="o">:</span><span class="w"> </span><span class="n">manual</span>
+<span class="w">  </span><span class="n">accessModes</span><span class="o">:</span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="n">ReadWriteOnce</span>
+<span class="w">  </span><span class="n">resources</span><span class="o">:</span>
+<span class="w">    </span><span class="n">requests</span><span class="o">:</span>
+<span class="w">      </span><span class="n">storage</span><span class="o">:</span><span class="w"> </span><span class="mi">20</span><span class="n">Gi</span>
+<span class="o">---</span>
+<span class="n">apiVersion</span><span class="o">:</span><span class="w"> </span><span class="n">v1</span>
+<span class="n">kind</span><span class="o">:</span><span class="w"> </span><span class="n">Pod</span>
+<span class="n">metadata</span><span class="o">:</span>
+<span class="w">  </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="o">-</span><span class="n">pod</span>
+<span class="n">spec</span><span class="o">:</span>
+<span class="w">  </span><span class="n">containers</span><span class="o">:</span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="o">-</span><span class="n">container</span>
+<span class="w">      </span><span class="n">image</span><span class="o">:</span><span class="w"> </span><span class="n">fedora</span>
+<span class="w">      </span><span class="n">command</span><span class="o">:</span>
+<span class="w">        </span><span class="o">-</span><span class="w"> </span><span class="n">sleep</span>
+<span class="w">        </span><span class="o">-</span><span class="w"> </span><span class="n">infinity</span>
+<span class="w">      </span><span class="n">volumeMounts</span><span class="o">:</span>
+<span class="w">        </span><span class="o">-</span><span class="w"> </span><span class="n">mountPath</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;/iscsi&quot;</span>
+<span class="w">          </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="o">-</span><span class="n">storage</span>
+<span class="w">  </span><span class="n">volumes</span><span class="o">:</span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="o">-</span><span class="n">storage</span>
+<span class="w">      </span><span class="n">persistentVolumeClaim</span><span class="o">:</span>
+<span class="w">        </span><span class="n">claimName</span><span class="o">:</span><span class="w"> </span><span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="o">-</span><span class="n">claim</span>
+</code></pre></div></td></tr></table></div></p>
+<p>Apply the above, and verify that everything is up and running as expected:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">akaris@workstation multipath</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">pv</span>
+<span class="n">oNAME</span><span class="w">       </span><span class="n">CAPACITY</span><span class="w">   </span><span class="n">ACCESS</span><span class="w"> </span><span class="n">MODES</span><span class="w">   </span><span class="n">RECLAIM</span><span class="w"> </span><span class="n">POLICY</span><span class="w">   </span><span class="n">STATUS</span><span class="w">   </span><span class="n">CLAIM</span><span class="w">                 </span><span class="n">STORAGECLASS</span><span class="w">   </span><span class="n">REASON</span><span class="w">   </span><span class="n">AGE</span>
+<span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="w">   </span><span class="mi">20</span><span class="n">Gi</span><span class="w">       </span><span class="n">RWO</span><span class="w">            </span><span class="n">Retain</span><span class="w">           </span><span class="n">Bound</span><span class="w">    </span><span class="n">test</span><span class="o">/</span><span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="o">-</span><span class="n">claim</span><span class="w">   </span><span class="n">manual</span><span class="w">                  </span><span class="mi">22</span><span class="n">s</span>
+<span class="o">[</span><span class="n">akaris@workstation multipath</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">pvc</span>
+<span class="n">ocNAME</span><span class="w">             </span><span class="n">STATUS</span><span class="w">   </span><span class="n">VOLUME</span><span class="w">     </span><span class="n">CAPACITY</span><span class="w">   </span><span class="n">ACCESS</span><span class="w"> </span><span class="n">MODES</span><span class="w">   </span><span class="n">STORAGECLASS</span><span class="w">   </span><span class="n">AGE</span>
+<span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="o">-</span><span class="n">claim</span><span class="w">   </span><span class="n">Bound</span><span class="w">    </span><span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="w">   </span><span class="mi">20</span><span class="n">Gi</span><span class="w">       </span><span class="n">RWO</span><span class="w">            </span><span class="n">manual</span><span class="w">         </span><span class="mi">22</span><span class="n">s</span>
+<span class="o">[</span><span class="n">akaris@workstation multipath</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">oc</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">pods</span>
+<span class="n">NAME</span><span class="w">           </span><span class="n">READY</span><span class="w">   </span><span class="n">STATUS</span><span class="w">    </span><span class="n">RESTARTS</span><span class="w">   </span><span class="n">AGE</span>
+<span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="o">-</span><span class="n">pod</span><span class="w">   </span><span class="mi">1</span><span class="o">/</span><span class="mi">1</span><span class="w">     </span><span class="n">Running</span><span class="w">   </span><span class="mi">0</span><span class="w">          </span><span class="mi">24</span><span class="n">s</span>
+<span class="w"> </span><span class="err">```</span>
+
+<span class="k">On</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">host</span><span class="p">,</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="n">now</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">multipath</span><span class="w"> </span><span class="k">state</span><span class="err">:</span>
+</code></pre></div></td></tr></table></div>
+[root@openshift-sno ~]# multipath -l | tail -n 6
+mpathf (360014051ce1f6918cfe457e972b2f2ae) dm-4 LIO-ORG,vdb
+size=20G features='0' hwhandler='1 alua' wp=rw
+|-+- policy='service-time 0' prio=0 status=active
+| <code class="highlight">- 11:0:0:0  sdb     8:16  active undef running</code>-+- policy='service-time 0' prio=0 status=enabled
+  <code class="highlight"><span class="o">-</span><span class="w"> </span><span class="mi">12</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="w">  </span><span class="n">sdc</span><span class="w">     </span><span class="mi">8</span><span class="p">:</span><span class="mi">32</span><span class="w">  </span><span class="n">active</span><span class="w"> </span><span class="n">undef</span><span class="w"> </span><span class="n">running</span><span class="err"></span><span class="n">wzxhzdk</span><span class="p">:</span><span class="mi">9</span><span class="err"></span><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">openshift</span><span class="o">-</span><span class="n">sno</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># mount | grep mpathf</span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">mapper</span><span class="o">/</span><span class="n">mpathf</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">kubelet</span><span class="o">/</span><span class="n">plugins</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">iscsi</span><span class="o">/</span><span class="n">iface</span><span class="o">-</span><span class="n">default</span><span class="o">/</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">100.123</span><span class="p">:</span><span class="mi">3260</span><span class="o">-</span><span class="n">iqn</span><span class="o">.</span><span class="mi">2003</span><span class="o">-</span><span class="mf">01.</span><span class="n">org</span><span class="o">.</span><span class="n">linux</span><span class="o">-</span><span class="n">iscsi</span><span class="o">.</span><span class="n">iscsi</span><span class="o">-</span><span class="n">target</span><span class="o">-</span><span class="n">host</span><span class="o">.</span><span class="n">x8664</span><span class="p">:</span><span class="n">sn</span><span class="o">.</span><span class="n">aabbccddeeff</span><span class="o">-</span><span class="n">lun</span><span class="o">-</span><span class="mi">0</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="n">xfs</span><span class="w"> </span><span class="p">(</span><span class="n">rw</span><span class="p">,</span><span class="n">relatime</span><span class="p">,</span><span class="n">seclabel</span><span class="p">,</span><span class="n">attr2</span><span class="p">,</span><span class="n">inode64</span><span class="p">,</span><span class="n">logbufs</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="n">logbsize</span><span class="o">=</span><span class="mi">32</span><span class="n">k</span><span class="p">,</span><span class="n">noquota</span><span class="p">)</span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">mapper</span><span class="o">/</span><span class="n">mpathf</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">kubelet</span><span class="o">/</span><span class="n">pods</span><span class="o">/</span><span class="mi">474111</span><span class="n">cd</span><span class="o">-</span><span class="mi">0</span><span class="n">a86</span><span class="o">-</span><span class="mi">4</span><span class="n">dd7</span><span class="o">-</span><span class="mi">9</span><span class="n">b13</span><span class="o">-</span><span class="mi">7</span><span class="n">a9c0d3217dc</span><span class="o">/</span><span class="n">volumes</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">.</span><span class="n">io</span><span class="o">~</span><span class="n">iscsi</span><span class="o">/</span><span class="n">iscsi</span><span class="o">-</span><span class="n">pv</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="n">xfs</span><span class="w"> </span><span class="p">(</span><span class="n">rw</span><span class="p">,</span><span class="n">relatime</span><span class="p">,</span><span class="n">seclabel</span><span class="p">,</span><span class="n">attr2</span><span class="p">,</span><span class="n">inode64</span><span class="p">,</span><span class="n">logbufs</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="n">logbsize</span><span class="o">=</span><span class="mi">32</span><span class="n">k</span><span class="p">,</span><span class="n">noquota</span><span class="p">)</span><span class="err"></span><span class="n">wzxhzdk</span><span class="p">:</span><span class="mi">10</span><span class="err"></span><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">iscsi</span><span class="o">-</span><span class="n">target</span><span class="o">-</span><span class="n">host</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># iptables -I INPUT --dst 192.168.100.124 --j REJECT</span><span class="err"></span><span class="n">wzxhzdk</span><span class="p">:</span><span class="mi">11</span><span class="err"></span><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">openshift</span><span class="o">-</span><span class="n">sno</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># multipath -l | tail -n 6</span><span class="n">mpathf</span><span class="w"> </span><span class="p">(</span><span class="mi">360014051</span><span class="n">ce1f6918cfe457e972b2f2ae</span><span class="p">)</span><span class="w"> </span><span class="n">dm</span><span class="o">-</span><span class="mi">4</span><span class="w"> </span><span class="n">LIO</span><span class="o">-</span><span class="n">ORG</span><span class="p">,</span><span class="n">vdb</span><span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="n">G</span><span class="w"> </span><span class="n">features</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="w"> </span><span class="n">hwhandler</span><span class="o">=</span><span class="s1">&#39;1 alua&#39;</span><span class="w"> </span><span class="n">wp</span><span class="o">=</span><span class="n">rw</span><span class="o">|-+-</span><span class="w"> </span><span class="n">policy</span><span class="o">=</span><span class="s1">&#39;service-time 0&#39;</span><span class="w"> </span><span class="n">prio</span><span class="o">=</span><span class="mi">0</span><span class="w"> </span><span class="n">status</span><span class="o">=</span><span class="n">active</span><span class="o">|</span></code>- 11:0:0:0  sdb     8:16  active undef running
+<code class="highlight">-+- policy=&#39;service-time 0&#39; prio=0 status=enabled</code>- 12:0:0:0  sdc     8:32  failed faulty running
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>But your pod can still list the contents of the iSCSI disk:
+</code></pre></div></td></tr></table></div>
+[akaris@workstation multipath]$ oc exec -it iscsi-pv-pod -- ls /iscsi
+a  b  c  d
+```</p>
+<p>You can repeat the test for the other path by removing the current iptables rule, waiting for both paths to become
+active again, and creating an iptables rule that drops traffic to the other path.</p>
+
+
+
+
+
+
+
+  
+    
+  
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 12, 2024</span>
+  </span>
+
+    
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+      
+    
+  </body>
+</html>

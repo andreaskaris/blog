@@ -221,7 +221,7 @@ iscsi-pv-claim   Bound    iscsi-pv   20Gi       RWO            manual         22
 [user@host ~]$ oc get pods
 NAME           READY   STATUS    RESTARTS   AGE
 iscsi-pv-pod   1/1     Running   0          24s
- ```
+```
  
 On the host, you can now query the multipath state:
 

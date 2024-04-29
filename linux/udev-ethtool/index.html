@@ -10,13 +10,9 @@
       
       
       
-        <link rel="canonical" href="https://andreaskaris.github.io/blog/openshift/crio-conmon-runc/">
+        <link rel="canonical" href="https://andreaskaris.github.io/blog/linux/udev-ethtool/">
       
       
-        <link rel="prev" href="../cpu-manager-with-custom-machine-config-pool/">
-      
-      
-        <link rel="next" href="../dedicated-service-monitors/">
       
       
         <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../feed_rss_created.xml">
@@ -27,7 +23,7 @@
     
     
       
-        <title>Crio vs conmon vs runc - Andreas Karis Blog</title>
+        <title>udev rules to apply ethtool settings - Andreas Karis Blog</title>
       
     
     
@@ -110,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Crio vs conmon vs runc
+              udev rules to apply ethtool settings
             
           </span>
         </div>
@@ -181,7 +177,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../linux/" class="md-tabs__link">
+        <a href="../" class="md-tabs__link">
           
   
     
@@ -217,13 +213,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../openshift/" class="md-tabs__link">
           
   
     
@@ -473,7 +467,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../linux/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -506,7 +500,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/cgroups/" class="md-nav__link">
+      <a href="../cgroups/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -527,7 +521,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/containers/" class="md-nav__link">
+      <a href="../containers/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -548,7 +542,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/hugepages/" class="md-nav__link">
+      <a href="../hugepages/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -569,7 +563,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/ipxe-boot-environment/" class="md-nav__link">
+      <a href="../ipxe-boot-environment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -590,7 +584,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/java-idrac-issues/" class="md-nav__link">
+      <a href="../java-idrac-issues/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -611,7 +605,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/meson/" class="md-nav__link">
+      <a href="../meson/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -632,7 +626,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/namespaces/" class="md-nav__link">
+      <a href="../namespaces/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -653,7 +647,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/old_java_version_with_xorgs_in_container/" class="md-nav__link">
+      <a href="../old_java_version_with_xorgs_in_container/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -674,7 +668,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/org-gnome-shell-overrides/" class="md-nav__link">
+      <a href="../org-gnome-shell-overrides/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -695,7 +689,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/get-process-cgroup-info-and-limits/" class="md-nav__link">
+      <a href="../get-process-cgroup-info-and-limits/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -716,7 +710,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/libvirt-uefi-without-secureboot/" class="md-nav__link">
+      <a href="../libvirt-uefi-without-secureboot/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -737,7 +731,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/setting-journalctl-limits/" class="md-nav__link">
+      <a href="../setting-journalctl-limits/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -758,7 +752,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../linux/cgroups_cpu_quota/" class="md-nav__link">
+      <a href="../cgroups_cpu_quota/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1281,8 +1275,6 @@
       
   
   
-    
-  
   
   
     
@@ -1377,17 +1369,17 @@
       
       
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../../openshift/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -1404,7 +1396,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             OpenShift and Kubernetes
@@ -1420,7 +1412,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../alertmanager/" class="md-nav__link">
+      <a href="../../openshift/alertmanager/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1441,7 +1433,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../analyzing-cni/" class="md-nav__link">
+      <a href="../../openshift/analyzing-cni/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1462,7 +1454,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ocp-custom-release-image/" class="md-nav__link">
+      <a href="../../openshift/ocp-custom-release-image/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1483,7 +1475,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../cpu-manager-with-custom-machine-config-pool/" class="md-nav__link">
+      <a href="../../openshift/cpu-manager-with-custom-machine-config-pool/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1501,17 +1493,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../openshift/crio-conmon-runc/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1520,7 +1505,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -1533,7 +1517,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../dedicated-service-monitors/" class="md-nav__link">
+      <a href="../../openshift/dedicated-service-monitors/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1554,7 +1538,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../etcd_perf/" class="md-nav__link">
+      <a href="../../openshift/etcd_perf/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1575,7 +1559,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../get-vs-list-api-calls/" class="md-nav__link">
+      <a href="../../openshift/get-vs-list-api-calls/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1596,7 +1580,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../openshift_httpbin_tshark_sidecar/" class="md-nav__link">
+      <a href="../../openshift/openshift_httpbin_tshark_sidecar/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1617,7 +1601,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../kubernetes_cluster/" class="md-nav__link">
+      <a href="../../openshift/kubernetes_cluster/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1638,7 +1622,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../HPA/" class="md-nav__link">
+      <a href="../../openshift/HPA/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1659,7 +1643,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../how_rhcos_updates_work/" class="md-nav__link">
+      <a href="../../openshift/how_rhcos_updates_work/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1680,7 +1664,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../kubelet-filesystems/" class="md-nav__link">
+      <a href="../../openshift/kubelet-filesystems/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1701,7 +1685,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ocp4-infra-nodes-with-machineset-without-worker-label/" class="md-nav__link">
+      <a href="../../openshift/ocp4-infra-nodes-with-machineset-without-worker-label/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1722,7 +1706,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ingresscontroller_router_sharding_ocp_on_osp/" class="md-nav__link">
+      <a href="../../openshift/ingresscontroller_router_sharding_ocp_on_osp/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1743,7 +1727,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ingress-controller-sharding-on-separate-vip/" class="md-nav__link">
+      <a href="../../openshift/ingress-controller-sharding-on-separate-vip/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1764,7 +1748,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../openshift_mirror_registry/" class="md-nav__link">
+      <a href="../../openshift/openshift_mirror_registry/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1785,7 +1769,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../istio-1.6-on-ocp.4.x/" class="md-nav__link">
+      <a href="../../openshift/istio-1.6-on-ocp.4.x/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1806,7 +1790,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../kata/" class="md-nav__link">
+      <a href="../../openshift/kata/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1827,7 +1811,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../kernel-ml-on-openshift/" class="md-nav__link">
+      <a href="../../openshift/kernel-ml-on-openshift/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1848,7 +1832,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ovn-kind-hybrid-overlay/" class="md-nav__link">
+      <a href="../../openshift/ovn-kind-hybrid-overlay/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1869,7 +1853,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../kind-with-private-registry/" class="md-nav__link">
+      <a href="../../openshift/kind-with-private-registry/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1890,7 +1874,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../list_docker_registry_containers/" class="md-nav__link">
+      <a href="../../openshift/list_docker_registry_containers/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1911,7 +1895,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mounting-container-image/" class="md-nav__link">
+      <a href="../../openshift/mounting-container-image/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1953,7 +1937,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../openshift-with-multipath/" class="md-nav__link">
+      <a href="../../openshift/openshift-with-multipath/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1974,7 +1958,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../patch-service-loadbalancer-ingress-ip/" class="md-nav__link">
+      <a href="../../openshift/patch-service-loadbalancer-ingress-ip/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1995,7 +1979,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../private-registry/" class="md-nav__link">
+      <a href="../../openshift/private-registry/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2016,7 +2000,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../proxy-ocp-4.5/" class="md-nav__link">
+      <a href="../../openshift/proxy-ocp-4.5/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2037,7 +2021,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../rpm-ostree-failed-to-find-image/" class="md-nav__link">
+      <a href="../../openshift/rpm-ostree-failed-to-find-image/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2058,7 +2042,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../seccomp-defaults-ocp/" class="md-nav__link">
+      <a href="../../openshift/seccomp-defaults-ocp/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2079,7 +2063,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../scc/" class="md-nav__link">
+      <a href="../../openshift/scc/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2100,7 +2084,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../openshift-scc-with-mutating-webhooks/" class="md-nav__link">
+      <a href="../../openshift/openshift-scc-with-mutating-webhooks/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2121,7 +2105,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../fix-selinux-labels-coreos/" class="md-nav__link">
+      <a href="../../openshift/fix-selinux-labels-coreos/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2163,7 +2147,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../openshift_troubleshooting_etcd_state/" class="md-nav__link">
+      <a href="../../openshift/openshift_troubleshooting_etcd_state/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2184,7 +2168,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../useful-ocp-commands/" class="md-nav__link">
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2205,7 +2189,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../useful-ocp-sdn-commands/" class="md-nav__link">
+      <a href="../../openshift/useful-ocp-sdn-commands/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2226,7 +2210,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../troubleshooting_openshift_on_openstack_worker_creation/" class="md-nav__link">
+      <a href="../../openshift/troubleshooting_openshift_on_openstack_worker_creation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2521,9 +2505,25 @@
                   
 
 
-<h1 id="crio-vs-conmon-vs-runc">Crio vs conmon vs runc</h1>
+<h1 id="udev-rules-to-apply-ethtool-settings">udev rules to apply ethtool settings</h1>
+<p>In order to apply specific ethtool settings to all interfaces matching a specific regular expression, run:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="s1">&#39;EOF&#39;</span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">udev</span><span class="o">/</span><span class="n">rules</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="mi">99</span><span class="o">-</span><span class="n">ethtool</span><span class="o">.</span><span class="n">rules</span>
+<span class="n">ACTION</span><span class="o">==</span><span class="s2">&quot;add&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">SUBSYSTEM</span><span class="o">==</span><span class="s2">&quot;net&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">NAME</span><span class="o">==</span><span class="s2">&quot;eno12409v[0-4]&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">RUN</span><span class="o">+=</span><span class="s2">&quot;/sbin/ethtool -K $name generic-receive-offload off&quot;</span>
+<span class="n">EOF</span>
+</code></pre></div></td></tr></table></div></p>
+<blockquote>
+<p><strong>Note:</strong> See <a href="https://man7.org/linux/man-pages/man7/udev.7.html">https://man7.org/linux/man-pages/man7/udev.7.html</a> for available variable names.</p>
+<p><strong>Note:</strong> Naming the file correctly is important, as order of operations is critical.</p>
+</blockquote>
+<p>The easiest way to play around with such udev rules is adding virtual interfaces or SR-IOV Virtual Functions:</p>
 <ul>
-<li><a href="https://insujang.github.io/2019-11-18/interactions-between-crio-and-conmon/#how-conmon-is-used-in-cri-o">https://insujang.github.io/2019-11-18/interactions-between-crio-and-conmon/#how-conmon-is-used-in-cri-o</a></li>
+<li>Run <code class="highlight">udevadm control --log-priority=debug</code> to enable debugging.</li>
+<li>Change udev rules in file.</li>
+<li>Run  <code class="highlight"><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">udevadm</span><span class="w"> </span><span class="n">control</span><span class="w"> </span><span class="o">--</span><span class="n">reload</span><span class="o">-</span><span class="n">rules</span></code>.</li>
+<li>Manually create / destroy Virtual Functions: <code class="highlight">echo 0 &gt; /sys/devices/pci.../.../.../sriov_numvfs; echo 8 &gt; /sys/devices/pci.../.../.../sriov_numvfs</code>.</li>
+<li>Scan the journal for matching log messages: <code class="highlight"><span class="n">journalctl</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="s2">&quot;ethtool&quot;</span></code>.</li>
 </ul>
 
 
@@ -2545,7 +2545,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">September 13, 2020</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">April 29, 2024</span>
   </span>
 
     

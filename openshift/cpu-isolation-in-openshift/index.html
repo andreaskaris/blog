@@ -2547,7 +2547,7 @@
   <h1>CPU isolation in Red Hat OpenShift Container Platform</h1>
 
 <h2 id="cpu-isolation-in-red-hat-openshift-container-platform">CPU isolation in Red Hat OpenShift Container Platform</h2>
-<p>Two complementary different features allow admins to partition the node's CPUs according to their needs. The first is
+<p>Two complementary features allow admins to partition the node's CPUs according to their needs. The first is
 the Kubernetes <code class="highlight">Static CPU Manager</code> feature. The second is the OpenShift only <code class="highlight"><span class="n">Management</span><span class="w"> </span><span class="n">workload</span><span class="w"> </span><span class="n">partitioning</span></code> feature.</p>
 <h3 id="static-cpu-manager">Static CPU manager</h3>
 <p><a href="https://kubernetes.io/docs/tasks/administer-cluster/cpu-management-policies/#static-policy">The static CPU manager</a>
@@ -2639,7 +2639,8 @@ workloads which will run exclusively on non system reserved CPUs.</p>
 <span class="c">| management workloads | exclusive CPUs | shared pool |</span>
 <span class="nb">+----------------------+------------------------------+</span>
 </code></pre></div></td></tr></table></div>
-<p>According to the <a href="https://github.com/openshift/enhancements/blob/master/enhancements/workload-partitioning/management-workload-partitioning.md#high-level-end-to-end-workflow">enhancement proposal</a>:</p>
+<p>According to the enhancement proposal for
+<a href="https://github.com/openshift/enhancements/blob/master/enhancements/workload-partitioning/management-workload-partitioning.md#high-level-end-to-end-workflow">Management workload partitioning</a>:</p>
 <blockquote>
 <p>We want to define "management workloads" in a flexible way. (...) "management workloads" include all OpenShift core
 components necessary to run the cluster, any add-on operators necessary to make up the "platform" as defined by telco
@@ -2652,7 +2653,8 @@ private to OpenShift.</p>
 <p>At time of this writing, management workload partitioning can only be enabled during cluster installation by setting
 <code class="highlight"><span class="n">cpuPartitioningMode</span><span class="o">:</span><span class="w"> </span><span class="n">AllNodes</span></code> in the <code class="highlight">install-config.yaml</code> file. See
 <a href="https://docs.openshift.com/container-platform/4.14/scalability_and_performance/enabling-workload-partitioning.html">the workload partitioning documentation</a>
-for further details.</p>
+for further details. For further details behind the reasoning, you can also have a look at the enhancement proposal for
+<a href="https://github.com/openshift/enhancements/blob/master/enhancements/workload-partitioning/wide-availability-workload-partitioning.md">Wide Availability Workload Partitioning</a>.</p>
 <p>After cluster installation, create a <code class="highlight">PerformanceProfile</code>, the same as mentioned above:
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
@@ -2675,12 +2677,13 @@ for further details.</p>
 <p>The <code class="highlight">PerformanceProfile</code> will create the exact same system CPU isolation, and it will configure the kubelet to use the
 static CPU manager as in the earlier example. However, it will also configure the API server, the kubelet and crio
 for workload partitioning.</p>
-<p>Once the cluster is installed and configured for CPU isolation with a <code class="highlight">PerformanceProfile</code>, for a pod to be scheduled
-to the system reserved CPUs, 2 requirements must be fulfilled:</p>
+<p>Once the cluster is installed with <code class="highlight"><span class="n">cpuPartitioningMode</span><span class="o">:</span><span class="w"> </span><span class="n">AllNodes</span></code> and configured for CPU isolation with a
+<code class="highlight">PerformanceProfile</code>, for a pod to be scheduled to the system reserved CPUs, 2 requirements must be fulfilled:</p>
 <ul>
 <li>The namespace must be annotated by an admin or a privileged user with <code class="highlight"><span class="n">workload</span><span class="o">.</span><span class="n">openshift</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">allowed</span><span class="p">:</span><span class="w"> </span><span class="n">management</span></code>.
   This requirement makes sure that normal users cannot enable the feature without administrator consent.</li>
-<li>A pod must opt in to being a management workload via annotation <code class="highlight"><span class="n">target</span><span class="o">.</span><span class="n">workload</span><span class="o">.</span><span class="n">openshift</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">management</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;effect&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PreferredDuringScheduling&quot;</span><span class="p">}</span></code>.</li>
+<li>A pod must opt in to being a management workload via annotation
+<code class="highlight"><span class="n">target</span><span class="o">.</span><span class="n">workload</span><span class="o">.</span><span class="n">openshift</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">management</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;effect&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PreferredDuringScheduling&quot;</span><span class="p">}</span></code>.</li>
 </ul>
 
 

@@ -1,6 +1,6 @@
 ## CPU isolation in Red Hat OpenShift Container Platform
 
-Two complementary different features allow admins to partition the node's CPUs according to their needs. The first is
+Two complementary features allow admins to partition the node's CPUs according to their needs. The first is
 the Kubernetes `Static CPU Manager` feature. The second is the OpenShift only `Management workload partitioning` feature.
 
 ### Static CPU manager
@@ -84,7 +84,8 @@ workloads which will run exclusively on non system reserved CPUs.
 +----------------------+------------------------------+
 ```
 
-According to the [enhancement proposal](https://github.com/openshift/enhancements/blob/master/enhancements/workload-partitioning/management-workload-partitioning.md#high-level-end-to-end-workflow):
+According to the enhancement proposal for
+[Management workload partitioning](https://github.com/openshift/enhancements/blob/master/enhancements/workload-partitioning/management-workload-partitioning.md#high-level-end-to-end-workflow):
 
 > We want to define "management workloads" in a flexible way. (...) "management workloads" include all OpenShift core
 components necessary to run the cluster, any add-on operators necessary to make up the "platform" as defined by telco
@@ -97,7 +98,8 @@ private to OpenShift.
 At time of this writing, management workload partitioning can only be enabled during cluster installation by setting
 `cpuPartitioningMode: AllNodes` in the `install-config.yaml` file. See
 [the workload partitioning documentation](https://docs.openshift.com/container-platform/4.14/scalability_and_performance/enabling-workload-partitioning.html)
-for further details.
+for further details. For further details behind the reasoning, you can also have a look at the enhancement proposal for
+[Wide Availability Workload Partitioning](https://github.com/openshift/enhancements/blob/master/enhancements/workload-partitioning/wide-availability-workload-partitioning.md).
 
 After cluster installation, create a `PerformanceProfile`, the same as mentioned above:
 ```
@@ -116,9 +118,10 @@ The `PerformanceProfile` will create the exact same system CPU isolation, and it
 static CPU manager as in the earlier example. However, it will also configure the API server, the kubelet and crio
 for workload partitioning.
 
-Once the cluster is installed and configured for CPU isolation with a `PerformanceProfile`, for a pod to be scheduled
-to the system reserved CPUs, 2 requirements must be fulfilled:
+Once the cluster is installed with `cpuPartitioningMode: AllNodes` and configured for CPU isolation with a
+`PerformanceProfile`, for a pod to be scheduled to the system reserved CPUs, 2 requirements must be fulfilled:
 
 * The namespace must be annotated by an admin or a privileged user with `workload.openshift.io/allowed: management`.
   This requirement makes sure that normal users cannot enable the feature without administrator consent.
-* A pod must opt in to being a management workload via annotation `target.workload.openshift.io/management: {"effect": "PreferredDuringScheduling"}`.
+* A pod must opt in to being a management workload via annotation
+`target.workload.openshift.io/management: {"effect": "PreferredDuringScheduling"}`.

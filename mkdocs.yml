@@ -104,6 +104,7 @@ nav:
   - Analyzing CNI calls: openshift/analyzing-cni.md
   - Building custom release images for OpenShift: openshift/ocp-custom-release-image.md
   - CPU manager with custom MachineConfigPool: openshift/cpu-manager-with-custom-machine-config-pool.md
+  - CPU isolation in Red Hat OpenShift Container Platform: openshift/cpu-isolation-in-openshift.md
   - Crio vs conmon vs runc: openshift/crio-conmon-runc.md  
   - DedicatedServiceMonitors in OpenShift Monitoring: openshift/dedicated-service-monitors.md
   - Etcd Performance tests: openshift/etcd_perf.md

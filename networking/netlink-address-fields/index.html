@@ -2569,7 +2569,7 @@
 
   <h1>Netlink and MAC addresses</h1>
 
-<h2 id="netlink-address-fields-ifla_address-ifla_broadcast-and-ifla_perm_address-for-tunnel-interfaces">Netlink address fields IFLA_ADDRESS, IFLA_BROADCAST and IFLA_PERM_ADDRESS for tunnel interfaces</h2>
+<h2 id="netlink-address-fields-ifla_address-ifla_broadcast-and-ifla_perm_address">Netlink address fields IFLA_ADDRESS, IFLA_BROADCAST and IFLA_PERM_ADDRESS</h2>
 <p>A few days ago, I had to figure out how applications such as iproute2 read the MAC address from kernel interfaces. More
 specifically, we observed that the MAC addresses of tunnel interfaces seemed to be shorter or longer than 6 Bytes,
 ranging from 4 to 16 Bytes depending on the tunnel type.
@@ -2594,7 +2594,8 @@ The <code class="highlight"><span class="nx">addr_len</span></code> is <a href="
 </ul>
 <p>The length of the 2 fields is set to the size of <code class="highlight"><span class="nx">in6_addr</span></code>, meaning to the size of an IPv6 address (16 Bytes if we
 exclude overhead).</p>
-<p>Similar code is used for IPv6 IP in IP tunnels, and for IPv4 tunnels.</p>
+<p>Similar code is used for IPv6 IP in IP tunnels. Even though I have not verified it, I assume that IPv4 tunnels are
+handled the same way.</p>
 <h4 id="the-strange-handling-of-tunnel-ifla_perm_address-length">The strange handling of tunnel IFLA_PERM_ADDRESS length</h4>
 <p>For tunnel interfaces,  the <code class="highlight"><span class="nx">perm_addr</span></code> field actually
 <a href="https://github.com/torvalds/linux/blob/448b3fe5a0eab5b625a7e15c67c7972169e47ff8/net/ipv6/ip6_gre.c#L1450">contains a randomly generated MAC address</a>,

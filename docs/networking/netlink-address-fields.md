@@ -151,7 +151,7 @@ The permanent address
 is extracted from `IFLA_PERM_ADDRESS`.
 
 We can observe an interesting detail from the strace, and also from the output of `ip link`: even though the `permaddr`
-holds a randomly generated, 6 Byte MAC address, the field length in total is 20 - 4 = 16 Bytes. That's the lenght of
+holds a randomly generated, 6 Byte MAC address, the field length in total is 20 - 4 = 16 Bytes. That's the length of
 an IPv6 address. As a consequence, `ip link` also prints the address in IPv6 format, even though it should actually
 print until the first 6 Bytes in MAC address notation.
 We already explained in the kernel section why we see this. However, for IPv4 tunnels, iproute2 does not print

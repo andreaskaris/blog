@@ -15,11 +15,9 @@ netlink field `IFLA_ADDRESS` to the value of `dev->addr` with length `dev->addr_
 [sets](https://github.com/torvalds/linux/blob/448b3fe5a0eab5b625a7e15c67c7972169e47ff8/net/core/rtnetlink.c#L1923)
 netlink field `IFLA_PERM_ADDESS` to the value of `dev->perm_addr` with length `dev->addr_len`.
 
-For Ethernet devices, the `addr` field is
-[populated with the hardware address of the device](https://github.com/torvalds/linux/blob/ba16c1cf11c9f264b5455cb7d57267b39925409a/include/linux/etherdevice.h#L319).
 The `broadcast` field is set to [ff:ff:ff:ff:ff:ff](https://github.com/torvalds/linux/blob/ba16c1cf11c9f264b5455cb7d57267b39925409a/net/ethernet/eth.c#L361).
 The `addr_len` is [set to 6 Bytes](https://github.com/torvalds/linux/blob/ba16c1cf11c9f264b5455cb7d57267b39925409a/net/ethernet/eth.c#L356).
-I couldn't find the exact location where the perm_addr is set (maybe [here](https://github.com/torvalds/linux/blob/ba16c1cf11c9f264b5455cb7d57267b39925409a/net/core/dev.c#L10313)?), however, from strace output, it is clear that for Ethernet devices, the `perm_addr` equals the `addr`.
+I couldn't find the exact location where the perm_addr or `addr` fields are set (maybe [here](https://github.com/torvalds/linux/blob/ba16c1cf11c9f264b5455cb7d57267b39925409a/net/core/dev.c#L10313) and [here](https://github.com/torvalds/linux/blob/ba16c1cf11c9f264b5455cb7d57267b39925409a/include/linux/etherdevice.h#L319)?), however, from strace output, it is clear that for Ethernet devices, the `perm_addr` equals the `addr`.
 
 For IPv6 GRE, the `addr` and `broadcast` fields are populated with `laddr` and `raddr` of the tunnel, at locations:
 

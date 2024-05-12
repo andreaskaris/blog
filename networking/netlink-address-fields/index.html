@@ -2585,7 +2585,8 @@ netlink field <code class="highlight">IFLA_PERM_ADDESS</code> to the value of <c
 <p>For Ethernet devices, the <code class="highlight"><span class="kd">addr</span></code> field is
 <a href="https://github.com/torvalds/linux/blob/ba16c1cf11c9f264b5455cb7d57267b39925409a/include/linux/etherdevice.h#L319">populated with the hardware address of the device</a>.
 The <code class="highlight">broadcast</code> field is set to <a href="https://github.com/torvalds/linux/blob/ba16c1cf11c9f264b5455cb7d57267b39925409a/net/ethernet/eth.c#L361">ff:ff:ff:ff:ff:ff</a>.
-The <code class="highlight"><span class="nx">addr_len</span></code> is <a href="https://github.com/torvalds/linux/blob/ba16c1cf11c9f264b5455cb7d57267b39925409a/net/ethernet/eth.c#L356">set to 6 Bytes</a>.</p>
+The <code class="highlight"><span class="nx">addr_len</span></code> is <a href="https://github.com/torvalds/linux/blob/ba16c1cf11c9f264b5455cb7d57267b39925409a/net/ethernet/eth.c#L356">set to 6 Bytes</a>.
+I couldn't find the exact location where the perm_addr is set (maybe <a href="https://github.com/torvalds/linux/blob/ba16c1cf11c9f264b5455cb7d57267b39925409a/net/core/dev.c#L10313">here</a>?), however, from strace output, it is clear that for Ethernet devices, the <code class="highlight"><span class="nx">perm_addr</span></code> equals the <code class="highlight"><span class="kd">addr</span></code>.</p>
 <p>For IPv6 GRE, the <code class="highlight"><span class="kd">addr</span></code> and <code class="highlight">broadcast</code> fields are populated with <code class="highlight"><span class="nx">laddr</span></code> and <code class="highlight"><span class="nx">raddr</span></code> of the tunnel, at locations:</p>
 <ul>
 <li><a href="https://github.com/torvalds/linux/blob/448b3fe5a0eab5b625a7e15c67c7972169e47ff8/net/ipv6/ip6_tunnel.c#L1468">https://github.com/torvalds/linux/blob/448b3fe5a0eab5b625a7e15c67c7972169e47ff8/net/ipv6/ip6_tunnel.c#L1468</a></li>
@@ -2739,7 +2740,7 @@ and the right tunnel address is stored inside <code class="highlight">IFLA_BROAD
 (<a href="https://github.com/iproute2/iproute2/blob/853f34bf09c38542c6cf2cacf0893fd778284c26/ip/ipaddress.c#L1149">permaddr</a>)
 is extracted from <code class="highlight">IFLA_PERM_ADDRESS</code>.</p>
 <p>We can observe an interesting detail from the strace, and also from the output of <code class="highlight">ip link</code>: even though the <code class="highlight"><span class="nx">permaddr</span></code>
-holds a randomly generated, 6 Byte MAC address, the field length in total is 20 - 4 = 16 Bytes. That's the lenght of
+holds a randomly generated, 6 Byte MAC address, the field length in total is 20 - 4 = 16 Bytes. That's the length of
 an IPv6 address. As a consequence, <code class="highlight">ip link</code> also prints the address in IPv6 format, even though it should actually
 print until the first 6 Bytes in MAC address notation.
 We already explained in the kernel section why we see this. However, for IPv4 tunnels, iproute2 does not print

@@ -1,4 +1,4 @@
-## Netlink address fields IFLA_ADDRESS, IFLA_BROADCAST and IFLA_PERM_ADDRESS for tunnel interfaces
+## Netlink address fields IFLA_ADDRESS, IFLA_BROADCAST and IFLA_PERM_ADDRESS
 
 A few days ago, I had to figure out how applications such as iproute2 read the MAC address from kernel interfaces. More
 specifically, we observed that the MAC addresses of tunnel interfaces seemed to be shorter or longer than 6 Bytes,
@@ -29,7 +29,8 @@ For IPv6 GRE, the `addr` and `broadcast` fields are populated with `laddr` and `
 The length of the 2 fields is set to the size of `in6_addr`, meaning to the size of an IPv6 address (16 Bytes if we
 exclude overhead).
 
-Similar code is used for IPv6 IP in IP tunnels, and for IPv4 tunnels.
+Similar code is used for IPv6 IP in IP tunnels. Even though I have not verified it, I assume that IPv4 tunnels are
+handled the same way.
 
 #### The strange handling of tunnel IFLA_PERM_ADDRESS length
 

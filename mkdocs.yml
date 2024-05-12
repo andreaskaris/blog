@@ -90,6 +90,7 @@ nav:
   - Install Open vSwitch on Rocky Linux 8: networking/install-openvswitch-on-rocky.md
   - Geneve tunneling: networking/geneve_tunneling.md
   - Netlink: networking/netlink.md  
+  - Netlink and MAC addresses: networking/netlink-address-fields.md
   - OVN standalone on Fedora: networking/ovn_standalone_on_fedora.md
   - OVS packet recirculation: networking/ovs_recirculation.md
   - OVS VXLAN tunnels and DSCP: networking/ovs-vxlan-tunnels-and-dscp.md

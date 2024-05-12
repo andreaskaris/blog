@@ -131,6 +131,7 @@ The strace shows a fairly long answer:
             [{nla_len=20, nla_type=IFLA_PERM_ADDRESS}, 8a:c3:53:32:b0:22:00], (... output omitted ...)
 ```
 > **Note:** You can see fields here such as `IFLA_PERM_ADDRESS`, `IFLA_ADDRESS`, `IFLA_BROADCAST`.
+
 > **Note:** Both `IFLA_ADDRESS` and `IFLA_BROADCAST` are not displayed correctly by strace and in the case of tunnels
 contain the actual left and right addresses.
 

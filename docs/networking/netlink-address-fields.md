@@ -81,7 +81,7 @@ n=8, nla_type=IFLA_EXT_MASK}, RTEXT_FILTER_VF|RTEXT_FILTER_SKIP_STATS], [{nla_le
 ollen=0, msg_flags=0}, 0) = 52
 ```
 
-Note how we are requesting information for interface `[{nla_len=10, nla_type=IFLA_IFNAME}, "test0"]]]` if an interface
+Note how we are requesting information for interface `[{nla_len=10, nla_type=IFLA_IFNAME}, "test0"]]]` because an interface
 name was specified:
 ```
 	if (name) {
@@ -99,7 +99,36 @@ The netlink request is sent and received in `rtnl_talk`:
 
 The strace shows a fairly long answer:
 ```
-2726  recvmsg(4, {msg_name={sa_family=AF_NETLINK, nl_pid=0, nl_groups=00000000}, msg_namelen=12, msg_iov=[{iov_base=[{nlmsg_len=1192, nlmsg_type=RTM_NEWLINK, nlmsg_flags=0, nlmsg_seq=1715534685, nlmsg_pid=-1224665210}, {ifi_family=AF_UNSPEC, ifi_type=ARPHRD_IP6GRE, ifi_index=if_nametoindex("test0"), ifi_flags=IFF_POINTOPOINT|IFF_NOARP, ifi_change=0}, [[{nla_len=10, nla_type=IFLA_IFNAME}, "test0"], [{nla_len=8, nla_type=IFLA_TXQLEN}, 1000], [{nla_len=5, nla_type=IFLA_OPERSTATE}, 2], [{nla_len=5, nla_type=IFLA_LINKMODE}, 0], [{nla_len=8, nla_type=IFLA_MTU}, 1448], [{nla_len=8, nla_type=IFLA_MIN_MTU}, 0], [{nla_len=8, nla_type=IFLA_MAX_MTU}, 0], [{nla_len=8, nla_type=IFLA_GROUP}, 0], [{nla_len=8, nla_type=IFLA_PROMISCUITY}, 0], [{nla_len=8, nla_type=IFLA_NUM_TX_QUEUES}, 1], [{nla_len=8, nla_type=IFLA_GSO_MAX_SEGS}, 65535], [{nla_len=8, nla_type=IFLA_GSO_MAX_SIZE}, 65536], [{nla_len=8, nla_type=IFLA_GRO_MAX_SIZE}, 65536], [{nla_len=8, nla_type=0x3b /* IFLA_??? */}, "\x00\x00\x01\x00"], [{nla_len=8, nla_type=0x3c /* IFLA_??? */}, "\xff\xff\x00\x00"], [{nla_len=8, nla_type=IFLA_NUM_RX_QUEUES}, 1], [{nla_len=5, nla_type=IFLA_CARRIER}, 1], [{nla_len=9, nla_type=IFLA_QDISC}, "noop"], [{nla_len=8, nla_type=IFLA_CARRIER_CHANGES}, 0], [{nla_len=8, nla_type=IFLA_CARRIER_UP_COUNT}, 0], [{nla_len=8, nla_type=IFLA_CARRIER_DOWN_COUNT}, 0], [{nla_len=5, nla_type=IFLA_PROTO_DOWN}, 0], [{nla_len=36, nla_type=IFLA_MAP}, {mem_start=0, mem_end=0, base_addr=0, irq=0, dma=0, port=0}], [{nla_len=20, nla_type=IFLA_ADDRESS}, 23:45:00:00:00:00:00], [{nla_len=20, nla_type=IFLA_BROADCAST}, 23:45:00:00:00:00:00] (... shortened for readability ...), [{nla_len=20, nla_type=IFLA_PERM_ADDRESS}, 8a:c3:53:32:b0:22:00], (... shortened for readability ...)
+# strace response with manual formatting
+2726  recvmsg(4, {msg_name={sa_family=AF_NETLINK, nl_pid=0, nl_groups=00000000}, msg_namelen=12, msg_iov=[
+{iov_base=[{nlmsg_len=1192, nlmsg_type=RTM_NEWLINK, nlmsg_flags=0, nlmsg_seq=1715534685, nlmsg_pid=-1224665210},
+           {ifi_family=AF_UNSPEC, ifi_type=ARPHRD_IP6GRE, ifi_index=if_nametoindex("test0"), ifi_flags=IFF_POINTOPOINT|IFF_NOARP, ifi_change=0},
+           [[{nla_len=10, nla_type=IFLA_IFNAME}, "test0"], 
+            [{nla_len=8, nla_type=IFLA_TXQLEN}, 1000],
+            [{nla_len=5, nla_type=IFLA_OPERSTATE}, 2],
+            [{nla_len=5, nla_type=IFLA_LINKMODE}, 0], 
+            [{nla_len=8, nla_type=IFLA_MTU}, 1448], 
+            [{nla_len=8, nla_type=IFLA_MIN_MTU}, 0], 
+            [{nla_len=8, nla_type=IFLA_MAX_MTU}, 0], 
+            [{nla_len=8, nla_type=IFLA_GROUP}, 0], 
+            [{nla_len=8, nla_type=IFLA_PROMISCUITY}, 0], 
+            [{nla_len=8, nla_type=IFLA_NUM_TX_QUEUES}, 1], 
+            [{nla_len=8, nla_type=IFLA_GSO_MAX_SEGS}, 65535], 
+            [{nla_len=8, nla_type=IFLA_GSO_MAX_SIZE}, 65536], 
+            [{nla_len=8, nla_type=IFLA_GRO_MAX_SIZE}, 65536], 
+            [{nla_len=8, nla_type=0x3b /* IFLA_??? */}, "\x00\x00\x01\x00"], 
+            [{nla_len=8, nla_type=0x3c /* IFLA_??? */}, "\xff\xff\x00\x00"], 
+            [{nla_len=8, nla_type=IFLA_NUM_RX_QUEUES}, 1], 
+            [{nla_len=5, nla_type=IFLA_CARRIER}, 1], 
+            [{nla_len=9, nla_type=IFLA_QDISC}, "noop"], 
+            [{nla_len=8, nla_type=IFLA_CARRIER_CHANGES}, 0], 
+            [{nla_len=8, nla_type=IFLA_CARRIER_UP_COUNT}, 0], 
+            [{nla_len=8, nla_type=IFLA_CARRIER_DOWN_COUNT}, 0], 
+            [{nla_len=5, nla_type=IFLA_PROTO_DOWN}, 0], 
+            [{nla_len=36, nla_type=IFLA_MAP}, {mem_start=0, mem_end=0, base_addr=0, irq=0, dma=0, port=0}], 
+            [{nla_len=20, nla_type=IFLA_ADDRESS}, 23:45:00:00:00:00:00], 
+            [{nla_len=20, nla_type=IFLA_BROADCAST}, 23:45:00:00:00:00:00], (... output omitted ...), 
+            [{nla_len=20, nla_type=IFLA_PERM_ADDRESS}, 8a:c3:53:32:b0:22:00], (... output omitted ...)
 ```
 > **Note:** You can see fields here such as `IFLA_PERM_ADDRESS`, `IFLA_ADDRESS`, `IFLA_BROADCAST`.
 > **Note:** Both `IFLA_ADDRESS` and `IFLA_BROADCAST` are not displayed correctly by strace and in the case of tunnels

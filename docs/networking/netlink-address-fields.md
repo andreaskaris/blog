@@ -38,7 +38,7 @@ For tunnel interfaces,  the `perm_addr` field actually
 [contains a randomly generated MAC address](https://github.com/torvalds/linux/blob/448b3fe5a0eab5b625a7e15c67c7972169e47ff8/net/ipv6/ip6_gre.c#L1450),
 and thus the
 [advertised length](https://github.com/torvalds/linux/blob/448b3fe5a0eab5b625a7e15c67c7972169e47ff8/net/core/rtnetlink.c#L1923)
-length of `IFLA_PERM_ADDRESS` does not match the length of the field's contents.
+of `IFLA_PERM_ADDRESS` does not match the length of the field's contents.
 A permanent address for an IPv6 tunnel holding a random 6 Byte MAC address will be interpreted as a 16 Byte permanent
 address on the client side. And for IPv4 tunnels, the address will actually be interpreted as having the length of an
 IPv4 address, and the last 2 Bytes are cut off. We can clearly see this from the various outputs of strace.

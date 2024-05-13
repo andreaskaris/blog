@@ -15,7 +15,7 @@ netlink field `IFLA_ADDRESS` to the value of `dev->addr` with length `dev->addr_
 [sets](https://github.com/torvalds/linux/blob/448b3fe5a0eab5b625a7e15c67c7972169e47ff8/net/core/rtnetlink.c#L1923)
 netlink field `IFLA_PERM_ADDESS` to the value of `dev->perm_addr` with length `dev->addr_len`.
 
-The `addr`, `broadcast` and `perm_addr` fields will contain different values depending on the interfaces type. For unicast
+The `addr`, `broadcast` and `perm_addr` fields will contain different values depending on the interface type. For unicast
 Ethernet, `addr` and `perm_addr` will hold the interface's MAC address while the `broadcast` field will hold the Ethernet
 broadcast address. On the other hand, for tunnel interfaces, the fields will hold the tunnel endpoint addresses.
 

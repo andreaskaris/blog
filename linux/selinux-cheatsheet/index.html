@@ -2875,6 +2875,11 @@
 <td>List all port mappings (type label to allowed port)</td>
 <td># semanage port -l</td>
 </tr>
+<tr>
+<td>semanage port -a -t http_port_t -p tcp 3333</td>
+<td>Allow an SELinux type to use a specific port</td>
+<td></td>
+</tr>
 </tbody>
 </table>
 <h3 id="creating-custom-selinux-types-and-policies">Creating custom SELinux types and policies</h3>

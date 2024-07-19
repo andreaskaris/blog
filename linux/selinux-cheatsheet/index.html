@@ -1,0 +1,3231 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Andreas Karis' blog about anything Kubernetes, OpenShift, Linux and Networking">
+      
+      
+      
+        <link rel="canonical" href="https://andreaskaris.github.io/blog/linux/selinux-cheatsheet/">
+      
+      
+        <link rel="prev" href="../udev-ethtool/">
+      
+      
+        <link rel="next" href="../../networking/">
+      
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../feed_rss_created.xml">
+        <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../feed_rss_updated.xml">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.3">
+    
+    
+      
+        <title>SELinux Cheat Sheet - Andreas Karis Blog</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.50c56a3b.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  <!-- RSS Feed -->
+  <link rel="alternate" type="application/rss+xml" title="RSS feed of created content" href="https://andreaskaris.github.io/blog/feed_rss_created.xml">
+  <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="https://andreaskaris.github.io/blog/feed_rss_updated.xml">
+
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Andreas Karis Blog" class="md-header__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Andreas Karis Blog
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              SELinux Cheat Sheet
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../ceph/" class="md-tabs__link">
+          
+  
+    
+  
+  Ceph
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+    
+  
+  Linux
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../networking/" class="md-tabs__link">
+          
+  
+    
+  
+  Networking
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../openshift/" class="md-tabs__link">
+          
+  
+    
+  
+  OpenShift and Kubernetes
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../openstack/" class="md-tabs__link">
+          
+  
+    
+  
+  OpenStack
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../coding/" class="md-tabs__link">
+          
+  
+    
+  
+  Coding
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+  
+    
+    <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner">
+          
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Andreas Karis Blog
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../ceph/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Ceph
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Ceph
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ceph/ceph-manual-test/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ceph manual test with qemu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Linux
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Linux
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cgroups/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    cgroups
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../containers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Containers in Linux
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hugepages/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hugepages
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ipxe-boot-environment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    iPXE boot environment on Fedora
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../java-idrac-issues/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Java Idrac Issues
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meson/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    meson
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../namespaces/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    namespaces
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../old_java_version_with_xorgs_in_container/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Old Java inside a container with xorgs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../protect-lenovo-battery/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Protect Lenovo laptop battery
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../org-gnome-shell-overrides/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Workaround for org.gnome.shell.overrides not installed
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../get-process-cgroup-info-and-limits/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Retrieving process cgroup resource usage and limit info
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../libvirt-uefi-without-secureboot/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RHEL Booting a virtual machine with UEFI but without secure boot
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setting-journalctl-limits/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Setting journalctl limits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cgroups_cpu_quota/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Using cgroups for CFS bandwidth control
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../udev-ethtool/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    udev rules to apply ethtool settings
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    SELinux Cheat Sheet
+  </span>
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../networking/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Networking
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Networking
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/accept-source-routing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Accept Source Routing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/arp_and_the_neighbor_table/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ARP and the Neighbor table
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/bpf-and-tcpdump/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    BPF and tcpdump
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/bonding_in_linux/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bonding in Linux
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/juniper_x520/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Configure Juniper switch
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/ovn-interconnection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hands-on with OVN Interconnection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/haproxy-and-h2c/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    haproxy and HTTP/2
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/install-openvswitch-on-rocky/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Install Open vSwitch on Rocky Linux 8
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/geneve_tunneling/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Geneve tunneling
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/netlink/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Netlink
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/netlink-address-fields/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Netlink and MAC addresses
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/ovn_standalone_on_fedora/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OVN standalone on Fedora
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/ovs_recirculation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OVS packet recirculation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/ovs-vxlan-tunnels-and-dscp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OVS VXLAN tunnels and DSCP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/ovs_with_gdb/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OVS with GDB
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/packet-tracing-with-ovn/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Packet tracing with OVN
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/sctp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SCTP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/useful-commands/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Useful commands
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/wireguard/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Wireguard
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../openshift/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    OpenShift and Kubernetes
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            OpenShift and Kubernetes
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/alertmanager/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AlertManager
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/analyzing-cni/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Analyzing CNI calls
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/ocp-custom-release-image/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Building custom release images for OpenShift
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/cpu-manager-with-custom-machine-config-pool/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CPU manager with custom MachineConfigPool
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/cpu-isolation-in-openshift/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CPU isolation in Red Hat OpenShift Container Platform
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/crio-conmon-runc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Crio vs conmon vs runc
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/dedicated-service-monitors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DedicatedServiceMonitors in OpenShift Monitoring
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/etcd_perf/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Etcd Performance tests
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/get-vs-list-api-calls/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Get vs List API Calls
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/openshift_httpbin_tshark_sidecar/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Httpbin tshark sidecar container
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/kubernetes_cluster/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hints for installing kubernetes on Fedora
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/HPA/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Horizontal Pod Autoscaler
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/how_rhcos_updates_work/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How RHCOS updates work
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/kubelet-filesystems/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How kubelet monitors filesystems
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/ocp4-infra-nodes-with-machineset-without-worker-label/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Infra nodes with MachineSets without worker label
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/ingresscontroller_router_sharding_ocp_on_osp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ingress Controller Sharding OCP on OSP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/ingress-controller-sharding-on-separate-vip/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ingress Controller Sharding on separate VIP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/openshift_mirror_registry/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installing a cluster with a mirror registry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/istio-1.6-on-ocp.4.x/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Istio 1.6 on OpenShift 4.x
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/kata/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    kata containers and the kata operatora
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/kernel-ml-on-openshift/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    kernel-ml on OpenShift
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/ovn-kind-hybrid-overlay/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Kind with OVN Kubernetes Hybrid Overlay
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/kind-with-private-registry/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Kind with private registry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/list_docker_registry_containers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    List container images in registry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/mounting-container-image/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mount a container image
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openstack/install_openshift_on_openstack/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OpenShift on OpenStack
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/openshift-with-multipath/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OpenShift with iSCSI multipath
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/patch-service-loadbalancer-ingress-ip/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Patch status.loadBalancer.ingress IP manually
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/private-registry/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Private container registry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/proxy-ocp-4.5/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Proxy OCP 4.5
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/rpm-ostree-failed-to-find-image/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    rpm-ostreed failed to find image
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/seccomp-defaults-ocp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Seccomp defaults in Red Hat OpenShift Container Platform
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/scc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Security Context Constraints (SCC)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/openshift-scc-with-mutating-webhooks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SCCs and mutating webhooks - a lesson learned
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/fix-selinux-labels-coreos/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SElinux labels fix
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../networking/sctp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SCTP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/openshift_troubleshooting_etcd_state/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Troubleshooting etcd state
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Useful commands for OpenShift
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/useful-ocp-sdn-commands/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Useful commands for OpenShift SDN
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/troubleshooting_openshift_on_openstack_worker_creation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Troubleshooting OpenShift on OpenStack worker creation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../openstack/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    OpenStack
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            OpenStack
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openstack/reattach_to_running_deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Reattach to running deployment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openstack/using_clouds_yaml/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Using clouds.yaml
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../coding/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Coding
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Coding
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../coding/operator-sdk-reconciliation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Controller Reconciliation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../coding/vimrc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    My vimrc
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../coding/golang-ip-conversion/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Golang IP address conversion
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+        </div>
+      </div>
+    </div>
+  
+  
+    
+    <!--
+    <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner">
+          
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+</nav>
+        </div>
+      </div>
+    </div>
+    -->
+  
+
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="selinux-cheat-sheet">SELinux Cheat Sheet</h1>
+<h3 id="reading-selinux-status">Reading SELinux status</h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cat /etc/selinux/config</td>
+<td>Get SELinux boot configuration</td>
+<td># cat /etc/selinux/config <br /><br /># This file controls the state of SELinux on the system.<br /># SELINUX= can take one of these three values:<br />#     enforcing - SELinux security policy is enforced.<br />#     permissive - SELinux prints warnings instead of enforcing.<br />#     disabled - No SELinux policy is loaded.<br /># See also:<br /># https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/using_selinux/changing-selinux-states-and-modes_using-selinux#changing-selinux-modes-at-boot-time_changing-selinux-states-and-modes<br />#<br /># NOTE: Up to RHEL 8 release included, SELINUX=disabled would also<br /># fully disable SELinux during boot. If you need a system with SELinux<br /># fully disabled instead of SELinux running with no policy loaded, you<br /># need to pass selinux=0 to the kernel command line. You can use grubby<br /># to persistently set the bootloader to boot with selinux=0:<br />#<br />#    grubby --update-kernel ALL --args selinux=0<br />#<br /># To revert back to SELinux enabled:<br />#<br />#    grubby --update-kernel ALL --remove-args selinux<br />#<br />SELINUX=enforcing<br /># SELINUXTYPE= can take one of these three values:<br />#     targeted - Targeted processes are protected,<br />#     minimum - Modification of targeted policy. Only selected processes are protected.<br />#     mls - Multi Level Security protection.<br />SELINUXTYPE=targeted</td>
+</tr>
+<tr>
+<td>cat /proc/cmdline</td>
+<td>Check if SELinux is disabled on boot</td>
+<td># cat /proc/cmdline<br />BOOT_IMAGE=(hd0,gpt3)/vmlinuz-5.14.0-427.26.1.el9_4.x86_64 root=UUID=aec1c1e8-3576-4eb2-ab62-f62984e655a2 console=tty0 console=ttyS0,115200n8 no_timer_check net.ifnames=0 crashkernel=1G-4G:192M,4G-64G:256M,64G-:512M selinux=0</td>
+</tr>
+<tr>
+<td>getenforce</td>
+<td>Get current enforcement status</td>
+<td># getenforce<br />Enforcing</td>
+</tr>
+<tr>
+<td>sestatus</td>
+<td>Get current SELinux status</td>
+<td># sestatus<br />SELinux status:                 enabled<br />SELinuxfs mount:                /sys/fs/selinux<br />SELinux root directory:         /etc/selinux<br />Loaded policy name:             targeted<br />Current mode:                   enforcing<br />Mode from config file:          enforcing<br />Policy MLS status:              enabled<br />Policy deny_unknown status:     allowed<br />Memory protection checking:     actual (secure)<br />Max kernel policy version:      33</td>
+</tr>
+</tbody>
+</table>
+<h3 id="enabling-disabling-selinux">Enabling / disabling SELinux</h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>setenforce</td>
+<td>Set current enforcement status</td>
+<td># setenforce Enforcing</td>
+</tr>
+<tr>
+<td>grubby --update-kernel ALL --args selinux=0</td>
+<td>Disable SELinux permanently starting with next boot</td>
+<td></td>
+</tr>
+<tr>
+<td>grubby --update-kernel ALL --remove-args selinux</td>
+<td>Enable SELinux permanently starting with next boot (if if was disabled)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="finding-selinux-violations">Finding SELinux violations</h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>journalctl -t setroubleshoot</td>
+<td>Get journal logs for SELinux issues</td>
+<td>Jul 19 07:09:41 rhel9-training setroubleshoot[47738]: SELinux is preventing /usr/lib/systemd/systemd from execute access on the file cause-violation. For co&gt;<br />Jul 19 07:09:41 rhel9-training setroubleshoot[47738]: SELinux is preventing /usr/lib/systemd/systemd from execute access on the file cause-violation.<br />                                                      <br />                                                      <strong><em>*</em>  Plugin catchall (100. confidence) suggests   </strong><strong><em>*</em></strong><strong><em>*</em></strong><strong><em>*</em></strong>***<br />                                                      <br />                                                      If you believe that systemd should be allowed execute access on the cause-violation file by default.<br />                                                      Then you should report this as a bug.<br />                                                      You can generate a local policy module to allow this access.<br />                                                      Do<br />                                                      allow this access for now by executing:<br />                                                      # ausearch -c '(iolation)' --raw</td>
+</tr>
+<tr>
+<td>grep denied /var/log/audit/audit.log</td>
+<td>Print raw SELinux denials</td>
+<td># grep denied /var/log/audit/audit.log&lt;br &gt;type=AVC msg=audit(1703120795.400:102): avc:  denied  { execute } for  pid=1586 comm="(iolation)" name="cause-violation" dev="vda4" ino=58946753 scontext=system_u:system_r:init_t:s0 tcontext=system_u:object_r:httpd_sys_content_t:s0 tclass=file permissive=0</td>
+</tr>
+<tr>
+<td>ausearch -m AVC,USER_AVC,SELINUX_ERR,USER_SELINUX_ERR -ts recent</td>
+<td>Find recent denials</td>
+<td># ausearch -m AVC,USER_AVC,SELINUX_ERR,USER_SELINUX_ERR -ts recent<br />----<br />time-&gt;Fri Jul 19 07:29:17 2024<br />type=PROCTITLE msg=audit(1721388557.563:621): proctitle="(iolation)"<br />type=SYSCALL msg=audit(1721388557.563:621): arch=c000003e syscall=21 success=no exit=-13 a0=7fff382a8ae0 a1=1 a2=0 a3=3 items=0 ppid=1 pid=47806 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm="(iolation)" exe="/usr/lib/systemd/systemd" subj=system_u:system_r:init_t:s0 key=(null)<br />type=AVC msg=audit(1721388557.563:621): avc:  denied  { execute } for  pid=47806 comm="(iolation)" name="cause-violation" dev="vda4" ino=58946753 scontext=system_u:system_r:init_t:s0 tcontext=system_u:object_r:httpd_sys_content_t:s0 tclass=file permissive=0</td>
+</tr>
+<tr>
+<td>ausearch -m AVC,USER_AVC,SELINUX_ERR,USER_SELINUX_ERR -ts today</td>
+<td>Find denials for today</td>
+<td># ausearch -m AVC,USER_AVC,SELINUX_ERR,USER_SELINUX_ERR -ts today<br />----<br />time-&gt;Fri Jul 19 07:29:17 2024<br />type=PROCTITLE msg=audit(1721388557.563:621): proctitle="(iolation)"<br />type=SYSCALL msg=audit(1721388557.563:621): arch=c000003e syscall=21 success=no exit=-13 a0=7fff382a8ae0 a1=1 a2=0 a3=3 items=0 ppid=1 pid=47806 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=4294967295 comm="(iolation)" exe="/usr/lib/systemd/systemd" subj=system_u:system_r:init_t:s0 key=(null)<br />type=AVC msg=audit(1721388557.563:621): avc:  denied  { execute } for  pid=47806 comm="(iolation)" name="cause-violation" dev="vda4" ino=58946753 scontext=system_u:system_r:init_t:s0 tcontext=system_u:object_r:httpd_sys_content_t:s0 tclass=file permissive=0</td>
+</tr>
+<tr>
+<td>sealert -l "*"</td>
+<td>sealert -a /var/log/audit/audit.log</td>
+<td>setroubleshoot client tool</td>
+</tr>
+</tbody>
+</table>
+<h3 id="listing-selinux-labels">Listing SELinux labels</h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>seinfo -b</td>
+<td>List all available SELinux booleans</td>
+<td></td>
+</tr>
+<tr>
+<td>seinfo -r</td>
+<td>List all available SELinux rules</td>
+<td></td>
+</tr>
+<tr>
+<td>seinfo -t</td>
+<td>List all available SELinux types</td>
+<td></td>
+</tr>
+<tr>
+<td>seinfo -u</td>
+<td>List all available SELinux users</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="process-operations">Process operations</h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ps aux -Z</td>
+<td>List all processes and the SELinux label that they run with</td>
+<td></td>
+</tr>
+<tr>
+<td>ps -fZ --pid $(pgrep -f <process name>)</td>
+<td>Show the current label of a process</td>
+<td># ps -fZ --pid $(pgrep -f open-messages)<br />LABEL                           UID          PID    PPID  C STIME TTY          TIME CMD<br />system_u:system_r:unconfined_service_t:s0 root 2236    1  0 08:43 ?        00:00:00 python /opt/tutorial/bin/open-messages</td>
+</tr>
+</tbody>
+</table>
+<h3 id="file-operations">File operations</h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ls -al -Z</td>
+<td>List all files in this directory and their SELinux label</td>
+<td></td>
+</tr>
+<tr>
+<td>chron -R -t tmp_t /test</td>
+<td>Change SELinux type temporarily for the directory, recursively</td>
+<td></td>
+</tr>
+<tr>
+<td>restorecon -v -R /test</td>
+<td>Reset labels to default recursively in this directory</td>
+<td></td>
+</tr>
+<tr>
+<td>touch /.autorelabel</td>
+<td>Force an auto relabel on system boot</td>
+<td></td>
+</tr>
+<tr>
+<td>semanage fcontext -l</td>
+<td>List default label configuration for the entire system</td>
+<td></td>
+</tr>
+<tr>
+<td>semanage fcontext -C -l</td>
+<td>List all local customizations to label configuration</td>
+<td>#  semanage fcontext -C -l<br />SELinux fcontext                                   type               Context<br /><br />/opt/tutorial/bin/cause-violation                  all files          system_u:object_r:httpd_sys_content_t:s0</td>
+</tr>
+<tr>
+<td>semanage fcontext -a -t etc_t '/test(/.*)?'</td>
+<td>Configure default label for a directory</td>
+<td></td>
+</tr>
+<tr>
+<td>semanage fcontext -d '/test(/.*)?'</td>
+<td>Delete default label configuration for a directory</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="selinux-booleans">SELinux booleans</h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>getsebool -a</td>
+<td>List all SELinux booleans (effective state)</td>
+<td></td>
+</tr>
+<tr>
+<td>getsebool httpd_use_nfs</td>
+<td>List a specific SELinux boolean (effective state)</td>
+<td></td>
+</tr>
+<tr>
+<td>semanage boolean -l</td>
+<td>List all SELinux booleans (effective and permanent)</td>
+<td></td>
+</tr>
+<tr>
+<td>cat  /sys/fs/selinux/booleans/httpd_use_nfs</td>
+<td>Query effective and permanent state of single variable from /sys</td>
+<td># cat  /sys/fs/selinux/booleans/httpd_use_nfs<br />1 1</td>
+</tr>
+<tr>
+<td>setsebool httpd_use_nfs on</td>
+<td>Set SELinux boolean temporarily</td>
+<td></td>
+</tr>
+<tr>
+<td>semanage boolean -m --on httpd_use_nfs</td>
+<td>Set SELinux boolean permanently (effective on next reboot)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="selinux-ports">SELinux ports</h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>semanage port -l</td>
+<td>List all port mappings (type label to allowed port)</td>
+<td># semanage port -l</td>
+</tr>
+</tbody>
+</table>
+<h3 id="creating-custom-selinux-types-and-policies">Creating custom SELinux types and policies</h3>
+<h4 id="creating-a-custom-selinux-type">Creating a custom SELinux type</h4>
+<p>Create a policy for a binary:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="gh">#</span> sepolicy generate --init /opt/tutorial/bin/open-messages
+nm: /opt/tutorial/bin/open-messages: file format not recognized
+Created the following files:
+/root/open_messages.te # Type Enforcement file
+/root/open_messages.if # Interface file
+/root/open_messages.fc # File Contexts file
+/root/open_messages_selinux.spec # Spec file
+/root/open_messages.sh # Setup Script
+</code></pre></div></td></tr></table></div>
+<p>By default, the new policy will be permissive, meaning that issues will be logged but not enforced:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="err">#</span><span class="w"> </span><span class="nx">cat</span><span class="w"> </span><span class="o">/</span><span class="nx">root</span><span class="o">/</span><span class="nx">open_messages</span><span class="p">.</span><span class="nx">te</span>
+<span class="nx">policy_module</span><span class="p">(</span><span class="nx">open_messages</span><span class="p">,</span><span class="w"> </span><span class="m m-Double">1.0.0</span><span class="p">)</span>
+
+<span class="err">########################################</span>
+<span class="err">#</span>
+<span class="err">#</span><span class="w"> </span><span class="nx">Declarations</span>
+<span class="err">#</span>
+
+<span class="k">type</span><span class="w"> </span><span class="nx">open_messages_t</span><span class="p">;</span>
+<span class="k">type</span><span class="w"> </span><span class="nx">open_messages_exec_t</span><span class="p">;</span>
+<span class="nx">init_daemon_domain</span><span class="p">(</span><span class="nx">open_messages_t</span><span class="p">,</span><span class="w"> </span><span class="nx">open_messages_exec_t</span><span class="p">)</span>
+
+<span class="nx">permissive</span><span class="w"> </span><span class="nx">open_messages_t</span><span class="p">;</span>
+
+<span class="err">########################################</span>
+<span class="err">#</span>
+<span class="err">#</span><span class="w"> </span><span class="nx">open_messages</span><span class="w"> </span><span class="nx">local</span><span class="w"> </span><span class="nx">policy</span>
+<span class="err">#</span>
+<span class="nx">allow</span><span class="w"> </span><span class="nx">open_messages_t</span><span class="w"> </span><span class="kp">self</span><span class="p">:</span><span class="nx">fifo_file</span><span class="w"> </span><span class="nx">rw_fifo_file_perms</span><span class="p">;</span>
+<span class="nx">allow</span><span class="w"> </span><span class="nx">open_messages_t</span><span class="w"> </span><span class="kp">self</span><span class="p">:</span><span class="nx">unix_stream_socket</span><span class="w"> </span><span class="nx">create_stream_socket_perms</span><span class="p">;</span>
+
+<span class="nx">domain_use_interactive_fds</span><span class="p">(</span><span class="nx">open_messages_t</span><span class="p">)</span>
+
+<span class="nx">files_read_etc_files</span><span class="p">(</span><span class="nx">open_messages_t</span><span class="p">)</span>
+
+<span class="nx">miscfiles_read_localization</span><span class="p">(</span><span class="nx">open_messages_t</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<p>Remove the permissive line from <code class="highlight">open_messages.te</code> to enforce rules:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="gh">#</span> sed -i &#39;s/^permissive open_messages_t;$/#permissive open_messages_t;/&#39; open_messages.te
+</code></pre></div></td></tr></table></div>
+<p>Rebuild the synstem policy with the new configuration (make sure to check the output as this may fail with missing dependencies):
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># ./open_messages.sh</span>
+<span class="n">Building</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">Loading</span><span class="w"> </span><span class="n">Policy</span>
+<span class="o">+</span><span class="w"> </span><span class="n">make</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">selinux</span><span class="o">/</span><span class="n">devel</span><span class="o">/</span><span class="n">Makefile</span><span class="w"> </span><span class="n">open_messages</span><span class="o">.</span><span class="n">pp</span>
+<span class="n">make</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;open_messages.pp&#39;</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">up</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">date</span><span class="o">.</span>
+<span class="o">+</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">semodule</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="n">open_messages</span><span class="o">.</span><span class="n">pp</span>
+<span class="o">+</span><span class="w"> </span><span class="n">sepolicy</span><span class="w"> </span><span class="n">manpage</span><span class="w"> </span><span class="o">-</span><span class="n">p</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="o">-</span><span class="n">d</span><span class="w"> </span><span class="n">open_messages_t</span>
+<span class="o">./</span><span class="n">open_messages_selinux</span><span class="o">.</span><span class="mi">8</span>
+<span class="o">+</span><span class="w"> </span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">restorecon</span><span class="w"> </span><span class="o">-</span><span class="n">F</span><span class="w"> </span><span class="o">-</span><span class="n">R</span><span class="w"> </span><span class="o">-</span><span class="n">v</span><span class="w"> </span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">tutorial</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">open</span><span class="o">-</span><span class="n">messages</span>
+<span class="o">++</span><span class="w"> </span><span class="n">pwd</span>
+<span class="o">+</span><span class="w"> </span><span class="n">pwd</span><span class="o">=/</span><span class="n">root</span>
+<span class="o">+</span><span class="w"> </span><span class="n">rpmbuild</span><span class="w"> </span><span class="o">--</span><span class="n">define</span><span class="w"> </span><span class="s1">&#39;_sourcedir /root&#39;</span><span class="w"> </span><span class="o">--</span><span class="n">define</span><span class="w"> </span><span class="s1">&#39;_specdir /root&#39;</span><span class="w"> </span><span class="o">--</span><span class="n">define</span><span class="w"> </span><span class="s1">&#39;_builddir /root&#39;</span><span class="w"> </span><span class="o">--</span><span class="n">define</span><span class="w"> </span><span class="s1">&#39;_srcrpmdir /root&#39;</span><span class="w"> </span><span class="o">--</span><span class="n">define</span><span class="w"> </span><span class="s1">&#39;_rpmdir /root&#39;</span><span class="w"> </span><span class="o">--</span><span class="n">define</span><span class="w"> </span><span class="s1">&#39;_buildrootdir /root/.build&#39;</span><span class="w"> </span><span class="o">-</span><span class="n">ba</span><span class="w"> </span><span class="n">open_messages_selinux</span><span class="o">.</span><span class="n">spec</span>
+<span class="n">setting</span><span class="w"> </span><span class="n">SOURCE_DATE_EPOCH</span><span class="o">=</span><span class="mi">1721347200</span>
+<span class="n">Executing</span><span class="p">(</span><span class="o">%</span><span class="n">install</span><span class="p">):</span><span class="w"> </span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">sh</span><span class="w"> </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">rpm</span><span class="o">-</span><span class="n">tmp</span><span class="o">.</span><span class="n">a13gQC</span>
+<span class="o">+</span><span class="w"> </span><span class="n">umask</span><span class="w"> </span><span class="mi">022</span>
+<span class="o">+</span><span class="w"> </span><span class="n">cd</span><span class="w"> </span><span class="o">/</span><span class="n">root</span>
+<span class="o">+</span><span class="w"> </span><span class="s1">&#39;[&#39;</span><span class="w"> </span><span class="o">/</span><span class="n">root</span><span class="o">/.</span><span class="n">build</span><span class="o">/</span><span class="n">open_messages_selinux</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mf">1.</span><span class="n">el9</span><span class="o">.</span><span class="n">x86_64</span><span class="w"> </span><span class="s1">&#39;!=&#39;</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="s1">&#39;]&#39;</span>
+<span class="o">+</span><span class="w"> </span><span class="n">rm</span><span class="w"> </span><span class="o">-</span><span class="n">rf</span><span class="w"> </span><span class="o">/</span><span class="n">root</span><span class="o">/.</span><span class="n">build</span><span class="o">/</span><span class="n">open_messages_selinux</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mf">1.</span><span class="n">el9</span><span class="o">.</span><span class="n">x86_64</span>
+<span class="o">++</span><span class="w"> </span><span class="n">dirname</span><span class="w"> </span><span class="o">/</span><span class="n">root</span><span class="o">/.</span><span class="n">build</span><span class="o">/</span><span class="n">open_messages_selinux</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mf">1.</span><span class="n">el9</span><span class="o">.</span><span class="n">x86_64</span>
+<span class="o">+</span><span class="w"> </span><span class="n">mkdir</span><span class="w"> </span><span class="o">-</span><span class="n">p</span><span class="w"> </span><span class="o">/</span><span class="n">root</span><span class="o">/.</span><span class="n">build</span>
+<span class="o">+</span><span class="w"> </span><span class="n">mkdir</span><span class="w"> </span><span class="o">/</span><span class="n">root</span><span class="o">/.</span><span class="n">build</span><span class="o">/</span><span class="n">open_messages_selinux</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mf">1.</span><span class="n">el9</span><span class="o">.</span><span class="n">x86_64</span>
+<span class="o">+</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="o">-</span><span class="n">d</span><span class="w"> </span><span class="o">/</span><span class="n">root</span><span class="o">/.</span><span class="n">build</span><span class="o">/</span><span class="n">open_messages_selinux</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mf">1.</span><span class="n">el9</span><span class="o">.</span><span class="n">x86_64</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">selinux</span><span class="o">/</span><span class="n">packages</span>
+<span class="o">+</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="o">-</span><span class="n">m</span><span class="w"> </span><span class="mi">644</span><span class="w"> </span><span class="o">/</span><span class="n">root</span><span class="o">/</span><span class="n">open_messages</span><span class="o">.</span><span class="n">pp</span><span class="w"> </span><span class="o">/</span><span class="n">root</span><span class="o">/.</span><span class="n">build</span><span class="o">/</span><span class="n">open_messages_selinux</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mf">1.</span><span class="n">el9</span><span class="o">.</span><span class="n">x86_64</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">selinux</span><span class="o">/</span><span class="n">packages</span>
+<span class="o">+</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="o">-</span><span class="n">d</span><span class="w"> </span><span class="o">/</span><span class="n">root</span><span class="o">/.</span><span class="n">build</span><span class="o">/</span><span class="n">open_messages_selinux</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mf">1.</span><span class="n">el9</span><span class="o">.</span><span class="n">x86_64</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">selinux</span><span class="o">/</span><span class="n">devel</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">contrib</span>
+<span class="o">+</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="o">-</span><span class="n">m</span><span class="w"> </span><span class="mi">644</span><span class="w"> </span><span class="o">/</span><span class="n">root</span><span class="o">/</span><span class="n">open_messages</span><span class="o">.</span><span class="k">if</span><span class="w"> </span><span class="o">/</span><span class="n">root</span><span class="o">/.</span><span class="n">build</span><span class="o">/</span><span class="n">open_messages_selinux</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mf">1.</span><span class="n">el9</span><span class="o">.</span><span class="n">x86_64</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">selinux</span><span class="o">/</span><span class="n">devel</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">contrib</span><span class="o">/</span>
+<span class="o">+</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="o">-</span><span class="n">d</span><span class="w"> </span><span class="o">/</span><span class="n">root</span><span class="o">/.</span><span class="n">build</span><span class="o">/</span><span class="n">open_messages_selinux</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mf">1.</span><span class="n">el9</span><span class="o">.</span><span class="n">x86_64</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">man</span><span class="o">/</span><span class="n">man8</span><span class="o">/</span>
+<span class="o">+</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="o">-</span><span class="n">m</span><span class="w"> </span><span class="mi">644</span><span class="w"> </span><span class="o">/</span><span class="n">root</span><span class="o">/</span><span class="n">open_messages_selinux</span><span class="o">.</span><span class="mi">8</span><span class="w"> </span><span class="o">/</span><span class="n">root</span><span class="o">/.</span><span class="n">build</span><span class="o">/</span><span class="n">open_messages_selinux</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mf">1.</span><span class="n">el9</span><span class="o">.</span><span class="n">x86_64</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">man</span><span class="o">/</span><span class="n">man8</span><span class="o">/</span><span class="n">open_messages_selinux</span><span class="o">.</span><span class="mi">8</span>
+<span class="o">+</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="o">-</span><span class="n">d</span><span class="w"> </span><span class="o">/</span><span class="n">root</span><span class="o">/.</span><span class="n">build</span><span class="o">/</span><span class="n">open_messages_selinux</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mf">1.</span><span class="n">el9</span><span class="o">.</span><span class="n">x86_64</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">selinux</span><span class="o">/</span><span class="n">targeted</span><span class="o">/</span><span class="n">contexts</span><span class="o">/</span><span class="n">users</span><span class="o">/</span>
+<span class="o">+</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">rpm</span><span class="o">/</span><span class="n">check</span><span class="o">-</span><span class="n">buildroot</span>
+<span class="o">+</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">rpm</span><span class="o">/</span><span class="n">redhat</span><span class="o">/</span><span class="n">brp</span><span class="o">-</span><span class="n">ldconfig</span>
+<span class="o">+</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">rpm</span><span class="o">/</span><span class="n">brp</span><span class="o">-</span><span class="n">compress</span>
+<span class="o">+</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">rpm</span><span class="o">/</span><span class="n">brp</span><span class="o">-</span><span class="n">strip</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">strip</span>
+<span class="o">+</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">rpm</span><span class="o">/</span><span class="n">brp</span><span class="o">-</span><span class="n">strip</span><span class="o">-</span><span class="n">comment</span><span class="o">-</span><span class="n">note</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">strip</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">objdump</span>
+<span class="o">+</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">rpm</span><span class="o">/</span><span class="n">redhat</span><span class="o">/</span><span class="n">brp</span><span class="o">-</span><span class="n">strip</span><span class="o">-</span><span class="n">lto</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">strip</span>
+<span class="o">+</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">rpm</span><span class="o">/</span><span class="n">brp</span><span class="o">-</span><span class="n">strip</span><span class="o">-</span><span class="k">static</span><span class="o">-</span><span class="n">archive</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">strip</span>
+<span class="o">+</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">rpm</span><span class="o">/</span><span class="n">redhat</span><span class="o">/</span><span class="n">brp</span><span class="o">-</span><span class="n">python</span><span class="o">-</span><span class="n">bytecompile</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">0</span>
+<span class="o">+</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">rpm</span><span class="o">/</span><span class="n">brp</span><span class="o">-</span><span class="n">python</span><span class="o">-</span><span class="n">hardlink</span>
+<span class="o">+</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">rpm</span><span class="o">/</span><span class="n">redhat</span><span class="o">/</span><span class="n">brp</span><span class="o">-</span><span class="n">mangle</span><span class="o">-</span><span class="n">shebangs</span>
+<span class="n">Processing</span><span class="w"> </span><span class="n">files</span><span class="p">:</span><span class="w"> </span><span class="n">open_messages_selinux</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mf">1.</span><span class="n">el9</span><span class="o">.</span><span class="n">noarch</span>
+<span class="n">Provides</span><span class="p">:</span><span class="w"> </span><span class="n">open_messages_selinux</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="o">-</span><span class="mf">1.</span><span class="n">el9</span>
+<span class="n">Requires</span><span class="p">(</span><span class="n">interp</span><span class="p">):</span><span class="w"> </span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">sh</span><span class="w"> </span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">sh</span>
+<span class="n">Requires</span><span class="p">(</span><span class="n">rpmlib</span><span class="p">):</span><span class="w"> </span><span class="n">rpmlib</span><span class="p">(</span><span class="n">CompressedFileNames</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mf">3.0</span><span class="o">.</span><span class="mi">4</span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="n">rpmlib</span><span class="p">(</span><span class="n">FileDigests</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mf">4.6</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="n">rpmlib</span><span class="p">(</span><span class="n">PayloadFilesHavePrefix</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mf">4.0</span><span class="o">-</span><span class="mi">1</span>
+<span class="n">Requires</span><span class="p">(</span><span class="n">post</span><span class="p">):</span><span class="w"> </span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">sh</span><span class="w"> </span><span class="n">policycoreutils</span><span class="o">-</span><span class="n">python</span><span class="o">-</span><span class="n">utils</span><span class="w"> </span><span class="n">selinux</span><span class="o">-</span><span class="n">policy</span><span class="o">-</span><span class="n">base</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mf">38.1</span><span class="o">.</span><span class="mi">35</span><span class="o">-</span><span class="mi">2</span>
+<span class="n">Requires</span><span class="p">(</span><span class="n">postun</span><span class="p">):</span><span class="w"> </span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">sh</span><span class="w"> </span><span class="n">policycoreutils</span><span class="o">-</span><span class="n">python</span><span class="o">-</span><span class="n">utils</span>
+<span class="n">Checking</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">unpackaged</span><span class="w"> </span><span class="n">file</span><span class="p">(</span><span class="n">s</span><span class="p">):</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">rpm</span><span class="o">/</span><span class="n">check</span><span class="o">-</span><span class="n">files</span><span class="w"> </span><span class="o">/</span><span class="n">root</span><span class="o">/.</span><span class="n">build</span><span class="o">/</span><span class="n">open_messages_selinux</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mf">1.</span><span class="n">el9</span><span class="o">.</span><span class="n">x86_64</span>
+<span class="n">Wrote</span><span class="p">:</span><span class="w"> </span><span class="o">/</span><span class="n">root</span><span class="o">/</span><span class="n">open_messages_selinux</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mf">1.</span><span class="n">el9</span><span class="o">.</span><span class="n">src</span><span class="o">.</span><span class="n">rpm</span>
+<span class="n">Wrote</span><span class="p">:</span><span class="w"> </span><span class="o">/</span><span class="n">root</span><span class="o">/</span><span class="n">noarch</span><span class="o">/</span><span class="n">open_messages_selinux</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mf">1.</span><span class="n">el9</span><span class="o">.</span><span class="n">noarch</span><span class="o">.</span><span class="n">rpm</span>
+<span class="n">Executing</span><span class="p">(</span><span class="o">%</span><span class="n">clean</span><span class="p">):</span><span class="w"> </span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">sh</span><span class="w"> </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">rpm</span><span class="o">-</span><span class="n">tmp</span><span class="o">.</span><span class="n">K63ODh</span>
+<span class="o">+</span><span class="w"> </span><span class="n">umask</span><span class="w"> </span><span class="mi">022</span>
+<span class="o">+</span><span class="w"> </span><span class="n">cd</span><span class="w"> </span><span class="o">/</span><span class="n">root</span>
+<span class="o">+</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">rm</span><span class="w"> </span><span class="o">-</span><span class="n">rf</span><span class="w"> </span><span class="o">/</span><span class="n">root</span><span class="o">/.</span><span class="n">build</span><span class="o">/</span><span class="n">open_messages_selinux</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mf">1.</span><span class="n">el9</span><span class="o">.</span><span class="n">x86_64</span>
+<span class="o">+</span><span class="w"> </span><span class="n">RPM_EC</span><span class="o">=</span><span class="mi">0</span>
+<span class="o">++</span><span class="w"> </span><span class="n">jobs</span><span class="w"> </span><span class="o">-</span><span class="n">p</span>
+<span class="o">+</span><span class="w"> </span><span class="n">exit</span><span class="w"> </span><span class="mi">0</span>
+</code></pre></div></td></tr></table></div></p>
+<p>Verify that the binary now is labeled with the new custom type:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="gh">#</span> ls -Z /opt/tutorial/bin/open-messages
+system_u:object_r:open_messages_exec_t:s0 /opt/tutorial/bin/open-messages
+</code></pre></div></td></tr></table></div>
+<h4 id="creating-policies-for-the-custom-type">Creating policies for the custom type</h4>
+<p>Rerun the service, but with permissive rules:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="gh">#</span> sed -i &#39;s/^#permissive open_messages_t;$/permissive open_messages_t;/&#39; open_messages.te
+<span class="gh">#</span> ./open_messages.sh
+</code></pre></div></td></tr></table></div>
+<p>Restart the service and make sure that it's running:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code># systemctl restart open-messages
+# systemctl status open-messages
+</code></pre></div></td></tr></table></div></p>
+<p>Generate the list of rules needed to make the service run:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="err">#</span><span class="w"> </span><span class="nx">ausearch</span><span class="w"> </span><span class="o">-</span><span class="nx">m</span><span class="w"> </span><span class="nx">AVC</span><span class="w"> </span><span class="o">-</span><span class="nx">ts</span><span class="w"> </span><span class="nx">recent</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">audit2allow</span><span class="w"> </span><span class="o">-</span><span class="nx">R</span>
+
+<span class="nx">require</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">type</span><span class="w"> </span><span class="nx">open_messages_t</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="err">#</span><span class="o">============</span><span class="p">=</span><span class="w"> </span><span class="nx">open_messages_t</span><span class="w"> </span><span class="o">==============</span>
+<span class="nx">auth_read_passwd_file</span><span class="p">(</span><span class="nx">open_messages_t</span><span class="p">)</span>
+<span class="nx">corecmd_exec_bin</span><span class="p">(</span><span class="nx">open_messages_t</span><span class="p">)</span>
+<span class="nx">corecmd_mmap_bin_files</span><span class="p">(</span><span class="nx">open_messages_t</span><span class="p">)</span>
+<span class="nx">files_manage_generic_tmp_files</span><span class="p">(</span><span class="nx">open_messages_t</span><span class="p">)</span>
+<span class="nx">insights_client_filetrans_tmp</span><span class="p">(</span><span class="nx">open_messages_t</span><span class="p">)</span>
+<span class="nx">logging_read_generic_logs</span><span class="p">(</span><span class="nx">open_messages_t</span><span class="p">)</span>
+<span class="nx">sssd_read_public_files</span><span class="p">(</span><span class="nx">open_messages_t</span><span class="p">)</span>
+<span class="nx">sssd_search_lib</span><span class="p">(</span><span class="nx">open_messages_t</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div></p>
+<p>Copy the list of rules from the output and append them to open_messages.te:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code>cat &lt;&lt;&#39;EOF&#39; &gt;&gt; open_messages.te
+auth_read_passwd_file(open_messages_t)
+corecmd_exec_bin(open_messages_t)
+corecmd_mmap_bin_files(open_messages_t)
+files_manage_generic_tmp_files(open_messages_t)
+insights_client_filetrans_tmp(open_messages_t)
+logging_read_generic_logs(open_messages_t)
+sssd_read_public_files(open_messages_t)
+sssd_search_lib(open_messages_t)
+EOF
+</code></pre></div></td></tr></table></div>
+<p>And enforce SELinux again for the policy and rebuild the policies:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="gh">#</span> sed -i &#39;s/^permissive open_messages_t;$/#permissive open_messages_t;/&#39; open_messages.te
+<span class="gh">#</span> ./open_messages.sh
+</code></pre></div></td></tr></table></div>
+<p>Empty /var/log/audit/audit.log:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># &gt; /var/log/audit/audit.log</span>
+</code></pre></div></td></tr></table></div>
+<p>Start the open-messages service and make sure that it's running correctly:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code># systemctl restart open-messages
+# systemctl status open-messages
+</code></pre></div></td></tr></table></div>
+<p>Inspect the service, you will see that it runs with the new label:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="gh">#</span> ps -fZ --pid $(pgrep -f open-messages)
+LABEL                           UID          PID    PPID  C STIME TTY          TIME CMD
+system_u:system_r:open_messages_t:s0 root   4185       1  0 08:59 ?        00:00:00 python /opt/tutorial/bin/open-messages
+</code></pre></div></td></tr></table></div>
+<p>Check that there are no SELinux denied messages for open-messages:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># grep denied /var/log/audit/audit.log | grep open_messages_t</span>
+</code></pre></div></td></tr></table></div>
+
+
+
+
+
+
+
+  
+    
+  
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">July 19, 2024</span>
+  </span>
+
+    
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+      
+    
+  </body>
+</html>

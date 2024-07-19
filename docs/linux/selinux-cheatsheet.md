@@ -72,6 +72,7 @@
 | Command  | Description   | Examples |                                                                                 
 |---|---|---| 
 | semanage port -l | List all port mappings (type label to allowed port) | # semanage port -l | head -n 4<br />SELinux Port Type              Proto    Port Number<br /><br />afs3_callback_port_t           tcp      7001<br />afs3_callback_port_t           udp      7001 |
+| semanage port -a -t http_port_t -p tcp 3333 | Allow an SELinux type to use a specific port | |
 
 ### Creating custom SELinux types and policies
 

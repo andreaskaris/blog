@@ -75,9 +75,49 @@
 
 ### Creating custom SELinux types and policies
 
+#### Custom service
+
+We will create a custom SELinux type and policies for the following service:
+
+```
+#!/usr/bin/env python
+
+import time
+import datetime
+import pathlib
+
+in_file='/var/log/messages'
+out_file='/tmp/out'
+
+pathlib.Path(out_file).unlink(missing_ok=True)
+
+while True:
+    with open(in_file) as log:
+        for line in log:
+            pass
+        line = line.rstrip()
+        now = datetime.datetime.now()
+        with open(out_file, 'a') as out: 
+            out.write(f"\033[0;32m{now}:\033[0m The last message of /var/log/messages is: '{line}'\n")
+    time.sleep(5)
+```
+
+```
+[Unit]
+Description=Daemon that opens /var/log/messages and closes it
+
+[Service]
+Type=simple
+ExecStart=/opt/tutorial/bin/open-messages
+
+[Install]
+WantedBy=multi-user.target
+```
+
+
 #### Creating a custom SELinux type
 
-Create a policy for a binary:
+Create a policy for the executable:
 
 ```
 # sepolicy generate --init /opt/tutorial/bin/open-messages
@@ -184,7 +224,7 @@ Executing(%clean): /bin/sh -e /var/tmp/rpm-tmp.K63ODh
 + exit 0
 ```
 
-Verify that the binary now is labeled with the new custom type:
+Verify that the executable now is labeled with the new custom type:
 
 ```
 # ls -Z /opt/tutorial/bin/open-messages
@@ -272,4 +312,89 @@ Check that there are no SELinux denied messages for open-messages:
 
 ```
 # grep denied /var/log/audit/audit.log | grep open_messages_t
+```
+
+#### Disabling a custom SELinux policy
+
+List the open_messages SELinux module:
+
+```
+# semodule --list-modules=full | grep open_messages
+400 open_messages     pp
+```
+
+Disable the open_messages SELinux module (you can use -e to re-enable):
+
+```
+# semodule -d open_messages
+```
+   
+List the module again:
+
+```
+# semodule --list-modules=full | grep open_messages 
+400 open_messages     pp  disabled
+```
+
+Run restorecon to restore the SELinux context of the binary and list the labels after the relabel:
+
+```
+# restorecon -Rv /opt/tutorial/bin/open-messages
+Relabeled /opt/tutorial/bin/open-messages from system_u:object_r:unlabeled_t:s0 to system_u:object_r:bin_t:s0
+# ls -Z /opt/tutorial/bin/open-messages
+system_u:object_r:bin_t:s0 /opt/tutorial/bin/open-messages
+```
+
+Re-enable the module with:
+
+```
+# semodule -e open_messages
+```
+
+And verify:
+
+```
+# semodule --list-modules=full | grep open_messages
+400 open_messages     pp
+```
+
+Run restorecon to restore the SELinux context of the binary and list the labels after the relabel:
+
+```
+# restorecon -Rv /opt/tutorial/bin/open-messages
+Relabeled /opt/tutorial/bin/open-messages from system_u:object_r:bin_t:s0 to system_u:object_r:open_messages_exec_t:s0
+# ls -Z /opt/tutorial/bin/open-messages
+system_u:object_r:open_messages_exec_t:s0 /opt/tutorial/bin/open-messages
+```
+
+#### Removing a custom SELinux policy
+
+List the open_messages SELinux module:
+
+```
+# semodule --list-modules=full | grep open_messages
+400 open_messages     pp
+```
+
+Remove the open_messages SELinux module:
+
+```
+# semodule -r open_messages 
+libsemanage.semanage_direct_remove_key: Removing last open_messages module (no other open_messages module exists at another priority).
+```
+
+List the module again:
+
+```
+# semodule --list-modules=full | grep open_messages
+#
+```
+
+Run restorecon to restore the SELinux context of the binary and list the labels after the relabel:
+
+```
+# restorecon -Rv /opt/tutorial/bin/open-messages
+Relabeled /opt/tutorial/bin/open-messages from system_u:object_r:unlabeled_t:s0 to system_u:object_r:bin_t:s0
+# ls -Z /opt/tutorial/bin/open-messages
+system_u:object_r:bin_t:s0 /opt/tutorial/bin/open-messages
 ```

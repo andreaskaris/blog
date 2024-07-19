@@ -2,10 +2,6 @@
  * Thanks to https://blog.ktz.me/making-mkdocs-tables-look-like-github-markdown-tables/
  */
 
-table {
-    width: 100%;
-}
-
 th, td {
     border: 1px solid var(--md-typeset-table-color);
     border-spacing: 0;
@@ -22,6 +18,7 @@ th, td {
 .md-typeset__table table:not([class]) {
     font-size: .74rem;
     border-right: none;
+    display: table
 }
 
 .md-typeset__table table:not([class]) td,

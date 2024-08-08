@@ -429,11 +429,12 @@ profile our CPUs. Let's use perf script to create flamegraphs:
 ```
 
 Now, copy the flamegraphs to your local system for analysis. You can access the flamegraphs of my test runs here:
-![IRQ smp affinity - flamegraph 0](../src/rss-irq-affinity-and-rps/irq_smp_affinity.0/flamegraph.html)
-![IRQ smp affinity - flamegraph 1](../src/rss-irq-affinity-and-rps/irq_smp_affinity.1/flamegraph.html)
-![IRQ smp affinity - flamegraph 2](../src/rss-irq-affinity-and-rps/irq_smp_affinity.2/flamegraph.html)
-![IRQ smp affinity - flamegraph 3](../src/rss-irq-affinity-and-rps/irq_smp_affinity.3/flamegraph.html)
-![IRQ smp affinity - flamegraph 4](../src/rss-irq-affinity-and-rps/irq_smp_affinity.4/flamegraph.html)
-![IRQ smp affinity - flamegraph 5](../src/rss-irq-affinity-and-rps/irq_smp_affinity.5/flamegraph.html)
-![IRQ smp affinity - flamegraph 6](../src/rss-irq-affinity-and-rps/irq_smp_affinity.6/flamegraph.html)
-![IRQ smp affinity - flamegraph 7](../src/rss-irq-affinity-and-rps/irq_smp_affinity.7/flamegraph.html)
+
+* [IRQ smp affinity - flamegraph 0](../src/rss-irq-affinity-and-rps/irq_smp_affinity.0/flamegraph.html)
+* [IRQ smp affinity - flamegraph 1](../src/rss-irq-affinity-and-rps/irq_smp_affinity.1/flamegraph.html)
+* [IRQ smp affinity - flamegraph 2](../src/rss-irq-affinity-and-rps/irq_smp_affinity.2/flamegraph.html)
+* [IRQ smp affinity - flamegraph 3](../src/rss-irq-affinity-and-rps/irq_smp_affinity.3/flamegraph.html)
+* [IRQ smp affinity - flamegraph 4](../src/rss-irq-affinity-and-rps/irq_smp_affinity.4/flamegraph.html)
+* [IRQ smp affinity - flamegraph 5](../src/rss-irq-affinity-and-rps/irq_smp_affinity.5/flamegraph.html)
+* [IRQ smp affinity - flamegraph 6](../src/rss-irq-affinity-and-rps/irq_smp_affinity.6/flamegraph.html)
+* [IRQ smp affinity - flamegraph 7](../src/rss-irq-affinity-and-rps/irq_smp_affinity.7/flamegraph.html)

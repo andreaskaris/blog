@@ -3130,15 +3130,17 @@ profile our CPUs. Let's use perf script to create flamegraphs:</p>
 <span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@dut ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="err">{</span><span class="mf">0..7</span><span class="err">}</span><span class="p">;</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="err">$</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="err">$</span><span class="p">(</span><span class="n">pwd</span><span class="p">)</span><span class="o">/</span><span class="n">irq_smp_affinity</span><span class="p">.</span><span class="err">$</span><span class="n">c</span><span class="p">;</span><span class="w"> </span><span class="n">mkdir</span><span class="w"> </span><span class="err">$</span><span class="n">d</span><span class="p">;</span><span class="w"> </span><span class="n">pushd</span><span class="w"> </span><span class="err">$</span><span class="n">d</span><span class="p">;</span><span class="w"> </span><span class="n">perf</span><span class="w"> </span><span class="n">script</span><span class="w"> </span><span class="n">flamegraph</span><span class="w"> </span><span class="o">-</span><span class="n">C</span><span class="w"> </span><span class="err">$</span><span class="n">c</span><span class="w"> </span><span class="o">-</span><span class="n">F</span><span class="w"> </span><span class="mi">99</span><span class="w"> </span><span class="n">sleep</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w"> </span><span class="n">popd</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">done</span>
 <span class="p">(...</span><span class="w"> </span><span class="n">wait</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">seconds</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">...</span>
 </code></pre></div></td></tr></table></div>
-<p>Now, copy the flamegraphs to your local system for analysis. You can access the flamegraphs of my test runs here:
-<img alt="IRQ smp affinity - flamegraph 0" src="../../src/rss-irq-affinity-and-rps/irq_smp_affinity.0/flamegraph.html" />
-<img alt="IRQ smp affinity - flamegraph 1" src="../../src/rss-irq-affinity-and-rps/irq_smp_affinity.1/flamegraph.html" />
-<img alt="IRQ smp affinity - flamegraph 2" src="../../src/rss-irq-affinity-and-rps/irq_smp_affinity.2/flamegraph.html" />
-<img alt="IRQ smp affinity - flamegraph 3" src="../../src/rss-irq-affinity-and-rps/irq_smp_affinity.3/flamegraph.html" />
-<img alt="IRQ smp affinity - flamegraph 4" src="../../src/rss-irq-affinity-and-rps/irq_smp_affinity.4/flamegraph.html" />
-<img alt="IRQ smp affinity - flamegraph 5" src="../../src/rss-irq-affinity-and-rps/irq_smp_affinity.5/flamegraph.html" />
-<img alt="IRQ smp affinity - flamegraph 6" src="../../src/rss-irq-affinity-and-rps/irq_smp_affinity.6/flamegraph.html" />
-<img alt="IRQ smp affinity - flamegraph 7" src="../../src/rss-irq-affinity-and-rps/irq_smp_affinity.7/flamegraph.html" /></p>
+<p>Now, copy the flamegraphs to your local system for analysis. You can access the flamegraphs of my test runs here:</p>
+<ul>
+<li><a href="../../src/rss-irq-affinity-and-rps/irq_smp_affinity.0/flamegraph.html">IRQ smp affinity - flamegraph 0</a></li>
+<li><a href="../../src/rss-irq-affinity-and-rps/irq_smp_affinity.1/flamegraph.html">IRQ smp affinity - flamegraph 1</a></li>
+<li><a href="../../src/rss-irq-affinity-and-rps/irq_smp_affinity.2/flamegraph.html">IRQ smp affinity - flamegraph 2</a></li>
+<li><a href="../../src/rss-irq-affinity-and-rps/irq_smp_affinity.3/flamegraph.html">IRQ smp affinity - flamegraph 3</a></li>
+<li><a href="../../src/rss-irq-affinity-and-rps/irq_smp_affinity.4/flamegraph.html">IRQ smp affinity - flamegraph 4</a></li>
+<li><a href="../../src/rss-irq-affinity-and-rps/irq_smp_affinity.5/flamegraph.html">IRQ smp affinity - flamegraph 5</a></li>
+<li><a href="../../src/rss-irq-affinity-and-rps/irq_smp_affinity.6/flamegraph.html">IRQ smp affinity - flamegraph 6</a></li>
+<li><a href="../../src/rss-irq-affinity-and-rps/irq_smp_affinity.7/flamegraph.html">IRQ smp affinity - flamegraph 7</a></li>
+</ul>
 
 
 

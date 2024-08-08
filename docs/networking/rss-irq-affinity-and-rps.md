@@ -356,13 +356,10 @@ across the 2 remaining queues. At the same time, queues 2 and 3 are disabled.
  59:   11620198          0          0          0          0          0          2          0  PCI-MSIX-0000:07:00.0   7-edge      virtio6-input.3
 ```
 
-### Configuring SMP affinity for RX queue interrupts
-
-Next, let's move the SMP affinity for our queues' interrupts to CPUs 4 and 5. The softirqs will be processed on the same
-NICs by default.
+### Querying SMP affinity for RX queue interrupts
 
 You can get the interrupt numbers for virtio6-input.0 (in this case 53) and virtio6-input.1 (in this case 55) from
-/proc/interrupts.
+/proc/interrupts. Then, query /proc/irq/<interrupt number>/smp_affinity and smp_affinity_list.
 
 ```
 [root@dut golang-loadgen]# cat /proc/irq/53/smp_affinity
@@ -381,9 +378,12 @@ it generated interrupts on CPU 5. But wait, irqbalance is switched off, and we e
 IRQs distributed between our CPUs and why aren't they allowed on all CPUs? To be confirmed, but the answer may be in
 [this commit](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5e385a6ef31f).
 
-Let's force virtio6-input.0 onto CPU 2 and virtio6-input.1 onto CPU 3. The affinity can be any CPU, regardless of our
-tuned configuration, either from the system CPU set or from the isolated CPU set. But I already moved IRQs to isolated
-CPUs during an earlier test, so for the sake of it, I want to move them to system reserved CPUs now :-)
+### Configuring SMP affinity for RX queue interrupts
+
+Let's force virtio6-input.0 onto CPU 2 and virtio6-input.1 onto CPU 3. The softirqs will be processed on the same NICs
+by default. The affinity can be any CPU, regardless of our tuned configuration, either from the system CPU set or from
+the isolated CPU set. But I already moved IRQs to isolated CPUs during an earlier test, so for the sake of it, I want
+to move them to system reserved CPUs now :-)
 
 ```
 [root@dut golang-loadgen]# echo 04 > /proc/irq/53/smp_affinity
@@ -429,11 +429,11 @@ profile our CPUs. Let's use perf script to create flamegraphs:
 ```
 
 Now, copy the flamegraphs to your local system for analysis. You can access the flamegraphs of my test runs here:
-![IRQ smp affinity - flamegraph 0](/src/rss-irq-affinity-and-rps/irq_smp_affinity.0/flamegraph.html)
-![IRQ smp affinity - flamegraph 1](/src/rss-irq-affinity-and-rps/irq_smp_affinity.1/flamegraph.html)
-![IRQ smp affinity - flamegraph 2](/src/rss-irq-affinity-and-rps/irq_smp_affinity.2/flamegraph.html)
-![IRQ smp affinity - flamegraph 3](/src/rss-irq-affinity-and-rps/irq_smp_affinity.3/flamegraph.html)
-![IRQ smp affinity - flamegraph 4](/src/rss-irq-affinity-and-rps/irq_smp_affinity.4/flamegraph.html)
-![IRQ smp affinity - flamegraph 5](/src/rss-irq-affinity-and-rps/irq_smp_affinity.5/flamegraph.html)
-![IRQ smp affinity - flamegraph 6](/src/rss-irq-affinity-and-rps/irq_smp_affinity.6/flamegraph.html)
-![IRQ smp affinity - flamegraph 7](/src/rss-irq-affinity-and-rps/irq_smp_affinity.7/flamegraph.html)
+![IRQ smp affinity - flamegraph 0](../src/rss-irq-affinity-and-rps/irq_smp_affinity.0/flamegraph.html)
+![IRQ smp affinity - flamegraph 1](../src/rss-irq-affinity-and-rps/irq_smp_affinity.1/flamegraph.html)
+![IRQ smp affinity - flamegraph 2](../src/rss-irq-affinity-and-rps/irq_smp_affinity.2/flamegraph.html)
+![IRQ smp affinity - flamegraph 3](../src/rss-irq-affinity-and-rps/irq_smp_affinity.3/flamegraph.html)
+![IRQ smp affinity - flamegraph 4](../src/rss-irq-affinity-and-rps/irq_smp_affinity.4/flamegraph.html)
+![IRQ smp affinity - flamegraph 5](../src/rss-irq-affinity-and-rps/irq_smp_affinity.5/flamegraph.html)
+![IRQ smp affinity - flamegraph 6](../src/rss-irq-affinity-and-rps/irq_smp_affinity.6/flamegraph.html)
+![IRQ smp affinity - flamegraph 7](../src/rss-irq-affinity-and-rps/irq_smp_affinity.7/flamegraph.html)

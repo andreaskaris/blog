@@ -1,0 +1,3222 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Andreas Karis' blog about anything Kubernetes, OpenShift, Linux and Networking">
+      
+      
+      
+        <link rel="canonical" href="https://andreaskaris.github.io/blog/networking/rss-irq-affinity-and-rps/">
+      
+      
+      
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../feed_rss_created.xml">
+        <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../feed_rss_updated.xml">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.3">
+    
+    
+      
+        <title>RSS, IRQ affinity and RPS on Linux - Andreas Karis Blog</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.50c56a3b.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  <!-- RSS Feed -->
+  <link rel="alternate" type="application/rss+xml" title="RSS feed of created content" href="https://andreaskaris.github.io/blog/feed_rss_created.xml">
+  <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="https://andreaskaris.github.io/blog/feed_rss_updated.xml">
+
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Andreas Karis Blog" class="md-header__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Andreas Karis Blog
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              RSS, IRQ affinity and RPS on Linux
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../ceph/" class="md-tabs__link">
+          
+  
+    
+  
+  Ceph
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../linux/" class="md-tabs__link">
+          
+  
+    
+  
+  Linux
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../" class="md-tabs__link">
+          
+  
+    
+  
+  Networking
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../openshift/" class="md-tabs__link">
+          
+  
+    
+  
+  OpenShift and Kubernetes
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../openstack/" class="md-tabs__link">
+          
+  
+    
+  
+  OpenStack
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../coding/" class="md-tabs__link">
+          
+  
+    
+  
+  Coding
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+  
+    
+    <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner">
+          
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Andreas Karis Blog
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../ceph/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Ceph
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Ceph
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ceph/ceph-manual-test/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ceph manual test with qemu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../linux/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Linux
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Linux
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/cgroups/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    cgroups
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/containers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Containers in Linux
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/hugepages/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hugepages
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/ipxe-boot-environment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    iPXE boot environment on Fedora
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/java-idrac-issues/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Java Idrac Issues
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/meson/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    meson
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/namespaces/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    namespaces
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/old_java_version_with_xorgs_in_container/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Old Java inside a container with xorgs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/protect-lenovo-battery/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Protect Lenovo laptop battery
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/org-gnome-shell-overrides/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Workaround for org.gnome.shell.overrides not installed
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/get-process-cgroup-info-and-limits/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Retrieving process cgroup resource usage and limit info
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/libvirt-uefi-without-secureboot/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RHEL Booting a virtual machine with UEFI but without secure boot
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/setting-journalctl-limits/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Setting journalctl limits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/cgroups_cpu_quota/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Using cgroups for CFS bandwidth control
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/udev-ethtool/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    udev rules to apply ethtool settings
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linux/selinux-cheatsheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SELinux Cheat Sheet
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Networking
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Networking
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../accept-source-routing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Accept Source Routing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arp_and_the_neighbor_table/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ARP and the Neighbor table
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bpf-and-tcpdump/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    BPF and tcpdump
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bonding_in_linux/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bonding in Linux
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../juniper_x520/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Configure Juniper switch
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ovn-interconnection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hands-on with OVN Interconnection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../haproxy-and-h2c/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    haproxy and HTTP/2
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install-openvswitch-on-rocky/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Install Open vSwitch on Rocky Linux 8
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../geneve_tunneling/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Geneve tunneling
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../netlink/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Netlink
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../netlink-address-fields/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Netlink and MAC addresses
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ovn_standalone_on_fedora/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OVN standalone on Fedora
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ovs_recirculation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OVS packet recirculation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ovs-vxlan-tunnels-and-dscp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OVS VXLAN tunnels and DSCP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ovs_with_gdb/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OVS with GDB
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../packet-tracing-with-ovn/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Packet tracing with OVN
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sctp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SCTP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../useful-commands/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Useful commands
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wireguard/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Wireguard
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../openshift/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    OpenShift and Kubernetes
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            OpenShift and Kubernetes
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/alertmanager/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AlertManager
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/analyzing-cni/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Analyzing CNI calls
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/ocp-custom-release-image/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Building custom release images for OpenShift
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/cpu-manager-with-custom-machine-config-pool/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CPU manager with custom MachineConfigPool
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/cpu-isolation-in-openshift/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CPU isolation in Red Hat OpenShift Container Platform
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/crio-conmon-runc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Crio vs conmon vs runc
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/dedicated-service-monitors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DedicatedServiceMonitors in OpenShift Monitoring
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/etcd_perf/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Etcd Performance tests
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/get-vs-list-api-calls/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Get vs List API Calls
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/openshift_httpbin_tshark_sidecar/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Httpbin tshark sidecar container
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/kubernetes_cluster/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hints for installing kubernetes on Fedora
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/HPA/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Horizontal Pod Autoscaler
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/how_rhcos_updates_work/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How RHCOS updates work
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/kubelet-filesystems/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How kubelet monitors filesystems
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/ocp4-infra-nodes-with-machineset-without-worker-label/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Infra nodes with MachineSets without worker label
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/ingresscontroller_router_sharding_ocp_on_osp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ingress Controller Sharding OCP on OSP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/ingress-controller-sharding-on-separate-vip/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ingress Controller Sharding on separate VIP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/openshift_mirror_registry/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installing a cluster with a mirror registry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/istio-1.6-on-ocp.4.x/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Istio 1.6 on OpenShift 4.x
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/kata/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    kata containers and the kata operatora
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/kernel-ml-on-openshift/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    kernel-ml on OpenShift
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/ovn-kind-hybrid-overlay/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Kind with OVN Kubernetes Hybrid Overlay
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/kind-with-private-registry/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Kind with private registry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/list_docker_registry_containers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    List container images in registry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/mounting-container-image/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mount a container image
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openstack/install_openshift_on_openstack/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OpenShift on OpenStack
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/openshift-with-multipath/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OpenShift with iSCSI multipath
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/patch-service-loadbalancer-ingress-ip/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Patch status.loadBalancer.ingress IP manually
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/private-registry/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Private container registry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/proxy-ocp-4.5/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Proxy OCP 4.5
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/rpm-ostree-failed-to-find-image/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    rpm-ostreed failed to find image
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/seccomp-defaults-ocp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Seccomp defaults in Red Hat OpenShift Container Platform
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/scc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Security Context Constraints (SCC)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/openshift-scc-with-mutating-webhooks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SCCs and mutating webhooks - a lesson learned
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/fix-selinux-labels-coreos/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SElinux labels fix
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sctp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SCTP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/openshift_troubleshooting_etcd_state/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Troubleshooting etcd state
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/useful-ocp-commands/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Useful commands for OpenShift
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/useful-ocp-sdn-commands/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Useful commands for OpenShift SDN
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/troubleshooting_openshift_on_openstack_worker_creation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Troubleshooting OpenShift on OpenStack worker creation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../openstack/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    OpenStack
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            OpenStack
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openstack/reattach_to_running_deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Reattach to running deployment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openstack/using_clouds_yaml/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Using clouds.yaml
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../coding/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Coding
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Coding
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../coding/operator-sdk-reconciliation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Controller Reconciliation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../coding/vimrc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    My vimrc
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../coding/golang-ip-conversion/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Golang IP address conversion
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+        </div>
+      </div>
+    </div>
+  
+  
+    
+    <!--
+    <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner">
+          
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+</nav>
+        </div>
+      </div>
+    </div>
+    -->
+  
+
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="rss-irq-affinity-and-rps-on-linux">RSS, IRQ affinity and RPS on Linux</h1>
+<h2 id="lab-setup">Lab setup</h2>
+<p>2 RHEL 9 virtual machines with 2 interfaces each. We are going to connect to the instances via eth0 and we are going to
+run our tests via eth1.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="w"> </span>┌──────────────────────┐<span class="w">                       </span>┌──────────────────────┐<span class="w"> </span>
+<span class="w"> </span>│<span class="w">                      </span>│<span class="w">                       </span>│<span class="w">                      </span>│<span class="w"> </span>
+<span class="w"> </span>│<span class="w">                  </span>┌─────────────┐<span class="w">   </span>┌─────────────┐<span class="w">                  </span>│<span class="w"> </span>
+<span class="w"> </span>│<span class="w">        </span><span class="n">LG</span><span class="w">        </span>│<span class="w">     </span><span class="n">eth1</span><span class="w">    </span>├───┤<span class="w">     </span><span class="n">eth1</span><span class="w">    </span>│<span class="w">      </span><span class="n">DUT</span><span class="w">         </span>│<span class="w"> </span>
+<span class="w"> </span>│<span class="w">                  </span>└─────────────┘<span class="w">   </span>└─────────────┘<span class="w">                  </span>│<span class="w"> </span>
+<span class="w"> </span>│<span class="w">   </span>┌──────────────┐<span class="w">   </span>│<span class="w">                       </span>│<span class="w">   </span>┌──────────────┐<span class="w">   </span>│<span class="w"> </span>
+<span class="w"> </span>└───│<span class="w">     </span><span class="n">eth0</span><span class="w">     </span>│───┘<span class="w">                       </span>└───│<span class="w">     </span><span class="n">eth0</span><span class="w">     </span>│───┘<span class="w"> </span>
+<span class="w">     </span>└──────────────┘<span class="w">                               </span>└──────────────┘<span class="w">     </span>
+<span class="w">                    </span><span class="m">192.168</span><span class="n">.</span><span class="m">123.11</span><span class="w"> </span><span class="o">&lt;-&gt;</span><span class="w"> </span><span class="m">192.168</span><span class="n">.</span><span class="m">123.10</span>
+</code></pre></div></td></tr></table></div>
+<blockquote>
+<p><strong>DUT:</strong> Device Under Test (server, VM with 4 queues on eth1)
+  <strong>LG:</strong> Load Generator (client)</p>
+</blockquote>
+<p>Both VMs have 8 GB of memory and 8 CPUs each:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="w">  </span><span class="nt">&lt;memory</span><span class="w"> </span><span class="na">unit=</span><span class="s">&#39;KiB&#39;</span><span class="nt">&gt;</span>8388608<span class="nt">&lt;/memory&gt;</span>
+<span class="w">  </span><span class="nt">&lt;currentMemory</span><span class="w"> </span><span class="na">unit=</span><span class="s">&#39;KiB&#39;</span><span class="nt">&gt;</span>8388608<span class="nt">&lt;/currentMemory&gt;</span>
+<span class="w">  </span><span class="nt">&lt;vcpu</span><span class="w"> </span><span class="na">placement=</span><span class="s">&#39;static&#39;</span><span class="nt">&gt;</span>8<span class="nt">&lt;/vcpu&gt;</span>
+</code></pre></div></td></tr></table></div>
+<p>In addition, the secondary interface of the Device Under Test (DUT) is configured to have 4 queues:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="w">    </span><span class="nt">&lt;interface</span><span class="w"> </span><span class="na">type=</span><span class="s">&#39;network&#39;</span><span class="nt">&gt;</span>
+<span class="w">      </span><span class="nt">&lt;mac</span><span class="w"> </span><span class="na">address=</span><span class="s">&#39;52:54:00:de:e0:51&#39;</span><span class="nt">/&gt;</span>
+<span class="w">      </span><span class="nt">&lt;source</span><span class="w"> </span><span class="na">network=</span><span class="s">&#39;isol1&#39;</span><span class="w"> </span><span class="na">portid=</span><span class="s">&#39;cd8d35ef-9ac1-4254-beea-ee8f57b0d176&#39;</span><span class="w"> </span><span class="na">bridge=</span><span class="s">&#39;virbr5&#39;</span><span class="nt">/&gt;</span>
+<span class="w">      </span><span class="nt">&lt;target</span><span class="w"> </span><span class="na">dev=</span><span class="s">&#39;vnet3&#39;</span><span class="nt">/&gt;</span>
+<span class="w">      </span><span class="nt">&lt;model</span><span class="w"> </span><span class="na">type=</span><span class="s">&#39;virtio&#39;</span><span class="nt">/&gt;</span>
+<span class="w">      </span><span class="nt">&lt;driver</span><span class="w"> </span><span class="na">name=</span><span class="s">&#39;vhost&#39;</span><span class="w"> </span><span class="na">queues=</span><span class="s">&#39;4&#39;</span><span class="nt">/&gt;</span>
+<span class="w">      </span><span class="nt">&lt;alias</span><span class="w"> </span><span class="na">name=</span><span class="s">&#39;net1&#39;</span><span class="nt">/&gt;</span>
+<span class="w">      </span><span class="nt">&lt;address</span><span class="w"> </span><span class="na">type=</span><span class="s">&#39;pci&#39;</span><span class="w"> </span><span class="na">domain=</span><span class="s">&#39;0x0000&#39;</span><span class="w"> </span><span class="na">bus=</span><span class="s">&#39;0x07&#39;</span><span class="w"> </span><span class="na">slot=</span><span class="s">&#39;0x00&#39;</span><span class="w"> </span><span class="na">function=</span><span class="s">&#39;0x0&#39;</span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/interface&gt;</span>
+</code></pre></div></td></tr></table></div>
+<blockquote>
+<p><strong>Note</strong> If you set up your VMs with Virtual Machine Manager, you have to add line <code class="highlight">&lt;driver name=&#39;vhost&#39; queues=&#39;4&#39;/&gt;</code>
+via the XML input field.</p>
+</blockquote>
+<h2 id="test-application">Test application</h2>
+<p>The test application is a simple client &lt;-&gt; server application written in Golang. The client opens a connection, writes
+a message which is received by the server, and closes the connection. It does so asynchronously at a given provided
+rate. The application's goal is not to be particularly performant; instead, it shall be easy to understand, have a
+configurable rate and support both IPv4 UDP and TCP.</p>
+<p>You can find the code at <a href="https://github.com/andreaskaris/golang-loadgen/">https://github.com/andreaskaris/golang-loadgen/</a>.</p>
+<p>The application can send/receive traffic for both TCP and UDP. In the interest of brevity, I'll focus on the UDP part
+only.</p>
+<h3 id="server-code">Server code</h3>
+<p>The entire UDP server code is pretty simple and should be self explanatory:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">func</span><span class="w"> </span><span class="n">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">Code</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">server</span><span class="o">.</span><span class="w"> </span><span class="n">See</span><span class="w"> </span><span class="n">server</span><span class="p">()</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">more</span><span class="w"> </span><span class="n">details</span><span class="o">.</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">*</span><span class="n">serverFlag</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">server</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">hostFlag</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">portFlag</span><span class="p">);</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nb">log</span><span class="o">.</span><span class="n">Fatalf</span><span class="p">(</span><span class="s2">&quot;could not create server, err: %q&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="p">)</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="o">//</span><span class="w"> </span><span class="n">server</span><span class="w"> </span><span class="n">implements</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">logic</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">server</span><span class="o">.</span><span class="w"> </span><span class="n">It</span><span class="w"> </span><span class="n">uses</span><span class="w"> </span><span class="n">helper</span><span class="w"> </span><span class="n">functions</span><span class="w"> </span><span class="n">tcpServer</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">udpServer</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">implement</span><span class="w"> </span><span class="n">servers</span>
+<span class="o">//</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">respective</span><span class="w"> </span><span class="n">protocols</span><span class="o">.</span>
+<span class="k">func</span><span class="w"> </span><span class="n">server</span><span class="p">(</span><span class="n">proto</span><span class="p">,</span><span class="w"> </span><span class="n">host</span><span class="w"> </span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="p">)</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">hostPort</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">fmt</span><span class="o">.</span><span class="n">Sprintf</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">:</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">host</span><span class="p">,</span><span class="w"> </span><span class="n">port</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">proto</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">UDP</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">udpServer</span><span class="p">(</span><span class="n">proto</span><span class="p">,</span><span class="w"> </span><span class="n">hostPort</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">proto</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">TCP</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">tcpServer</span><span class="p">(</span><span class="n">proto</span><span class="p">,</span><span class="w"> </span><span class="n">hostPort</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">fmt</span><span class="o">.</span><span class="n">Errorf</span><span class="p">(</span><span class="s2">&quot;unsupported protocol: %q&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">proto</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="o">//</span><span class="w"> </span><span class="n">udpServer</span><span class="w"> </span><span class="n">implements</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">logic</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">UDP</span><span class="w"> </span><span class="n">server</span><span class="o">.</span><span class="w"> </span><span class="n">It</span><span class="w"> </span><span class="n">listens</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">given</span><span class="w"> </span><span class="n">UDP</span><span class="w"> </span><span class="n">socket</span><span class="o">.</span><span class="w"> </span><span class="n">It</span><span class="w"> </span><span class="n">reads</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">socket</span><span class="w"> </span><span class="ow">and</span>
+<span class="o">//</span><span class="w"> </span><span class="nb">prints</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">flag</span><span class="w"> </span><span class="o">-</span><span class="n">debug</span><span class="w"> </span><span class="n">was</span><span class="w"> </span><span class="n">provided</span><span class="o">.</span>
+<span class="k">func</span><span class="w"> </span><span class="n">udpServer</span><span class="p">(</span><span class="n">proto</span><span class="p">,</span><span class="w"> </span><span class="n">hostPort</span><span class="w"> </span><span class="n">string</span><span class="p">)</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">addr</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">net</span><span class="o">.</span><span class="n">ResolveUDPAddr</span><span class="p">(</span><span class="n">proto</span><span class="p">,</span><span class="w"> </span><span class="n">hostPort</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">err</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">net</span><span class="o">.</span><span class="n">ListenUDP</span><span class="p">(</span><span class="s2">&quot;udp&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">addr</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">err</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">defer</span><span class="w"> </span><span class="n">conn</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span>
+<span class="w">    </span><span class="n">buffer</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">make</span><span class="p">([]</span><span class="n">byte</span><span class="p">,</span><span class="w"> </span><span class="mi">1024</span><span class="p">)</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="k">remote</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">conn</span><span class="o">.</span><span class="n">ReadFromUDP</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nb">log</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s2">&quot;could not read from UDP buffer, err: %q&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="p">)</span>
+<span class="w">            </span><span class="k">continue</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">*</span><span class="n">debugFlag</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nb">log</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s2">&quot;read from remote </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">remote</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="n">buffer</span><span class="p">[:</span><span class="n">n</span><span class="p">]))</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>The client code is even simpler:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">func</span><span class="w"> </span><span class="n">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">Code</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">client</span><span class="o">.</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="n">calculates</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">sleep</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="n">between</span><span class="w"> </span><span class="n">subsequent</span><span class="w"> </span><span class="n">attempts</span><span class="w"> </span><span class="n">based</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">rate</span><span class="o">.</span>
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">For</span><span class="w"> </span><span class="n">example</span><span class="p">,</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">rate</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span><span class="w"> </span><span class="n">sleep</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="mi">000</span><span class="p">,</span><span class="mi">000</span><span class="p">,</span><span class="mi">000</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="mi">000</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="mi">000</span><span class="p">,</span><span class="mi">000</span><span class="w"> </span><span class="n">nanoseconds</span><span class="w"> </span><span class="n">between</span><span class="w"> </span><span class="n">messages</span>
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">send</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="n">messages</span><span class="w"> </span><span class="n">per</span><span class="w"> </span><span class="n">second</span><span class="o">.</span>
+<span class="w">    </span><span class="n">sleepInterval</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">NANOSECONDS_PER_SECOND</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="o">*</span><span class="n">rateFlag</span>
+<span class="w">    </span><span class="n">sleepTime</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">time</span><span class="o">.</span><span class="n">Nanosecond</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">time</span><span class="o">.</span><span class="n">Duration</span><span class="p">(</span><span class="n">sleepInterval</span><span class="p">)</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">time</span><span class="o">.</span><span class="n">Sleep</span><span class="p">(</span><span class="n">sleepTime</span><span class="p">)</span>
+<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">Run</span><span class="w"> </span><span class="n">each</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">its</span><span class="w"> </span><span class="n">own</span><span class="w"> </span><span class="n">go</span><span class="w"> </span><span class="n">routine</span><span class="o">.</span><span class="w"> </span><span class="n">See</span><span class="w"> </span><span class="n">client</span><span class="p">()</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">rest</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="n">logic</span><span class="o">.</span>
+<span class="w">        </span><span class="n">go</span><span class="w"> </span><span class="k">func</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">hostFlag</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">portFlag</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;msg&quot;</span><span class="p">);</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nb">log</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s2">&quot;got error on connection attempt, err: %q&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="p">)</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}()</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="o">//</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="n">implements</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="n">logic</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">single</span><span class="w"> </span><span class="n">connection</span><span class="o">.</span><span class="w"> </span><span class="n">It</span><span class="w"> </span><span class="n">opens</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">connection</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="n">proto</span><span class="w"> </span><span class="p">(</span><span class="n">TCP</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">UDP</span><span class="p">)</span><span class="w"> </span><span class="n">to</span>
+<span class="o">//</span><span class="w"> </span><span class="o">&lt;</span><span class="n">host</span><span class="o">&gt;</span><span class="p">:</span><span class="o">&lt;</span><span class="n">port</span><span class="o">&gt;</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">writes</span><span class="w"> </span><span class="o">&lt;</span><span class="n">message</span><span class="o">&gt;</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">connection</span><span class="w"> </span><span class="n">before</span><span class="w"> </span><span class="n">closing</span><span class="w"> </span><span class="n">it</span><span class="o">.</span>
+<span class="o">//</span><span class="w"> </span><span class="n">Note</span><span class="p">:</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="n">terminology</span><span class="w"> </span><span class="n">may</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">bit</span><span class="w"> </span><span class="n">confusing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="n">pushes</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">server</span><span class="p">,</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">other</span><span class="w"> </span><span class="n">way</span><span class="w"> </span><span class="n">around</span><span class="o">.</span>
+<span class="k">func</span><span class="w"> </span><span class="n">client</span><span class="p">(</span><span class="n">proto</span><span class="p">,</span><span class="w"> </span><span class="n">host</span><span class="w"> </span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="n">string</span><span class="p">)</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">net</span><span class="o">.</span><span class="n">Dial</span><span class="p">(</span><span class="n">proto</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="o">.</span><span class="n">Sprintf</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">:</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">host</span><span class="p">,</span><span class="w"> </span><span class="n">port</span><span class="p">))</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">err</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">defer</span><span class="w"> </span><span class="n">conn</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span>
+<span class="w">    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Fprint</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">nil</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="disabling-irqbalance">Disabling irqbalance</h2>
+<p>irqbalance would actually interfere with our tests. Therefore, let's disable it:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># systemctl disable --now irqbalance</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># systemctl status irqbalance</span>
+<span class="err">○</span><span class="w"> </span><span class="n">irqbalance</span><span class="o">.</span><span class="n">service</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">irqbalance</span><span class="w"> </span><span class="n">daemon</span>
+<span class="w">     </span><span class="n">Loaded</span><span class="p">:</span><span class="w"> </span><span class="n">loaded</span><span class="w"> </span><span class="p">(</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">irqbalance</span><span class="o">.</span><span class="n">service</span><span class="p">;</span><span class="w"> </span><span class="n">disabled</span><span class="p">;</span><span class="w"> </span><span class="n">preset</span><span class="p">:</span><span class="w"> </span><span class="n">enabled</span><span class="p">)</span>
+<span class="w">     </span><span class="n">Active</span><span class="p">:</span><span class="w"> </span><span class="n">inactive</span><span class="w"> </span><span class="p">(</span><span class="n">dead</span><span class="p">)</span>
+<span class="w">       </span><span class="n">Docs</span><span class="p">:</span><span class="w"> </span><span class="n">man</span><span class="p">:</span><span class="n">irqbalance</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">             </span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Irqbalance</span><span class="o">/</span><span class="n">irqbalance</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="isolating-cpus-with-tuned">Isolating CPUs with tuned</h2>
+<p>Let's isolate the last 4 CPUs of the Device Under Test with tuned. First, install tuned and the tuned-profiles-realtime
+package:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@dut ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">yum</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">tuned</span><span class="w"> </span><span class="n">tuned</span><span class="o">-</span><span class="n">profiles</span><span class="o">-</span><span class="n">realtime</span>
+</code></pre></div></td></tr></table></div>
+<p>Configure the isolated cores in <code class="highlight"><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">tuned</span><span class="o">/</span><span class="n">realtime</span><span class="o">-</span><span class="n">variables</span><span class="o">.</span><span class="n">conf</span></code>:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># grep ^isolated_cores /etc/tuned/realtime-variables.conf </span>
+<span class="n">isolated_cores</span><span class="o">=</span><span class="mi">4</span><span class="o">-</span><span class="mi">7</span>
+</code></pre></div></td></tr></table></div>
+<p>Enable the realtime profile and reboot:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@dut ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">tuned</span><span class="o">-</span><span class="n">adm</span><span class="w"> </span><span class="n">profile</span><span class="w"> </span><span class="n">realtime</span>
+<span class="o">[</span><span class="n">root@dut ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">reboot</span>
+</code></pre></div></td></tr></table></div>
+<p>When the system is back up, verify that isolation is configured:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@dut ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="o">/</span><span class="k">proc</span><span class="o">/</span><span class="n">cmdline</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="o">-</span><span class="n">Po</span><span class="w"> </span><span class="ss">&quot;isolcpus=.*? &quot;</span>
+<span class="n">isolcpus</span><span class="o">=</span><span class="n">managed_irq</span><span class="p">,</span><span class="k">domain</span><span class="p">,</span><span class="mi">4</span><span class="o">-</span><span class="mi">7</span>
+<span class="o">[</span><span class="n">root@dut ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="o">/</span><span class="k">proc</span><span class="o">/</span><span class="err">$$</span><span class="o">/</span><span class="n">status</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">Cpus_allowed_list</span>
+<span class="nl">Cpus_allowed_list</span><span class="p">:</span><span class="w">  </span><span class="mi">0</span><span class="o">-</span><span class="mi">3</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="building-the-application">Building the application</h2>
+<p>Build the test application on both nodes:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># git clone https://github.com/andreaskaris/golang-loadgen.git</span>
+<span class="n">Cloning</span><span class="w"> </span><span class="n">into</span><span class="w"> </span><span class="s1">&#39;golang-loadgen&#39;</span><span class="o">...</span>
+<span class="k">remote</span><span class="p">:</span><span class="w"> </span><span class="n">Enumerating</span><span class="w"> </span><span class="n">objects</span><span class="p">:</span><span class="w"> </span><span class="mi">13</span><span class="p">,</span><span class="w"> </span><span class="n">done</span><span class="o">.</span>
+<span class="k">remote</span><span class="p">:</span><span class="w"> </span><span class="n">Counting</span><span class="w"> </span><span class="n">objects</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="o">%</span><span class="w"> </span><span class="p">(</span><span class="mi">13</span><span class="o">/</span><span class="mi">13</span><span class="p">),</span><span class="w"> </span><span class="n">done</span><span class="o">.</span>
+<span class="k">remote</span><span class="p">:</span><span class="w"> </span><span class="n">Compressing</span><span class="w"> </span><span class="n">objects</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="o">%</span><span class="w"> </span><span class="p">(</span><span class="mi">8</span><span class="o">/</span><span class="mi">8</span><span class="p">),</span><span class="w"> </span><span class="n">done</span><span class="o">.</span>
+<span class="k">remote</span><span class="p">:</span><span class="w"> </span><span class="n">Total</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="p">(</span><span class="n">delta</span><span class="w"> </span><span class="mi">4</span><span class="p">),</span><span class="w"> </span><span class="n">reused</span><span class="w"> </span><span class="mi">11</span><span class="w"> </span><span class="p">(</span><span class="n">delta</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">pack</span><span class="o">-</span><span class="n">reused</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">Receiving</span><span class="w"> </span><span class="n">objects</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="o">%</span><span class="w"> </span><span class="p">(</span><span class="mi">13</span><span class="o">/</span><span class="mi">13</span><span class="p">),</span><span class="w"> </span><span class="n">done</span><span class="o">.</span>
+<span class="n">Resolving</span><span class="w"> </span><span class="n">deltas</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="o">%</span><span class="w"> </span><span class="p">(</span><span class="mi">4</span><span class="o">/</span><span class="mi">4</span><span class="p">),</span><span class="w"> </span><span class="n">done</span><span class="o">.</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># cd golang-loadgen/</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># make build</span>
+<span class="n">go</span><span class="w"> </span><span class="n">build</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">_output</span><span class="o">/</span><span class="n">loadgen</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="running-the-test-application-with-debug-output">Running the test application with debug output</h2>
+<p>Start the test application on the client:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">lg</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># _output/loadgen -host 192.168.123.10 -port 8080 -protocol udp -rate-per-second 10</span>
+</code></pre></div></td></tr></table></div>
+<p>Start the test application on the server and force it to run on CPUs 6 and 7:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1">#  taskset -c 6,7 _output/loadgen -server -host 192.168.123.10 -port 8080 -protocol udp -debug</span>
+<span class="mi">2024</span><span class="o">/</span><span class="mi">08</span><span class="o">/</span><span class="mi">08</span><span class="w"> </span><span class="mi">15</span><span class="p">:</span><span class="mi">46</span><span class="p">:</span><span class="mi">05</span><span class="w"> </span><span class="n">read</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="k">remote</span><span class="w"> </span><span class="mf">192.168</span><span class="o">.</span><span class="mf">123.11</span><span class="p">:</span><span class="mi">54244</span><span class="p">:</span><span class="w"> </span><span class="n">msg</span>
+<span class="mi">2024</span><span class="o">/</span><span class="mi">08</span><span class="o">/</span><span class="mi">08</span><span class="w"> </span><span class="mi">15</span><span class="p">:</span><span class="mi">46</span><span class="p">:</span><span class="mi">05</span><span class="w"> </span><span class="n">read</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="k">remote</span><span class="w"> </span><span class="mf">192.168</span><span class="o">.</span><span class="mf">123.11</span><span class="p">:</span><span class="mi">59288</span><span class="p">:</span><span class="w"> </span><span class="n">msg</span>
+<span class="mi">2024</span><span class="o">/</span><span class="mi">08</span><span class="o">/</span><span class="mi">08</span><span class="w"> </span><span class="mi">15</span><span class="p">:</span><span class="mi">46</span><span class="p">:</span><span class="mi">05</span><span class="w"> </span><span class="n">read</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="k">remote</span><span class="w"> </span><span class="mf">192.168</span><span class="o">.</span><span class="mf">123.11</span><span class="p">:</span><span class="mi">38316</span><span class="p">:</span><span class="w"> </span><span class="n">msg</span>
+<span class="mi">2024</span><span class="o">/</span><span class="mi">08</span><span class="o">/</span><span class="mi">08</span><span class="w"> </span><span class="mi">15</span><span class="p">:</span><span class="mi">46</span><span class="p">:</span><span class="mi">05</span><span class="w"> </span><span class="n">read</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="k">remote</span><span class="w"> </span><span class="mf">192.168</span><span class="o">.</span><span class="mf">123.11</span><span class="p">:</span><span class="mi">54288</span><span class="p">:</span><span class="w"> </span><span class="n">msg</span>
+<span class="mi">2024</span><span class="o">/</span><span class="mi">08</span><span class="o">/</span><span class="mi">08</span><span class="w"> </span><span class="mi">15</span><span class="p">:</span><span class="mi">46</span><span class="p">:</span><span class="mi">05</span><span class="w"> </span><span class="n">read</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="k">remote</span><span class="w"> </span><span class="mf">192.168</span><span class="o">.</span><span class="mf">123.11</span><span class="p">:</span><span class="mi">58354</span><span class="p">:</span><span class="w"> </span><span class="n">msg</span>
+<span class="mi">2024</span><span class="o">/</span><span class="mi">08</span><span class="o">/</span><span class="mi">08</span><span class="w"> </span><span class="mi">15</span><span class="p">:</span><span class="mi">46</span><span class="p">:</span><span class="mi">06</span><span class="w"> </span><span class="n">read</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="k">remote</span><span class="w"> </span><span class="mf">192.168</span><span class="o">.</span><span class="mf">123.11</span><span class="p">:</span><span class="mi">60341</span><span class="p">:</span><span class="w"> </span><span class="n">msg</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="rss-tuning-nic-queues-and-rx-interrupt-affinity">RSS + Tuning NIC queues and RX interrupt affinity</h2>
+<h3 id="whats-rss">What's RSS?</h3>
+<p>RSS, short for Receive Side Scaling, is an in-hardware feature that allows a NIC to "send different packets to different
+queues to distribute processing among CPUs. The NIC distributes packets by applying a filter to each packet that assigns
+it to one of a small number of logical flows. Packets for each flow are steered to a separate receive queue, which in
+turn can be processed by separate CPUs." For more details, have a look at the
+<a href="https://www.kernel.org/doc/html/latest/networking/scaling.html">Scaling in the Linux Networking Stack</a>.</p>
+<p>RSS happens in hardware for modern NICs and is enabled by default. Virtio supports multiqueue and RSS when the vhostnet
+driver is used (see our Virtual Machine setup instructions earlier).</p>
+<p>It's possible to show some information about RSS with <code class="highlight"><span class="n">ethtool</span><span class="w"> </span><span class="o">-</span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="n">interface</span><span class="o">&gt;</span></code>. As far as I know, it's not possible to
+modify RSS configuration for virtio (when I tried, my VM froze). However, for real NICs such as recent Intel or
+Mellanox/Nvidia devices, plenty of configuration options are available to influence how RSS steers packets to queues.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># ethtool -x eth1</span>
+
+<span class="n">RX</span><span class="w"> </span><span class="n">flow</span><span class="w"> </span><span class="nb">hash</span><span class="w"> </span><span class="n">indirection</span><span class="w"> </span><span class="n">table</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">eth1</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">RX</span><span class="w"> </span><span class="n">ring</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<span class="n">Operation</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">supported</span>
+<span class="n">RSS</span><span class="w"> </span><span class="nb">hash</span><span class="w"> </span><span class="n">key</span><span class="p">:</span>
+<span class="n">Operation</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">supported</span>
+<span class="n">RSS</span><span class="w"> </span><span class="nb">hash</span><span class="w"> </span><span class="n">function</span><span class="p">:</span>
+<span class="w">    </span><span class="n">toeplitz</span><span class="p">:</span><span class="w"> </span><span class="n">on</span>
+<span class="w">    </span><span class="n">xor</span><span class="p">:</span><span class="w"> </span><span class="n">off</span>
+<span class="w">    </span><span class="n">crc32</span><span class="p">:</span><span class="w"> </span><span class="n">off</span>
+</code></pre></div></td></tr></table></div>
+<h3 id="reducing-queue-count-to-2">Reducing queue count to 2</h3>
+<p>To make things a little bit more manageable, let's reduce our queue count (both for RX and TX) to 2:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># ethtool -l eth1</span>
+<span class="n">Channel</span><span class="w"> </span><span class="n">parameters</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">eth1</span><span class="p">:</span>
+<span class="n">Pre</span><span class="o">-</span><span class="n">set</span><span class="w"> </span><span class="n">maximums</span><span class="p">:</span>
+<span class="n">RX</span><span class="p">:</span><span class="w">     </span><span class="n">n</span><span class="o">/</span><span class="n">a</span>
+<span class="n">TX</span><span class="p">:</span><span class="w">     </span><span class="n">n</span><span class="o">/</span><span class="n">a</span>
+<span class="n">Other</span><span class="p">:</span><span class="w">      </span><span class="n">n</span><span class="o">/</span><span class="n">a</span>
+<span class="n">Combined</span><span class="p">:</span><span class="w">   </span><span class="mi">4</span>
+<span class="n">Current</span><span class="w"> </span><span class="n">hardware</span><span class="w"> </span><span class="n">settings</span><span class="p">:</span>
+<span class="n">RX</span><span class="p">:</span><span class="w">     </span><span class="n">n</span><span class="o">/</span><span class="n">a</span>
+<span class="n">TX</span><span class="p">:</span><span class="w">     </span><span class="n">n</span><span class="o">/</span><span class="n">a</span>
+<span class="n">Other</span><span class="p">:</span><span class="w">      </span><span class="n">n</span><span class="o">/</span><span class="n">a</span>
+<span class="n">Combined</span><span class="p">:</span><span class="w">   </span><span class="mi">4</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># ethtool -L eth1 combined 2</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># ethtool -l eth1</span>
+<span class="n">Channel</span><span class="w"> </span><span class="n">parameters</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">eth1</span><span class="p">:</span>
+<span class="n">Pre</span><span class="o">-</span><span class="n">set</span><span class="w"> </span><span class="n">maximums</span><span class="p">:</span>
+<span class="n">RX</span><span class="p">:</span><span class="w">     </span><span class="n">n</span><span class="o">/</span><span class="n">a</span>
+<span class="n">TX</span><span class="p">:</span><span class="w">     </span><span class="n">n</span><span class="o">/</span><span class="n">a</span>
+<span class="n">Other</span><span class="p">:</span><span class="w">      </span><span class="n">n</span><span class="o">/</span><span class="n">a</span>
+<span class="n">Combined</span><span class="p">:</span><span class="w">   </span><span class="mi">4</span>
+<span class="n">Current</span><span class="w"> </span><span class="n">hardware</span><span class="w"> </span><span class="n">settings</span><span class="p">:</span>
+<span class="n">RX</span><span class="p">:</span><span class="w">     </span><span class="n">n</span><span class="o">/</span><span class="n">a</span>
+<span class="n">TX</span><span class="p">:</span><span class="w">     </span><span class="n">n</span><span class="o">/</span><span class="n">a</span>
+<span class="n">Other</span><span class="p">:</span><span class="w">      </span><span class="n">n</span><span class="o">/</span><span class="n">a</span>
+<span class="n">Combined</span><span class="p">:</span><span class="w">   </span><span class="mi">2</span>
+</code></pre></div></td></tr></table></div>
+<h3 id="identifying-and-reading-per-queue-interrupts">Identifying and reading per queue interrupts</h3>
+<p>Let's find the interrupt names for eth1. Get the bus-info:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># ethtool -i eth1 | grep bus-info</span>
+<span class="n">bus</span><span class="o">-</span><span class="n">info</span><span class="p">:</span><span class="w"> </span><span class="mi">0000</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mf">00.0</span>
+</code></pre></div></td></tr></table></div>
+<p>And let's get the device name as it appears in /proc/interrupts:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># find /sys/devices -name 0000:07:00.0</span>
+<span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">devices</span><span class="o">/</span><span class="n">pci0000</span><span class="p">:</span><span class="mi">00</span><span class="o">/</span><span class="mi">0000</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mf">02.6</span><span class="o">/</span><span class="mi">0000</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mf">00.0</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># ls -d /sys/devices/pci0000:00/0000:00:02.6/0000:07:00.0/virtio*</span>
+<span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">devices</span><span class="o">/</span><span class="n">pci0000</span><span class="p">:</span><span class="mi">00</span><span class="o">/</span><span class="mi">0000</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mf">02.6</span><span class="o">/</span><span class="mi">0000</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mf">00.0</span><span class="o">/</span><span class="n">virtio6</span>
+</code></pre></div></td></tr></table></div>
+<p>We can now read the interrupts for the NIC:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># cat /proc/interrupts | grep -E &#39;CPU|virtio6&#39;</span>
+<span class="w">           </span><span class="n">CPU0</span><span class="w">       </span><span class="n">CPU1</span><span class="w">       </span><span class="n">CPU2</span><span class="w">       </span><span class="n">CPU3</span><span class="w">       </span><span class="n">CPU4</span><span class="w">       </span><span class="n">CPU5</span><span class="w">       </span><span class="n">CPU6</span><span class="w">       </span><span class="n">CPU7</span><span class="w">       </span>
+<span class="w"> </span><span class="mi">52</span><span class="p">:</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">0</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="n">config</span>
+<span class="w"> </span><span class="mi">53</span><span class="p">:</span><span class="w">    </span><span class="mi">7159429</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">1</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">1</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="n">input</span><span class="o">.</span><span class="mi">0</span>
+<span class="w"> </span><span class="mi">54</span><span class="p">:</span><span class="w">        </span><span class="mi">417</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">1</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">2</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="n">output</span><span class="o">.</span><span class="mi">0</span>
+<span class="w"> </span><span class="mi">55</span><span class="p">:</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">   </span><span class="mi">11189465</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">1</span><span class="w">       </span><span class="mi">2260</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">3</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="n">input</span><span class="o">.</span><span class="mi">1</span>
+<span class="w"> </span><span class="mi">56</span><span class="p">:</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">        </span><span class="mi">165</span><span class="w">          </span><span class="mi">0</span><span class="w">        </span><span class="mi">220</span><span class="w">          </span><span class="mi">1</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">4</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="n">output</span><span class="o">.</span><span class="mi">1</span>
+<span class="w"> </span><span class="mi">57</span><span class="p">:</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">   </span><span class="mi">11296239</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">1</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">5</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="n">input</span><span class="o">.</span><span class="mi">2</span>
+<span class="w"> </span><span class="mi">58</span><span class="p">:</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">6</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="n">output</span><span class="o">.</span><span class="mi">2</span>
+<span class="w"> </span><span class="mi">59</span><span class="p">:</span><span class="w">   </span><span class="mi">11620198</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">2</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">7</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="n">input</span><span class="o">.</span><span class="mi">3</span>
+<span class="w"> </span><span class="mi">60</span><span class="p">:</span><span class="w">          </span><span class="mi">0</span><span class="w">         </span><span class="mi">13</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">8</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="n">output</span><span class="o">.</span><span class="mi">3</span>
+</code></pre></div></td></tr></table></div>
+<p>Note that virtio will show all 4 queues for each input and output in /proc/interrupts, even though 2 of each are disabled.</p>
+<p>We can however easily check that the setting is working. Let's start our application on the server on CPUs 6 and 7:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1">#  taskset -c 6,7 _output/loadgen -server -host 192.168.123.10 -port 8080 -protocol udp</span>
+</code></pre></div></td></tr></table></div>
+<p>And on the client:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">lg</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># _output/loadgen -host 192.168.123.10 -port 8080 -protocol udp -rate-per-second 1000000000</span>
+</code></pre></div></td></tr></table></div>
+<p>And you can see that interrupts for queues virtio6-input.0 and virtio6-input.1 increment as RSS balances flows
+across the 2 remaining queues. At the same time, queues 2 and 3 are disabled.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@dut ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="err">{</span><span class="mf">1..2</span><span class="err">}</span><span class="p">;</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">virtio6</span><span class="o">-</span><span class="k">input</span><span class="w"> </span><span class="o">/</span><span class="k">proc</span><span class="o">/</span><span class="n">interrupts</span><span class="p">;</span><span class="w"> </span><span class="n">sleep</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w"> </span><span class="n">done</span>
+<span class="w"> </span><span class="mi">53</span><span class="err">:</span><span class="w">   </span><span class="mi">65257722</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">1</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="err">:</span><span class="mi">07</span><span class="err">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">1</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="k">input</span><span class="mf">.0</span>
+<span class="w"> </span><span class="mi">55</span><span class="err">:</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">   </span><span class="mi">11189465</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">1</span><span class="w">   </span><span class="mi">34166088</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="err">:</span><span class="mi">07</span><span class="err">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">3</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="k">input</span><span class="mf">.1</span>
+<span class="w"> </span><span class="mi">57</span><span class="err">:</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">   </span><span class="mi">11296239</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">1</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="err">:</span><span class="mi">07</span><span class="err">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">5</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="k">input</span><span class="mf">.2</span>
+<span class="w"> </span><span class="mi">59</span><span class="err">:</span><span class="w">   </span><span class="mi">11620198</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">2</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="err">:</span><span class="mi">07</span><span class="err">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">7</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="k">input</span><span class="mf">.3</span>
+<span class="w"> </span><span class="mi">53</span><span class="err">:</span><span class="w">   </span><span class="mi">65419955</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">1</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="err">:</span><span class="mi">07</span><span class="err">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">1</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="k">input</span><span class="mf">.0</span>
+<span class="w"> </span><span class="mi">55</span><span class="err">:</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">   </span><span class="mi">11189465</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">1</span><span class="w">   </span><span class="mi">34272710</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="err">:</span><span class="mi">07</span><span class="err">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">3</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="k">input</span><span class="mf">.1</span>
+<span class="w"> </span><span class="mi">57</span><span class="err">:</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">   </span><span class="mi">11296239</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">1</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="err">:</span><span class="mi">07</span><span class="err">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">5</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="k">input</span><span class="mf">.2</span>
+<span class="w"> </span><span class="mi">59</span><span class="err">:</span><span class="w">   </span><span class="mi">11620198</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">2</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="err">:</span><span class="mi">07</span><span class="err">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">7</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="k">input</span><span class="mf">.3</span>
+</code></pre></div></td></tr></table></div>
+<h3 id="configuring-smp-affinity-for-rx-queue-interrupts">Configuring SMP affinity for RX queue interrupts</h3>
+<p>Next, let's move the SMP affinity for our queues' interrupts to CPUs 4 and 5. The softirqs will be processed on the same
+NICs by default.</p>
+<p>You can get the interrupt numbers for virtio6-input.0 (in this case 53) and virtio6-input.1 (in this case 55) from
+/proc/interrupts.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># cat /proc/irq/53/smp_affinity</span>
+<span class="mi">0</span><span class="n">f</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># cat /proc/irq/53/smp_affinity_list</span>
+<span class="mi">0</span><span class="o">-</span><span class="mi">3</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># cat /proc/irq/55/smp_affinity</span>
+<span class="n">f0</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># cat /proc/irq/55/smp_affinity_list</span>
+<span class="mi">4</span><span class="o">-</span><span class="mi">7</span>
+</code></pre></div></td></tr></table></div>
+<p>That matches what we saw earlier: virtio6-input.0's affinity currently is CPUs 0-3 and in /proc/interrupts we saw that
+it generated interrupts on CPU 0. virtio6-input.1's affinity currently is CPUs 4-7 and in /proc/interrupts we saw that
+it generated interrupts on CPU 5. But wait, irqbalance is switched off, and we even rebooted the system. Why are our
+IRQs distributed between our CPUs and why aren't they allowed on all CPUs? To be confirmed, but the answer may be in
+<a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5e385a6ef31f">this commit</a>.</p>
+<p>Let's force virtio6-input.0 onto CPU 2 and virtio6-input.1 onto CPU 3. The affinity can be any CPU, regardless of our
+tuned configuration, either from the system CPU set or from the isolated CPU set. But I already moved IRQs to isolated
+CPUs during an earlier test, so for the sake of it, I want to move them to system reserved CPUs now :-)</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># echo 04 &gt; /proc/irq/53/smp_affinity</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># cat /proc/irq/53/smp_affinity_list</span>
+<span class="mi">2</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># echo 08 &gt; /proc/irq/55/smp_affinity</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># cat /proc/irq/55/smp_affinity_list</span>
+<span class="mi">3</span>
+</code></pre></div></td></tr></table></div>
+<p>Start the server and the client again with the same affinity for the server:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1">#  taskset -c 6,7 _output/loadgen -server -host 192.168.123.10 -port 8080 -protocol udp</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">lg</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># _output/loadgen -host 192.168.123.10 -port 8080 -protocol udp -rate-per-second 1000000000</span>
+</code></pre></div></td></tr></table></div>
+<p>And now, interrupts increase for virtio6-input.0 on CPU 2 and for virtio6-input.1 on CPU 3:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@dut ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="err">{</span><span class="mf">1..2</span><span class="err">}</span><span class="p">;</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="n">virtio6</span><span class="o">-</span><span class="k">input</span><span class="w"> </span><span class="o">/</span><span class="k">proc</span><span class="o">/</span><span class="n">interrupts</span><span class="p">;</span><span class="w"> </span><span class="n">sleep</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w"> </span><span class="n">done</span>
+<span class="w"> </span><span class="mi">53</span><span class="err">:</span><span class="w">   </span><span class="mi">72469349</span><span class="w">          </span><span class="mi">0</span><span class="w">     </span><span class="mi">677467</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="err">:</span><span class="mi">07</span><span class="err">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">1</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="k">input</span><span class="mf">.0</span>
+<span class="w"> </span><span class="mi">55</span><span class="err">:</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">   </span><span class="mi">11189465</span><span class="w">     </span><span class="mi">350044</span><span class="w">          </span><span class="mi">1</span><span class="w">   </span><span class="mi">38659605</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="err">:</span><span class="mi">07</span><span class="err">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">3</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="k">input</span><span class="mf">.1</span>
+<span class="w"> </span><span class="mi">57</span><span class="err">:</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">   </span><span class="mi">11296239</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">1</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="err">:</span><span class="mi">07</span><span class="err">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">5</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="k">input</span><span class="mf">.2</span>
+<span class="w"> </span><span class="mi">59</span><span class="err">:</span><span class="w">   </span><span class="mi">11620198</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">2</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="err">:</span><span class="mi">07</span><span class="err">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">7</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="k">input</span><span class="mf">.3</span>
+<span class="w"> </span><span class="mi">53</span><span class="err">:</span><span class="w">   </span><span class="mi">72469349</span><span class="w">          </span><span class="mi">0</span><span class="w">     </span><span class="mi">995563</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="err">:</span><span class="mi">07</span><span class="err">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">1</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="k">input</span><span class="mf">.0</span>
+<span class="w"> </span><span class="mi">55</span><span class="err">:</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">   </span><span class="mi">11189465</span><span class="w">     </span><span class="mi">535187</span><span class="w">          </span><span class="mi">1</span><span class="w">   </span><span class="mi">38659605</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="err">:</span><span class="mi">07</span><span class="err">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">3</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="k">input</span><span class="mf">.1</span>
+<span class="w"> </span><span class="mi">57</span><span class="err">:</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">   </span><span class="mi">11296239</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">1</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="err">:</span><span class="mi">07</span><span class="err">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">5</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="k">input</span><span class="mf">.2</span>
+<span class="w"> </span><span class="mi">59</span><span class="err">:</span><span class="w">   </span><span class="mi">11620198</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">2</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="err">:</span><span class="mi">07</span><span class="err">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">7</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="k">input</span><span class="mf">.3</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="using-flamegraphs-to-analyze-cpu-activity">Using flamegraphs to analyze CPU activity</h2>
+<p>Now that we configured out server to run on CPUs 6 and 7, and our receive queue interrupts on CPUs 2 and 3, let's
+profile our CPUs. Let's use perf script to create flamegraphs:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@dut ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="err">{</span><span class="mf">0..7</span><span class="err">}</span><span class="p">;</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="err">$</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="err">$</span><span class="p">(</span><span class="n">pwd</span><span class="p">)</span><span class="o">/</span><span class="n">irq_smp_affinity</span><span class="p">.</span><span class="err">$</span><span class="n">c</span><span class="p">;</span><span class="w"> </span><span class="n">mkdir</span><span class="w"> </span><span class="err">$</span><span class="n">d</span><span class="p">;</span><span class="w"> </span><span class="n">pushd</span><span class="w"> </span><span class="err">$</span><span class="n">d</span><span class="p">;</span><span class="w"> </span><span class="n">perf</span><span class="w"> </span><span class="n">script</span><span class="w"> </span><span class="n">flamegraph</span><span class="w"> </span><span class="o">-</span><span class="n">C</span><span class="w"> </span><span class="err">$</span><span class="n">c</span><span class="w"> </span><span class="o">-</span><span class="n">F</span><span class="w"> </span><span class="mi">99</span><span class="w"> </span><span class="n">sleep</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w"> </span><span class="n">popd</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">done</span>
+<span class="p">(...</span><span class="w"> </span><span class="n">wait</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">seconds</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">...</span>
+</code></pre></div></td></tr></table></div>
+<p>Now, copy the flamegraphs to your local system for analysis. You can access the flamegraphs of my test runs here:
+<img alt="IRQ smp affinity - flamegraph 0" src="/src/rss-irq-affinity-and-rps/irq_smp_affinity.0/flamegraph.html" />
+<img alt="IRQ smp affinity - flamegraph 1" src="/src/rss-irq-affinity-and-rps/irq_smp_affinity.1/flamegraph.html" />
+<img alt="IRQ smp affinity - flamegraph 2" src="/src/rss-irq-affinity-and-rps/irq_smp_affinity.2/flamegraph.html" />
+<img alt="IRQ smp affinity - flamegraph 3" src="/src/rss-irq-affinity-and-rps/irq_smp_affinity.3/flamegraph.html" />
+<img alt="IRQ smp affinity - flamegraph 4" src="/src/rss-irq-affinity-and-rps/irq_smp_affinity.4/flamegraph.html" />
+<img alt="IRQ smp affinity - flamegraph 5" src="/src/rss-irq-affinity-and-rps/irq_smp_affinity.5/flamegraph.html" />
+<img alt="IRQ smp affinity - flamegraph 6" src="/src/rss-irq-affinity-and-rps/irq_smp_affinity.6/flamegraph.html" />
+<img alt="IRQ smp affinity - flamegraph 7" src="/src/rss-irq-affinity-and-rps/irq_smp_affinity.7/flamegraph.html" /></p>
+
+
+
+
+
+
+
+  
+    
+  
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">August 8, 2024</span>
+  </span>
+
+    
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+      
+    
+  </body>
+</html>

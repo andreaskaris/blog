@@ -614,15 +614,27 @@ our golang server, we also already talked about this.
 
 Let's first focus on CPU 2. We can see that it polls the queue in `_napi_poll`. We can also see that it spends roughly
 the same amount in `net_rps_send_ipi` (you can click on `asm_common_interrupt` to zoom in further).
+
+![rps_cpu2_zoom_asm_common_interrupt](https://github.com/user-attachments/assets/6cd01347-9e1a-4f86-96a7-b1ee955af0b7)
+
 Now, zoom into `napi_complete_done`. You see here that `netif_receive_skb_list_internal` calls `get_rps_cpu` to
 determine the CPU to steer packets to. That matches the description from
 [Scaling in the Linux Networking Stack](https://www.kernel.org/doc/html/latest/networking/scaling.html).
 
+![rps_cpu2_zoom_napi_complete_done](https://github.com/user-attachments/assets/5e23d8a9-ff85-444f-8b6b-414b0caf790b)
+
 On the other hand, CPU 1 processes our packets after RPS for RX queue 0. We can see that `_napi_poll` runs here as
 well inside `net_rx_action`. As part of RPS, we can see here that `_netif_receive_skb_one_core` calls `ip_rcv`, 
-`ip_local_deliver` and `ip_local_deliver_finish`. We see that CPU 1 does not poll the virtio queue directly. If you
-compare that to the work that's being done on CPU 3, you can see that CPU 3 does both the polling of the virtio queue
-and it's also in charge of local delivery. So RPS generates some overhead for dispatching the packets to another
+`ip_local_deliver` and `ip_local_deliver_finish`. We see that CPU 1 does not poll the virtio queue directly.
+
+![rps_cpu1_zoom](https://github.com/user-attachments/assets/ea2f1ece-4fa0-46fa-b41f-6ed920bd4ab6)
+
+If you compare that to the work that's being done on CPU 3, you can see that CPU 3 does both the polling of the virtio queue
+and it's also in charge of local delivery.
+
+![rps_cpu3_zoom](https://github.com/user-attachments/assets/c7ea951e-14e8-4490-8efd-13b9097a7f1a)
+
+So RPS generates some overhead for dispatching the packets to another
 CPU, but it splits the work of receiving our packets between CPUs 2 and 1. (You can also observe for example that GRO
 happens on CPU 2 and not on CPU 1.)
 

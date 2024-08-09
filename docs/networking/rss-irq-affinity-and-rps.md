@@ -300,7 +300,7 @@ Let's find the interrupt names for eth1. Get the bus-info:
 bus-info: 0000:07:00.0
 ```
 
-And let's get the device name as it appears in /proc/interrupts:
+And let's get the device name as it appears in `/proc/interrupts`:
 
 ```
 [root@dut golang-loadgen]# find /sys/devices -name 0000:07:00.0
@@ -325,7 +325,7 @@ We can now read the interrupts for the NIC:
  60:          0         13          0          0          0          0          0          0  PCI-MSIX-0000:07:00.0   8-edge      virtio6-output.3
 ```
 
-Note that virtio will show all 4 queues for each input and output in /proc/interrupts, even though 2 of each are disabled.
+Note that virtio will show all 4 queues for each input and output in `/proc/interrupts`, even though 2 of each are disabled.
 
 We can however easily check that the setting is working. Let's start our application on the server on CPUs 6 and 7:
 
@@ -360,7 +360,7 @@ that the 2 lines for IRQs 57 and 59 did not change, whereas the counters for IRQ
 ### Querying SMP affinity for RX queue interrupts
 
 You can get the interrupt numbers for virtio6-input.0 (in this case 53) and virtio6-input.1 (in this case 55) from
-/proc/interrupts. Then, query `/proc/irq/<interrupt number>/smp_affinity` and smp_affinity_list.
+`/proc/interrupts`. Then, query `/proc/irq/<interrupt number>/smp_affinity` and `smp_affinity_list`.
 
 ```
 [root@dut golang-loadgen]# cat /proc/irq/53/smp_affinity

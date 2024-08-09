@@ -1,9 +1,14 @@
 # RSS, IRQ affinity and RPS on Linux
 
+In this blog post, we are going to have a look at the tuning of Linux receive queues and their interrupt requests. We
+are going to learn a bit about RSS (Receive Side Scaling), IRQ SMP affinity, RPS (Receive Packet Steering) and how to
+analyze CPUs with flamegraphs. I do not aim at going very low-level. Instead, I'd like you to get a high-level
+understanding of this topic.
+
 ## Lab setup
 
-2 RHEL 9 virtual machines with 2 interfaces each. We are going to connect to the instances via eth0 and we are going to
-run our tests via eth1.
+We spawn two RHEL 9 virtual machines with two interfaces each. We are going to connect to the instances via eth0 and we
+are going to run our tests via eth1.
 
 ![dut](https://github.com/user-attachments/assets/2bff8414-67c8-44a7-9ad8-42bad2831f98)
 > **DUT:** Device Under Test (server, VM with 4 queues on eth1)

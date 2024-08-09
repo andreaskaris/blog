@@ -360,7 +360,7 @@ that the 2 lines for IRQs 57 and 59 did not change, whereas the counters for IRQ
 ### Querying SMP affinity for RX queue interrupts
 
 You can get the interrupt numbers for virtio6-input.0 (in this case 53) and virtio6-input.1 (in this case 55) from
-/proc/interrupts. Then, query /proc/irq/<interrupt number>/smp_affinity and smp_affinity_list.
+/proc/interrupts. Then, query `/proc/irq/<interrupt number>/smp_affinity` and smp_affinity_list.
 
 ```
 [root@dut golang-loadgen]# cat /proc/irq/53/smp_affinity

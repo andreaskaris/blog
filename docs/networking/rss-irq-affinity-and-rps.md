@@ -50,7 +50,7 @@ a message which is received by the server, and closes the connection. It does so
 rate. The application's goal is not to be particularly performant; instead, it shall be easy to understand, have a
 configurable rate and support both IPv4 UDP and TCP.
 
-You can find the code at [https://github.com/andreaskaris/golang-loadgen/](https://github.com/andreaskaris/golang-loadgen/).
+You can find the code at [https://github.com/andreaskaris/golang-loadgen/tree/blog-post(https://github.com/andreaskaris/golang-loadgen/tree/blog-post).
 
 The application can send/receive traffic for both TCP and UDP. In the interest of brevity, I'll focus on the UDP part
 only.
@@ -207,6 +207,9 @@ remote: Total 13 (delta 4), reused 11 (delta 2), pack-reused 0
 Receiving objects: 100% (13/13), done.
 Resolving deltas: 100% (4/4), done.
 [root@dut ~]# cd golang-loadgen/
+[root@dut golang-loadgen]# git checkout blog-post
+branch 'blog-post' set up to track 'origin/blog-post'.
+Switched to a new branch 'blog-post'
 [root@dut golang-loadgen]# make build
 go build -o _output/loadgen
 ```
@@ -427,6 +430,8 @@ profile our CPUs. Let's use perf script to create flamegraphs:
 [root@dut ~]# for c in {0..7}; do $(d=$(pwd)/irq_smp_affinity.$c; mkdir $d; pushd $d; perf script flamegraph -C $c -F 99 sleep 5; popd) & done
 (... wait for > 5 seconds ) ...
 ```
+> **Note:** The `-F 99` means that iperf samples at a rate of 99 samples per second. Sampling isn't perfect: if the CPU
+does something very shortlived between samples, the profiler will not capture it!
 
 Now, copy the flamegraphs to your local system for analysis. You can access the flamegraphs of my test runs here:
 
@@ -438,3 +443,50 @@ Now, copy the flamegraphs to your local system for analysis. You can access the 
 * [IRQ smp affinity - flamegraph 5](../src/rss-irq-affinity-and-rps/irq_smp_affinity.5/flamegraph.html)
 * [IRQ smp affinity - flamegraph 6](../src/rss-irq-affinity-and-rps/irq_smp_affinity.6/flamegraph.html)
 * [IRQ smp affinity - flamegraph 7](../src/rss-irq-affinity-and-rps/irq_smp_affinity.7/flamegraph.html)
+
+> **Note:** This version of the flamegraphs color codes userspace code in green and kernel code in blue.
+
+The flamegraphs show us largely idle CPUs 0,1, 4 and 5 which is expected. However, CPU 7 is idle as well, even though
+the server should be running on CPUs 6 and 7.
+Have another look at the server implementation: you will see that the TCP server is multithreaded (use of go routines)
+and the UDP server is single threaded. I had not intended it to be this way - it was an omission on my side because
+I initially implemented the TCP code and then quickly added the UDP part. And looking at the flamegraph for CPU 7 makes
+painfully clear that the CPU is not executing any of our go code.
+
+The flamegraph for CPU 6 shows us our server is spending most of its time in readFromUDP, as expected. About half of
+that time is spent waiting in golang function
+[internal/poll.runtime_pollWait](https://github.com/golang/go/blob/8bba868de983dd7bf55fcd121495ba8d6e2734e7/src/runtime/netpoll.go#L334).
+In turn, this go function does an epoll_wait syscall which leads to a napi_busy_loop which is responsible for receiving
+our packets. Most of the other half is spent in syscall recvfrom.
+
+```
+man recvfrom()
+(...)
+   recvfrom()
+       recvfrom() places the received message into the buffer buf.  The caller must specify the size of the buffer in len.
+
+       If src_addr is not NULL, and the underlying protocol provides the source address of the message, that  source  address  is  placed  in  the  buffer
+       pointed to by src_addr.  In this case, addrlen is a value-result argument.  Before the call, it should be initialized to the size of the buffer as‐
+       sociated  with  src_addr.   Upon return, addrlen is updated to contain the actual size of the source address.  The returned address is truncated if
+       the buffer provided is too small; in this case, addrlen will return a value greater than was supplied to the call.
+
+       If the caller is not interested in the source address, src_addr and addrlen should be specified as NULL.
+(...)
+```
+
+![IRQ smp affinity - flamegraph 6](TBD.png)
+
+CPUs 2 and 3 process our softirqs, at roughly 20% and 13% respectively. Actually, running top or mpstat during the
+tests also showed that the CPUs were spending that amount of time processing hardware interrupts and softirqs.
+This is pure speculation, but I suppose that we do not see any hardware interrupts here for 2 reasons:
+* Linux NAPI makes sure to spend most of its time polling, thus most of the time will be spent processing softinterrupts
+in the [bottom half](https://developer.ibm.com/tutorials/l-tasklets/).
+* We do not see hard interrupts because they are missed by our samples.
+[Brendan Gregg's blog](https://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html)
+might have some tips to get to the bottom of this.
+
+![IRQ smp affinity - flamegraph 2](TBD.png)
+
+Even though most of what's happening is still difficult to understand for me, at least it's not a black box any more.
+We can see what's causing each CPU to be busy, and with the help of man pages or the actual application and kernel code
+we can dive deep into the code and try to understand how things work if we want to.

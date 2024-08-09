@@ -373,8 +373,8 @@ f0
 4-7
 ```
 
-That matches what we saw earlier: virtio6-input.0's affinity currently is CPUs 0-3 and in /proc/interrupts we saw that
-it generated interrupts on CPU 0. virtio6-input.1's affinity currently is CPUs 4-7 and in /proc/interrupts we saw that
+That matches what we saw earlier: virtio6-input.0's affinity currently is CPUs 0-3 and in `/proc/interrupts` we saw that
+it generated interrupts on CPU 0. virtio6-input.1's affinity currently is CPUs 4-7 and in `/proc/interrupts` we saw that
 it generated interrupts on CPU 5. But wait, irqbalance is switched off, and we even rebooted the system. Why are our
 IRQs distributed between our CPUs and why aren't they allowed on all CPUs? To be confirmed, but the answer may be in
 [this commit](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5e385a6ef31f).

@@ -142,9 +142,9 @@ func client(proto, host string, port int, message string) error {
 }
 ```
 
-## Disabling irqbalance
+## Disabling irqbalance on the DUT
 
-irqbalance would actually interfere with our tests. Therefore, let's disable it:
+irqbalance would actually interfere with our tests. Therefore, let's disable it on the Device Under Test:
 
 ```
 [root@dut ~]# systemctl disable --now irqbalance
@@ -156,7 +156,7 @@ irqbalance would actually interfere with our tests. Therefore, let's disable it:
              https://github.com/Irqbalance/irqbalance
 ```
 
-## Isolating CPUs with tuned
+## Isolating CPUs with tuned on the DUT
 
 Let's isolate the last 4 CPUs of the Device Under Test with tuned. First, install tuned and the tuned-profiles-realtime
 package:

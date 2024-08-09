@@ -481,9 +481,8 @@ tests also showed that the CPUs were spending that amount of time processing har
 This is pure speculation, but I suppose that we do not see any hardware interrupts here for 2 reasons:
 
 * [Linux NAPI](https://en.wikipedia.org/wiki/New_API) makes sure to spend most of its time polling, thus most of the
-time will be spent processing softinterrupts
-in the [bottom half](https://developer.ibm.com/tutorials/l-tasklets/).
-* We do not see hard interrupts because they are missed by our samples.
+time will be spent processing softirqs in the [bottom half](https://developer.ibm.com/tutorials/l-tasklets/).
+* We do not see hardware interrupts because they are missed by our samples.
 [Brendan Gregg's blog](https://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html)
 might have some tips to get to the bottom of this.
 

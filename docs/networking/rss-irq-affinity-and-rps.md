@@ -364,6 +364,21 @@ that the 2 lines for IRQs 57 and 59 did not change, whereas the counters for IRQ
  59:   11620198          0          0          0          0          0          2          0  PCI-MSIX-0000:07:00.0   7-edge      virtio6-input.3
 ```
 
+### How to translate CPUs to hex mask:
+
+In order to pin to a single CPU for an 8 CPU system, refer to the following table:
+
+| CPU | Binary mask | Hex |
+|---|---|---|
+| 0 | `0b00000001` | 01 |
+| 1 | `0b00000010` | 02 |
+| 2 | `0b00000100` | 04 |
+| 3 | `0b00001000` | 08 |
+| 4 | `0b00010000` | 10 |
+| 5 | `0b00100000` | 20 |
+| 6 | `0b01000000` | 40 |
+| 7 | `0b10000000` | 80 |
+
 ### Querying SMP affinity for RX queue interrupts
 
 You can get the interrupt numbers for virtio6-input.0 (in this case 53) and virtio6-input.1 (in this case 55) from
@@ -562,8 +577,6 @@ Let's enable receive packet steering for `rx-0`, and let's move it to CPU 4:
 [root@dut golang-loadgen]# echo 10 > /sys/devices/pci0000:00/0000:00:02.6/0000:07:00.0/virtio6/net/eth1/queues/rx-0/rps_cpus
 -bash: echo: write error: Invalid argument
 ```
-> **Note:** 1 (`0b00000001`) -> CPU 0, 2 (`0b00000010`) -> CPU 1, 4 -> CPU 2 2 (`0b000000100`), 8 -> CPU 3 2 (`0b00001000`),
-10 2 (`0b00010000`) -> CPU 4
 
 Well, that's a bummer, we can't actually configure RPS on isolated CPUs due to
 [Preventing job distribution to isolated CPUs](https://lore.kernel.org/lkml/20200625223443.2684-1-nitesh@redhat.com/T/).

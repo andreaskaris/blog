@@ -45,7 +45,7 @@ a message which is received by the server, and closes the connection. It does so
 rate. The application's goal is not to be particularly performant; instead, it shall be easy to understand, have a
 configurable rate and support both IPv4 UDP and TCP.
 
-You can find the code at [https://github.com/andreaskaris/golang-loadgen/tree/blog-post(https://github.com/andreaskaris/golang-loadgen/tree/blog-post).
+You can find the code at [https://github.com/andreaskaris/golang-loadgen/tree/blog-post](https://github.com/andreaskaris/golang-loadgen/tree/blog-post).
 
 The application can send/receive traffic for both TCP and UDP. In the interest of brevity, I'll focus on the UDP part
 only.
@@ -236,7 +236,7 @@ Start the test application on the server and force it to run on CPUs 6 and 7:
 RSS, short for Receive Side Scaling, is an in-hardware feature that allows a NIC to "send different packets to different
 queues to distribute processing among CPUs. The NIC distributes packets by applying a filter to each packet that assigns
 it to one of a small number of logical flows. Packets for each flow are steered to a separate receive queue, which in
-turn can be processed by separate CPUs." For more details, have a look at the
+turn can be processed by separate CPUs." For more details, have a look at
 [Scaling in the Linux Networking Stack](https://www.kernel.org/doc/html/latest/networking/scaling.html).
 
 RSS happens in hardware for modern NICs and is enabled by default. Virtio supports multiqueue and RSS when the vhost
@@ -307,6 +307,13 @@ And let's get the device name as it appears in `/proc/interrupts`:
 /sys/devices/pci0000:00/0000:00:02.6/0000:07:00.0
 [root@dut golang-loadgen]# ls -d /sys/devices/pci0000:00/0000:00:02.6/0000:07:00.0/virtio*
 /sys/devices/pci0000:00/0000:00:02.6/0000:07:00.0/virtio6
+```
+
+Or, even simpler, search `/sys/devices/` for `eth1`:
+
+```
+[root@dut golang-loadgen]# find /sys/devices -name eth1
+/sys/devices/pci0000:00/0000:00:02.6/0000:07:00.0/virtio6/net/eth1
 ```
 
 We can now read the interrupts for the NIC:
@@ -419,7 +426,7 @@ And now, interrupts increase for virtio6-input.0 on CPU 2 and for virtio6-input.
  59:   11620198          0          0          0          0          0          2          0  PCI-MSIX-0000:07:00.0   7-edge      virtio6-input.3
 ```
 
-## Using flamegraphs to analyze CPU activity
+### Using flamegraphs to analyze CPU activity
 
 Now that we configured our server to run on CPUs 6 and 7, and our receive queue interrupts on CPUs 2 and 3, let's
 profile our CPUs. Let's use perf script to create flamegraphs:
@@ -491,3 +498,136 @@ might have some tips to get to the bottom of this.
 Even though most of what's happening is still difficult to understand for me, at least it's not a black box any more.
 We can see what's causing each CPU to be busy, and with the help of man pages or the actual application and kernel code
 we can dive deep into the code and try to understand how things work if we want to.
+
+## RPS on the Device Under Test
+
+### What's RPS?
+
+RPS, short for Receive Packet Steering, "is logically a software implementation of RSS. Being in software, it is
+necessarily called later in the datapath. Whereas RSS selects the queue and hence CPU that will run the hardware
+interrupt handler, RPS selects the CPU to perform protocol processing above the interrupt handler. This is accomplished
+by placing the packet on the desired CPU’s backlog queue and waking up the CPU for processing. (...)
+RPS is called during bottom half of the receive interrupt handler, when a driver sends a packet up the network stack
+with netif_rx() or netif_receive_skb(). These call the get_rps_cpu() function, which selects the queue that should
+process a packet." For more details, have a look at
+[Scaling in the Linux Networking Stack](https://www.kernel.org/doc/html/latest/networking/scaling.html).
+
+### Configuring RPS for the RX queues
+
+Red Hat has a great [Knowledge Base Solution](https://access.redhat.com/solutions/62869) for configuring RPS. 
+If you cannot acccess it, refer to [Scaling in the Linux Networking Stack](https://www.kernel.org/doc/html/latest/networking/scaling.html).
+
+By default, RPS is off:
+
+```
+[root@dut golang-loadgen]# cat /sys/devices/pci0000:00/0000:00:02.6/0000:07:00.0/virtio6/net/eth1/queues/rx-0/rps_cpus
+00
+[root@dut golang-loadgen]# cat /sys/devices/pci0000:00/0000:00:02.6/0000:07:00.0/virtio6/net/eth1/queues/rx-1/rps_cpus
+00
+```
+
+Because I rebooted my virtual machines, let's first reconfigure 2 queues for eth1 and let's configure SMP affinity for
+the IRQs:
+```
+[root@dut golang-loadgen]# ethtool -L eth1 combined 2
+[root@dut golang-loadgen]# cpu_mask=4; irq=$(awk -F '[ |:]' '/virtio6-input.0/ {print $2}' /proc/interrupts); echo $cpu_mask > /proc/irq/$irq/smp_affinity; cat /proc/irq/$irq/smp_affinity_list
+2
+[root@dut golang-loadgen]# cpu_mask=8; irq=$(awk -F '[ |:]' '/virtio6-input.1/ {print $2}' /proc/interrupts); echo $cpu_mask > /proc/irq/$irq/smp_affinity; cat /proc/irq/$irq/smp_affinity_list
+3
+```
+
+Let's start our client <-> server again:
+
+```
+[root@dut golang-loadgen]#  taskset -c 6,7 _output/loadgen -server -host 192.168.123.10 -port 8080 -protocol udp
+```
+
+```
+[root@lg golang-loadgen]# _output/loadgen -host 192.168.123.10 -port 8080 -protocol udp -rate-per-second 1000000000
+```
+
+Check softirqs for `NET_RX`:
+
+```
+[root@dut golang-loadgen]# grep NET_RX /proc/softirqs; sleep 5; grep NET_RX /proc/softirqs
+      NET_RX:   12848517    1389311    3398302   13723300          2          1      11583          1
+      NET_RX:   12919247    1389313    3470609   13863586          2          1      11583          1
+```
+
+You can see that `NET_RX` softirqs are mainly processed on CPUs 2 and 3, the CPUs that we pinned our RX IRQs to.
+
+Let's enable receive packet steering for `rx-0`, and let's move it to CPU 4:
+
+```
+[root@dut golang-loadgen]# echo 10 > /sys/devices/pci0000:00/0000:00:02.6/0000:07:00.0/virtio6/net/eth1/queues/rx-0/rps_cpus
+-bash: echo: write error: Invalid argument
+```
+> **Note:** 1 (`0b00000001`) -> CPU 0, 2 (`0b00000010`) -> CPU 1, 4 -> CPU 2 2 (`0b000000100`), 8 -> CPU 3 2 (`0b00001000`),
+10 2 (`0b00010000`) -> CPU 4
+
+Well, that's a bummer, we can't actually configure RPS on isolated CPUs due to
+[Preventing job distribution to isolated CPUs](https://lore.kernel.org/lkml/20200625223443.2684-1-nitesh@redhat.com/T/).
+
+Alright, then let's move it to CPU 1:
+
+```
+[root@dut golang-loadgen]# echo 2 > /sys/devices/pci0000:00/0000:00:02.6/0000:07:00.0/virtio6/net/eth1/queues/rx-0/rps_cpus
+```
+
+Check softirqs for `NET_RX`:
+
+```
+[root@dut golang-loadgen]# grep NET_RX /proc/softirqs; sleep 5; grep NET_RX /proc/softirqs
+      NET_RX:   15085998    1498737    9060515   21808889          2    4653500      11627     146036
+      NET_RX:   15086002    1599983    9164621   21921684          2    4653500      11627     197215
+```
+
+Now, we are processing NET_RX softirqs on CPU 1 (for RPS) as well as on CPUs 2 and 3 because of IRQ SMP affinity.
+
+### Using flamegraphs to analyze CPU activity
+
+Now that we configured our server to run on CPUs 6 and 7, our receive queue interrupts on CPUs 2 and 3, and our RPS
+for RX queue 0 to use CPU 1, let's profile our CPUs. Let's use perf script to create flamegraphs:
+
+```
+[root@dut ~]# for c in {0..7}; do $(d=$(pwd)/irq_smp_affinity_and_rps.$c; mkdir $d; pushd $d; perf script flamegraph -C $c -F 99 sleep 5; popd) & done
+(... wait for > 5 seconds ) ...
+```
+> **Note:** The `-F 99` means that iperf samples at a rate of 99 samples per second. Sampling isn't perfect: if the CPU
+does something very shortlived between samples, the profiler will not capture it!
+
+Now, we'll copy the flamegraphs to our local system for analysis. You can access the flamegraphs of my test runs here:
+
+* [IRQ smp affinity - flamegraph 0](../src/rss-irq-affinity-and-rps/irq_smp_affinity_and_rps.0/flamegraph.html)
+* [IRQ smp affinity - flamegraph 1](../src/rss-irq-affinity-and-rps/irq_smp_affinity_and_rps.1/flamegraph.html)
+* [IRQ smp affinity - flamegraph 2](../src/rss-irq-affinity-and-rps/irq_smp_affinity_and_rps.2/flamegraph.html)
+* [IRQ smp affinity - flamegraph 3](../src/rss-irq-affinity-and-rps/irq_smp_affinity_and_rps.3/flamegraph.html)
+* [IRQ smp affinity - flamegraph 4](../src/rss-irq-affinity-and-rps/irq_smp_affinity_and_rps.4/flamegraph.html)
+* [IRQ smp affinity - flamegraph 5](../src/rss-irq-affinity-and-rps/irq_smp_affinity_and_rps.5/flamegraph.html)
+* [IRQ smp affinity - flamegraph 6](../src/rss-irq-affinity-and-rps/irq_smp_affinity_and_rps.6/flamegraph.html)
+* [IRQ smp affinity - flamegraph 7](../src/rss-irq-affinity-and-rps/irq_smp_affinity_and_rps.7/flamegraph.html)
+
+> **Note:** This version of the flamegraphs color codes userspace code in green and kernel code in blue.
+
+The flamegraphs show us largely idle CPUs 0, 4, 5 and 7 for the reasons that we already explained earlier. CPU 6 runs
+our golang server, we also already talked about this.
+
+Let's first focus on CPU 2. We can see that it polls the queue in `_napi_poll`. We can also see that it spends roughly
+the same amount in `net_rps_send_ipi` (you can click on `asm_common_interrupt` to zoom in further).
+Now, zoom into `napi_complete_done`. You see here that `netif_receive_skb_list_internal` calls `get_rps_cpu` to
+determine the CPU to steer packets to. That matches the description from
+[Scaling in the Linux Networking Stack](https://www.kernel.org/doc/html/latest/networking/scaling.html).
+
+On the other hand, CPU 1 processes our packets after RPS for RX queue 0. We can see that `_napi_poll` runs here as
+well inside `net_rx_action`. As part of RPS, we can see here that `_netif_receive_skb_one_core` calls `ip_rcv`, 
+`ip_local_deliver` and `ip_local_deliver_finish`. We see that CPU 1 does not poll the virtio queue directly. If you
+compare that to the work that's being done on CPU 3, you can see that CPU 3 does both the polling of the virtio queue
+and it's also in charge of local delivery. So RPS generates some overhead for dispatching the packets to another
+CPU, but it splits the work of receiving our packets between CPUs 2 and 1. (You can also observe for example that GRO
+happens on CPU 2 and not on CPU 1.)
+
+## Conclusion
+
+We could have aimed for a deeper dive by optimizing our test application, by looking at NAPI and its configuration
+and by analyzing the kernel code and by analyzing the flamegraphs more thoroughly. However, I hope that this blog post
+could serve as a short overview.

@@ -229,7 +229,7 @@ Start the test application on the server and force it to run on CPUs 6 and 7:
 2024/08/08 15:46:06 read from remote 192.168.123.11:60341: msg
 ```
 
-## RSS + Tuning NIC queues and RX interrupt affinity
+## RSS + Tuning NIC queues and RX interrupt affinity on the Device Under Test
 
 ### What's RSS?
 
@@ -239,7 +239,7 @@ it to one of a small number of logical flows. Packets for each flow are steered 
 turn can be processed by separate CPUs." For more details, have a look at the
 [Scaling in the Linux Networking Stack](https://www.kernel.org/doc/html/latest/networking/scaling.html).
 
-RSS happens in hardware for modern NICs and is enabled by default. Virtio supports multiqueue and RSS when the vhostnet
+RSS happens in hardware for modern NICs and is enabled by default. Virtio supports multiqueue and RSS when the vhost
 driver is used (see our Virtual Machine setup instructions earlier).
 
 It's possible to show some information about RSS with `ethtool -x <interface>`. As far as I know, it's not possible to
@@ -340,7 +340,10 @@ And on the client:
 ```
 
 And you can see that interrupts for queues virtio6-input.0 and virtio6-input.1 increment as RSS balances flows
-across the 2 remaining queues. At the same time, queues 2 and 3 are disabled.
+across the 2 remaining queues. At the same time, queues 2 and 3 are disabled. It might be a bit difficult to read, but
+remember that these are absolute counters from since when the machines started. Look at the delta for each of the
+queues, so compare the lines starting with 53 to each other, then the lines starting with 55, and so on. You will see
+that the 2 lines for IRQs 57 and 59 did not change, whereas the counters for IRQs 53 (CPU 0) and 55 (CPU 5) did increase.
 
 ```
 [root@dut ~]# for i in {1..2}; do grep virtio6-input /proc/interrupts; sleep 5; done

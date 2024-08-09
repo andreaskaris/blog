@@ -2642,24 +2642,7 @@
 <h2 id="lab-setup">Lab setup</h2>
 <p>2 RHEL 9 virtual machines with 2 interfaces each. We are going to connect to the instances via eth0 and we are going to
 run our tests via eth1.</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span>
-<span class="normal">7</span>
-<span class="normal">8</span>
-<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="w"> </span>┌──────────────────────┐<span class="w">                       </span>┌──────────────────────┐<span class="w"> </span>
-<span class="w"> </span>│<span class="w">                      </span>│<span class="w">                       </span>│<span class="w">                      </span>│<span class="w"> </span>
-<span class="w"> </span>│<span class="w">                  </span>┌─────────────┐<span class="w">   </span>┌─────────────┐<span class="w">                  </span>│<span class="w"> </span>
-<span class="w"> </span>│<span class="w">        </span><span class="n">LG</span><span class="w">        </span>│<span class="w">     </span><span class="n">eth1</span><span class="w">    </span>├───┤<span class="w">     </span><span class="n">eth1</span><span class="w">    </span>│<span class="w">      </span><span class="n">DUT</span><span class="w">         </span>│<span class="w"> </span>
-<span class="w"> </span>│<span class="w">                  </span>└─────────────┘<span class="w">   </span>└─────────────┘<span class="w">                  </span>│<span class="w"> </span>
-<span class="w"> </span>│<span class="w">   </span>┌──────────────┐<span class="w">   </span>│<span class="w">                       </span>│<span class="w">   </span>┌──────────────┐<span class="w">   </span>│<span class="w"> </span>
-<span class="w"> </span>└───│<span class="w">     </span><span class="n">eth0</span><span class="w">     </span>│───┘<span class="w">                       </span>└───│<span class="w">     </span><span class="n">eth0</span><span class="w">     </span>│───┘<span class="w"> </span>
-<span class="w">     </span>└──────────────┘<span class="w">                               </span>└──────────────┘<span class="w">     </span>
-<span class="w">                    </span><span class="m">192.168</span><span class="n">.</span><span class="m">123.11</span><span class="w"> </span><span class="o">&lt;-&gt;</span><span class="w"> </span><span class="m">192.168</span><span class="n">.</span><span class="m">123.10</span>
-</code></pre></div></td></tr></table></div>
+<p><img alt="dut" src="https://github.com/user-attachments/assets/2bff8414-67c8-44a7-9ad8-42bad2831f98" /></p>
 <blockquote>
 <p><strong>DUT:</strong> Device Under Test (server, VM with 4 queues on eth1)
   <strong>LG:</strong> Load Generator (client)</p>
@@ -2699,7 +2682,7 @@ via the XML input field.</p>
 a message which is received by the server, and closes the connection. It does so asynchronously at a given provided
 rate. The application's goal is not to be particularly performant; instead, it shall be easy to understand, have a
 configurable rate and support both IPv4 UDP and TCP.</p>
-<p>You can find the code at <a href="https://github.com/andreaskaris/golang-loadgen/">https://github.com/andreaskaris/golang-loadgen/</a>.</p>
+<p>You can find the code at [https://github.com/andreaskaris/golang-loadgen/tree/blog-post(https://github.com/andreaskaris/golang-loadgen/tree/blog-post).</p>
 <p>The application can send/receive traffic for both TCP and UDP. In the interest of brevity, I'll focus on the UDP part
 only.</p>
 <h3 id="server-code">Server code</h3>
@@ -2917,7 +2900,10 @@ package:</p>
 <span class="normal"> 8</span>
 <span class="normal"> 9</span>
 <span class="normal">10</span>
-<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># git clone https://github.com/andreaskaris/golang-loadgen.git</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># git clone https://github.com/andreaskaris/golang-loadgen.git</span>
 <span class="n">Cloning</span><span class="w"> </span><span class="n">into</span><span class="w"> </span><span class="s1">&#39;golang-loadgen&#39;</span><span class="o">...</span>
 <span class="k">remote</span><span class="p">:</span><span class="w"> </span><span class="n">Enumerating</span><span class="w"> </span><span class="n">objects</span><span class="p">:</span><span class="w"> </span><span class="mi">13</span><span class="p">,</span><span class="w"> </span><span class="n">done</span><span class="o">.</span>
 <span class="k">remote</span><span class="p">:</span><span class="w"> </span><span class="n">Counting</span><span class="w"> </span><span class="n">objects</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="o">%</span><span class="w"> </span><span class="p">(</span><span class="mi">13</span><span class="o">/</span><span class="mi">13</span><span class="p">),</span><span class="w"> </span><span class="n">done</span><span class="o">.</span>
@@ -2926,6 +2912,9 @@ package:</p>
 <span class="n">Receiving</span><span class="w"> </span><span class="n">objects</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="o">%</span><span class="w"> </span><span class="p">(</span><span class="mi">13</span><span class="o">/</span><span class="mi">13</span><span class="p">),</span><span class="w"> </span><span class="n">done</span><span class="o">.</span>
 <span class="n">Resolving</span><span class="w"> </span><span class="n">deltas</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="o">%</span><span class="w"> </span><span class="p">(</span><span class="mi">4</span><span class="o">/</span><span class="mi">4</span><span class="p">),</span><span class="w"> </span><span class="n">done</span><span class="o">.</span>
 <span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="o">~</span><span class="p">]</span><span class="c1"># cd golang-loadgen/</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># git checkout blog-post</span>
+<span class="n">branch</span><span class="w"> </span><span class="s1">&#39;blog-post&#39;</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">up</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">track</span><span class="w"> </span><span class="s1">&#39;origin/blog-post&#39;</span><span class="o">.</span>
+<span class="n">Switched</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">new</span><span class="w"> </span><span class="n">branch</span><span class="w"> </span><span class="s1">&#39;blog-post&#39;</span>
 <span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># make build</span>
 <span class="n">go</span><span class="w"> </span><span class="n">build</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">_output</span><span class="o">/</span><span class="n">loadgen</span>
 </code></pre></div></td></tr></table></div>
@@ -3169,6 +3158,10 @@ profile our CPUs. Let's use perf script to create flamegraphs:</p>
 <span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@dut ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="err">{</span><span class="mf">0..7</span><span class="err">}</span><span class="p">;</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="err">$</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="err">$</span><span class="p">(</span><span class="n">pwd</span><span class="p">)</span><span class="o">/</span><span class="n">irq_smp_affinity</span><span class="p">.</span><span class="err">$</span><span class="n">c</span><span class="p">;</span><span class="w"> </span><span class="n">mkdir</span><span class="w"> </span><span class="err">$</span><span class="n">d</span><span class="p">;</span><span class="w"> </span><span class="n">pushd</span><span class="w"> </span><span class="err">$</span><span class="n">d</span><span class="p">;</span><span class="w"> </span><span class="n">perf</span><span class="w"> </span><span class="n">script</span><span class="w"> </span><span class="n">flamegraph</span><span class="w"> </span><span class="o">-</span><span class="n">C</span><span class="w"> </span><span class="err">$</span><span class="n">c</span><span class="w"> </span><span class="o">-</span><span class="n">F</span><span class="w"> </span><span class="mi">99</span><span class="w"> </span><span class="n">sleep</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w"> </span><span class="n">popd</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">done</span>
 <span class="p">(...</span><span class="w"> </span><span class="n">wait</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">seconds</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">...</span>
 </code></pre></div></td></tr></table></div>
+<blockquote>
+<p><strong>Note:</strong> The <code class="highlight">-F 99</code> means that iperf samples at a rate of 99 samples per second. Sampling isn't perfect: if the CPU
+does something very shortlived between samples, the profiler will not capture it!</p>
+</blockquote>
 <p>Now, copy the flamegraphs to your local system for analysis. You can access the flamegraphs of my test runs here:</p>
 <ul>
 <li><a href="../../src/rss-irq-affinity-and-rps/irq_smp_affinity.0/flamegraph.html">IRQ smp affinity - flamegraph 0</a></li>
@@ -3180,6 +3173,57 @@ profile our CPUs. Let's use perf script to create flamegraphs:</p>
 <li><a href="../../src/rss-irq-affinity-and-rps/irq_smp_affinity.6/flamegraph.html">IRQ smp affinity - flamegraph 6</a></li>
 <li><a href="../../src/rss-irq-affinity-and-rps/irq_smp_affinity.7/flamegraph.html">IRQ smp affinity - flamegraph 7</a></li>
 </ul>
+<blockquote>
+<p><strong>Note:</strong> This version of the flamegraphs color codes userspace code in green and kernel code in blue.</p>
+</blockquote>
+<p>The flamegraphs show us largely idle CPUs 0,1, 4 and 5 which is expected. However, CPU 7 is idle as well, even though
+the server should be running on CPUs 6 and 7.
+Have another look at the server implementation: you will see that the TCP server is multithreaded (use of go routines)
+and the UDP server is single threaded. I had not intended it to be this way - it was an omission on my side because
+I initially implemented the TCP code and then quickly added the UDP part. And looking at the flamegraph for CPU 7 makes
+painfully clear that the CPU is not executing any of our go code.</p>
+<p>The flamegraph for CPU 6 shows us our server is spending most of its time in readFromUDP, as expected. About half of
+that time is spent waiting in golang function
+<a href="https://github.com/golang/go/blob/8bba868de983dd7bf55fcd121495ba8d6e2734e7/src/runtime/netpoll.go#L334">internal/poll.runtime_pollWait</a>.
+In turn, this go function does an epoll_wait syscall which leads to a napi_busy_loop which is responsible for receiving
+our packets. Most of the other half is spent in syscall recvfrom.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nx">man</span><span class="w"> </span><span class="nx">recvfrom</span><span class="p">()</span>
+<span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="w">   </span><span class="nx">recvfrom</span><span class="p">()</span>
+<span class="w">       </span><span class="nx">recvfrom</span><span class="p">()</span><span class="w"> </span><span class="nx">places</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">received</span><span class="w"> </span><span class="nx">message</span><span class="w"> </span><span class="nx">into</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">buffer</span><span class="w"> </span><span class="nx">buf</span><span class="p">.</span><span class="w">  </span><span class="nx">The</span><span class="w"> </span><span class="nx">caller</span><span class="w"> </span><span class="nx">must</span><span class="w"> </span><span class="nx">specify</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">size</span><span class="w"> </span><span class="nx">of</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">buffer</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nx">len</span><span class="p">.</span>
+
+<span class="w">       </span><span class="nx">If</span><span class="w"> </span><span class="nx">src_addr</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="nx">NULL</span><span class="p">,</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">underlying</span><span class="w"> </span><span class="nx">protocol</span><span class="w"> </span><span class="nx">provides</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">source</span><span class="w"> </span><span class="nx">address</span><span class="w"> </span><span class="nx">of</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">message</span><span class="p">,</span><span class="w"> </span><span class="nx">that</span><span class="w">  </span><span class="nx">source</span><span class="w">  </span><span class="nx">address</span><span class="w">  </span><span class="k">is</span><span class="w">  </span><span class="nx">placed</span><span class="w">  </span><span class="k">in</span><span class="w">  </span><span class="nx">the</span><span class="w">  </span><span class="nx">buffer</span>
+<span class="w">       </span><span class="nx">pointed</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">by</span><span class="w"> </span><span class="nx">src_addr</span><span class="p">.</span><span class="w">  </span><span class="nx">In</span><span class="w"> </span><span class="nx">this</span><span class="w"> </span><span class="k">case</span><span class="p">,</span><span class="w"> </span><span class="nx">addrlen</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">value</span><span class="o">-</span><span class="nx">result</span><span class="w"> </span><span class="nx">argument</span><span class="p">.</span><span class="w">  </span><span class="nx">Before</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">call</span><span class="p">,</span><span class="w"> </span><span class="nx">it</span><span class="w"> </span><span class="nx">should</span><span class="w"> </span><span class="nx">be</span><span class="w"> </span><span class="nx">initialized</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">size</span><span class="w"> </span><span class="nx">of</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">buffer</span><span class="w"> </span><span class="k">as</span><span class="err">‐</span>
+<span class="w">       </span><span class="nx">sociated</span><span class="w">  </span><span class="nx">with</span><span class="w">  </span><span class="nx">src_addr</span><span class="p">.</span><span class="w">   </span><span class="nx">Upon</span><span class="w"> </span><span class="k">return</span><span class="p">,</span><span class="w"> </span><span class="nx">addrlen</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="nx">updated</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">contain</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">actual</span><span class="w"> </span><span class="nx">size</span><span class="w"> </span><span class="nx">of</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">source</span><span class="w"> </span><span class="nx">address</span><span class="p">.</span><span class="w">  </span><span class="nx">The</span><span class="w"> </span><span class="k">returned</span><span class="w"> </span><span class="nx">address</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="nx">truncated</span><span class="w"> </span><span class="k">if</span>
+<span class="w">       </span><span class="nx">the</span><span class="w"> </span><span class="nx">buffer</span><span class="w"> </span><span class="nx">provided</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="nx">too</span><span class="w"> </span><span class="nx">small</span><span class="p">;</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nx">this</span><span class="w"> </span><span class="k">case</span><span class="p">,</span><span class="w"> </span><span class="nx">addrlen</span><span class="w"> </span><span class="nx">will</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="nx">greater</span><span class="w"> </span><span class="nx">than</span><span class="w"> </span><span class="nx">was</span><span class="w"> </span><span class="nx">supplied</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">call</span><span class="p">.</span>
+
+<span class="w">       </span><span class="nx">If</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">caller</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="nx">interested</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">source</span><span class="w"> </span><span class="nx">address</span><span class="p">,</span><span class="w"> </span><span class="nx">src_addr</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="nx">addrlen</span><span class="w"> </span><span class="nx">should</span><span class="w"> </span><span class="nx">be</span><span class="w"> </span><span class="nx">specified</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nx">NULL</span><span class="p">.</span>
+<span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<p><img alt="IRQ smp affinity - flamegraph 6" src="https://github.com/user-attachments/assets/8d796b41-b056-4048-b5d4-5385538ecdb2" /></p>
+<p>CPUs 2 and 3 process our softirqs, at roughly 20% and 13% respectively. Actually, running top or mpstat during the
+tests also showed that the CPUs were spending that amount of time processing hardware interrupts and softirqs.
+This is pure speculation, but I suppose that we do not see any hardware interrupts here for 2 reasons:
+* Linux NAPI makes sure to spend most of its time polling, thus most of the time will be spent processing softinterrupts
+in the <a href="https://developer.ibm.com/tutorials/l-tasklets/">bottom half</a>.
+* We do not see hard interrupts because they are missed by our samples.
+<a href="https://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html">Brendan Gregg's blog</a>
+might have some tips to get to the bottom of this.</p>
+<p><img alt="IRQ smp affinity - flamegraph 2" src="https://github.com/user-attachments/assets/b0d22412-8cd3-4aba-91a4-bc7c9233854a" /></p>
+<p>Even though most of what's happening is still difficult to understand for me, at least it's not a black box any more.
+We can see what's causing each CPU to be busy, and with the help of man pages or the actual application and kernel code
+we can dive deep into the code and try to understand how things work if we want to.</p>
 
 
 
@@ -3200,7 +3244,7 @@ profile our CPUs. Let's use perf script to create flamegraphs:</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">August 8, 2024</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">August 9, 2024</span>
   </span>
 
     

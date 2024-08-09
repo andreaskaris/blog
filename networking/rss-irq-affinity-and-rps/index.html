@@ -2852,8 +2852,8 @@ only.</p>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">nil</span>
 <span class="p">}</span>
 </code></pre></div></td></tr></table></div>
-<h2 id="disabling-irqbalance">Disabling irqbalance</h2>
-<p>irqbalance would actually interfere with our tests. Therefore, let's disable it:</p>
+<h2 id="disabling-irqbalance-on-the-dut">Disabling irqbalance on the DUT</h2>
+<p>irqbalance would actually interfere with our tests. Therefore, let's disable it on the Device Under Test:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
@@ -2868,7 +2868,7 @@ only.</p>
 <span class="w">       </span><span class="n">Docs</span><span class="p">:</span><span class="w"> </span><span class="n">man</span><span class="p">:</span><span class="n">irqbalance</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="w">             </span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Irqbalance</span><span class="o">/</span><span class="n">irqbalance</span>
 </code></pre></div></td></tr></table></div>
-<h2 id="isolating-cpus-with-tuned">Isolating CPUs with tuned</h2>
+<h2 id="isolating-cpus-with-tuned-on-the-dut">Isolating CPUs with tuned on the DUT</h2>
 <p>Let's isolate the last 4 CPUs of the Device Under Test with tuned. First, install tuned and the tuned-profiles-realtime
 package:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@dut ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="n">yum</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">tuned</span><span class="w"> </span><span class="n">tuned</span><span class="o">-</span><span class="n">profiles</span><span class="o">-</span><span class="n">realtime</span>
@@ -2941,14 +2941,14 @@ package:</p>
 <span class="mi">2024</span><span class="o">/</span><span class="mi">08</span><span class="o">/</span><span class="mi">08</span><span class="w"> </span><span class="mi">15</span><span class="p">:</span><span class="mi">46</span><span class="p">:</span><span class="mi">05</span><span class="w"> </span><span class="n">read</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="k">remote</span><span class="w"> </span><span class="mf">192.168</span><span class="o">.</span><span class="mf">123.11</span><span class="p">:</span><span class="mi">58354</span><span class="p">:</span><span class="w"> </span><span class="n">msg</span>
 <span class="mi">2024</span><span class="o">/</span><span class="mi">08</span><span class="o">/</span><span class="mi">08</span><span class="w"> </span><span class="mi">15</span><span class="p">:</span><span class="mi">46</span><span class="p">:</span><span class="mi">06</span><span class="w"> </span><span class="n">read</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="k">remote</span><span class="w"> </span><span class="mf">192.168</span><span class="o">.</span><span class="mf">123.11</span><span class="p">:</span><span class="mi">60341</span><span class="p">:</span><span class="w"> </span><span class="n">msg</span>
 </code></pre></div></td></tr></table></div>
-<h2 id="rss-tuning-nic-queues-and-rx-interrupt-affinity">RSS + Tuning NIC queues and RX interrupt affinity</h2>
+<h2 id="rss-tuning-nic-queues-and-rx-interrupt-affinity-on-the-device-under-test">RSS + Tuning NIC queues and RX interrupt affinity on the Device Under Test</h2>
 <h3 id="whats-rss">What's RSS?</h3>
 <p>RSS, short for Receive Side Scaling, is an in-hardware feature that allows a NIC to "send different packets to different
 queues to distribute processing among CPUs. The NIC distributes packets by applying a filter to each packet that assigns
 it to one of a small number of logical flows. Packets for each flow are steered to a separate receive queue, which in
 turn can be processed by separate CPUs." For more details, have a look at the
 <a href="https://www.kernel.org/doc/html/latest/networking/scaling.html">Scaling in the Linux Networking Stack</a>.</p>
-<p>RSS happens in hardware for modern NICs and is enabled by default. Virtio supports multiqueue and RSS when the vhostnet
+<p>RSS happens in hardware for modern NICs and is enabled by default. Virtio supports multiqueue and RSS when the vhost
 driver is used (see our Virtual Machine setup instructions earlier).</p>
 <p>It's possible to show some information about RSS with <code class="highlight"><span class="n">ethtool</span><span class="w"> </span><span class="o">-</span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="n">interface</span><span class="o">&gt;</span></code>. As far as I know, it's not possible to
 modify RSS configuration for virtio (when I tried, my VM froze). However, for real NICs such as recent Intel or
@@ -3031,7 +3031,7 @@ Mellanox/Nvidia devices, plenty of configuration options are available to influe
 <span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># ethtool -i eth1 | grep bus-info</span>
 <span class="n">bus</span><span class="o">-</span><span class="n">info</span><span class="p">:</span><span class="w"> </span><span class="mi">0000</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mf">00.0</span>
 </code></pre></div></td></tr></table></div>
-<p>And let's get the device name as it appears in /proc/interrupts:</p>
+<p>And let's get the device name as it appears in <code class="highlight">/proc/interrupts</code>:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
@@ -3063,7 +3063,7 @@ Mellanox/Nvidia devices, plenty of configuration options are available to influe
 <span class="w"> </span><span class="mi">59</span><span class="p">:</span><span class="w">   </span><span class="mi">11620198</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">2</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">7</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="n">input</span><span class="o">.</span><span class="mi">3</span>
 <span class="w"> </span><span class="mi">60</span><span class="p">:</span><span class="w">          </span><span class="mi">0</span><span class="w">         </span><span class="mi">13</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">8</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="n">output</span><span class="o">.</span><span class="mi">3</span>
 </code></pre></div></td></tr></table></div>
-<p>Note that virtio will show all 4 queues for each input and output in /proc/interrupts, even though 2 of each are disabled.</p>
+<p>Note that virtio will show all 4 queues for each input and output in <code class="highlight">/proc/interrupts</code>, even though 2 of each are disabled.</p>
 <p>We can however easily check that the setting is working. Let's start our application on the server on CPUs 6 and 7:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1">#  taskset -c 6,7 _output/loadgen -server -host 192.168.123.10 -port 8080 -protocol udp</span>
 </code></pre></div></td></tr></table></div>
@@ -3071,7 +3071,10 @@ Mellanox/Nvidia devices, plenty of configuration options are available to influe
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">lg</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># _output/loadgen -host 192.168.123.10 -port 8080 -protocol udp -rate-per-second 1000000000</span>
 </code></pre></div></td></tr></table></div>
 <p>And you can see that interrupts for queues virtio6-input.0 and virtio6-input.1 increment as RSS balances flows
-across the 2 remaining queues. At the same time, queues 2 and 3 are disabled.</p>
+across the 2 remaining queues. At the same time, queues 2 and 3 are disabled. It might be a bit difficult to read, but
+remember that these are absolute counters from since when the machines started. Look at the delta for each of the
+queues, so compare the lines starting with 53 to each other, then the lines starting with 55, and so on. You will see
+that the 2 lines for IRQs 57 and 59 did not change, whereas the counters for IRQs 53 (CPU 0) and 55 (CPU 5) did increase.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
@@ -3092,7 +3095,7 @@ across the 2 remaining queues. At the same time, queues 2 and 3 are disabled.</p
 </code></pre></div></td></tr></table></div>
 <h3 id="querying-smp-affinity-for-rx-queue-interrupts">Querying SMP affinity for RX queue interrupts</h3>
 <p>You can get the interrupt numbers for virtio6-input.0 (in this case 53) and virtio6-input.1 (in this case 55) from
-/proc/interrupts. Then, query /proc/irq/<interrupt number>/smp_affinity and smp_affinity_list.</p>
+<code class="highlight">/proc/interrupts</code>. Then, query <code class="highlight">/proc/irq/&lt;interrupt number&gt;/smp_affinity</code> and <code class="highlight">smp_affinity_list</code>.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
@@ -3109,8 +3112,8 @@ across the 2 remaining queues. At the same time, queues 2 and 3 are disabled.</p
 <span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># cat /proc/irq/55/smp_affinity_list</span>
 <span class="mi">4</span><span class="o">-</span><span class="mi">7</span>
 </code></pre></div></td></tr></table></div>
-<p>That matches what we saw earlier: virtio6-input.0's affinity currently is CPUs 0-3 and in /proc/interrupts we saw that
-it generated interrupts on CPU 0. virtio6-input.1's affinity currently is CPUs 4-7 and in /proc/interrupts we saw that
+<p>That matches what we saw earlier: virtio6-input.0's affinity currently is CPUs 0-3 and in <code class="highlight">/proc/interrupts</code> we saw that
+it generated interrupts on CPU 0. virtio6-input.1's affinity currently is CPUs 4-7 and in <code class="highlight">/proc/interrupts</code> we saw that
 it generated interrupts on CPU 5. But wait, irqbalance is switched off, and we even rebooted the system. Why are our
 IRQs distributed between our CPUs and why aren't they allowed on all CPUs? To be confirmed, but the answer may be in
 <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5e385a6ef31f">this commit</a>.</p>
@@ -3156,7 +3159,7 @@ to move them to system reserved CPUs now :-)</p>
 <span class="w"> </span><span class="mi">59</span><span class="err">:</span><span class="w">   </span><span class="mi">11620198</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">2</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="err">:</span><span class="mi">07</span><span class="err">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">7</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="k">input</span><span class="mf">.3</span>
 </code></pre></div></td></tr></table></div>
 <h2 id="using-flamegraphs-to-analyze-cpu-activity">Using flamegraphs to analyze CPU activity</h2>
-<p>Now that we configured out server to run on CPUs 6 and 7, and our receive queue interrupts on CPUs 2 and 3, let's
+<p>Now that we configured our server to run on CPUs 6 and 7, and our receive queue interrupts on CPUs 2 and 3, let's
 profile our CPUs. Let's use perf script to create flamegraphs:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@dut ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="err">{</span><span class="mf">0..7</span><span class="err">}</span><span class="p">;</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="err">$</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="err">$</span><span class="p">(</span><span class="n">pwd</span><span class="p">)</span><span class="o">/</span><span class="n">irq_smp_affinity</span><span class="p">.</span><span class="err">$</span><span class="n">c</span><span class="p">;</span><span class="w"> </span><span class="n">mkdir</span><span class="w"> </span><span class="err">$</span><span class="n">d</span><span class="p">;</span><span class="w"> </span><span class="n">pushd</span><span class="w"> </span><span class="err">$</span><span class="n">d</span><span class="p">;</span><span class="w"> </span><span class="n">perf</span><span class="w"> </span><span class="n">script</span><span class="w"> </span><span class="n">flamegraph</span><span class="w"> </span><span class="o">-</span><span class="n">C</span><span class="w"> </span><span class="err">$</span><span class="n">c</span><span class="w"> </span><span class="o">-</span><span class="n">F</span><span class="w"> </span><span class="mi">99</span><span class="w"> </span><span class="n">sleep</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w"> </span><span class="n">popd</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">done</span>
@@ -3166,7 +3169,7 @@ profile our CPUs. Let's use perf script to create flamegraphs:</p>
 <p><strong>Note:</strong> The <code class="highlight">-F 99</code> means that iperf samples at a rate of 99 samples per second. Sampling isn't perfect: if the CPU
 does something very shortlived between samples, the profiler will not capture it!</p>
 </blockquote>
-<p>Now, copy the flamegraphs to your local system for analysis. You can access the flamegraphs of my test runs here:</p>
+<p>Now, we'll copy the flamegraphs to our local system for analysis. You can access the flamegraphs of my test runs here:</p>
 <ul>
 <li><a href="../../src/rss-irq-affinity-and-rps/irq_smp_affinity.0/flamegraph.html">IRQ smp affinity - flamegraph 0</a></li>
 <li><a href="../../src/rss-irq-affinity-and-rps/irq_smp_affinity.1/flamegraph.html">IRQ smp affinity - flamegraph 1</a></li>
@@ -3217,13 +3220,15 @@ our packets. Most of the other half is spent in syscall recvfrom.</p>
 </code></pre></div></td></tr></table></div>
 <p><img alt="IRQ smp affinity - flamegraph 6" src="https://github.com/user-attachments/assets/8d796b41-b056-4048-b5d4-5385538ecdb2" /></p>
 <p>CPUs 2 and 3 process our softirqs, at roughly 20% and 13% respectively. Actually, running top or mpstat during the
-tests also showed that the CPUs were spending that amount of time processing hardware interrupts and softirqs.
-This is pure speculation, but I suppose that we do not see any hardware interrupts here for 2 reasons:
-* Linux NAPI makes sure to spend most of its time polling, thus most of the time will be spent processing softinterrupts
-in the <a href="https://developer.ibm.com/tutorials/l-tasklets/">bottom half</a>.
-* We do not see hard interrupts because they are missed by our samples.
+tests also showed that the CPUs were spending that amount of time processing hardware interrupts and softirqs.</p>
+<p>This is pure speculation, but I suppose that we do not see any hardware interrupts here for 2 reasons:</p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/New_API">Linux NAPI</a> makes sure to spend most of its time polling, thus most of the
+time will be spent processing softirqs in the <a href="https://developer.ibm.com/tutorials/l-tasklets/">bottom half</a>.</li>
+<li>We do not see hardware interrupts because they are missed by our samples.
 <a href="https://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html">Brendan Gregg's blog</a>
-might have some tips to get to the bottom of this.</p>
+might have some tips to get to the bottom of this.</li>
+</ul>
 <p><img alt="IRQ smp affinity - flamegraph 2" src="https://github.com/user-attachments/assets/b0d22412-8cd3-4aba-91a4-bc7c9233854a" /></p>
 <p>Even though most of what's happening is still difficult to understand for me, at least it's not a black box any more.
 We can see what's causing each CPU to be busy, and with the help of man pages or the actual application and kernel code

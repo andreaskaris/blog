@@ -421,7 +421,7 @@ And now, interrupts increase for virtio6-input.0 on CPU 2 and for virtio6-input.
 
 ## Using flamegraphs to analyze CPU activity
 
-Now that we configured out server to run on CPUs 6 and 7, and our receive queue interrupts on CPUs 2 and 3, let's
+Now that we configured our server to run on CPUs 6 and 7, and our receive queue interrupts on CPUs 2 and 3, let's
 profile our CPUs. Let's use perf script to create flamegraphs:
 
 ```
@@ -431,7 +431,7 @@ profile our CPUs. Let's use perf script to create flamegraphs:
 > **Note:** The `-F 99` means that iperf samples at a rate of 99 samples per second. Sampling isn't perfect: if the CPU
 does something very shortlived between samples, the profiler will not capture it!
 
-Now, copy the flamegraphs to your local system for analysis. You can access the flamegraphs of my test runs here:
+Now, we'll copy the flamegraphs to our local system for analysis. You can access the flamegraphs of my test runs here:
 
 * [IRQ smp affinity - flamegraph 0](../src/rss-irq-affinity-and-rps/irq_smp_affinity.0/flamegraph.html)
 * [IRQ smp affinity - flamegraph 1](../src/rss-irq-affinity-and-rps/irq_smp_affinity.1/flamegraph.html)
@@ -477,8 +477,11 @@ man recvfrom()
 
 CPUs 2 and 3 process our softirqs, at roughly 20% and 13% respectively. Actually, running top or mpstat during the
 tests also showed that the CPUs were spending that amount of time processing hardware interrupts and softirqs.
+
 This is pure speculation, but I suppose that we do not see any hardware interrupts here for 2 reasons:
-* Linux NAPI makes sure to spend most of its time polling, thus most of the time will be spent processing softinterrupts
+
+* [Linux NAPI](https://en.wikipedia.org/wiki/New_API) makes sure to spend most of its time polling, thus most of the
+time will be spent processing softinterrupts
 in the [bottom half](https://developer.ibm.com/tutorials/l-tasklets/).
 * We do not see hard interrupts because they are missed by our samples.
 [Brendan Gregg's blog](https://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html)

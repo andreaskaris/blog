@@ -2686,7 +2686,7 @@ via the XML input field.</p>
 a message which is received by the server, and closes the connection. It does so asynchronously at a given provided
 rate. The application's goal is not to be particularly performant; instead, it shall be easy to understand, have a
 configurable rate and support both IPv4 UDP and TCP.</p>
-<p>You can find the code at [https://github.com/andreaskaris/golang-loadgen/tree/blog-post(https://github.com/andreaskaris/golang-loadgen/tree/blog-post).</p>
+<p>You can find the code at <a href="https://github.com/andreaskaris/golang-loadgen/tree/blog-post">https://github.com/andreaskaris/golang-loadgen/tree/blog-post</a>.</p>
 <p>The application can send/receive traffic for both TCP and UDP. In the interest of brevity, I'll focus on the UDP part
 only.</p>
 <h3 id="server-code">Server code</h3>
@@ -2946,7 +2946,7 @@ package:</p>
 <p>RSS, short for Receive Side Scaling, is an in-hardware feature that allows a NIC to "send different packets to different
 queues to distribute processing among CPUs. The NIC distributes packets by applying a filter to each packet that assigns
 it to one of a small number of logical flows. Packets for each flow are steered to a separate receive queue, which in
-turn can be processed by separate CPUs." For more details, have a look at the
+turn can be processed by separate CPUs." For more details, have a look at
 <a href="https://www.kernel.org/doc/html/latest/networking/scaling.html">Scaling in the Linux Networking Stack</a>.</p>
 <p>RSS happens in hardware for modern NICs and is enabled by default. Virtio supports multiqueue and RSS when the vhost
 driver is used (see our Virtual Machine setup instructions earlier).</p>
@@ -3039,6 +3039,11 @@ Mellanox/Nvidia devices, plenty of configuration options are available to influe
 <span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">devices</span><span class="o">/</span><span class="n">pci0000</span><span class="p">:</span><span class="mi">00</span><span class="o">/</span><span class="mi">0000</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mf">02.6</span><span class="o">/</span><span class="mi">0000</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mf">00.0</span>
 <span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># ls -d /sys/devices/pci0000:00/0000:00:02.6/0000:07:00.0/virtio*</span>
 <span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">devices</span><span class="o">/</span><span class="n">pci0000</span><span class="p">:</span><span class="mi">00</span><span class="o">/</span><span class="mi">0000</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mf">02.6</span><span class="o">/</span><span class="mi">0000</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mf">00.0</span><span class="o">/</span><span class="n">virtio6</span>
+</code></pre></div></td></tr></table></div>
+<p>Or, even simpler, search <code class="highlight">/sys/devices/</code> for <code class="highlight">eth1</code>:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># find /sys/devices -name eth1</span>
+<span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">devices</span><span class="o">/</span><span class="n">pci0000</span><span class="p">:</span><span class="mi">00</span><span class="o">/</span><span class="mi">0000</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mf">02.6</span><span class="o">/</span><span class="mi">0000</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mf">00.0</span><span class="o">/</span><span class="n">virtio6</span><span class="o">/</span><span class="n">net</span><span class="o">/</span><span class="n">eth1</span>
 </code></pre></div></td></tr></table></div>
 <p>We can now read the interrupts for the NIC:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
@@ -3158,7 +3163,7 @@ to move them to system reserved CPUs now :-)</p>
 <span class="w"> </span><span class="mi">57</span><span class="err">:</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">   </span><span class="mi">11296239</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">1</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="err">:</span><span class="mi">07</span><span class="err">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">5</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="k">input</span><span class="mf">.2</span>
 <span class="w"> </span><span class="mi">59</span><span class="err">:</span><span class="w">   </span><span class="mi">11620198</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">0</span><span class="w">          </span><span class="mi">2</span><span class="w">          </span><span class="mi">0</span><span class="w">  </span><span class="n">PCI</span><span class="o">-</span><span class="n">MSIX</span><span class="o">-</span><span class="mi">0000</span><span class="err">:</span><span class="mi">07</span><span class="err">:</span><span class="mf">00.0</span><span class="w">   </span><span class="mi">7</span><span class="o">-</span><span class="n">edge</span><span class="w">      </span><span class="n">virtio6</span><span class="o">-</span><span class="k">input</span><span class="mf">.3</span>
 </code></pre></div></td></tr></table></div>
-<h2 id="using-flamegraphs-to-analyze-cpu-activity">Using flamegraphs to analyze CPU activity</h2>
+<h3 id="using-flamegraphs-to-analyze-cpu-activity">Using flamegraphs to analyze CPU activity</h3>
 <p>Now that we configured our server to run on CPUs 6 and 7, and our receive queue interrupts on CPUs 2 and 3, let's
 profile our CPUs. Let's use perf script to create flamegraphs:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
@@ -3233,6 +3238,123 @@ might have some tips to get to the bottom of this.</li>
 <p>Even though most of what's happening is still difficult to understand for me, at least it's not a black box any more.
 We can see what's causing each CPU to be busy, and with the help of man pages or the actual application and kernel code
 we can dive deep into the code and try to understand how things work if we want to.</p>
+<h2 id="rps-on-the-device-under-test">RPS on the Device Under Test</h2>
+<h3 id="whats-rps">What's RPS?</h3>
+<p>RPS, short for Receive Packet Steering, "is logically a software implementation of RSS. Being in software, it is
+necessarily called later in the datapath. Whereas RSS selects the queue and hence CPU that will run the hardware
+interrupt handler, RPS selects the CPU to perform protocol processing above the interrupt handler. This is accomplished
+by placing the packet on the desired CPU’s backlog queue and waking up the CPU for processing. (...)
+RPS is called during bottom half of the receive interrupt handler, when a driver sends a packet up the network stack
+with netif_rx() or netif_receive_skb(). These call the get_rps_cpu() function, which selects the queue that should
+process a packet." For more details, have a look at
+<a href="https://www.kernel.org/doc/html/latest/networking/scaling.html">Scaling in the Linux Networking Stack</a>.</p>
+<h3 id="configuring-rps-for-the-rx-queues">Configuring RPS for the RX queues</h3>
+<p>Red Hat has a great <a href="https://access.redhat.com/solutions/62869">Knowledge Base Solution</a> for configuring RPS. 
+If you cannot acccess it, refer to <a href="https://www.kernel.org/doc/html/latest/networking/scaling.html">Scaling in the Linux Networking Stack</a>.</p>
+<p>By default, RPS is off:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># cat /sys/devices/pci0000:00/0000:00:02.6/0000:07:00.0/virtio6/net/eth1/queues/rx-0/rps_cpus</span>
+<span class="mi">00</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># cat /sys/devices/pci0000:00/0000:00:02.6/0000:07:00.0/virtio6/net/eth1/queues/rx-1/rps_cpus</span>
+<span class="mi">00</span>
+</code></pre></div></td></tr></table></div>
+<p>Because I rebooted my virtual machines, let's first reconfigure 2 queues for eth1 and let's configure SMP affinity for
+the IRQs:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># ethtool -L eth1 combined 2</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># cpu_mask=4; irq=$(awk -F &#39;[ |:]&#39; &#39;/virtio6-input.0/ {print $2}&#39; /proc/interrupts); echo $cpu_mask &gt; /proc/irq/$irq/smp_affinity; cat /proc/irq/$irq/smp_affinity_list</span>
+<span class="mi">2</span>
+<span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># cpu_mask=8; irq=$(awk -F &#39;[ |:]&#39; &#39;/virtio6-input.1/ {print $2}&#39; /proc/interrupts); echo $cpu_mask &gt; /proc/irq/$irq/smp_affinity; cat /proc/irq/$irq/smp_affinity_list</span>
+<span class="mi">3</span>
+</code></pre></div></td></tr></table></div></p>
+<p>Let's start our client &lt;-&gt; server again:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1">#  taskset -c 6,7 _output/loadgen -server -host 192.168.123.10 -port 8080 -protocol udp</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">lg</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># _output/loadgen -host 192.168.123.10 -port 8080 -protocol udp -rate-per-second 1000000000</span>
+</code></pre></div></td></tr></table></div>
+<p>Check softirqs for <code class="highlight">NET_RX</code>:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># grep NET_RX /proc/softirqs; sleep 5; grep NET_RX /proc/softirqs</span>
+<span class="w">      </span><span class="n">NET_RX</span><span class="p">:</span><span class="w">   </span><span class="mi">12848517</span><span class="w">    </span><span class="mi">1389311</span><span class="w">    </span><span class="mi">3398302</span><span class="w">   </span><span class="mi">13723300</span><span class="w">          </span><span class="mi">2</span><span class="w">          </span><span class="mi">1</span><span class="w">      </span><span class="mi">11583</span><span class="w">          </span><span class="mi">1</span>
+<span class="w">      </span><span class="n">NET_RX</span><span class="p">:</span><span class="w">   </span><span class="mi">12919247</span><span class="w">    </span><span class="mi">1389313</span><span class="w">    </span><span class="mi">3470609</span><span class="w">   </span><span class="mi">13863586</span><span class="w">          </span><span class="mi">2</span><span class="w">          </span><span class="mi">1</span><span class="w">      </span><span class="mi">11583</span><span class="w">          </span><span class="mi">1</span>
+</code></pre></div></td></tr></table></div>
+<p>You can see that <code class="highlight">NET_RX</code> softirqs are mainly processed on CPUs 2 and 3, the CPUs that we pinned our RX IRQs to.</p>
+<p>Let's enable receive packet steering for <code class="highlight">rx-0</code>, and let's move it to CPU 4:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># echo 10 &gt; /sys/devices/pci0000:00/0000:00:02.6/0000:07:00.0/virtio6/net/eth1/queues/rx-0/rps_cpus</span>
+<span class="o">-</span><span class="n">bash</span><span class="p">:</span><span class="w"> </span><span class="n">echo</span><span class="p">:</span><span class="w"> </span><span class="n">write</span><span class="w"> </span><span class="n">error</span><span class="p">:</span><span class="w"> </span><span class="n">Invalid</span><span class="w"> </span><span class="n">argument</span>
+</code></pre></div></td></tr></table></div>
+<blockquote>
+<p><strong>Note:</strong> 1 (<code class="highlight"><span class="mf">0</span><span class="n">b00000001</span></code>) -&gt; CPU 0, 2 (<code class="highlight"><span class="mf">0</span><span class="n">b00000010</span></code>) -&gt; CPU 1, 4 -&gt; CPU 2 2 (<code class="highlight"><span class="mf">0</span><span class="n">b000000100</span></code>), 8 -&gt; CPU 3 2 (<code class="highlight"><span class="mf">0</span><span class="n">b00001000</span></code>),
+10 2 (<code class="highlight"><span class="mf">0</span><span class="n">b00010000</span></code>) -&gt; CPU 4</p>
+</blockquote>
+<p>Well, that's a bummer, we can't actually configure RPS on isolated CPUs due to
+<a href="https://lore.kernel.org/lkml/20200625223443.2684-1-nitesh@redhat.com/T/">Preventing job distribution to isolated CPUs</a>.</p>
+<p>Alright, then let's move it to CPU 1:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># echo 2 &gt; /sys/devices/pci0000:00/0000:00:02.6/0000:07:00.0/virtio6/net/eth1/queues/rx-0/rps_cpus</span>
+</code></pre></div></td></tr></table></div>
+<p>Check softirqs for <code class="highlight">NET_RX</code>:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># grep NET_RX /proc/softirqs; sleep 5; grep NET_RX /proc/softirqs</span>
+<span class="w">      </span><span class="n">NET_RX</span><span class="p">:</span><span class="w">   </span><span class="mi">15085998</span><span class="w">    </span><span class="mi">1498737</span><span class="w">    </span><span class="mi">9060515</span><span class="w">   </span><span class="mi">21808889</span><span class="w">          </span><span class="mi">2</span><span class="w">    </span><span class="mi">4653500</span><span class="w">      </span><span class="mi">11627</span><span class="w">     </span><span class="mi">146036</span>
+<span class="w">      </span><span class="n">NET_RX</span><span class="p">:</span><span class="w">   </span><span class="mi">15086002</span><span class="w">    </span><span class="mi">1599983</span><span class="w">    </span><span class="mi">9164621</span><span class="w">   </span><span class="mi">21921684</span><span class="w">          </span><span class="mi">2</span><span class="w">    </span><span class="mi">4653500</span><span class="w">      </span><span class="mi">11627</span><span class="w">     </span><span class="mi">197215</span>
+</code></pre></div></td></tr></table></div>
+<p>Now, we are processing NET_RX softirqs on CPU 1 (for RPS) as well as on CPUs 2 and 3 because of IRQ SMP affinity.</p>
+<h3 id="using-flamegraphs-to-analyze-cpu-activity_1">Using flamegraphs to analyze CPU activity</h3>
+<p>Now that we configured our server to run on CPUs 6 and 7, our receive queue interrupts on CPUs 2 and 3, and our RPS
+for RX queue 0 to use CPU 1, let's profile our CPUs. Let's use perf script to create flamegraphs:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">[</span><span class="n">root@dut ~</span><span class="o">]</span><span class="err">#</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="err">{</span><span class="mf">0..7</span><span class="err">}</span><span class="p">;</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="err">$</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="err">$</span><span class="p">(</span><span class="n">pwd</span><span class="p">)</span><span class="o">/</span><span class="n">irq_smp_affinity_and_rps</span><span class="p">.</span><span class="err">$</span><span class="n">c</span><span class="p">;</span><span class="w"> </span><span class="n">mkdir</span><span class="w"> </span><span class="err">$</span><span class="n">d</span><span class="p">;</span><span class="w"> </span><span class="n">pushd</span><span class="w"> </span><span class="err">$</span><span class="n">d</span><span class="p">;</span><span class="w"> </span><span class="n">perf</span><span class="w"> </span><span class="n">script</span><span class="w"> </span><span class="n">flamegraph</span><span class="w"> </span><span class="o">-</span><span class="n">C</span><span class="w"> </span><span class="err">$</span><span class="n">c</span><span class="w"> </span><span class="o">-</span><span class="n">F</span><span class="w"> </span><span class="mi">99</span><span class="w"> </span><span class="n">sleep</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w"> </span><span class="n">popd</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">done</span>
+<span class="p">(...</span><span class="w"> </span><span class="n">wait</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="n">seconds</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">...</span>
+</code></pre></div></td></tr></table></div>
+<blockquote>
+<p><strong>Note:</strong> The <code class="highlight">-F 99</code> means that iperf samples at a rate of 99 samples per second. Sampling isn't perfect: if the CPU
+does something very shortlived between samples, the profiler will not capture it!</p>
+</blockquote>
+<p>Now, we'll copy the flamegraphs to our local system for analysis. You can access the flamegraphs of my test runs here:</p>
+<ul>
+<li><a href="../../src/rss-irq-affinity-and-rps/irq_smp_affinity_and_rps.0/flamegraph.html">IRQ smp affinity - flamegraph 0</a></li>
+<li><a href="../../src/rss-irq-affinity-and-rps/irq_smp_affinity_and_rps.1/flamegraph.html">IRQ smp affinity - flamegraph 1</a></li>
+<li><a href="../../src/rss-irq-affinity-and-rps/irq_smp_affinity_and_rps.2/flamegraph.html">IRQ smp affinity - flamegraph 2</a></li>
+<li><a href="../../src/rss-irq-affinity-and-rps/irq_smp_affinity_and_rps.3/flamegraph.html">IRQ smp affinity - flamegraph 3</a></li>
+<li><a href="../../src/rss-irq-affinity-and-rps/irq_smp_affinity_and_rps.4/flamegraph.html">IRQ smp affinity - flamegraph 4</a></li>
+<li><a href="../../src/rss-irq-affinity-and-rps/irq_smp_affinity_and_rps.5/flamegraph.html">IRQ smp affinity - flamegraph 5</a></li>
+<li><a href="../../src/rss-irq-affinity-and-rps/irq_smp_affinity_and_rps.6/flamegraph.html">IRQ smp affinity - flamegraph 6</a></li>
+<li><a href="../../src/rss-irq-affinity-and-rps/irq_smp_affinity_and_rps.7/flamegraph.html">IRQ smp affinity - flamegraph 7</a></li>
+</ul>
+<blockquote>
+<p><strong>Note:</strong> This version of the flamegraphs color codes userspace code in green and kernel code in blue.</p>
+</blockquote>
+<p>The flamegraphs show us largely idle CPUs 0, 4, 5 and 7 for the reasons that we already explained earlier. CPU 6 runs
+our golang server, we also already talked about this.</p>
+<p>Let's first focus on CPU 2. We can see that it polls the queue in <code class="highlight">_napi_poll</code>. We can also see that it spends roughly
+the same amount in <code class="highlight">net_rps_send_ipi</code> (you can click on <code class="highlight">asm_common_interrupt</code> to zoom in further).</p>
+<p><img alt="rps_cpu2_zoom_asm_common_interrupt" src="https://github.com/user-attachments/assets/6cd01347-9e1a-4f86-96a7-b1ee955af0b7" /></p>
+<p>Now, zoom into <code class="highlight">napi_complete_done</code>. You see here that <code class="highlight">netif_receive_skb_list_internal</code> calls <code class="highlight">get_rps_cpu</code> to
+determine the CPU to steer packets to. That matches the description from
+<a href="https://www.kernel.org/doc/html/latest/networking/scaling.html">Scaling in the Linux Networking Stack</a>.</p>
+<p><img alt="rps_cpu2_zoom_napi_complete_done" src="https://github.com/user-attachments/assets/5e23d8a9-ff85-444f-8b6b-414b0caf790b" /></p>
+<p>On the other hand, CPU 1 processes our packets after RPS for RX queue 0. We can see that <code class="highlight">_napi_poll</code> runs here as
+well inside <code class="highlight">net_rx_action</code>. As part of RPS, we can see here that <code class="highlight">_netif_receive_skb_one_core</code> calls <code class="highlight">ip_rcv</code>, 
+<code class="highlight">ip_local_deliver</code> and <code class="highlight">ip_local_deliver_finish</code>. We see that CPU 1 does not poll the virtio queue directly.</p>
+<p><img alt="rps_cpu1_zoom" src="https://github.com/user-attachments/assets/ea2f1ece-4fa0-46fa-b41f-6ed920bd4ab6" /></p>
+<p>If you compare that to the work that's being done on CPU 3, you can see that CPU 3 does both the polling of the virtio queue
+and it's also in charge of local delivery.</p>
+<p><img alt="rps_cpu3_zoom" src="https://github.com/user-attachments/assets/c7ea951e-14e8-4490-8efd-13b9097a7f1a" /></p>
+<p>So RPS generates some overhead for dispatching the packets to another
+CPU, but it splits the work of receiving our packets between CPUs 2 and 1. (You can also observe for example that GRO
+happens on CPU 2 and not on CPU 1.)</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>We could have aimed for a deeper dive by optimizing our test application, by looking at NAPI and its configuration
+and by analyzing the kernel code and by analyzing the flamegraphs more thoroughly. However, I hope that this blog post
+could serve as a short overview.</p>
 
 
 

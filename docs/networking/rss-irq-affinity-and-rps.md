@@ -5,17 +5,7 @@
 2 RHEL 9 virtual machines with 2 interfaces each. We are going to connect to the instances via eth0 and we are going to
 run our tests via eth1.
 
-```
- ┌──────────────────────┐                       ┌──────────────────────┐ 
- │                      │                       │                      │ 
- │                  ┌─────────────┐   ┌─────────────┐                  │ 
- │        LG        │     eth1    ├───┤     eth1    │      DUT         │ 
- │                  └─────────────┘   └─────────────┘                  │ 
- │   ┌──────────────┐   │                       │   ┌──────────────┐   │ 
- └───│     eth0     │───┘                       └───│     eth0     │───┘ 
-     └──────────────┘                               └──────────────┘     
-                    192.168.123.11 <-> 192.168.123.10
-```
+![dut](https://github.com/user-attachments/assets/2bff8414-67c8-44a7-9ad8-42bad2831f98)
 > **DUT:** Device Under Test (server, VM with 4 queues on eth1)
   **LG:** Load Generator (client)
 
@@ -474,7 +464,8 @@ man recvfrom()
 (...)
 ```
 
-![IRQ smp affinity - flamegraph 6](TBD.png)
+![IRQ smp affinity - flamegraph 6](https://github.com/user-attachments/assets/8d796b41-b056-4048-b5d4-5385538ecdb2)
+
 
 CPUs 2 and 3 process our softirqs, at roughly 20% and 13% respectively. Actually, running top or mpstat during the
 tests also showed that the CPUs were spending that amount of time processing hardware interrupts and softirqs.
@@ -485,7 +476,7 @@ in the [bottom half](https://developer.ibm.com/tutorials/l-tasklets/).
 [Brendan Gregg's blog](https://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html)
 might have some tips to get to the bottom of this.
 
-![IRQ smp affinity - flamegraph 2](TBD.png)
+![IRQ smp affinity - flamegraph 2](https://github.com/user-attachments/assets/b0d22412-8cd3-4aba-91a4-bc7c9233854a)
 
 Even though most of what's happening is still difficult to understand for me, at least it's not a black box any more.
 We can see what's causing each CPU to be busy, and with the help of man pages or the actual application and kernel code

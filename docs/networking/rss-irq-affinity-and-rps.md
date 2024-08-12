@@ -653,8 +653,8 @@ and it's also in charge of local delivery.
 ![rps_cpu3_zoom](https://github.com/user-attachments/assets/c7ea951e-14e8-4490-8efd-13b9097a7f1a)
 
 So RPS generates some overhead for dispatching the packets to another
-CPU, but it splits the work of receiving our packets between CPUs 2 and 1. (You can also observe for example that GRO
-happens on CPU 2 and not on CPU 1.)
+CPU, but it splits the work of receiving and delivering our packets between CPUs 2 and 1. (You can also observe for
+example that GRO happens on CPU 2 and not on CPU 1.)
 
 ## Conclusion
 

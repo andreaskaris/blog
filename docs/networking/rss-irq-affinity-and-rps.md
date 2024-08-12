@@ -569,9 +569,9 @@ Let's start our client <-> server again:
 Check softirqs for `NET_RX`:
 
 ```
-[root@dut golang-loadgen]# grep NET_RX /proc/softirqs; sleep 5; grep NET_RX /proc/softirqs
-      NET_RX:   12848517    1389311    3398302   13723300          2          1      11583          1
-      NET_RX:   12919247    1389313    3470609   13863586          2          1      11583          1
+[root@dut ~]#  grep NET_RX /proc/softirqs; sleep 5; grep NET_RX /proc/softirqs
+      NET_RX:        752       8876     174447     530414          1         89          3       6444
+      NET_RX:        752       8886     260419     850538          1         89          3       8673
 ```
 
 You can see that `NET_RX` softirqs are mainly processed on CPUs 2 and 3, the CPUs that we pinned our RX IRQs to.
@@ -595,9 +595,9 @@ Alright, then let's move it to CPU 1:
 Check softirqs for `NET_RX`:
 
 ```
-[root@dut golang-loadgen]# grep NET_RX /proc/softirqs; sleep 5; grep NET_RX /proc/softirqs
-      NET_RX:   15085998    1498737    9060515   21808889          2    4653500      11627     146036
-      NET_RX:   15086002    1599983    9164621   21921684          2    4653500      11627     197215
+[root@dut ~]#  grep NET_RX /proc/softirqs; sleep 5; grep NET_RX /proc/softirqs
+      NET_RX:        770     249085     851560    1205663          1         89       3135      10698
+      NET_RX:        772     526176    1422105    1318525          1         89       7098      10698
 ```
 
 Now, we are processing NET_RX softirqs on CPU 1 (for RPS) as well as on CPUs 2 and 3 because of IRQ SMP affinity.

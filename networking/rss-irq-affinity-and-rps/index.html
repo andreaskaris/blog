@@ -3175,6 +3175,7 @@ it generated interrupts on CPU 0. <code class="highlight">virtio6-input.1</code>
 it generated interrupts on CPU 5. But wait, irqbalance is switched off, and we even rebooted the system. Why are our
 IRQs distributed between our CPUs and why aren't they allowed on all CPUs? To be confirmed, but the answer may be in
 <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5e385a6ef31f">this commit</a>.</p>
+<p>For further details about SMP IRQ affinity, see <a href="https://www.kernel.org/doc/html/latest/core-api/irq/irq-affinity.html">SMP IRQ affinity</a>.</p>
 <h3 id="configuring-smp-affinity-for-rx-queue-interrupts">Configuring SMP affinity for RX queue interrupts</h3>
 <p>Let's force <code class="highlight">virtio6-input.0</code> onto CPU 2 and <code class="highlight">virtio6-input.1</code> onto CPU 3. The softirqs will be processed on the same NICs
 by default. The affinity can be any CPU, regardless of our tuned configuration, either from the system CPU set or from

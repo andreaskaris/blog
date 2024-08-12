@@ -2,8 +2,8 @@
 
 In this blog post, we are going to have a look at the tuning of Linux receive queues and their interrupt requests. We
 are going to learn a bit about RSS (Receive Side Scaling), IRQ SMP affinity, RPS (Receive Packet Steering) and how to
-analyze CPUs with flamegraphs. I do not aim at going very low-level. Instead, I'd like you to get a high-level
-understanding of this topic.
+analyze what's happening on your CPUs with perf flamegraphs. I do not aim at going very low-level. Instead, I'd like you
+to get a high-level understanding of this topic.
 
 ## Lab setup
 
@@ -12,7 +12,8 @@ are going to run our tests via eth1.
 
 ![dut](https://github.com/user-attachments/assets/2bff8414-67c8-44a7-9ad8-42bad2831f98)
 > **DUT:** Device Under Test (server, VM with 4 queues on eth1)
-  **LG:** Load Generator (client)
+
+> **LG:** Load Generator (client)
 
 Both VMs have 8 GB of memory and 8 CPUs each:
 
@@ -346,7 +347,7 @@ And on the client:
 [root@lg golang-loadgen]# _output/loadgen -host 192.168.123.10 -port 8080 -protocol udp -rate-per-second 1000000000
 ```
 
-And you can see that interrupts for queues virtio6-input.0 and virtio6-input.1 increment as RSS balances flows
+And you can see that interrupts for queues `virtio6-input.0` and `virtio6-input.1` increment as RSS balances flows
 across the 2 remaining queues. At the same time, queues 2 and 3 are disabled. It might be a bit difficult to read, but
 remember that these are absolute counters from since when the machines started. Look at the delta for each of the
 queues, so compare the lines starting with 53 to each other, then the lines starting with 55, and so on. You will see
@@ -381,7 +382,7 @@ In order to pin to a single CPU for an 8 CPU system, refer to the following tabl
 
 ### Querying SMP affinity for RX queue interrupts
 
-You can get the interrupt numbers for virtio6-input.0 (in this case 53) and virtio6-input.1 (in this case 55) from
+You can get the interrupt numbers for `virtio6-input.0` (in this case 53) and `virtio6-input.1` (in this case 55) from
 `/proc/interrupts`. Then, query `/proc/irq/<interrupt number>/smp_affinity` and `smp_affinity_list`.
 
 ```
@@ -395,15 +396,15 @@ f0
 4-7
 ```
 
-That matches what we saw earlier: virtio6-input.0's affinity currently is CPUs 0-3 and in `/proc/interrupts` we saw that
-it generated interrupts on CPU 0. virtio6-input.1's affinity currently is CPUs 4-7 and in `/proc/interrupts` we saw that
+That matches what we saw earlier: `virtio6-input.0`'s affinity currently is CPUs 0-3 and in `/proc/interrupts` we saw that
+it generated interrupts on CPU 0. `virtio6-input.1`'s affinity currently is CPUs 4-7 and in `/proc/interrupts` we saw that
 it generated interrupts on CPU 5. But wait, irqbalance is switched off, and we even rebooted the system. Why are our
 IRQs distributed between our CPUs and why aren't they allowed on all CPUs? To be confirmed, but the answer may be in
 [this commit](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5e385a6ef31f).
 
 ### Configuring SMP affinity for RX queue interrupts
 
-Let's force virtio6-input.0 onto CPU 2 and virtio6-input.1 onto CPU 3. The softirqs will be processed on the same NICs
+Let's force `virtio6-input.0` onto CPU 2 and `virtio6-input.1` onto CPU 3. The softirqs will be processed on the same NICs
 by default. The affinity can be any CPU, regardless of our tuned configuration, either from the system CPU set or from
 the isolated CPU set. But I already moved IRQs to isolated CPUs during an earlier test, so for the sake of it, I want
 to move them to system reserved CPUs now :-)
@@ -427,7 +428,7 @@ Start the server and the client again with the same affinity for the server:
 [root@lg golang-loadgen]# _output/loadgen -host 192.168.123.10 -port 8080 -protocol udp -rate-per-second 1000000000
 ```
 
-And now, interrupts increase for virtio6-input.0 on CPU 2 and for virtio6-input.1 on CPU 3:
+And now, interrupts increase for `virtio6-input.0` on CPU 2 and for `virtio6-input.1` on CPU 3:
 
 ```
 [root@dut ~]# for i in {1..2}; do grep virtio6-input /proc/interrupts; sleep 5; done

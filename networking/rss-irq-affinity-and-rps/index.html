@@ -3403,8 +3403,8 @@ well inside <code class="highlight">net_rx_action</code>. As part of RPS, we can
 and it's also in charge of local delivery.</p>
 <p><img alt="rps_cpu3_zoom" src="https://github.com/user-attachments/assets/c7ea951e-14e8-4490-8efd-13b9097a7f1a" /></p>
 <p>So RPS generates some overhead for dispatching the packets to another
-CPU, but it splits the work of receiving our packets between CPUs 2 and 1. (You can also observe for example that GRO
-happens on CPU 2 and not on CPU 1.)</p>
+CPU, but it splits the work of receiving and delivering our packets between CPUs 2 and 1. (You can also observe for
+example that GRO happens on CPU 2 and not on CPU 1.)</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>We could have aimed for a deeper dive by optimizing our test application, by looking at NAPI and its configuration
 and by analyzing the kernel code and by analyzing the flamegraphs more thoroughly. However, I hope that this blog post

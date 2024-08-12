@@ -471,8 +471,8 @@ The flamegraphs show us largely idle CPUs 0,1, 4 and 5 which is expected. Howeve
 the server should be running on CPUs 6 and 7.
 There are 2 reasons for this:
 
-* We started the application on CPUs 6 and 7 which are isolated from via `isolcpus` in `/proc/cmdline`, so the kernel
-loadbalancer is off for these CPUs
+* We started the application on CPUs 6 and 7 which are isolated via `isolcpus` in `/proc/cmdline`, so the kernel
+loadbalancer is off for these CPUs.
 * Have another look at the server implementation: you will see that the TCP server is multithreaded (use of go routines)
 and the UDP server is single threaded. I had not intended it to be this way - it was an omission on my side because
 I initially implemented the TCP code and then quickly added the UDP part. This is fixed in the master branch of the
@@ -502,7 +502,7 @@ man recvfrom()
 ![IRQ smp affinity - flamegraph 6](https://github.com/user-attachments/assets/8d796b41-b056-4048-b5d4-5385538ecdb2)
 
 
-CPUs 2 and 3 process our softirqs, at roughly 20% and 13% respectively. Actually, running top or mpstat during the
+CPUs 2 and 3 process our softirqs, at roughly 20% and 13% respectively. Actually, running `top` or `mpstat` during the
 tests also showed that the CPUs were spending that amount of time processing hardware interrupts and softirqs.
 
 This is pure speculation, but I suppose that we do not see any hardware interrupts here for 2 reasons:

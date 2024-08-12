@@ -2641,15 +2641,15 @@
 <h1 id="rss-irq-affinity-and-rps-on-linux">RSS, IRQ affinity and RPS on Linux</h1>
 <p>In this blog post, we are going to have a look at the tuning of Linux receive queues and their interrupt requests. We
 are going to learn a bit about RSS (Receive Side Scaling), IRQ SMP affinity, RPS (Receive Packet Steering) and how to
-analyze CPUs with flamegraphs. I do not aim at going very low-level. Instead, I'd like you to get a high-level
-understanding of this topic.</p>
+analyze what's happening on your CPUs with perf flamegraphs. I do not aim at going very low-level. Instead, I'd like you
+to get a high-level understanding of this topic.</p>
 <h2 id="lab-setup">Lab setup</h2>
 <p>We spawn two RHEL 9 virtual machines with two interfaces each. We are going to connect to the instances via eth0 and we
 are going to run our tests via eth1.</p>
 <p><img alt="dut" src="https://github.com/user-attachments/assets/2bff8414-67c8-44a7-9ad8-42bad2831f98" /></p>
 <blockquote>
-<p><strong>DUT:</strong> Device Under Test (server, VM with 4 queues on eth1)
-  <strong>LG:</strong> Load Generator (client)</p>
+<p><strong>DUT:</strong> Device Under Test (server, VM with 4 queues on eth1)</p>
+<p><strong>LG:</strong> Load Generator (client)</p>
 </blockquote>
 <p>Both VMs have 8 GB of memory and 8 CPUs each:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
@@ -3075,7 +3075,7 @@ Mellanox/Nvidia devices, plenty of configuration options are available to influe
 <p>And on the client:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">lg</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># _output/loadgen -host 192.168.123.10 -port 8080 -protocol udp -rate-per-second 1000000000</span>
 </code></pre></div></td></tr></table></div>
-<p>And you can see that interrupts for queues virtio6-input.0 and virtio6-input.1 increment as RSS balances flows
+<p>And you can see that interrupts for queues <code class="highlight">virtio6-input.0</code> and <code class="highlight">virtio6-input.1</code> increment as RSS balances flows
 across the 2 remaining queues. At the same time, queues 2 and 3 are disabled. It might be a bit difficult to read, but
 remember that these are absolute counters from since when the machines started. Look at the delta for each of the
 queues, so compare the lines starting with 53 to each other, then the lines starting with 55, and so on. You will see
@@ -3152,7 +3152,7 @@ that the 2 lines for IRQs 57 and 59 did not change, whereas the counters for IRQ
 </tbody>
 </table>
 <h3 id="querying-smp-affinity-for-rx-queue-interrupts">Querying SMP affinity for RX queue interrupts</h3>
-<p>You can get the interrupt numbers for virtio6-input.0 (in this case 53) and virtio6-input.1 (in this case 55) from
+<p>You can get the interrupt numbers for <code class="highlight">virtio6-input.0</code> (in this case 53) and <code class="highlight">virtio6-input.1</code> (in this case 55) from
 <code class="highlight">/proc/interrupts</code>. Then, query <code class="highlight">/proc/irq/&lt;interrupt number&gt;/smp_affinity</code> and <code class="highlight">smp_affinity_list</code>.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
@@ -3170,13 +3170,13 @@ that the 2 lines for IRQs 57 and 59 did not change, whereas the counters for IRQ
 <span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">dut</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># cat /proc/irq/55/smp_affinity_list</span>
 <span class="mi">4</span><span class="o">-</span><span class="mi">7</span>
 </code></pre></div></td></tr></table></div>
-<p>That matches what we saw earlier: virtio6-input.0's affinity currently is CPUs 0-3 and in <code class="highlight">/proc/interrupts</code> we saw that
-it generated interrupts on CPU 0. virtio6-input.1's affinity currently is CPUs 4-7 and in <code class="highlight">/proc/interrupts</code> we saw that
+<p>That matches what we saw earlier: <code class="highlight">virtio6-input.0</code>'s affinity currently is CPUs 0-3 and in <code class="highlight">/proc/interrupts</code> we saw that
+it generated interrupts on CPU 0. <code class="highlight">virtio6-input.1</code>'s affinity currently is CPUs 4-7 and in <code class="highlight">/proc/interrupts</code> we saw that
 it generated interrupts on CPU 5. But wait, irqbalance is switched off, and we even rebooted the system. Why are our
 IRQs distributed between our CPUs and why aren't they allowed on all CPUs? To be confirmed, but the answer may be in
 <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5e385a6ef31f">this commit</a>.</p>
 <h3 id="configuring-smp-affinity-for-rx-queue-interrupts">Configuring SMP affinity for RX queue interrupts</h3>
-<p>Let's force virtio6-input.0 onto CPU 2 and virtio6-input.1 onto CPU 3. The softirqs will be processed on the same NICs
+<p>Let's force <code class="highlight">virtio6-input.0</code> onto CPU 2 and <code class="highlight">virtio6-input.1</code> onto CPU 3. The softirqs will be processed on the same NICs
 by default. The affinity can be any CPU, regardless of our tuned configuration, either from the system CPU set or from
 the isolated CPU set. But I already moved IRQs to isolated CPUs during an earlier test, so for the sake of it, I want
 to move them to system reserved CPUs now :-)</p>
@@ -3197,7 +3197,7 @@ to move them to system reserved CPUs now :-)</p>
 </code></pre></div></td></tr></table></div>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="n">root</span><span class="err">@</span><span class="n">lg</span><span class="w"> </span><span class="n">golang</span><span class="o">-</span><span class="n">loadgen</span><span class="p">]</span><span class="c1"># _output/loadgen -host 192.168.123.10 -port 8080 -protocol udp -rate-per-second 1000000000</span>
 </code></pre></div></td></tr></table></div>
-<p>And now, interrupts increase for virtio6-input.0 on CPU 2 and for virtio6-input.1 on CPU 3:</p>
+<p>And now, interrupts increase for <code class="highlight">virtio6-input.0</code> on CPU 2 and for <code class="highlight">virtio6-input.1</code> on CPU 3:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
@@ -3424,7 +3424,7 @@ could serve as a short overview.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">August 9, 2024</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">August 12, 2024</span>
   </span>
 
     

@@ -402,6 +402,8 @@ it generated interrupts on CPU 5. But wait, irqbalance is switched off, and we e
 IRQs distributed between our CPUs and why aren't they allowed on all CPUs? To be confirmed, but the answer may be in
 [this commit](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5e385a6ef31f).
 
+For further details about SMP IRQ affinity, see [SMP IRQ affinity](https://www.kernel.org/doc/html/latest/core-api/irq/irq-affinity.html).
+
 ### Configuring SMP affinity for RX queue interrupts
 
 Let's force `virtio6-input.0` onto CPU 2 and `virtio6-input.1` onto CPU 3. The softirqs will be processed on the same NICs

@@ -469,10 +469,14 @@ Now, we'll copy the flamegraphs to our local system for analysis. You can access
 
 The flamegraphs show us largely idle CPUs 0,1, 4 and 5 which is expected. However, CPU 7 is idle as well, even though
 the server should be running on CPUs 6 and 7.
-Have another look at the server implementation: you will see that the TCP server is multithreaded (use of go routines)
+There are 2 reasons for this:
+
+* We started the application on CPUs 6 and 7 which are isolated from via `isolcpus` in `/proc/cmdline`, so the kernel
+loadbalancer is off for these CPUs
+* Have another look at the server implementation: you will see that the TCP server is multithreaded (use of go routines)
 and the UDP server is single threaded. I had not intended it to be this way - it was an omission on my side because
-I initially implemented the TCP code and then quickly added the UDP part. And looking at the flamegraph for CPU 7 makes
-painfully clear that the CPU is not executing any of our go code.
+I initially implemented the TCP code and then quickly added the UDP part. This is fixed in the master branch of the
+repository.
 
 The flamegraph for CPU 6 shows us our server is spending most of its time in readFromUDP, as expected. About half of
 that time is spent waiting in golang function

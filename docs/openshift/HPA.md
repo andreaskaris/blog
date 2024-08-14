@@ -14,7 +14,7 @@ For OpenShift 4.x, consider that there is a bug with the `v1` API for autoscalin
 Clone the following repository. Then, go to directory `hpa-test`:
 ~~~
 git clone https://github.com/andreaskaris/kubernetes-tools.git
-cd kubernetes/hpa-test
+cd kubernetes-tools/hpa-test
 ~~~
 
 You will find all required resources for the following steps. See `REAME.md` in case you want to build your own `hpa-tester` image.

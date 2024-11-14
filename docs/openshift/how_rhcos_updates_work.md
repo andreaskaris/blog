@@ -117,6 +117,8 @@ Connection to openshift-worker-0.example.com closed by remote host.
 Connection to openshift-worker-0.example.com closed.
 ~~~
 
+Note: `/run/bin/machine-config-daemon pivot` is deprecated in 4.14 and higher.
+
 After the reboot, verify:
 ~~~
 [root@openshift-worker-0 ~]# rpm-ostree status

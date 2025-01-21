@@ -9,7 +9,7 @@ According to the man page:
 > Linux internal packet priority to VLAN header prio
 > field but for outgoing frames
 
-Becaue the COS has 8 distinct values, let's map internal priorities one to one up to 7:
+Because the COS has 8 distinct values, let's map internal priorities one to one up to 7:
 
 ```
 ip link set enp1s0.123 type vlan egress 0:0 1:1 2:2 3:3 4:4 5:5 6:6 7:7

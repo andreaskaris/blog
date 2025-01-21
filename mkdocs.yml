@@ -76,6 +76,7 @@ nav:
   - Old Java inside a container with xorgs: linux/old_java_version_with_xorgs_in_container.md
   - Protect Lenovo laptop battery: linux/protect-lenovo-battery.md
   - Workaround for org.gnome.shell.overrides not installed: linux/org-gnome-shell-overrides.md
+  - Resetting libvirt qcow attributes: linux/resetting-libvirt-qcow-attributes.md
   - Retrieving process cgroup resource usage and limit info: linux/get-process-cgroup-info-and-limits.md
   - RHEL Booting a virtual machine with UEFI but without secure boot: linux/libvirt-uefi-without-secureboot.md
   - Setting journalctl limits: linux/setting-journalctl-limits.md

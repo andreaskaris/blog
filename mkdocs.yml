@@ -102,6 +102,7 @@ nav:
   - Packet tracing with OVN: networking/packet-tracing-with-ovn.md  
   - RSS, IRQ affinity and RPS on Linux: networking/rss-irq-affinity-and-rps.md
   - SCTP: networking/sctp.md
+  - Setting COS on outgoing packets in Linux: networking/setting-cos-on-egress.md
   - Useful commands: networking/useful-commands.md
   - Wireguard: networking/wireguard.md
 - OpenShift and Kubernetes:

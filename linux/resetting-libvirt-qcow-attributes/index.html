@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://andreaskaris.github.io/blog/openshift/crio-conmon-runc/">
+        <link rel="canonical" href="https://andreaskaris.github.io/blog/linux/resetting-libvirt-qcow-attributes/">
       
       
-        <link rel="prev" href="../cpu-isolation-in-openshift/">
+        <link rel="prev" href="../org-gnome-shell-overrides/">
       
       
-        <link rel="next" href="../dedicated-service-monitors/">
+        <link rel="next" href="../get-process-cgroup-info-and-limits/">
       
       
         <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../feed_rss_created.xml">
@@ -27,7 +27,7 @@
     
     
       
-        <title>Crio vs conmon vs runc - Andreas Karis Blog</title>
+        <title>Resetting libvirt qcow attributes - Andreas Karis Blog</title>
       
     
     
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Crio vs conmon vs runc
+              Resetting libvirt qcow attributes
             
           </span>
         </div>
@@ -179,11 +179,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../linux/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
     
@@ -219,13 +221,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../openshift/" class="md-tabs__link">
           
   
     
@@ -387,6 +387,8 @@
       
   
   
+    
+  
   
   
     
@@ -433,35 +435,418 @@
     
     
       
+        
+        
+      
       
         
       
     
     
       
-        
-        
-      
     
-    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
-  
-  
-    <a href="../../linux/" class="md-nav__link">
-      
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
     Linux
   </span>
   
 
-      
-        <span class="md-nav__icon md-icon"></span>
-      
-    </a>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Linux
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cgroups/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    cgroups
+  </span>
   
 
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../containers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Containers in Linux
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hugepages/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hugepages
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ipxe-boot-environment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    iPXE boot environment on Fedora
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../java-idrac-issues/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Java Idrac Issues
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meson/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    meson
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../namespaces/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    namespaces
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../old_java_version_with_xorgs_in_container/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Old Java inside a container with xorgs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../protect-lenovo-battery/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Protect Lenovo laptop battery
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../org-gnome-shell-overrides/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Workaround for org.gnome.shell.overrides not installed
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Resetting libvirt qcow attributes
+  </span>
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../get-process-cgroup-info-and-limits/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Retrieving process cgroup resource usage and limit info
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../libvirt-uefi-without-secureboot/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RHEL Booting a virtual machine with UEFI but without secure boot
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setting-journalctl-limits/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Setting journalctl limits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cgroups_cpu_quota/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Using cgroups for CFS bandwidth control
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../udev-ethtool/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    udev rules to apply ethtool settings
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../selinux-cheatsheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SELinux Cheat Sheet
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
       
     </li>
   
@@ -563,8 +948,6 @@
       
   
   
-    
-  
   
   
     
@@ -657,901 +1040,35 @@
     
     
       
-        
-        
-      
       
         
       
     
     
       
+        
+        
+      
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
       
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
-        
-          
-          
-          <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
-              
+  
+  
+    <a href="../../openshift/" class="md-nav__link">
+      
   
   <span class="md-ellipsis">
     OpenShift and Kubernetes
   </span>
   
 
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_5">
-            <span class="md-nav__icon md-icon"></span>
-            OpenShift and Kubernetes
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../alertmanager/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    AlertManager
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../analyzing-cni/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Analyzing CNI calls
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ocp-custom-release-image/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Building custom release images for OpenShift
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../cpu-manager-with-custom-machine-config-pool/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    CPU manager with custom MachineConfigPool
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../cpu-isolation-in-openshift/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    CPU isolation in Red Hat OpenShift Container Platform
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+        <span class="md-nav__icon md-icon"></span>
       
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
+    </a>
   
-  <span class="md-ellipsis">
-    Crio vs conmon vs runc
-  </span>
-  
-
-      </a>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../dedicated-service-monitors/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    DedicatedServiceMonitors in OpenShift Monitoring
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../etcd_perf/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Etcd Performance tests
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../get-vs-list-api-calls/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Get vs List API Calls
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../openshift_httpbin_tshark_sidecar/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Httpbin tshark sidecar container
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../kubernetes_cluster/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Hints for installing kubernetes on Fedora
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../HPA/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Horizontal Pod Autoscaler
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../how_rhcos_updates_work/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    How RHCOS updates work
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../kubelet-filesystems/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    How kubelet monitors filesystems
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ocp4-infra-nodes-with-machineset-without-worker-label/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Infra nodes with MachineSets without worker label
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ingresscontroller_router_sharding_ocp_on_osp/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Ingress Controller Sharding OCP on OSP
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ingress-controller-sharding-on-separate-vip/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Ingress Controller Sharding on separate VIP
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../openshift_mirror_registry/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Installing a cluster with a mirror registry
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../istio-1.6-on-ocp.4.x/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Istio 1.6 on OpenShift 4.x
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../kata/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    kata containers and the kata operatora
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../kernel-ml-on-openshift/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    kernel-ml on OpenShift
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ovn-kind-hybrid-overlay/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Kind with OVN Kubernetes Hybrid Overlay
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../kind-with-private-registry/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Kind with private registry
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../list_docker_registry_containers/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    List container images in registry
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../mounting-container-image/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Mount a container image
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../openstack/install_openshift_on_openstack/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    OpenShift on OpenStack
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../openshift-with-multipath/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    OpenShift with iSCSI multipath
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../patch-service-loadbalancer-ingress-ip/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Patch status.loadBalancer.ingress IP manually
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../private-registry/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Private container registry
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../proxy-ocp-4.5/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Proxy OCP 4.5
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../rpm-ostree-failed-to-find-image/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    rpm-ostreed failed to find image
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../seccomp-defaults-ocp/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Seccomp defaults in Red Hat OpenShift Container Platform
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../scc/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Security Context Constraints (SCC)
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../openshift-scc-with-mutating-webhooks/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    SCCs and mutating webhooks - a lesson learned
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../fix-selinux-labels-coreos/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    SElinux labels fix
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../networking/sctp/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    SCTP
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../openshift_troubleshooting_etcd_state/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Troubleshooting etcd state
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../useful-ocp-commands/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Useful commands for OpenShift
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../useful-ocp-sdn-commands/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Useful commands for OpenShift SDN
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../troubleshooting_openshift_on_openstack_worker_creation/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Troubleshooting OpenShift on OpenStack worker creation
-  </span>
-  
-
-      </a>
-    </li>
-  
 
-              
-            
-          </ul>
-        </nav>
       
     </li>
   
@@ -1700,10 +1217,40 @@
                   
 
 
-<h1 id="crio-vs-conmon-vs-runc">Crio vs conmon vs runc</h1>
-<ul>
-<li><a href="https://insujang.github.io/2019-11-18/interactions-between-crio-and-conmon/#how-conmon-is-used-in-cri-o">https://insujang.github.io/2019-11-18/interactions-between-crio-and-conmon/#how-conmon-is-used-in-cri-o</a></li>
-</ul>
+<h1 id="resetting-libvirt-qcow-attributes">Resetting libvirt qcow attributes</h1>
+<p>I have run my instances from an external drive and occasionally it may so happen that I involuntarily disconnect the drive
+as I move my laptop from one room to another.</p>
+<p>So even after stopping the instance and restarting libvirtd, the result may be the following error message when I try
+to start the VM:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>Setting different SELinux label on /opt/external/libvirt/fedora1.qcow2 which is already in use
+</code></pre></div></td></tr></table></div>
+<p>The reason is that libvirt couldn't remove the following file attributes:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code>$<span class="w"> </span>sudo<span class="w"> </span>bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;getfattr  -d -m &#39;.*&#39; -- /opt/external/libvirt/fedora1.qcow2&quot;</span>
+<span class="o">(</span>...<span class="o">)</span>
+trusted.libvirt.security.dac<span class="o">=</span><span class="s2">&quot;+1000:+107&quot;</span>
+trusted.libvirt.security.ref_dac<span class="o">=</span><span class="s2">&quot;1&quot;</span>
+trusted.libvirt.security.ref_selinux<span class="o">=</span><span class="s2">&quot;1&quot;</span>
+trusted.libvirt.security.selinux<span class="o">=</span><span class="s2">&quot;system_u:object_r:svirt_image_t:s0:c18,c447&quot;</span>
+trusted.libvirt.security.timestamp_dac<span class="o">=</span><span class="s2">&quot;1737363344&quot;</span>
+trusted.libvirt.security.timestamp_selinux<span class="o">=</span><span class="s2">&quot;1737363344&quot;</span>
+</code></pre></div></td></tr></table></div>
+<p>Given that I absolutely know that the Qemu images are not in use, I can clear the libvirt security file attributes to
+fix this without having to restart my computer:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code>file=/opt/external/libvirt/fedora2.qcow2; \
+    sudo getfattr  -d -m &#39;.*&#39; -- $file | \
+    awk -F &#39;=&#39; &#39;/trusted.libvirt.security/ {print $1}&#39; | \
+    while read attr; do sudo setfattr -x $attr $file; done
+</code></pre></div></td></tr></table></div>
 
 
 
@@ -1724,7 +1271,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">September 13, 2020</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">January 21, 2025</span>
   </span>
 
     

@@ -15,6 +15,11 @@ Because the COS has 8 distinct values, let's map internal priorities one to one 
 ip link set enp1s0.123 type vlan egress 0:0 1:1 2:2 3:3 4:4 5:5 6:6 7:7
 ```
 
+The mapping can also be set with NetworkManager (field `vlan.egress-priority-map`). At time of this writing, newer
+kernels and versions of NetworkManager seem to have a bug, though:
+[https://issues.redhat.com/browse/RHEL-72475](https://issues.redhat.com/browse/RHEL-72475)
+
+
 Next, if the packet originates from the local node, instruct it to set the internal priority class in the OUTPUT chain
 of the mangle table. For example, to set all ICMP packets that leave this node to SKB priority 6 and subsequently COS 6,
 you can use the following command:

@@ -68,6 +68,81 @@ reserved CPUs and exclusive CPUs which take up all non system reserved CPUs:
 +----------------------+------------------------------+
 ```
 
+#### Pods with mixed exclusive and shared containers
+
+With the static CPU manager, it is possible to run pods which are QoS guaranteed and yet not all of ttheir containers
+need to have exclusive CPU requests. Take the following example:
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: fedora-minimal
+  name: fedora-minimal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fedora-minimal
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: fedora-minimal
+    spec:
+      containers:
+      - image: registry.fedoraproject.org/fedora-minimal:latest
+        name: fedora-minimal-exclusive
+        command:
+          - /bin/sleep
+          - "12345"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "2"
+          limits:
+            memory: "128Mi"
+            cpu: "2"
+      - image: registry.fedoraproject.org/fedora-minimal:latest
+        name: fedora-minimal-shared
+        command:
+          - /bin/sleep
+          - "54321"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "1200m"
+          limits:
+            memory: "128Mi"
+            cpu: "1200m"
+```
+
+Because CPU and memory requests are the same for each container, the pod is of QoS class guaranteed after deployment:
+
+```
+$ oc get pods --output=custom-columns="NAME:.metadata.name,STATUS:.status.qosClass"
+NAME                              STATUS
+fedora-minimal-78cc494dd8-rxsvn   Guaranteed
+```
+
+The container with integer CPU requests will reserve CPUs from the exclusive set:
+
+```
+$ oc exec fedora-minimal-78cc494dd8-rxsvn -c fedora-minimal-exclusive -- grep -i cpus /proc/self/status
+Cpus_allowed:	00000080,00000080
+Cpus_allowed_list:	7,39
+```
+
+Whereas the container with non-integer CPU requests will use the shared CPU pool:
+
+```
+$ oc exec fedora-minimal-78cc494dd8-rxsvn -c fedora-minimal-shared -- grep -i cpus /proc/self/status
+Cpus_allowed:	ffffff43,ffffff43
+Cpus_allowed_list:	0-1,6,8-33,38,40-63
+```
 
 ### Management workload partitioning
 
@@ -125,3 +200,4 @@ Once the cluster is installed with `cpuPartitioningMode: AllNodes` and configure
   This requirement makes sure that normal users cannot enable the feature without administrator consent.
 * A pod must opt in to being a management workload via annotation
 `target.workload.openshift.io/management: {"effect": "PreferredDuringScheduling"}`.
+

@@ -15,7 +15,7 @@ reserved CPUs:
 +----------------------+------------------------------+
 ```
 
-In order to achieve such separation, administrators can configure a
+In order to achieve such separation, OpenShift administrators can configure a
 [PerformanceProfile](https://docs.openshift.com/container-platform/4.14/scalability_and_performance/cnf-create-performance-profiles.html)
 
 ```
@@ -70,7 +70,7 @@ reserved CPUs and exclusive CPUs which take up all non system reserved CPUs:
 
 #### Pods with mixed exclusive and shared containers
 
-With the static CPU manager, it is possible to run pods which are QoS guaranteed and yet not all of ttheir containers
+With the static CPU manager, it is possible to run pods which are QoS guaranteed and yet not all of their containers
 need to have exclusive CPU requests. Take the following example:
 
 ```

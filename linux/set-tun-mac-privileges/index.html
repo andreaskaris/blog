@@ -1274,9 +1274,56 @@ write<span class="o">(</span><span class="m">2</span>,<span class="w"> </span><s
 exit_group<span class="o">(</span><span class="m">2</span><span class="o">)</span><span class="w">                           </span><span class="o">=</span><span class="w"> </span>?
 +++<span class="w"> </span>exited<span class="w"> </span>with<span class="w"> </span><span class="m">2</span><span class="w"> </span>+++
 </code></pre></div></td></tr></table></div>
+<p>And the netlink kernel code checks for net_admin capabilities.</p>
+<p>https://github.com/torvalds/linux/blob/bc9ff192a6c940d9a26e21a0a82f2667067aaf5f/net/netlink/af_netlink.c#L906
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">static</span><span class="w"> </span><span class="n">inline</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">netlink_allowed</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">struct</span><span class="w"> </span><span class="n">socket</span><span class="w"> </span><span class="o">*</span><span class="n">sock</span><span class="p">,</span><span class="w"> </span><span class="n">unsigned</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">flag</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">nl_table</span><span class="p">[</span><span class="n">sock</span><span class="o">-&gt;</span><span class="n">sk</span><span class="o">-&gt;</span><span class="n">sk_protocol</span><span class="p">]</span><span class="o">.</span><span class="n">flags</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">flag</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">        </span><span class="n">ns_capable</span><span class="p">(</span><span class="n">sock_net</span><span class="p">(</span><span class="n">sock</span><span class="o">-&gt;</span><span class="n">sk</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">user_ns</span><span class="p">,</span><span class="w"> </span><span class="n">CAP_NET_ADMIN</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div></p>
 <h2 id="the-alternative-using-siocsifhwaddr">The Alternative: Using SIOCSIFHWADDR</h2>
 <p>There's actually another way to set the MAC address on Linux for TAP interfaces, via the SIOCSIFHWADDR ioctl call. This is the same approach that DPDK uses for TAP interface manipulation.</p>
 <p>The key is that we can open the TAP interface through <code class="highlight">/dev/net/tun</code> and use the SIOCSIFHWADDR ioctl directly, bypassing the netlink interface that requires NET_ADMIN capabilities.</p>
+<p>The reason this works is that for most interfaces, the Linux kernel actually checks for CAP_NET_ADMIN when using SIOCSIFHWADDR:
+https://github.com/torvalds/linux/blob/40f92e79b0aabbf3575e371f9054657a421a3e79/net/core/dev_ioctl.c#L804</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="mf">687</span><span class="w">     </span><span class="n">case</span><span class="w"> </span><span class="n">SIOCSIFHWADDR</span><span class="p">:</span><span class="w">                                                         </span>
+<span class="mf">688</span><span class="w">     </span><span class="n">case</span><span class="w"> </span><span class="n">SIOCSIFSLAVE</span><span class="p">:</span><span class="w">                                                          </span>
+<span class="mf">689</span><span class="w">     </span><span class="n">case</span><span class="w"> </span><span class="n">SIOCADDMULTI</span><span class="p">:</span><span class="w">                                                          </span>
+<span class="mf">690</span><span class="w">     </span><span class="n">case</span><span class="w"> </span><span class="n">SIOCDELMULTI</span><span class="p">:</span><span class="w">                                                          </span>
+<span class="mf">691</span><span class="w">     </span><span class="n">case</span><span class="w"> </span><span class="n">SIOCSIFHWBROADCAST</span><span class="p">:</span><span class="w">                                                    </span>
+<span class="mf">692</span><span class="w">     </span><span class="n">case</span><span class="w"> </span><span class="n">SIOCSMIIREG</span><span class="p">:</span><span class="w">                                                           </span>
+<span class="mf">693</span><span class="w">     </span><span class="n">case</span><span class="w"> </span><span class="n">SIOCBONDENSLAVE</span><span class="p">:</span><span class="w">                                                       </span>
+<span class="mf">694</span><span class="w">     </span><span class="n">case</span><span class="w"> </span><span class="n">SIOCBONDRELEASE</span><span class="p">:</span><span class="w">                                                       </span>
+<span class="mf">695</span><span class="w">     </span><span class="n">case</span><span class="w"> </span><span class="n">SIOCBONDSETHWADDR</span><span class="p">:</span><span class="w">                                                     </span>
+<span class="mf">696</span><span class="w">     </span><span class="n">case</span><span class="w"> </span><span class="n">SIOCBONDCHANGEACTIVE</span><span class="p">:</span><span class="w">                                                  </span>
+<span class="mf">697</span><span class="w">     </span><span class="n">case</span><span class="w"> </span><span class="n">SIOCBRADDIF</span><span class="p">:</span><span class="w">                                                           </span>
+<span class="mf">698</span><span class="w">     </span><span class="n">case</span><span class="w"> </span><span class="n">SIOCBRDELIF</span><span class="p">:</span><span class="w">                                                           </span>
+<span class="mf">699</span><span class="w">     </span><span class="n">case</span><span class="w"> </span><span class="n">SIOCSHWTSTAMP</span><span class="p">:</span><span class="w">                                                         </span>
+<span class="mf">700</span><span class="w">         </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="err">!</span><span class="n">ns_capable</span><span class="p">(</span><span class="n">net</span><span class="o">-&gt;</span><span class="n">user_ns</span><span class="p">,</span><span class="w"> </span><span class="n">CAP_NET_ADMIN</span><span class="p">))</span><span class="w">                           </span>
+<span class="mf">701</span><span class="w">             </span><span class="kr">return</span><span class="w"> </span><span class="o">-</span><span class="n">EPERM</span><span class="p">;</span><span class="w">                                                      </span>
+<span class="mf">702</span><span class="w">         </span><span class="n">fallthrough</span><span class="p">;</span>
+</code></pre></div></td></tr></table></div>
+<p>However, for TAP interfaces, the same check for capabilities is not implemented.</p>
 <h3 id="writing-the-tool">Writing the tool</h3>
 <p>Let's examine this approach:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>

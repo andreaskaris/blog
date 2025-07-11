@@ -83,6 +83,7 @@ nav:
   - Using cgroups for CFS bandwidth control: linux/cgroups_cpu_quota.md
   - udev rules to apply ethtool settings: linux/udev-ethtool.md
   - SELinux Cheat Sheet: linux/selinux-cheatsheet.md
+  - Setting TAP MAC address w/o NET_ADMIN Caps: linux/set-tun-mac-privileges.md
 - Networking:
   - networking/index.md
   - Accept Source Routing: networking/accept-source-routing.md

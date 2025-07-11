@@ -29,11 +29,46 @@ exit_group(2)                           = ?
 +++ exited with 2 +++
 ```
 
+And the netlink kernel code checks for net_admin capabilities.
+
+https://github.com/torvalds/linux/blob/bc9ff192a6c940d9a26e21a0a82f2667067aaf5f/net/netlink/af_netlink.c#L906
+```
+static inline int netlink_allowed(const struct socket *sock, unsigned int flag)
+{
+	return (nl_table[sock->sk->sk_protocol].flags & flag) ||
+		ns_capable(sock_net(sock->sk)->user_ns, CAP_NET_ADMIN);
+}
+```
+
 ## The Alternative: Using SIOCSIFHWADDR
 
 There's actually another way to set the MAC address on Linux for TAP interfaces, via the SIOCSIFHWADDR ioctl call. This is the same approach that DPDK uses for TAP interface manipulation.
 
 The key is that we can open the TAP interface through `/dev/net/tun` and use the SIOCSIFHWADDR ioctl directly, bypassing the netlink interface that requires NET_ADMIN capabilities.
+
+The reason this works is that for most interfaces, the Linux kernel actually checks for CAP_NET_ADMIN when using SIOCSIFHWADDR:
+https://github.com/torvalds/linux/blob/40f92e79b0aabbf3575e371f9054657a421a3e79/net/core/dev_ioctl.c#L804
+
+```
+687     case SIOCSIFHWADDR:                                                         
+688     case SIOCSIFSLAVE:                                                          
+689     case SIOCADDMULTI:                                                          
+690     case SIOCDELMULTI:                                                          
+691     case SIOCSIFHWBROADCAST:                                                    
+692     case SIOCSMIIREG:                                                           
+693     case SIOCBONDENSLAVE:                                                       
+694     case SIOCBONDRELEASE:                                                       
+695     case SIOCBONDSETHWADDR:                                                     
+696     case SIOCBONDCHANGEACTIVE:                                                  
+697     case SIOCBRADDIF:                                                           
+698     case SIOCBRDELIF:                                                           
+699     case SIOCSHWTSTAMP:                                                         
+700         if (!ns_capable(net->user_ns, CAP_NET_ADMIN))                           
+701             return -EPERM;                                                      
+702         fallthrough;
+```
+
+However, for TAP interfaces, the same check for capabilities is not implemented.
 
 ### Writing the tool
 

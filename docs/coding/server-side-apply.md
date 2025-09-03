@@ -61,7 +61,7 @@ kubectl apply -f test.yaml --server-side
 ```
 
 Here's what server side apply looks like for the API, where `Content-Type: application/apply-patch+yaml` indicates that
-server side apply shall be used (https://kubernetes.io/docs/reference/using-api/server-side-apply/#api-implementation):
+[server side apply shall be used](https://kubernetes.io/docs/reference/using-api/server-side-apply/#api-implementation):
 
 ```
 $ kubectl apply -v10 -f test.yaml --server-side --force-conflicts

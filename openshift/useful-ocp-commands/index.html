@@ -82,6 +82,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#useful-commands-for-openshift" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -298,7 +303,9 @@
   
 
 
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
@@ -1494,6 +1501,19 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Useful commands for OpenShift
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
@@ -1504,6 +1524,145 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#querying-the-ocp-4x-upgrades-info-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Querying the OCP 4.x upgrades info API
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Querying the OCP 4.x upgrades info API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#function-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Function definitions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#upgrading-to-a-specific-out-of-graph-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      Upgrading to a specific out of graph image
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gathering-all-resources-from-a-namespace-with-oc-adm-inspect" class="md-nav__link">
+    <span class="md-ellipsis">
+      Gathering all resources from a namespace with oc adm inspect
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#listing-specific-pod-columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Listing specific pod columns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Listing specific pod columns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#qos-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      QOS class
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scc" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCC
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ovnkubernetes" class="md-nav__link">
+    <span class="md-ellipsis">
+      OVNKubernetes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pod-security-admissin" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pod Security Admissin
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ocp-release-images" class="md-nav__link">
+    <span class="md-ellipsis">
+      OCP release images
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ovn-kubernetes-gathering-ts-data-when-mg-fails" class="md-nav__link">
+    <span class="md-ellipsis">
+      OVN Kubernetes - gathering TS data when mg fails
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1632,6 +1791,8 @@
       
         
       
+        
+      
     
     
       
@@ -1675,24 +1836,6 @@
       </div>
     </div>
   
-  
-    
-    <!--
-    <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-      <div class="md-sidebar__scrollwrap">
-        <div class="md-sidebar__inner">
-          
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-</nav>
-        </div>
-      </div>
-    </div>
-    -->
   
 
           
@@ -2374,7 +2517,7 @@ tar<span class="w"> </span>-tf<span class="w"> </span>/tmp/ovnlogs.tar.gz
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes", "toc.follow", "toc.integrate"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.60a45f97.min.js"></script>

@@ -82,6 +82,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#rss-irq-affinity-and-rps-on-linux" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -298,7 +303,9 @@
   
 
 
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="Andreas Karis Blog" class="md-nav__button md-logo" aria-label="Andreas Karis Blog" data-md-component="logo">
       
@@ -923,6 +930,19 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    RSS, IRQ affinity and RPS on Linux
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
@@ -933,6 +953,223 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#lab-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lab setup
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      Test application
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Test application">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#server-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Server code
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disabling-irqbalance-on-the-dut" class="md-nav__link">
+    <span class="md-ellipsis">
+      Disabling irqbalance on the DUT
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#isolating-cpus-with-tuned-on-the-dut" class="md-nav__link">
+    <span class="md-ellipsis">
+      Isolating CPUs with tuned on the DUT
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-the-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      Building the application
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-the-test-application-with-debug-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Running the test application with debug output
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rss-tuning-nic-queues-and-rx-interrupt-affinity-on-the-device-under-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      RSS + Tuning NIC queues and RX interrupt affinity on the Device Under Test
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RSS + Tuning NIC queues and RX interrupt affinity on the Device Under Test">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#whats-rss" class="md-nav__link">
+    <span class="md-ellipsis">
+      What's RSS?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reducing-queue-count-to-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reducing queue count to 2
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#identifying-and-reading-per-queue-interrupts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Identifying and reading per queue interrupts
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-translate-cpus-to-hex-mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      How to translate CPUs to hex mask:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#querying-smp-affinity-for-rx-queue-interrupts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Querying SMP affinity for RX queue interrupts
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-smp-affinity-for-rx-queue-interrupts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring SMP affinity for RX queue interrupts
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-flamegraphs-to-analyze-cpu-activity" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using flamegraphs to analyze CPU activity
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rps-on-the-device-under-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      RPS on the Device Under Test
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RPS on the Device Under Test">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#whats-rps" class="md-nav__link">
+    <span class="md-ellipsis">
+      What's RPS?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-rps-for-the-rx-queues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring RPS for the RX queues
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-flamegraphs-to-analyze-cpu-activity_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using flamegraphs to analyze CPU activity
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1233,6 +1470,8 @@
       
         
       
+        
+      
     
     
       
@@ -1276,24 +1515,6 @@
       </div>
     </div>
   
-  
-    
-    <!--
-    <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-      <div class="md-sidebar__scrollwrap">
-        <div class="md-sidebar__inner">
-          
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-</nav>
-        </div>
-      </div>
-    </div>
-    -->
   
 
           
@@ -2148,7 +2369,7 @@ could serve as a short overview.</p>
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.prune", "navigation.top", "navigation.path", "navigation.indexes", "toc.follow", "toc.integrate"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.60a45f97.min.js"></script>

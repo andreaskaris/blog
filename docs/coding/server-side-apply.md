@@ -114,9 +114,7 @@ Using a `Patch` with `client.Apply` may work well in most cases for the `control
 documentation for [applyconfigurations](https://pkg.go.dev/k8s.io/client-go/applyconfigurations) states a caveat: the
 standard library structs have many non-pointer fields and thus fields are set to their default values. On the other hand:
 
-```
-Each "apply configuration" type represents the same Kubernetes object kind as the corresponding go struct, but where all fields are pointers to make them optional, allowing apply requests to be accurately represented.
-```
+> Each "apply configuration" type represents the same Kubernetes object kind as the corresponding go struct, but where all fields are pointers to make them optional, allowing apply requests to be accurately represented.
 
 SSA was recently [made a first-class citizen](https://github.com/kubernetes-sigs/controller-runtime/issues/3183) of the
 `controller-runtime` project, even though some pieces are still missing, such as [documentation](github.com/kubernetes-sigs/kubebuilder/issues/2514).

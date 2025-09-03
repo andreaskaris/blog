@@ -8,7 +8,7 @@ we'll see how `controller-runtime` reconciles resources using SSA and how field 
 ## Why Server-Side Apply is of interest for controller developers
 
 An [upstream kubernetes project blog post]( https://kubernetes.io/blog/2022/10/20/advanced-server-side-apply/#reconstructive-controllers)
-states that SSA is an ideal tool for constructive controllers:
+states that SSA is an ideal tool for reconstructive controllers:
 
 > This kind of controller wasn't really possible prior to SSA. The idea here is to (whenever something changes etc) reconstruct from scratch the fields of the object as the controller wishes them to be, and then apply the change to the server, letting it figure out the result. I now recommend that new controllers start out this way–it's less fiddly to say what you want an object to look like than it is to say how you want it to change.
 >
@@ -1097,12 +1097,12 @@ It does not include the selector, nor any other default fields, thus this does n
 kubectl with Server-Side Apply [encodes the entire JSON scheme](https://github.com/kubernetes/kubernetes/blob/d9df4ecff77012e63164292ab900fd23b2a714e0/staging/src/k8s.io/kubectl/pkg/cmd/apply/apply.go#L579)
 as is into a `[]byte`  and sends this as a `PATCH` request.
 
-## Skipping Get/Create Get/Update with Patch and fully specified intent for constructive controllers
+## Skipping Get/Create Get/Update with Patch and fully specified intent for reconstructive controllers
 
 It is possible to take Server-Side Apply one step further and to use the `Patch` method
 [for both object creation and updates](https://github.com/andreaskaris/reconciler-operator/blob/97ab8c69effacb1c43fd7718a9f47144d5607d33/internal/controller/reconciler_controller.go#L82).
 This simplifies the logic of the reconciler of
-[constructive controllers]( https://kubernetes.io/blog/2022/10/20/advanced-server-side-apply/#reconstructive-controllers):
+[reconstructive controllers]( https://kubernetes.io/blog/2022/10/20/advanced-server-side-apply/#reconstructive-controllers):
 
 ```
 func (r *ReconcilerReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
@@ -1268,7 +1268,7 @@ Server-Side Apply simplifies controller logic by using a single approach for bot
 Instead of checking if an object exists and then choosing between Create or Update operations, controllers can use the
 Patch method with `client.Apply` for all cases.
 
-This approach works particularly well for constructive controllers that want to declare the desired state of resources.
+This approach works particularly well for reconstructive controllers that want to declare the desired state of resources.
 The controller builds the complete object definition and lets the Kubernetes API server handle the differences. Field
 management ensures that conflicts are detected and ownership is tracked properly.
 

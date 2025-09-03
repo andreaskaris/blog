@@ -10,40 +10,32 @@ we'll see how `controller-runtime` reconciles resources using SSA and how field 
 An [upstream kubernetes project blog post]( https://kubernetes.io/blog/2022/10/20/advanced-server-side-apply/#reconstructive-controllers)
 states that SSA is an ideal tool for constructive controllers:
 
-```
-This kind of controller wasn't really possible prior to SSA. The idea here is to (whenever something changes etc) reconstruct from scratch the fields of the object as the controller wishes them to be, and then apply the change to the server, letting it figure out the result. I now recommend that new controllers start out this way–it's less fiddly to say what you want an object to look like than it is to say how you want it to change.
-
-The client library supports this method of operation by default.
-```
+> This kind of controller wasn't really possible prior to SSA. The idea here is to (whenever something changes etc) reconstruct from scratch the fields of the object as the controller wishes them to be, and then apply the change to the server, letting it figure out the result. I now recommend that new controllers start out this way–it's less fiddly to say what you want an object to look like than it is to say how you want it to change.
+>
+> The client library supports this method of operation by default.
 
 It also addresses one of the downsides of sending unneeded apply requests, but also states that this is likely not
 an issue in real-life scenarios and that it also cannot easily be fixed by sending an extra GET to retrieve the existing
 state:
 
-```
-The only downside is that you may end up sending unneeded apply requests to the API server, even if actually the object already matches your controller’s desires. This doesn't matter if it happens once in a while, but for extremely high-throughput controllers, it might cause a performance problem for the cluster–specifically, the API server. No-op writes are not written to storage (etcd) or broadcast to any watchers, so it’s not really that big of a deal. If you’re worried about this anyway, today you could use the method explained in the previous section, or you could still do it this way for now, and wait for an additional client-side mechanism to suppress zero-change applies.
-
-To get around this downside, why not GET the object and only send your apply if the object needs it? Surprisingly, it doesn't help much – a no-op apply is not very much more work for the API server than an extra GET; and an apply that changes things is cheaper than that same apply with a preceding GET. Worse, since it is a distributed system, something could change between your GET and apply, invalidating your computation
-```
+> The only downside is that you may end up sending unneeded apply requests to the API server, even if actually the object already matches your controller’s desires. This doesn't matter if it happens once in a while, but for extremely high-throughput controllers, it might cause a performance problem for the cluster–specifically, the API server. No-op writes are not written to storage (etcd) or broadcast to any watchers, so it’s not really that big of a deal. If you’re worried about this anyway, today you could use the method explained in the previous section, or you could still do it this way for now, and wait for an additional client-side mechanism to suppress zero-change applies.
+>
+> To get around this downside, why not GET the object and only send your apply if the object needs it? Surprisingly, it doesn't help much – a no-op apply is not very much more work for the API server than an extra GET; and an apply that changes things is cheaper than that same apply with a preceding GET. Worse, since it is a distributed system, something could change between your GET and apply, invalidating your computation
 
 The upstream [kubernetes documentation suggests](https://kubernetes.io/docs/reference/using-api/server-side-apply/#using-server-side-apply-in-a-controller)
 using Server-Side Apply in controllers:
 
-```
-Using Server-Side Apply in a controller
-
-As a developer of a controller, you can use Server-Side Apply as a way to simplify the update logic of your controller. The main differences with a read-modify-write and/or patch are the following:
-
-    the applied object must contain all the fields that the controller cares about.
-    there is no way to remove fields that haven't been applied by the controller before (controller can still send a patch or update for these use-cases).
-    the object doesn't have to be read beforehand; resourceVersion doesn't have to be specified.
-```
+> Using Server-Side Apply in a controller
+>
+> As a developer of a controller, you can use Server-Side Apply as a way to simplify the update logic of your controller. The main differences with a read-modify-write and/or patch are the following:
+>
+>    the applied object must contain all the fields that the controller cares about.
+>    there is no way to remove fields that haven't been applied by the controller before (controller can still send a patch or update for these use-cases).
+>    the object doesn't have to be read beforehand; resourceVersion doesn't have to be specified.
 
 In addition, the documentation strongly recommends to force ownership of fields in case of conflicts:
 
-```
-It is strongly recommended for controllers to always force conflicts on objects that they own and manage, since they might not be able to resolve or act on these conflicts
-```
+> It is strongly recommended for controllers to always force conflicts on objects that they own and manage, since they might not be able to resolve or act on these conflicts
 
 ## What does Server-Side Apply look like?
 
@@ -135,12 +127,11 @@ Therefore, in the near future, it should be fully documented how to use Server-S
 
 Whether Server-Side Apply detects a conflict comes down to [Field management](https://kubernetes.io/docs/reference/using-api/server-side-apply/#field-management):
 
-```
-The Kubernetes API server tracks managed fields for all newly created objects.
-
-When trying to apply an object, fields that have a different value and are owned by another manager will result in a conflict. This is done in order to signal that the operation might undo another collaborator's changes. Writes to objects with managed fields can be forced, in which case the value of any conflicted field will be overridden, and the ownership will be transferred.
-
-Whenever a field's value does change, ownership moves from its current manager to the manager making the change.
+> The Kubernetes API server tracks managed fields for all newly created objects.
+>
+> When trying to apply an object, fields that have a different value and are owned by another manager will result in a conflict. This is done in order to signal that the operation might undo another collaborator's changes. Writes to objects with managed fields can be forced, in which case the value of any conflicted field will be overridden, and the ownership will be transferred.
+>
+> Whenever a field's value does change, ownership moves from its current manager to the manager making the change.
 ```
 
 In order for us to understand how field management works, let's look at [a small test operator](https://github.com/andreaskaris/reconciler-operator/blob/741884f5396b1ca5b0a7793fd4657fa5f2c4048f/internal/controller/reconciler_controller.go#L102).

@@ -14,6 +14,8 @@ theme:
     - navigation.top
     - navigation.path
     - navigation.indexes
+    - toc.follow
+    - toc.integrate
 extra_css:
   - stylesheets/extra.css
 plugins:
@@ -58,7 +60,7 @@ markdown_extensions:
   - pymdownx.superfences
   - attr_list
   - toc:
-      toc_depth : "0"
+      toc_depth: 3
 nav:
 - Home: index.md
 - Ceph:
@@ -158,3 +160,4 @@ nav:
   - Controller Reconciliation: coding/operator-sdk-reconciliation.md
   - My vimrc: coding/vimrc.md
   - Golang IP address conversion: coding/golang-ip-conversion.md
+  - Kubernetes Server Side Apply: coding/server-side-apply.md

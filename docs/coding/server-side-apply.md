@@ -925,11 +925,9 @@ From the above, you can see the `manager: kubectl-edit` is now the field manager
 An explanation for why this did not create a conflict can be found in the
 [kubernetes upstream documentation](https://kubernetes.io/docs/reference/using-api/server-side-apply/#apply-and-update):
 
-```
-Unless you specify a forced override, an apply operation that encounters field-level conflicts always fails; by contrast, if you make a change using update that would affect a managed field, a conflict never provokes failure of the operation.
-
-All Server-Side Apply patch requests are required to identify themselves by providing a fieldManager query parameter, while the query parameter is optional for update operations. Finally, when using the Apply operation you cannot define managedFields in the body of the request that you submit.
-```
+> Unless you specify a forced override, an apply operation that encounters field-level conflicts always fails; by contrast, if you make a change using update that would affect a managed field, a conflict never provokes failure of the operation.
+> 
+> All Server-Side Apply patch requests are required to identify themselves by providing a fieldManager query parameter, while the query parameter is optional for update operations. Finally, when using the Apply operation you cannot define managedFields in the body of the request that you submit.
 
 ## Partial reconciliation via Patch statement and Server-Side Apply with the controller-runtime
 

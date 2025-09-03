@@ -112,7 +112,8 @@ ApplyYAMLPatchType      PatchType = "application/apply-patch+yaml"
 
 Using a `Patch` with `client.Apply` may work well in most cases for the `controller-runtime`. However, the detailed
 documentation for [applyconfigurations](https://pkg.go.dev/k8s.io/client-go/applyconfigurations) states a caveat: the
-standard library structs have many non-pointer fields and thus fields are set to their default values. On the other hand:
+standard library structs have many non-pointer fields and thus fields are set to their default values. This is the
+reason for the introduction of `applyconfigurations`:
 
 > Each "apply configuration" type represents the same Kubernetes object kind as the corresponding go struct, but where all fields are pointers to make them optional, allowing apply requests to be accurately represented.
 

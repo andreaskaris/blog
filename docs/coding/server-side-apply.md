@@ -131,7 +131,6 @@ Whether Server-Side Apply detects a conflict comes down to [Field management](ht
 > When trying to apply an object, fields that have a different value and are owned by another manager will result in a conflict. This is done in order to signal that the operation might undo another collaborator's changes. Writes to objects with managed fields can be forced, in which case the value of any conflicted field will be overridden, and the ownership will be transferred.
 >
 > Whenever a field's value does change, ownership moves from its current manager to the manager making the change.
-```
 
 In order for us to understand how field management works, let's look at [a small test operator](https://github.com/andreaskaris/reconciler-operator/blob/741884f5396b1ca5b0a7793fd4657fa5f2c4048f/internal/controller/reconciler_controller.go#L102).
 The operator has the following patch logic:

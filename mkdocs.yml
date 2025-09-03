@@ -158,6 +158,5 @@ nav:
 - Coding:
   - coding/index.md
   - Controller Reconciliation: coding/operator-sdk-reconciliation.md
-  - My vimrc: coding/vimrc.md
   - Golang IP address conversion: coding/golang-ip-conversion.md
   - Kubernetes Server Side Apply: coding/server-side-apply.md

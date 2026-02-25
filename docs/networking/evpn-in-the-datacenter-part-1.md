@@ -24,7 +24,7 @@ rack. Think of the Fedora leaf VM and the dumb GNS3 switch together as simulatin
 The exit node simulates an internet connection by adding dummy addresses to its loopback interface and announcing
 a default route to the network.
 
-![Lab setup](/src/lab-setup01.png)
+![Lab setup](/blog/src/lab-setup01.png)
 
 ## Connecting to the lab
 

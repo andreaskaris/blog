@@ -1398,17 +1398,21 @@ vrrpd_options=&quot;  -A 127.0.0.1&quot;
 pathd_options=&quot;  -A 127.0.0.1&quot;
 EOF
 </code></pre></div></td></tr></table></div>
-<p>FRR's BGP sets up unnumbered BGP peers with the following settings:
-- <code class="highlight">neighbor PEER remote-as external</code> - "Create a peer as you would when you specify an ASN, except that if the peers
+<p>FRR's BGP sets up unnumbered BGP peers with the following settings:</p>
+<ul>
+<li><code class="highlight">neighbor PEER remote-as external</code> - "Create a peer as you would when you specify an ASN, except that if the peers
 ASN is the same as mine as specified under the router bgp ASN command the connection will be
-denied." <a href="https://docs.frrouting.org/en/latest/bgp.html">https://docs.frrouting.org/en/latest/bgp.html</a>
-- <code class="highlight">neighbor PEER interface [peer-group NAME]</code> - "Configure an unnumbered BGP peer. PEER should be an interface name.
-The session will be established via IPv6 link locals." <a href="https://docs.frrouting.org/en/latest/bgp.html">https://docs.frrouting.org/en/latest/bgp.html</a></p>
-<p>In addition, we set:
-- <code class="highlight">bgp bestpath as-path multipath-relax</code> - "This command specifies that BGP decision process should consider paths of
+denied." <a href="https://docs.frrouting.org/en/latest/bgp.html">https://docs.frrouting.org/en/latest/bgp.html</a></li>
+<li><code class="highlight">neighbor PEER interface [peer-group NAME]</code> - "Configure an unnumbered BGP peer. PEER should be an interface name.
+The session will be established via IPv6 link locals." <a href="https://docs.frrouting.org/en/latest/bgp.html">https://docs.frrouting.org/en/latest/bgp.html</a></li>
+</ul>
+<p>In addition, we set:</p>
+<ul>
+<li><code class="highlight">bgp bestpath as-path multipath-relax</code> - "This command specifies that BGP decision process should consider paths of
 equal AS_PATH length candidates for multipath computation. Without the knob, the entire AS_PATH must match for
-multipath computation." <a href="https://docs.frrouting.org/en/latest/bgp.html">https://docs.frrouting.org/en/latest/bgp.html</a>
-- <code class="highlight">maximum-paths 64</code> - "Sets the maximum-paths value used for ecmp calculations for this bgp instance in EBGP." <a href="https://docs.frrouting.org/en/latest/bgp.html">https://docs.frrouting.org/en/latest/bgp.html</a></p>
+multipath computation." <a href="https://docs.frrouting.org/en/latest/bgp.html">https://docs.frrouting.org/en/latest/bgp.html</a></li>
+<li><code class="highlight">maximum-paths 64</code> - "Sets the maximum-paths value used for ecmp calculations for this bgp instance in EBGP." <a href="https://docs.frrouting.org/en/latest/bgp.html">https://docs.frrouting.org/en/latest/bgp.html</a></li>
+</ul>
 <p>We redistribute connected routes, but only those that match the list of permitted subnets (see below). We also tune some of the
 BGP timers to speed up convergence. See the aforementioned books for the reasons behind choosing these timers.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
@@ -2996,7 +3000,7 @@ announcing the anycast IPs.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 25, 2026 20:14:31 UTC">February 25, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 25, 2026 20:20:16 UTC">February 25, 2026</span>
   </span>
 
     

@@ -353,6 +353,7 @@ EOF
 ```
 
 FRR's BGP sets up unnumbered BGP peers with the following settings:
+
 - `neighbor PEER remote-as external` - "Create a peer as you would when you specify an ASN, except that if the peers
 ASN is the same as mine as specified under the router bgp ASN command the connection will be
 denied." [https://docs.frrouting.org/en/latest/bgp.html](https://docs.frrouting.org/en/latest/bgp.html)
@@ -360,6 +361,7 @@ denied." [https://docs.frrouting.org/en/latest/bgp.html](https://docs.frrouting.
 The session will be established via IPv6 link locals." [https://docs.frrouting.org/en/latest/bgp.html](https://docs.frrouting.org/en/latest/bgp.html)
 
 In addition, we set:
+
 - `bgp bestpath as-path multipath-relax` - "This command specifies that BGP decision process should consider paths of
 equal AS_PATH length candidates for multipath computation. Without the knob, the entire AS_PATH must match for
 multipath computation." [https://docs.frrouting.org/en/latest/bgp.html](https://docs.frrouting.org/en/latest/bgp.html)

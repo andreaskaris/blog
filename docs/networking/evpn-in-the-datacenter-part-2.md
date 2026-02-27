@@ -11,7 +11,7 @@ As mentioned in the first blog post, I highly recommend Dinesh G. Dutt's books,
 The purpose of this series is to show, step by step, how to configure a small simulated
 datacenter. As a reminder, here is our lab's layout:
 
-![Lab Setup](/src/lab-setup01.png)
+![Lab Setup](/blog/src/lab-setup01.png)
 
 This blog post deals with the simplest type of EVPN setup: centralized routing. We will add VLANs
 100 and 101 to the racks belonging to leaf01 and leaf02 and VLANs 102 and 103 to the racks belonging

@@ -1761,7 +1761,7 @@ to tunnel endpoint `10.0.0.102` (`leaf02`).
 
 The second ARP request is again sent out to both peers - we expect this as this ARP request is destined to the
 broadcast address.
-However, because `leaf02` now knows how to reach frames with a unicast destination of `server02`, the next time
+However, because `leaf01` now knows how to reach frames with a unicast destination of `server02`, the next time
 `server01` sends a unicast Echo request to `server02`, it is only sent once, to `leaf02` (`10.0.0.102`):
 
 ```

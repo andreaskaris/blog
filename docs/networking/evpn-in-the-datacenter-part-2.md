@@ -1502,3 +1502,393 @@ knows where to flood frames.
 00:00:00:00:00:00 dst 10.0.0.101 self permanent
 00:00:00:00:00:00 dst 10.0.0.102 self permanent
 ```
+
+## Overlay communication
+
+For the following tests, we shut down `spine02`, which allows us to run packet captures on a single link only for
+each device, instead of having to account for packets being load-balanced across the redundant links.
+
+![Lab Setup 2](lab-setup02.png)
+
+We run packet captures on the following links:
+- `server01` <-> `leaf01`
+- `leaf01` <-> `spine01`
+- `server02` <-> `leaf02`
+- `leaf02` <-> `spine01`
+- `exit01` <-> `spine01`
+
+### Server to server traffic
+
+First, we ping from `server01` to `server02` on VLAN 100. We then sleep for 5 seconds, flush the ARP table, and
+repeat the same step again.
+
+```
+[root@server01 ~]# ip neigh flush dev vlan100
+[root@server01 ~]# ping -c1 -W1 172.16.100.102
+[root@server01 ~]# sleep 5
+[root@server01 ~]# ip neigh flush dev vlan100
+[root@server01 ~]# ping -c1 -W1 172.16.100.102
+```
+
+As expected, we see the usual dance of ARP request and reply, followed by an Echo request and reply.
+
+```
+$ tshark -ta -r switch1-leaf01.pcapng "frame.number >= 154 and frame.number <=157"
+  154 11:01:23.217037 0c:ba:53:a9:00:00 → ff:ff:ff:ff:ff:ff 0c:ba:53:a9:00:00  Broadcast     ARP 46 Who has 172.16.100.102? Tell 172.16.100.101
+  155 11:01:23.218893 0c:fc:ff:4c:00:00 → 0c:ba:53:a9:00:00 0c:fc:ff:4c:00:00  0c:ba:53:a9:00:00  ARP 46 172.16.100.102 is at 0c:fc:ff:4c:00:00
+  156 11:01:23.219078 0c:ba:53:a9:00:00 → 0c:fc:ff:4c:00:00 172.16.100.101  172.16.100.102  ICMP 102 Echo (ping) request  id=0x0001, seq=1/256, ttl=64
+  157 11:01:23.220940 0c:fc:ff:4c:00:00 → 0c:ba:53:a9:00:00 172.16.100.102  172.16.100.101  ICMP 102 Echo (ping) reply    id=0x0001, seq=1/256, ttl=64 (request in 156)
+$ tshark -ta -r switch1-leaf01.pcapng "frame.number >= 161 and frame.number <=164"
+  161 11:01:28.233477 0c:ba:53:a9:00:00 → ff:ff:ff:ff:ff:ff 0c:ba:53:a9:00:00  Broadcast     ARP 46 Who has 172.16.100.102? Tell 172.16.100.101
+  162 11:01:28.236794 0c:fc:ff:4c:00:00 → 0c:ba:53:a9:00:00 0c:fc:ff:4c:00:00  0c:ba:53:a9:00:00  ARP 46 172.16.100.102 is at 0c:fc:ff:4c:00:00
+  163 11:01:28.237114 0c:ba:53:a9:00:00 → 0c:fc:ff:4c:00:00 172.16.100.101  172.16.100.102  ICMP 102 Echo (ping) request  id=0x0002, seq=1/256, ttl=64
+  164 11:01:28.239746 0c:fc:ff:4c:00:00 → 0c:ba:53:a9:00:00 172.16.100.102  172.16.100.101  ICMP 102 Echo (ping) reply    id=0x0002, seq=1/256, ttl=64 (request in 163)
+```
+
+The interesting details can be observed on the link between `leaf01` and `spine01`.
+
+```
+$ tshark -ta -r leaf01-spine01.pcapng "frame.number >= 192 and frame.number <=202"
+  192 11:01:23.217550 0c:ba:53:a9:00:00 → ff:ff:ff:ff:ff:ff 0c:ba:53:a9:00:00 37529 Broadcast    4789 ARP 92 Who has 172.16.100.102? Tell 172.16.100.101
+  193 11:01:23.217585 0c:ba:53:a9:00:00 → ff:ff:ff:ff:ff:ff 0c:ba:53:a9:00:00 37529 Broadcast    4789 ARP 92 Who has 172.16.100.102? Tell 172.16.100.101
+  194 11:01:23.218656 0c:fc:ff:4c:00:00 → 0c:ba:53:a9:00:00 0c:fc:ff:4c:00:00 50183 0c:ba:53:a9:00:00 4789 ARP 92 172.16.100.102 is at 0c:fc:ff:4c:00:00
+  195 11:01:23.219282 0c:ba:53:a9:00:00 → 0c:fc:ff:4c:00:00 172.16.100.101 59193 172.16.100.102 4789 ICMP 148 Echo (ping) request  id=0x0001, seq=1/256, ttl=64
+  196 11:01:23.219298 0c:ba:53:a9:00:00 → 0c:fc:ff:4c:00:00 172.16.100.101 59193 172.16.100.102 4789 ICMP 148 Echo (ping) request  id=0x0001, seq=1/256, ttl=64
+  197 11:01:23.220648 0c:fc:ff:4c:00:00 → 0c:ba:53:a9:00:00 172.16.100.102 50216 172.16.100.101 4789 ICMP 148 Echo (ping) reply    id=0x0001, seq=1/256, ttl=64 (request in 196)
+  198 11:01:23.267905 0c:ca:bf:21:00:00 → 0c:7e:b5:f6:00:01 fe80::eca:bfff:fe21:0 179 fe80::e7e:b5ff:fef6:1 58656 BGP 190 UPDATE Message
+  (...)
+  200 11:01:23.319325 0c:7e:b5:f6:00:01 → 0c:ca:bf:21:00:00 fe80::e7e:b5ff:fef6:1 58656 fe80::eca:bfff:fe21:0 179 BGP 302 UPDATE Message, UPDATE Message
+  (...)
+  202 11:01:23.370553 0c:ca:bf:21:00:00 → 0c:7e:b5:f6:00:01 fe80::eca:bfff:fe21:0 179 fe80::e7e:b5ff:fef6:1 58656 BGP 198 UPDATE Message
+```
+
+We can see that each ARP request is duplicated. This is to be expected - the ARP requests are broadcast, and are thus transmitted to
+each known tunnel endpoint:
+
+```
+$ tshark -ta -r leaf01-spine01.pcapng -O "" "frame.number == 192" | grep Dst
+Ethernet II, Src: 0c:ca:bf:21:00:00 (0c:ca:bf:21:00:00), Dst: 0c:7e:b5:f6:00:01 (0c:7e:b5:f6:00:01)
+Internet Protocol Version 4, Src: 10.0.0.101, Dst: 10.0.0.102
+User Datagram Protocol, Src Port: 37529, Dst Port: 4789
+Ethernet II, Src: 0c:ba:53:a9:00:00 (0c:ba:53:a9:00:00), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+[akaris@workstation blog (master)]$ tshark -ta -r leaf01-spine01.pcapng -O "" "frame.number == 193" | grep Dst
+Ethernet II, Src: 0c:ca:bf:21:00:00 (0c:ca:bf:21:00:00), Dst: 0c:7e:b5:f6:00:01 (0c:7e:b5:f6:00:01)
+Internet Protocol Version 4, Src: 10.0.0.101, Dst: 10.0.0.250
+User Datagram Protocol, Src Port: 37529, Dst Port: 4789
+Ethernet II, Src: 0c:ba:53:a9:00:00 (0c:ba:53:a9:00:00), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+```
+
+As shown in a previous section, `leaf01`'s fdb is populated with the tunnel endpoints for broadcast messages:
+```
+[root@leaf01 ~]# bridge fdb ls dev vxlan100
+0c:f2:c4:f5:00:02 vlan 1 extern_learn master br100 
+0c:f2:c4:f5:00:02 extern_learn master br100 
+86:c6:be:8d:a0:1c vlan 1 master br100 permanent
+86:c6:be:8d:a0:1c master br100 permanent
+00:00:00:00:00:00 dst 10.0.0.250 self permanent
+00:00:00:00:00:00 dst 10.0.0.102 self permanent
+0c:f2:c4:f5:00:02 dst 10.0.0.250 self extern_learn
+```
+
+We then receive an ARP reply from `server02`, and the single Echo request from `server01` is again duplicated and
+sent out to both tunnel endpoints.
+
+```
+$ tshark -ta -r leaf01-spine01.pcapng -O "" "frame.number == 195" | grep Dst
+Ethernet II, Src: 0c:ca:bf:21:00:00 (0c:ca:bf:21:00:00), Dst: 0c:7e:b5:f6:00:01 (0c:7e:b5:f6:00:01)
+Internet Protocol Version 4, Src: 10.0.0.101, Dst: 10.0.0.102
+User Datagram Protocol, Src Port: 59193, Dst Port: 4789
+Ethernet II, Src: 0c:ba:53:a9:00:00 (0c:ba:53:a9:00:00), Dst: 0c:fc:ff:4c:00:00 (0c:fc:ff:4c:00:00)
+Internet Protocol Version 4, Src: 172.16.100.101, Dst: 172.16.100.102
+$ tshark -ta -r leaf01-spine01.pcapng -O "" "frame.number == 196" | grep Dst
+Ethernet II, Src: 0c:ca:bf:21:00:00 (0c:ca:bf:21:00:00), Dst: 0c:7e:b5:f6:00:01 (0c:7e:b5:f6:00:01)
+Internet Protocol Version 4, Src: 10.0.0.101, Dst: 10.0.0.250
+User Datagram Protocol, Src Port: 59193, Dst Port: 4789
+Ethernet II, Src: 0c:ba:53:a9:00:00 (0c:ba:53:a9:00:00), Dst: 0c:fc:ff:4c:00:00 (0c:fc:ff:4c:00:00)
+Internet Protocol Version 4, Src: 172.16.100.101, Dst: 172.16.100.102
+```
+
+`leaf01` then receives a single ping reply from `server02` via `leaf02` (packet `197`).
+
+Remember that we disabled learning for the VXLAN interface. If learning were enabled, the kernel could enter
+the MAC address of `server02` into the forwarding table at this stage. However, we delegate this task to EVPN.
+
+In the BGP `UPDATE` message (frame `198`) from `leaf01` to `spine01`, we see how `leaf01` notifies the rest of
+the network with a MAC Advertisement Route (type 2) of the MAC address of `server01` (`0c:ba:53:a9:00:00`).
+
+```
+$ tshark -ta -r leaf01-spine01.pcapng -O "bgp" "frame.number == 198"
+Frame 198: Packet, 190 bytes on wire (1520 bits), 190 bytes captured (1520 bits) on interface -, id 0
+Ethernet II, Src: 0c:ca:bf:21:00:00 (0c:ca:bf:21:00:00), Dst: 0c:7e:b5:f6:00:01 (0c:7e:b5:f6:00:01)
+Internet Protocol Version 6, Src: fe80::eca:bfff:fe21:0, Dst: fe80::e7e:b5ff:fef6:1
+Transmission Control Protocol, Src Port: 179, Dst Port: 58656, Seq: 932, Ack: 932, Len: 104
+Border Gateway Protocol - UPDATE Message
+(...)
+    Path attributes
+            Network Layer Reachability Information (NLRI)
+                EVPN NLRI: MAC Advertisement Route
+                    Route Type: MAC Advertisement Route (2)
+                    Length: 33
+                    Route Distinguisher: 00010a0000650002 (10.0.0.101:2)
+                    ESI: 00:00:00:00:00:00:00:00:00:00
+                        ESI Type: ESI 9 bytes value (0)
+                        ESI Value: 00 00 00 00 00 00 00 00 00
+                        ESI 9 bytes value: 00 00 00 00 00 00 00 00 00
+                    Ethernet Tag ID: 0
+                    MAC Address Length: 48
+                    MAC Address: 0c:ba:53:a9:00:00 (0c:ba:53:a9:00:00)
+                    IP Address Length: 0
+                    IP Address: NOT INCLUDED
+                        [Expert Info (Note/Protocol): IP Address: NOT INCLUDED]
+                            [IP Address: NOT INCLUDED]
+                            [Severity level: Note]
+                            [Group: Protocol]
+                    VNI: 100
+```
+
+In the BGP `UPDATE` message (frame `200`) from `spine01` to `leaf01`, we see how `leaf01` is made aware of 
+the MAC address of `server02` (`0c:fc:ff:4c:00:00`) via a MAC Advertisement Route (type 2)
+
+```
+$ tshark -ta -r leaf01-spine01.pcapng -O "bgp" "frame.number == 200"
+Frame 200: Packet, 302 bytes on wire (2416 bits), 302 bytes captured (2416 bits) on interface -, id 0
+Ethernet II, Src: 0c:7e:b5:f6:00:01 (0c:7e:b5:f6:00:01), Dst: 0c:ca:bf:21:00:00 (0c:ca:bf:21:00:00)
+Internet Protocol Version 6, Src: fe80::e7e:b5ff:fef6:1, Dst: fe80::eca:bfff:fe21:0
+Transmission Control Protocol, Src Port: 58656, Dst Port: 179, Seq: 932, Ack: 1036, Len: 216
+(...)
+Border Gateway Protocol - UPDATE Message
+(...)
+    Path attributes
+(...)
+            Network Layer Reachability Information (NLRI)
+                EVPN NLRI: MAC Advertisement Route
+                    Route Type: MAC Advertisement Route (2)
+                    Length: 33
+                    Route Distinguisher: 00010a0000660002 (10.0.0.102:2)
+                    ESI: 00:00:00:00:00:00:00:00:00:00
+                        ESI Type: ESI 9 bytes value (0)
+                        ESI Value: 00 00 00 00 00 00 00 00 00
+                        ESI 9 bytes value: 00 00 00 00 00 00 00 00 00
+                    Ethernet Tag ID: 0
+                    MAC Address Length: 48
+                    MAC Address: 0c:fc:ff:4c:00:00 (0c:fc:ff:4c:00:00)
+                    IP Address Length: 0
+                    IP Address: NOT INCLUDED
+                        [Expert Info (Note/Protocol): IP Address: NOT INCLUDED]
+                            [IP Address: NOT INCLUDED]
+                            [Severity level: Note]
+                            [Group: Protocol]
+                    VNI: 100
+(...)
+```
+
+Upon generation/receipt of these message, FRR can populate MAC mac table for vni 100.
+
+```
+[root@leaf01 ~]# vtysh -c "show evpn mac vni 100"
+Number of MACs (local and remote) known for this VNI: 3
+Flags: N=sync-neighs, I=local-inactive, P=peer-active, X=peer-proxy
+MAC               Type   Flags Intf/Remote ES/VTEP            VLAN  Seq #'s
+0c:fc:ff:4c:00:00 remote       10.0.0.102                           0/0
+0c:f2:c4:f5:00:02 remote       10.0.0.250                           0/0
+0c:ba:53:a9:00:00 local        vlan100                              0/0
+```
+
+The MAC table is populated from the BGP EVPN routes.
+
+```
+[root@leaf01 ~]# vtysh -c "show bgp evpn route"
+BGP table version is 4, local router ID is 10.0.0.101
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal
+Origin codes: i - IGP, e - EGP, ? - incomplete
+EVPN type-1 prefix: [1]:[EthTag]:[ESI]:[IPlen]:[VTEP-IP]:[Frag-id]
+EVPN type-2 prefix: [2]:[EthTag]:[MAClen]:[MAC]:[IPlen]:[IP]
+EVPN type-3 prefix: [3]:[EthTag]:[IPlen]:[OrigIP]
+EVPN type-4 prefix: [4]:[ESI]:[IPlen]:[OrigIP]
+EVPN type-5 prefix: [5]:[EthTag]:[IPlen]:[IP]
+
+   Network          Next Hop            Metric LocPrf Weight Path
+                    Extended Community
+Route Distinguisher: 10.0.0.101:2
+ *>  [2]:[0]:[48]:[0c:ba:53:a9:00:00]
+                    10.0.0.101                         32768 i
+                    ET:8 RT:65101:100
+(...)
+Route Distinguisher: 10.0.0.102:2
+ *>  [2]:[0]:[48]:[0c:fc:ff:4c:00:00]
+                    10.0.0.102                             0 65200 65102 i
+                    RT:65102:100 ET:8
+(...)
+Route Distinguisher: 10.0.0.250:2
+ *>  [2]:[0]:[48]:[0c:f2:c4:f5:00:02]:[32]:[172.16.103.1]
+                    10.0.0.250                             0 65200 65250 i
+                    RT:65250:103 ET:8 Default Gateway
+(...)
+Route Distinguisher: 10.0.0.250:3
+ *>  [2]:[0]:[48]:[0c:f2:c4:f5:00:02]:[32]:[172.16.100.1]
+                    10.0.0.250                             0 65200 65250 i
+                    RT:65250:100 ET:8 Default Gateway
+(...)
+Route Distinguisher: 10.0.0.250:4
+ *>  [2]:[0]:[48]:[0c:f2:c4:f5:00:02]:[32]:[172.16.102.1]
+                    10.0.0.250                             0 65200 65250 i
+                    RT:65250:102 ET:8 Default Gateway
+(...)
+Route Distinguisher: 10.0.0.250:5
+ *>  [2]:[0]:[48]:[0c:f2:c4:f5:00:02]:[32]:[172.16.101.1]
+                    10.0.0.250                             0 65200 65250 i
+                    RT:65250:101 ET:8 Default Gateway
+(...)
+```
+
+FRR updates `leaf01`'s forwarding table with instructions to forward frames destined for `server02` (`0c:fc:ff:4c:00:00`)
+to tunnel endpoint `10.0.0.102` (`leaf02`).
+
+```
+[root@leaf01 ~]# bridge fdb ls dev vxlan100
+0c:fc:ff:4c:00:00 vlan 1 extern_learn master br100 
+0c:fc:ff:4c:00:00 extern_learn master br100 
+0c:f2:c4:f5:00:02 vlan 1 extern_learn master br100 
+0c:f2:c4:f5:00:02 extern_learn master br100 
+86:c6:be:8d:a0:1c vlan 1 master br100 permanent
+86:c6:be:8d:a0:1c master br100 permanent
+0c:fc:ff:4c:00:00 dst 10.0.0.102 self extern_learn 
+00:00:00:00:00:00 dst 10.0.0.250 self permanent
+00:00:00:00:00:00 dst 10.0.0.102 self permanent
+0c:f2:c4:f5:00:02 dst 10.0.0.250 self extern_learn
+```
+
+The second ARP request is again sent out to both peers - we expect this as this ARP request is destined to the
+broadcast address.
+However, because `leaf02` now knows how to reach frames with a unicast destination of `server02`, the next time
+`server01` sends a unicast Echo request to `server02`, it is only sent once, to `leaf02` (`10.0.0.102`):
+
+```
+$ tshark -ta -r leaf01-spine01.pcapng "frame.number >= 208 and frame.number <=212"
+  208 11:01:28.233997 0c:ba:53:a9:00:00 → ff:ff:ff:ff:ff:ff 0c:ba:53:a9:00:00 37529 Broadcast    4789 ARP 92 Who has 172.16.100.102? Tell 172.16.100.101
+  209 11:01:28.234069 0c:ba:53:a9:00:00 → ff:ff:ff:ff:ff:ff 0c:ba:53:a9:00:00 37529 Broadcast    4789 ARP 92 Who has 172.16.100.102? Tell 172.16.100.101
+  210 11:01:28.236402 0c:fc:ff:4c:00:00 → 0c:ba:53:a9:00:00 0c:fc:ff:4c:00:00 50183 0c:ba:53:a9:00:00 4789 ARP 92 172.16.100.102 is at 0c:fc:ff:4c:00:00
+  211 11:01:28.237455 0c:ba:53:a9:00:00 → 0c:fc:ff:4c:00:00 172.16.100.101 59193 172.16.100.102 4789 ICMP 148 Echo (ping) request  id=0x0002, seq=1/256, ttl=64
+  212 11:01:28.239178 0c:fc:ff:4c:00:00 → 0c:ba:53:a9:00:00 172.16.100.102 50216 172.16.100.101 4789 ICMP 148 Echo (ping) reply    id=0x0002, seq=1/256, ttl=64 (request in 211)
+```
+
+```
+$ tshark -ta -r leaf01-spine01.pcapng -O "bgp" "frame.number == 211"
+Frame 211: Packet, 148 bytes on wire (1184 bits), 148 bytes captured (1184 bits) on interface -, id 0
+Ethernet II, Src: 0c:ca:bf:21:00:00 (0c:ca:bf:21:00:00), Dst: 0c:7e:b5:f6:00:01 (0c:7e:b5:f6:00:01)
+Internet Protocol Version 4, Src: 10.0.0.101, Dst: 10.0.0.102
+User Datagram Protocol, Src Port: 59193, Dst Port: 4789
+Virtual eXtensible Local Area Network
+Ethernet II, Src: 0c:ba:53:a9:00:00 (0c:ba:53:a9:00:00), Dst: 0c:fc:ff:4c:00:00 (0c:fc:ff:4c:00:00)
+Internet Protocol Version 4, Src: 172.16.100.101, Dst: 172.16.100.102
+Internet Control Message Protocol
+```
+
+### Server to router traffic
+
+Next, we ping from `server01` to `exit01` on VLAN 101. We then sleep for 5 seconds, flush the ARP table, and
+repeat the same step again.
+
+```
+[root@server01 ~]# ip neigh flush dev vlan101
+[root@server01 ~]# ping -c1 -W1 172.16.101.1
+[root@server01 ~]# sleep 5
+[root@server01 ~]# ip neigh flush dev vlan101
+[root@server01 ~]# ping -c1 -W1 172.16.101.1
+```
+
+In this section, we only focus on the differences compared to our previous example. Node `exit01` is not aware
+of the location of `server01`. It therefore relies on the same mechanisms explained previously. However, we have already
+seen that the EVPN is aware of `exit01`'s MAC and IP address even without exchanging a single packet via the overlay
+tunnels.
+
+The packet capture between `server01` and `leaf01` looks mostly as expected. The `exit01` node sends an extra ARP request,
+trying to resolve `server01` (`172.16.101.101`). We will address this shortly.
+
+```
+$ tshark -ta -r switch1-leaf01-exit.pcapng.png.pcapng "frame.number >= 3704 and frame.number <= 3709"
+tshark: The file "switch1-leaf01-exit.pcapng.png.pcapng" doesn't exist.
+[akaris@workstation blog (master)]$ tshark -ta -r switch1-leaf01-exit.pcapng "frame.number >= 3704 and frame.number <= 3709"
+ 3704 12:00:13.048847 0c:ba:53:a9:00:00 → ff:ff:ff:ff:ff:ff 0c:ba:53:a9:00:00  Broadcast     ARP 46 Who has 172.16.101.1? Tell 172.16.101.101
+ 3705 12:00:13.049085 0c:f2:c4:f5:00:02 → 0c:ba:53:a9:00:00 0c:f2:c4:f5:00:02  0c:ba:53:a9:00:00  ARP 46 172.16.101.1 is at 0c:f2:c4:f5:00:02
+ 3706 12:00:13.049320 0c:ba:53:a9:00:00 → 0c:f2:c4:f5:00:02 172.16.101.101  172.16.101.1  ICMP 102 Echo (ping) request  id=0x0004, seq=1/256, ttl=64
+ 3707 12:00:13.051471 0c:f2:c4:f5:00:02 → ff:ff:ff:ff:ff:ff 0c:f2:c4:f5:00:02  Broadcast     ARP 46 Who has 172.16.101.101? Tell 172.16.101.1
+ 3708 12:00:13.051867 0c:ba:53:a9:00:00 → 0c:f2:c4:f5:00:02 0c:ba:53:a9:00:00  0c:f2:c4:f5:00:02  ARP 46 172.16.101.101 is at 0c:ba:53:a9:00:00
+ 3709 12:00:13.053414 0c:f2:c4:f5:00:02 → 0c:ba:53:a9:00:00 172.16.101.1  172.16.101.101  ICMP 102 Echo (ping) reply    id=0x0004, seq=1/256, ttl=64 (request in 3706)
+```
+
+The interesting stuff again happens on the link between `leaf01` and `spine01`. `leaf01` does not forward the ARP
+request from `server01` to `exit01` via the tunnel.
+
+```
+$ tshark -ta -r leaf01-spine01-exit.pcapng "frame.number >= 4674 and frame.number <= 4677"
+ 4674 12:00:13.049608 0c:ba:53:a9:00:00 → 0c:f2:c4:f5:00:02 172.16.101.101 38599 172.16.101.1 4789 ICMP 148 Echo (ping) request  id=0x0004, seq=1/256, ttl=64
+ 4675 12:00:13.050830 0c:f2:c4:f5:00:02 → ff:ff:ff:ff:ff:ff 0c:f2:c4:f5:00:02 38577 Broadcast    4789 ARP 92 Who has 172.16.101.101? Tell 172.16.101.1
+ 4676 12:00:13.052134 0c:ba:53:a9:00:00 → 0c:f2:c4:f5:00:02 0c:ba:53:a9:00:00 37529 0c:f2:c4:f5:00:02 4789 ARP 92 172.16.101.101 is at 0c:ba:53:a9:00:00
+ 4677 12:00:13.052989 0c:f2:c4:f5:00:02 → 0c:ba:53:a9:00:00 172.16.101.1 57096 172.16.101.101 4789 ICMP 148 Echo (ping) reply    id=0x0004, seq=1/256, ttl=64 (request in 4674)
+```
+
+Remember that we configured ARP proxy and suppression on the VXLAN, and that FRR populated the fdb and the neighbor
+table already with the data of `exit01` (`172.16.101.1`, `0c:f2:c4:f5:00:02`).
+
+```
+[root@leaf01 ~]# vtysh -c "show evpn mac vni 101"
+Number of MACs (local and remote) known for this VNI: 1
+Flags: N=sync-neighs, I=local-inactive, P=peer-active, X=peer-proxy
+MAC               Type   Flags Intf/Remote ES/VTEP            VLAN  Seq #'s
+0c:f2:c4:f5:00:02 remote       10.0.0.250                           0/0
+[root@leaf01 ~]# vtysh -c "show bgp evpn route"
+(...)
+Route Distinguisher: 10.0.0.250:2
+ *>  [2]:[0]:[48]:[0c:f2:c4:f5:00:02]:[32]:[172.16.103.1]
+                    10.0.0.250                             0 65200 65250 i
+                    RT:65250:103 ET:8 Default Gateway
+(...)
+Route Distinguisher: 10.0.0.250:3
+ *>  [2]:[0]:[48]:[0c:f2:c4:f5:00:02]:[32]:[172.16.100.1]
+                    10.0.0.250                             0 65200 65250 i
+                    RT:65250:100 ET:8 Default Gateway
+(...)
+Route Distinguisher: 10.0.0.250:4
+ *>  [2]:[0]:[48]:[0c:f2:c4:f5:00:02]:[32]:[172.16.102.1]
+                    10.0.0.250                             0 65200 65250 i
+                    RT:65250:102 ET:8 Default Gateway
+(...)
+Route Distinguisher: 10.0.0.250:5
+ *>  [2]:[0]:[48]:[0c:f2:c4:f5:00:02]:[32]:[172.16.101.1]
+                    10.0.0.250                             0 65200 65250 i
+                    RT:65250:101 ET:8 Default Gateway
+(...)
+[root@leaf01 ~]# bridge fdb ls dev vxlan101
+0c:f2:c4:f5:00:02 vlan 1 extern_learn master br101 
+0c:f2:c4:f5:00:02 extern_learn master br101 
+ae:53:dc:b0:b8:87 vlan 1 master br101 permanent
+ae:53:dc:b0:b8:87 master br101 permanent
+00:00:00:00:00:00 dst 10.0.0.250 self permanent
+00:00:00:00:00:00 dst 10.0.0.102 self permanent
+0c:f2:c4:f5:00:02 dst 10.0.0.250 self extern_learn 
+[root@leaf01 ~]# ip neigh ls dev br101
+172.16.101.1 lladdr 0c:f2:c4:f5:00:02 extern_learn NOARP proto zebra
+```
+
+This also explains why `exit01` now sends an ARP request for `server01` - it never received `server01`'s ARP
+request and therefore must perform ARP resolution.
+
+The second time, this does not occur. `server01` queries for `exit01`'s MAC address, and `leaf01` responds
+as a proxy.
+
+```
+$ tshark -ta -r switch1-leaf01-exit.pcapng "frame.number >= 3716 and frame.number <= 3719"
+ 3716 12:00:18.064964 0c:ba:53:a9:00:00 → ff:ff:ff:ff:ff:ff 0c:ba:53:a9:00:00  Broadcast     ARP 46 Who has 172.16.101.1? Tell 172.16.101.101
+ 3717 12:00:18.065377 0c:f2:c4:f5:00:02 → 0c:ba:53:a9:00:00 0c:f2:c4:f5:00:02  0c:ba:53:a9:00:00  ARP 46 172.16.101.1 is at 0c:f2:c4:f5:00:02
+ 3718 12:00:18.065815 0c:ba:53:a9:00:00 → 0c:f2:c4:f5:00:02 172.16.101.101  172.16.101.1  ICMP 102 Echo (ping) request  id=0x0005, seq=1/256, ttl=64
+ 3719 12:00:18.066828 0c:f2:c4:f5:00:02 → 0c:ba:53:a9:00:00 172.16.101.1  172.16.101.101  ICMP 102 Echo (ping) reply    id=0x0005, seq=1/256, ttl=64 (request in 3718)
+```
+
+No ARP messages are exchanged via the tunnel because `exit01` still has a neighbor entry for `server01`.
+
+```
+$ tshark -ta -r leaf01-spine01-exit.pcapng "frame.number >= 4690 and frame.number <= 4691"
+ 4690 12:00:18.065967 0c:ba:53:a9:00:00 → 0c:f2:c4:f5:00:02 172.16.101.101 38599 172.16.101.1 4789 ICMP 148 Echo (ping) request  id=0x0005, seq=1/256, ttl=64
+ 4691 12:00:18.066669 0c:f2:c4:f5:00:02 → 0c:ba:53:a9:00:00 172.16.101.1 57096 172.16.101.101 4789 ICMP 148 Echo (ping) reply    id=0x0005, seq=1/256, ttl=64 (request in 4690)
+```

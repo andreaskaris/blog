@@ -1508,7 +1508,7 @@ knows where to flood frames.
 For the following tests, we shut down `spine02`, which allows us to run packet captures on a single link only for
 each device, instead of having to account for packets being load-balanced across the redundant links.
 
-![Lab Setup 2](lab-setup02.png)
+![Lab Setup 2](/blog/src/lab-setup02.png)
 
 We run packet captures on the following links:
 - `server01` <-> `leaf01`

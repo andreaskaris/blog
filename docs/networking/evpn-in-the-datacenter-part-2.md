@@ -1511,6 +1511,7 @@ each device, instead of having to account for packets being load-balanced across
 ![Lab Setup 2](/blog/src/lab-setup02.png)
 
 We run packet captures on the following links:
+
 - `server01` <-> `leaf01`
 - `leaf01` <-> `spine01`
 - `server02` <-> `leaf02`

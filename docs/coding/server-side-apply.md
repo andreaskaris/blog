@@ -118,7 +118,7 @@ reason for the introduction of `applyconfigurations`:
 > Each "apply configuration" type represents the same Kubernetes object kind as the corresponding go struct, but where all fields are pointers to make them optional, allowing apply requests to be accurately represented.
 
 SSA was recently [made a first-class citizen](https://github.com/kubernetes-sigs/controller-runtime/issues/3183) of the
-`controller-runtime` project, even though some pieces are still missing, such as [documentation](github.com/kubernetes-sigs/kubebuilder/issues/2514).
+`controller-runtime` project, even though some pieces are still missing, such as [documentation](https://github.com/kubernetes-sigs/kubebuilder/issues/2514).
 Therefore, in the near future, it should be fully documented how to use Server-Side Apply natively with the `controller-runtime`.
 
 

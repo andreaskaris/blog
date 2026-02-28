@@ -4319,13 +4319,15 @@ knows where to flood frames.</p>
 <h2 id="overlay-communication">Overlay communication</h2>
 <p>For the following tests, we shut down <code class="highlight">spine02</code>, which allows us to run packet captures on a single link only for
 each device, instead of having to account for packets being load-balanced across the redundant links.</p>
-<p><img alt="Lab Setup 2" src="lab-setup02.png" /></p>
-<p>We run packet captures on the following links:
-- <code class="highlight">server01</code> &lt;-&gt; <code class="highlight">leaf01</code>
-- <code class="highlight">leaf01</code> &lt;-&gt; <code class="highlight">spine01</code>
-- <code class="highlight">server02</code> &lt;-&gt; <code class="highlight">leaf02</code>
-- <code class="highlight">leaf02</code> &lt;-&gt; <code class="highlight">spine01</code>
-- <code class="highlight">exit01</code> &lt;-&gt; <code class="highlight">spine01</code></p>
+<p><img alt="Lab Setup 2" src="/blog/src/lab-setup02.png" /></p>
+<p>We run packet captures on the following links:</p>
+<ul>
+<li><code class="highlight">server01</code> &lt;-&gt; <code class="highlight">leaf01</code></li>
+<li><code class="highlight">leaf01</code> &lt;-&gt; <code class="highlight">spine01</code></li>
+<li><code class="highlight">server02</code> &lt;-&gt; <code class="highlight">leaf02</code></li>
+<li><code class="highlight">leaf02</code> &lt;-&gt; <code class="highlight">spine01</code></li>
+<li><code class="highlight">exit01</code> &lt;-&gt; <code class="highlight">spine01</code></li>
+</ul>
 <h3 id="server-to-server-traffic">Server to server traffic</h3>
 <p>First, we ping from <code class="highlight">server01</code> to <code class="highlight">server02</code> on VLAN 100. We then sleep for 5 seconds, flush the ARP table, and
 repeat the same step again.</p>
@@ -4895,7 +4897,7 @@ as a proxy.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 28, 2026 12:35:59 UTC">February 28, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 28, 2026 12:43:29 UTC">February 28, 2026</span>
   </span>
 
     

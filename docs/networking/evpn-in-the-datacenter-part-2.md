@@ -1683,7 +1683,7 @@ Border Gateway Protocol - UPDATE Message
 (...)
 ```
 
-Upon generation/receipt of these message, FRR can populate MAC mac table for vni 100.
+Upon generation/receipt of these message, FRR can populate the MAC table for vni 100.
 
 ```
 [root@leaf01 ~]# vtysh -c "show evpn mac vni 100"

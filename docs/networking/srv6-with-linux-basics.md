@@ -389,7 +389,7 @@ default via 192.168.161.2 dev toedge
 
 ### Configuring SRV6 End.DT46 Tunnels
 
-Next, we set up packet capture on the transit interfaces. In the first terminal:
+Next, we set up packet captures on the transit interfaces. In the first terminal:
 
 ```
 # intf=toedgeleft; tcpdump -i $intf -w ${intf}.pcap & tcpdump -nne -i ${intf}

@@ -109,6 +109,8 @@ nav:
   - RSS, IRQ affinity and RPS on Linux: networking/rss-irq-affinity-and-rps.md
   - SCTP: networking/sctp.md
   - Setting COS on outgoing packets in Linux: networking/setting-cos-on-egress.md
+  - SRV6 IP Tunnels with Linux End.DT46 Basics: networking/srv6-with-linux-basics.md
+  - SRV6 Source Routing with Linux: networking/srv6-with-linux-basics2.md
   - Useful commands: networking/useful-commands.md
   - Wireguard: networking/wireguard.md
 - OpenShift and Kubernetes:

@@ -1,3 +1,4 @@
+## SRv6 Source Routing with Linux
 
 ### A quick overview of SRv6 forwarding
 
@@ -16,12 +17,12 @@ ip route add fd02:0:4::1 encap seg6 mode inline segs fd02:0:2::10,fd02:0:6::10,f
 ip route add fd02:0:1::1 encap seg6 mode inline segs fd02:0:3::10,fd02:0:6::10 dev tohost3
 ```
 
-These routes set the `mode` to `inline`, meaning that the payload directly follows the Segment Routing Header (SRH). In other scenarios, such as tunneling, the `mode` can be set to `encap` or `encap.red` and the SRH will be followed by an inner IP or IPv6 header.
+These routes set the `mode` to `inline`, meaning the payload directly follows the Segment Routing Header (SRH). In other scenarios, such as tunneling, the `mode` can be set to `encap` or `encap.red` and the SRH will be followed by an inner IP or IPv6 header.
 
-The list of segments, e.g. `segs fd02:0:2::10,fd02:0:6::10,fd02:0:3::10,fd02:0:5::10`, will figure in the Segment Routing Header (ordered from last to first).
+The list of segments, e.g., `segs fd02:0:2::10,fd02:0:6::10,fd02:0:3::10,fd02:0:5::10`, will appear in the Segment Routing Header (ordered from last to first).
 
 The SRH holds a pointer into the list of segments (called the `Segments Left` field) marking the current destination. At each hop, the `Segments Left` field is decreased by one, and the address pointed to
-by `Segments Left` is copied into the IPv6 Destination address.  The entire SRH with the list of all segments will be maintained until the SRH is popped off, in our case - due to `flavors psp` - by the penultimate hop (the node just before the destination). A node knows that it is the penultimate hop when its `Segments Left` is `1`.
+by `Segments Left` is copied into the IPv6 Destination address.  The entire SRH with the list of all segments will be maintained until the SRH is popped off, in our case - due to `flavors psp` - by the penultimate hop (the node just before the destination). A node identifies itself as the penultimate hop when its `Segments Left` is `1`.
 
 Not all nodes in a network have to be SRv6 enabled. These transit nodes forward the IPv6 packet according to the IPv6 destination address and ignore the SRH.
 
@@ -169,7 +170,7 @@ topology:
       mtu: 1500
 ```
 
-The routes of type `fd02:0:${hostID}::/48` route packets within this CIDR to each host with the correspondind `hostID`.
+The routes of type `fd02:0:${hostID}::/48` route packets within this CIDR to each host with the corresponding `hostID`.
 The lab does not use any IGP on purpose. I wanted to abstract away as much as possible and focus on the configuration of the datapath, only.
 Each node is configured with a loopback address of `fd02:0:${hostID}::{hostID}/128`. Routing only works between loopbacks, we must therefore specify the source address, e.g. `ping -c1 -W1 -I fd02:0:1::1 fd02:0:2::1`.
 
@@ -298,7 +299,7 @@ Whereas the return ICMP echo reply should leave `host4` with `host1` as its fina
 
 The packet leaves `host1`. Because we set `encap seg6 mode` to `inline`, the ICMPv6 payload directly follows the Source Routing Header (SRH), without additional encapsulation.
 The SRH shows the list of addresses to visit, in reverse order. `Segments Left: 4`, and `Last Entry: 4` can be interpreted as pointers into the list of addresses.
-`Address[Last Entry]` is the first hop to visit. `Address[Segments Left` is the current hop and should be the same as the IPv6 Destination. `Address[0]` is the final destination of our packet. 
+`Address[Last Entry]` is the first hop to visit. `Address[Segments Left]` is the current hop and should be the same as the IPv6 Destination. `Address[0]` is the final destination of our packet. 
 
 ```
 $ tshark -r host1.pcap -O ipv6 frame.number==3
@@ -490,7 +491,7 @@ Internet Control Message Protocol v6
 HiPerConTracer Trace Service
 ```
 
-`host5` looks at `Segments Left` of the incoming packet and determines that it is the penultimate hop. Therefore, the logic now changes and `flavors psp` causes `host5` to behave differently.
+`host5` checks the `Segments Left` of the incoming packet and determines that it is the penultimate hop. Therefore, the logic now changes and `flavors psp` causes `host5` to behave differently.
 
 The host sets the IPv6 Destination to the value of `Address[0]` and pops the SRH.
 
@@ -526,7 +527,7 @@ Internet Control Message Protocol v6
 HiPerConTracer Trace Service
 ```
 
-The packet is forwwarded to `host4`'s loopback and `host4` generates an ICMPv6 echo reply together with a Source Routing Header that instructs the packet to travel via `host3` and `host6`.
+The packet is forwarded to `host4`'s loopback and `host4` generates an ICMPv6 echo reply together with a Source Routing Header that instructs the packet to travel via `host3` and `host6`.
 
 ```
 $ tshark -r host4.pcap -O ipv6 frame.number==6

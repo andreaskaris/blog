@@ -1380,6 +1380,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conclusion
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2073,7 +2084,7 @@ by <code class="highlight">Segments Left</code> is copied into the IPv6 Destinat
 </code></pre></div></td></tr></table></div>
 <p>The routes of type <code class="highlight"><span class="n">fd02</span><span class="o">:</span><span class="mi">0</span><span class="o">:</span><span class="n">$</span><span class="o">{</span><span class="n">hostID</span><span class="o">}::/</span><span class="mi">48</span></code> route packets within this CIDR to each host with the corresponding <code class="highlight">hostID</code>.
 The lab does not use any IGP on purpose. I wanted to abstract away as much as possible and focus on the configuration of the datapath, only.
-Each node is configured with a loopback address of <code class="highlight"><span class="n">fd02</span><span class="o">:</span><span class="mi">0</span><span class="o">:</span><span class="n">$</span><span class="o">{</span><span class="n">hostID</span><span class="o">}::{</span><span class="n">hostID</span><span class="o">}/</span><span class="mi">128</span></code>. Routing only works between loopbacks, we must therefore specify the source address, e.g. <code class="highlight">ping -c1 -W1 -I fd02:0:1::1 fd02:0:2::1</code>.</p>
+Each node is configured with a loopback address of <code class="highlight"><span class="n">fd02</span><span class="o">:</span><span class="mi">0</span><span class="o">:</span><span class="n">$</span><span class="o">{</span><span class="n">hostID</span><span class="o">}::</span><span class="mi">1</span><span class="o">/</span><span class="mi">128</span></code>. Routing only works between loopbacks, we must therefore specify the source address, e.g. <code class="highlight">ping -c1 -W1 -I fd02:0:1::1 fd02:0:2::1</code>.</p>
 <p>Now, let's deploy the lab:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code># containerlab deploy
 </code></pre></div></td></tr></table></div>
@@ -2187,7 +2198,13 @@ in our lab, we configure the following routes on <code class="highlight">host1</
 </code></pre></div></td></tr></table></div>
 <h3 id="analysis-of-srv6-traffic">Analysis of SRv6 traffic</h3>
 <p>Now, start packet captures on each host:
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>#<span class="w"> </span>for<span class="w"> </span>i<span class="w"> </span>in<span class="w"> </span>{1..6};<span class="w"> </span>do<span class="w"> </span>docker<span class="w"> </span>exec<span class="w"> </span>-it<span class="w"> </span>clab-source-routing-host<span class="cp">${</span><span class="n">i</span><span class="cp">}</span><span class="w"> </span>tcpdump<span class="w"> </span>-i<span class="w"> </span>any<span class="w"> </span>-w<span class="w"> </span>host<span class="cp">${</span><span class="n">i</span><span class="cp">}</span>.pcap<span class="w"> </span><span class="err">&amp;</span><span class="w"> </span>done
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code>i=1;<span class="w"> </span>docker<span class="w"> </span>exec<span class="w"> </span>-it<span class="w"> </span>clab-source-routing-host<span class="cp">${</span><span class="n">i</span><span class="cp">}</span><span class="w"> </span>tcpdump<span class="w"> </span>-i<span class="w"> </span>any<span class="w"> </span>-w<span class="w"> </span>host<span class="cp">${</span><span class="n">i</span><span class="cp">}</span>.pcap
+i=2;<span class="w"> </span>docker<span class="w"> </span>exec<span class="w"> </span>-it<span class="w"> </span>clab-source-routing-host<span class="cp">${</span><span class="n">i</span><span class="cp">}</span><span class="w"> </span>tcpdump<span class="w"> </span>-i<span class="w"> </span>any<span class="w"> </span>-w<span class="w"> </span>host<span class="cp">${</span><span class="n">i</span><span class="cp">}</span>.pcap
+...
+i=6;<span class="w"> </span>docker<span class="w"> </span>exec<span class="w"> </span>-it<span class="w"> </span>clab-source-routing-host<span class="cp">${</span><span class="n">i</span><span class="cp">}</span><span class="w"> </span>tcpdump<span class="w"> </span>-i<span class="w"> </span>any<span class="w"> </span>-w<span class="w"> </span>host<span class="cp">${</span><span class="n">i</span><span class="cp">}</span>.pcap
 </code></pre></div></td></tr></table></div></p>
 <p>Connect to <code class="highlight">host1</code> and ping <code class="highlight">host4</code> from there:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
@@ -2209,9 +2226,9 @@ rtt min/avg/max/mdev = 0.309/0.309/0.309/0.000 ms
 <p>Kill the packet captures and copy the <code class="highlight"><span class="na">.pcap</span></code> files to your local system:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>for<span class="w"> </span>i<span class="w"> </span>in<span class="w"> </span>{1..6};<span class="w"> </span>do<span class="w"> </span>docker<span class="w"> </span>cp<span class="w"> </span>clab-source-routing-host<span class="cp">${</span><span class="n">i</span><span class="cp">}</span>:/root/host<span class="nv">$i.pcap</span><span class="w"> </span>host<span class="nv">$i.pcap</span>;<span class="w"> </span>done
 </code></pre></div></td></tr></table></div>
-<p>As mentioned earlier, the ICMP echo request should follow the path from <code class="highlight">host1</code> to <code class="highlight">host4</code> via <code class="highlight">host2</code>, <code class="highlight">host6</code>, <code class="highlight">host3</code> and <code class="highlight">host5</code>.
+<p>Thanks to the SRv6 routes, the ICMP echo request should follow the path from <code class="highlight">host1</code> to <code class="highlight">host4</code> via <code class="highlight">host2</code>, <code class="highlight">host6</code>, <code class="highlight">host3</code> and <code class="highlight">host5</code>.
 Whereas the return ICMP echo reply should leave <code class="highlight">host4</code> with <code class="highlight">host1</code> as its final destination, travelling via <code class="highlight">host3</code> and <code class="highlight">host6</code>.</p>
-<p>The packet leaves <code class="highlight">host1</code>. Because we set <code class="highlight">encap seg6 mode</code> to <code class="highlight">inline</code>, the ICMPv6 payload directly follows the Source Routing Header (SRH), without additional encapsulation.
+<p>The ICMPv6 echo request packet leaves <code class="highlight">host1</code>. Because we set <code class="highlight">encap seg6 mode</code> to <code class="highlight">inline</code>, the ICMPv6 payload directly follows the Source Routing Header (SRH), without additional encapsulation.
 The SRH shows the list of addresses to visit, in reverse order. <code class="highlight">Segments Left: 4</code>, and <code class="highlight">Last Entry: 4</code> can be interpreted as pointers into the list of addresses.
 <code class="highlight"><span class="n">Address</span><span class="p">[</span><span class="n">Last</span><span class="w"> </span><span class="n">Entry</span><span class="p">]</span></code> is the first hop to visit. <code class="highlight"><span class="n">Address</span><span class="p">[</span><span class="n">Segments</span><span class="w"> </span><span class="n">Left</span><span class="p">]</span></code> is the current hop and should be the same as the IPv6 Destination. <code class="highlight">Address[0]</code> is the final destination of our packet. </p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
@@ -2300,7 +2317,7 @@ The SRH shows the list of addresses to visit, in reverse order. <code class="hig
 <span class="n">Internet</span><span class="w"> </span><span class="n">Control</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="n">Protocol</span><span class="w"> </span><span class="n">v6</span>
 <span class="n">HiPerConTracer</span><span class="w"> </span><span class="n">Trace</span><span class="w"> </span><span class="n">Service</span>
 </code></pre></div></td></tr></table></div>
-<p>The packet is processed in <code class="highlight">host2</code>, where the <code class="highlight">Hop Limit</code> and <code class="highlight">Segments Left</code> are decreased by 1. The IPv6 Destination is changed to <code class="highlight"><span class="n">Address</span><span class="p">[</span><span class="n">Segments</span><span class="w"> </span><span class="n">Left</span><span class="p">]</span></code>, and the packet is forwarded to the next hop.</p>
+<p>The packet is processed on <code class="highlight">host2</code>, where the <code class="highlight">Hop Limit</code> and <code class="highlight">Segments Left</code> are decreased by 1. The IPv6 Destination is changed to <code class="highlight"><span class="n">Address</span><span class="p">[</span><span class="n">Segments</span><span class="w"> </span><span class="n">Left</span><span class="p">]</span></code>, and the packet is forwarded to the next hop.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -2561,7 +2578,7 @@ The SRH shows the list of addresses to visit, in reverse order. <code class="hig
 <span class="n">Internet</span><span class="w"> </span><span class="n">Control</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="n">Protocol</span><span class="w"> </span><span class="n">v6</span>
 <span class="n">HiPerConTracer</span><span class="w"> </span><span class="n">Trace</span><span class="w"> </span><span class="n">Service</span>
 </code></pre></div></td></tr></table></div>
-<p><code class="highlight">host5</code> checks the <code class="highlight">Segments Left</code> of the incoming packet and determines that it is the penultimate hop. Therefore, the logic now changes and <code class="highlight">flavors psp</code> causes <code class="highlight">host5</code> to behave differently.</p>
+<p><code class="highlight">host5</code> checks the <code class="highlight">Segments Left</code> of the incoming packet and determines that it is the penultimate hop (<code class="highlight">Segments Left: 1</code>). Therefore, the logic now changes and <code class="highlight">flavors psp</code> causes <code class="highlight">host5</code> to behave differently.</p>
 <p>The host sets the IPv6 Destination to the value of <code class="highlight">Address[0]</code> and pops the SRH.</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
@@ -2705,6 +2722,8 @@ The SRH shows the list of addresses to visit, in reverse order. <code class="hig
 <span class="n">HiPerConTracer</span><span class="w"> </span><span class="n">Trace</span><span class="w"> </span><span class="n">Service</span>
 </code></pre></div></td></tr></table></div>
 <p><code class="highlight">host6</code> pops the SRH, and the packet is delivered to <code class="highlight">host1</code>.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>In this blog post, we explored the basics of SRv6 Source Routing with Linux. We set up a lab using containerlab and configured SRv6 routes to demonstrate how packets are forwarded along a specified path.</p>
 
 
 
@@ -2725,7 +2744,7 @@ The SRH shows the list of addresses to visit, in reverse order. <code class="hig
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 22, 2026 11:36:40 UTC">April 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 22, 2026 11:56:40 UTC">April 22, 2026</span>
   </span>
 
     

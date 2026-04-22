@@ -172,7 +172,7 @@ topology:
 
 The routes of type `fd02:0:${hostID}::/48` route packets within this CIDR to each host with the corresponding `hostID`.
 The lab does not use any IGP on purpose. I wanted to abstract away as much as possible and focus on the configuration of the datapath, only.
-Each node is configured with a loopback address of `fd02:0:${hostID}::{hostID}/128`. Routing only works between loopbacks, we must therefore specify the source address, e.g. `ping -c1 -W1 -I fd02:0:1::1 fd02:0:2::1`.
+Each node is configured with a loopback address of `fd02:0:${hostID}::1/128`. Routing only works between loopbacks, we must therefore specify the source address, e.g. `ping -c1 -W1 -I fd02:0:1::1 fd02:0:2::1`.
 
 Now, let's deploy the lab:
 
@@ -272,7 +272,10 @@ ip route add fd02:0:1::1 encap seg6 mode inline segs fd02:0:3::10,fd02:0:6::10 d
 
 Now, start packet captures on each host:
 ```
-# for i in {1..6}; do docker exec -it clab-source-routing-host${i} tcpdump -i any -w host${i}.pcap & done
+i=1; docker exec -it clab-source-routing-host${i} tcpdump -i any -w host${i}.pcap
+i=2; docker exec -it clab-source-routing-host${i} tcpdump -i any -w host${i}.pcap
+...
+i=6; docker exec -it clab-source-routing-host${i} tcpdump -i any -w host${i}.pcap
 ```
 
 Connect to `host1` and ping `host4` from there:
@@ -294,10 +297,10 @@ Kill the packet captures and copy the `.pcap` files to your local system:
 for i in {1..6}; do docker cp clab-source-routing-host${i}:/root/host$i.pcap host$i.pcap; done
 ```
 
-As mentioned earlier, the ICMP echo request should follow the path from `host1` to `host4` via `host2`, `host6`, `host3` and `host5`.
+Thanks to the SRv6 routes, the ICMP echo request should follow the path from `host1` to `host4` via `host2`, `host6`, `host3` and `host5`.
 Whereas the return ICMP echo reply should leave `host4` with `host1` as its final destination, travelling via `host3` and `host6`.
 
-The packet leaves `host1`. Because we set `encap seg6 mode` to `inline`, the ICMPv6 payload directly follows the Source Routing Header (SRH), without additional encapsulation.
+The ICMPv6 echo request packet leaves `host1`. Because we set `encap seg6 mode` to `inline`, the ICMPv6 payload directly follows the Source Routing Header (SRH), without additional encapsulation.
 The SRH shows the list of addresses to visit, in reverse order. `Segments Left: 4`, and `Last Entry: 4` can be interpreted as pointers into the list of addresses.
 `Address[Last Entry]` is the first hop to visit. `Address[Segments Left]` is the current hop and should be the same as the IPv6 Destination. `Address[0]` is the final destination of our packet. 
 
@@ -347,7 +350,7 @@ Internet Control Message Protocol v6
 HiPerConTracer Trace Service
 ```
 
-The packet is processed in `host2`, where the `Hop Limit` and `Segments Left` are decreased by 1. The IPv6 Destination is changed to `Address[Segments Left]`, and the packet is forwarded to the next hop.
+The packet is processed on `host2`, where the `Hop Limit` and `Segments Left` are decreased by 1. The IPv6 Destination is changed to `Address[Segments Left]`, and the packet is forwarded to the next hop.
 
 ```
 $ tshark -r host2.pcap -O ipv6 frame.number==6
@@ -491,7 +494,7 @@ Internet Control Message Protocol v6
 HiPerConTracer Trace Service
 ```
 
-`host5` checks the `Segments Left` of the incoming packet and determines that it is the penultimate hop. Therefore, the logic now changes and `flavors psp` causes `host5` to behave differently.
+`host5` checks the `Segments Left` of the incoming packet and determines that it is the penultimate hop (`Segments Left: 1`). Therefore, the logic now changes and `flavors psp` causes `host5` to behave differently.
 
 The host sets the IPv6 Destination to the value of `Address[0]` and pops the SRH.
 
@@ -574,3 +577,7 @@ HiPerConTracer Trace Service
 ```
 
 `host6` pops the SRH, and the packet is delivered to `host1`.
+
+## Conclusion
+
+In this blog post, we explored the basics of SRv6 Source Routing with Linux. We set up a lab using containerlab and configured SRv6 routes to demonstrate how packets are forwarded along a specified path.

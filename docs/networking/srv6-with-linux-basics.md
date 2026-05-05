@@ -409,6 +409,19 @@ ip link set vrfa up
 ip link set tohost master vrfa
 ```
 
+After we create the first VRF inside the namespace, we also must set VRF strict_mode within the namespace of each edge:
+
+```
+sysctl -w net.vrf.strict_mode=1
+```
+> **Note:** This setting cannot be set if no VRF is present, yet.
+
+We also have to disable the rp_filter within the namespace of each edge:
+
+```
+sysctl -w net.ipv4.conf.vrfa.rp_filter=0
+```
+
 Let's now attempt to ping from `hostleft` to `hostright`. As expected, this should fail:
 
 ```
@@ -508,7 +521,7 @@ And on `edgeright`:
 Now, the ping works:
 
 ```
-[root@metallb ~]#  ping -c1 -W1 192.168.161.2
+#  ping -c1 -W1 192.168.161.2
 PING 192.168.161.2 (192.168.161.2) 56(84) bytes of data.
 64 bytes from 192.168.161.2: icmp_seq=1 ttl=63 time=0.141 ms
 
